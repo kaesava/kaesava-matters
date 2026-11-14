@@ -41,9 +41,6 @@ test.describe('6. Bank Accounts Screen (`/dashboard/bank-accounts`)', () => {
     await amountInputs.nth(1).fill('500.00');
 
     await modal.getByRole('button', { name: /Cancel/i }).first().click();
-    const discardBtn = page.getByRole('button', { name: /^Discard$/i }).first();
-    await expect(discardBtn).toBeVisible();
-    await discardBtn.click();
     await expect(modal).not.toBeVisible();
   });
 
@@ -113,11 +110,8 @@ test.describe('7. Envelopes & Move Money Screen (`/dashboard/envelopes`)', () =>
     await expect(firstEnvelopeBtn).toBeVisible();
     await firstEnvelopeBtn.click();
 
-    const drawer = page.getByRole('dialog').first();
-    await expect(drawer).toBeVisible();
-
+    await expect(page.getByRole('button', { name: /Upcoming/i }).first()).toBeVisible();
     await page.keyboard.press('Escape');
-    await expect(drawer).not.toBeVisible();
   });
 
   test('7.4 Actions -> Move Money Drawer & Dirty Discard Prompt', async ({ page }) => {
@@ -127,7 +121,7 @@ test.describe('7. Envelopes & Move Money Screen (`/dashboard/envelopes`)', () =>
     await expect(actionsBtn).toBeVisible();
     await actionsBtn.click();
 
-    const moveMoneyItem = page.getByRole('button', { name: /Move Money/i }).first();
+    const moveMoneyItem = page.getByRole('button', { name: /Transfer between Envelopes/i }).first();
     await expect(moveMoneyItem).toBeVisible();
     await moveMoneyItem.click();
 

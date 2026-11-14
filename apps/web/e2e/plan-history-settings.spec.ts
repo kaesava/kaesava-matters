@@ -85,7 +85,7 @@ test.describe('10. Settings 4-Tab Layout, Governance & Subpages (`/dashboard/set
     const profileTab = page.getByRole('button', { name: 'Profile', exact: true }).first();
     const householdTab = page.getByRole('button', { name: 'Household', exact: true }).first();
     const archiveTab = page.getByRole('button', { name: 'Archive', exact: true }).first();
-    const planTab = page.getByRole('button', { name: 'Plan', exact: true }).first();
+    const planTab = page.getByRole('button', { name: 'Plan', exact: true }).last();
 
     await expect(profileTab).toBeVisible();
     await expect(householdTab).toBeVisible();
@@ -181,7 +181,7 @@ test.describe('10. Settings 4-Tab Layout, Governance & Subpages (`/dashboard/set
     await expect(checkboxes).toHaveCount(6);
 
     // Wait for initial preferences query hydration (channel status card renders once user prefs + channels resolve).
-    await expect(page.getByText(/Notifications are emailed/i).first()).toBeVisible();
+    await expect(page.getByText(/Emails deliver to/i).first()).toBeVisible();
 
     const firstCheckbox = checkboxes.first();
     const initialChecked = await firstCheckbox.isChecked();
@@ -195,7 +195,7 @@ test.describe('10. Settings 4-Tab Layout, Governance & Subpages (`/dashboard/set
     ]);
 
     await page.reload({ waitUntil: 'domcontentloaded' });
-    await expect(page.getByText(/Notifications are emailed/i).first()).toBeVisible();
+    await expect(page.getByText(/Emails deliver to/i).first()).toBeVisible();
     await expect(page.locator('input[type="checkbox"]').first()).toBeChecked({ checked: !initialChecked });
 
     // Restore initial state so repeated dev runs start clean.
