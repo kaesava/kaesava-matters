@@ -24,7 +24,8 @@ description: End-to-end implementation, Web/Mobile parity enforcement, aggressiv
 5. **In-Flight Checks & Production Gate:**
    * Run targeted checks (`pnpm check-i18n`, `pnpm typecheck`, `pnpm lint`, `pnpm test`) as you build. Clear `apps/mobile/.tsbuildinfo` if workspace exports changed.
    * Whenever Web routes, tabs, form fields, modals, or primary CTAs change, inspect `apps/web/e2e/*.spec.ts` against live components and `@money-matters/i18n` keys (following the `playwright-e2e` skill) and verify registration with `pnpm --filter @money-matters/web exec playwright test --list`.
-   * Before finishing, run **`pnpm validate:prod`** and fix any failures iteratively until it exits `0`.
+   * Before finishing, run **`pnpm validate:prod`** and fix any failures iteratively until it exits `0`. (If `next/font/google` fails inside a network-restricted sandbox during `@money-matters/web build`, run `pnpm validate` and `@money-matters/api` build sandboxed first, and isolate `pnpm --filter @money-matters/web build`.)
+   * Whenever deleting a route, component, or tRPC procedure, update the owning registry table and summary counts in `FUNCTIONAL_CAPABILITIES_INVENTORY.md`, `TECHNICAL_SPEC.md`, and `README.md` before final validation.
 6. **Git Commit Protocol:**
    * Once `pnpm validate:prod` passes, stage and commit all changes locally with a conventional commit message (`feat:`, `fix:`, `refactor:`).
    * **STOP and ask the user before running `git push`.**
