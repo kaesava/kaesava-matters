@@ -38,7 +38,7 @@ function parseInputDate(text: string, loc: string): string | null {
 
   // 1. Direct ISO YYYY-MM-DD
   if (/^\d{4}-\d{2}-\d{2}$/.test(trimmed)) {
-    const [y, m, d] = trimmed.split('-').map(Number);
+    const [, m, d] = trimmed.split('-').map(Number);
     if (m >= 1 && m <= 12 && d >= 1 && d <= 31) return trimmed;
   }
 

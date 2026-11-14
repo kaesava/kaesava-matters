@@ -1,5 +1,5 @@
 "use client";
-import { getTenantDateString } from "@money-matters/core";
+import { getTenantDateString } from "@money-matters/types";
 
 
 import React, { useState } from "react";

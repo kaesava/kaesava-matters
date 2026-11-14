@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useMemo } from "react";
+import { useState, useMemo } from "react";
 import { t } from "@money-matters/i18n";
 import { AmountField } from "@money-matters/ui/web";
 import type { CategoryOption } from "./MarkPaidModal";
@@ -51,9 +51,9 @@ export function MarkPaidShortfallSection({
 
   const filterBadges: Array<{ id: FilterBadge; label: string }> = [
     { id: "ALL", label: t("common.all") },
-    { id: "GOAL", label: t("planTabs.goals") },
-    { id: "BILL", label: t("planTabs.bills") },
-    { id: "EVERYDAY", label: t("planTabs.everyday") },
+    { id: "GOAL", label: t("envelopeTypes.goals") },
+    { id: "BILL", label: t("envelopeTypes.bills") },
+    { id: "EVERYDAY", label: t("envelopeTypes.everyday") },
   ];
 
   const filteredPools = useMemo(() => {
@@ -160,12 +160,12 @@ export function MarkPaidShortfallSection({
                   onClick={() => setSortAsc(!sortAsc)}
                 >
                   <div className="flex items-center gap-1">
-                    <span>{t("tables.name")}</span>
+                    <span>{t("common.name")}</span>
                     <span>{sortAsc ? "▲" : "▼"}</span>
                   </div>
                 </th>
                 <th className="py-2 px-4 text-right">{t("tables.available")}</th>
-                <th className="py-2 px-4 text-right">{t("tables.transferAmount")}</th>
+                <th className="py-2 px-4 text-right">{t("common.transfer")}</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-zinc-100 dark:divide-zinc-800 text-xs">

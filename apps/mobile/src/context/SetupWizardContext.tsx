@@ -5,6 +5,7 @@ import {
   IncomeItem,
   UserGoalItem,
   EstimatedCategoryItem,
+  SetupFrequency,
   getTotalSetupSteps,
 } from '@money-matters/types';
 import { SetupWizardContextValue } from './setup-wizard-types';
@@ -169,7 +170,7 @@ export function SetupWizardProvider({ children: reactChildren }: { children: Rea
     Record<string, 'RECURRING' | 'TARGET_BALANCE'>
   >({});
   const [categoryFrequencies, setCategoryFrequencies] = useState<
-    Record<string, 'WEEKLY' | 'FORTNIGHTLY' | 'MONTHLY' | 'QUARTERLY' | 'YEARLY'>
+    Record<string, SetupFrequency>
   >({});
 
   const { isLoading: isLoadingExistingData } = useSetupWizardPrepopulation({

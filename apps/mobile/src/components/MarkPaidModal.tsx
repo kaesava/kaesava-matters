@@ -47,7 +47,6 @@ export function MarkPaidModal({
     groupedPools,
     expandedGroups,
     transferAmounts,
-    setTransferAmounts,
     surplusPool,
     totalAllocated,
     shortfallValidation,
@@ -70,7 +69,7 @@ export function MarkPaidModal({
     : poolType === 'BILL'
     ? t('categories.billBadge')
     : t('categories.goalBadge');
-  const formattedPoolName = currentPool?.name || t('categories.mainPool');
+  const formattedPoolName = currentPool?.name || t('categories.mainEnvelope');
 
   return (
     <MobileModalDialog

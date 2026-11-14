@@ -1,4 +1,3 @@
-import React from 'react';
 import { View as RNView, Text as RNText, TouchableOpacity as RNTouchableOpacity, TextInput as RNTextInput, StyleSheet as RNStyleSheet } from 'react-native';
 import { t } from '@money-matters/i18n';
 import { DESIGN_TOKENS } from '../../tokens';

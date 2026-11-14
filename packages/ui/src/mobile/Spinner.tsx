@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from "react";
+import { useEffect, useRef } from "react";
 import { View, Text, StyleSheet, Animated, Easing, ViewStyle, StyleProp } from "react-native";
 import { DESIGN_TOKENS } from "../tokens";
 

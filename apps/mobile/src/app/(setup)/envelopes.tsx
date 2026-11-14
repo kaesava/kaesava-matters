@@ -250,7 +250,7 @@ export default function SetupCategoriesScreen() {
           }}
           style={styles.backBtn}
         >
-          <Text style={styles.backBtnText}>{t('setup.previousStep')}</Text>
+          <Text style={styles.backBtnText}>{t('common.back')}</Text>
         </TouchableOpacity>
         <TouchableOpacity onPress={handleFinish} style={styles.nextBtn} disabled={isSubmitting}>
           {isSubmitting ? (

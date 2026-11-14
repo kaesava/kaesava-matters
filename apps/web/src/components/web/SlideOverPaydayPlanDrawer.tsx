@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useMemo } from "react";
+import { useEffect, useMemo } from "react";
 import Link from "next/link";
 import { t } from "@money-matters/i18n";
 import { useLocale } from "../../providers/LocaleProvider";
@@ -147,12 +147,12 @@ export function SlideOverPaydayPlanDrawer({
                       href={`/dashboard/envelopes?poolId=${line.poolId}`}
                       className="text-xs font-bold text-[#2563eb] hover:underline inline-flex items-center gap-0.5"
                     >
-                      <span>{line.poolName || line.categoryName || t("paydayDrawer.poolAllocationDefault")}</span>
+                      <span>{line.poolName || line.categoryName || t("paydayDrawer.envelopeAllocationDefault")}</span>
                       <span className="text-[10px] text-blue-400">↗</span>
                     </Link>
                   ) : (
                     <h4 className="text-xs font-bold text-zinc-900 dark:text-zinc-100">
-                      {line.poolName || line.categoryName || t("paydayDrawer.poolAllocationDefault")}
+                      {line.poolName || line.categoryName || t("paydayDrawer.envelopeAllocationDefault")}
                     </h4>
                   )}
                   <span className="text-xs font-black font-mono text-emerald-600 dark:text-emerald-400">

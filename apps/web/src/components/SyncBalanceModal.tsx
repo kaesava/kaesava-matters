@@ -267,7 +267,7 @@ export const SyncBalanceModal: React.FC<SyncBalanceModalProps> = ({
                 {t("bankAccounts.reconcile.difference")}
               </span>
               <span className={`font-mono font-bold mt-0.5 ${isZeroVariance ? "text-emerald-600 dark:text-emerald-400" : isSurplus ? "text-emerald-600 dark:text-emerald-400" : "text-amber-600 dark:text-amber-400"}`}>
-                {isZeroVariance ? "Balanced ✓" : isSurplus ? `+${fmtMoney(variance)}` : `-${fmtMoney(absVariance)}`}
+                {isZeroVariance ? t("bankAccounts.reconcile.balancedBadge") : isSurplus ? `+${fmtMoney(variance)}` : `-${fmtMoney(absVariance)}`}
               </span>
             </div>
           </div>
@@ -332,7 +332,7 @@ export const SyncBalanceModal: React.FC<SyncBalanceModalProps> = ({
               onClick={onOpenTransferModal}
               className="text-xs font-bold text-[#2563eb] dark:text-blue-400 hover:underline cursor-pointer inline-flex items-center gap-1"
             >
-              <span>{t("bankAccounts.reconcile.transferBetweenPoolsLink")}</span>
+              <span>{t("bankAccounts.reconcile.transferBetweenEnvelopesLink")}</span>
             </button>
           </div>
         )}
@@ -357,7 +357,7 @@ export const SyncBalanceModal: React.FC<SyncBalanceModalProps> = ({
           >
             {isZeroVariance
               ? t("bankAccounts.reconcile.saveBalanceOnly")
-              : t("bankAccounts.reconcile.updateBalance")}
+              : t("bankAccounts.reconcile.modalTitle")}
           </Button>
         </div>
 

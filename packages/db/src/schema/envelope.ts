@@ -41,8 +41,6 @@ export const envelopes = pgTable(
     isPrivate: boolean("is_private").notNull().default(false),
     generateEvents: boolean("generate_events").notNull().default(true),
     userId: uuid("user_id"), // Applicable for private envelopes
-    emoji: varchar("emoji", { length: 16 }),
-    colorKey: varchar("color_key", { length: 30 }),
     orderIndex: integer("order_index").notNull().default(0),
     lastBurstDate: date("last_burst_date"),
 

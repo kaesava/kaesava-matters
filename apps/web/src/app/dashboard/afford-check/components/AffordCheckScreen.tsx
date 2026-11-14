@@ -158,9 +158,9 @@ export function AffordCheckScreen() {
             <div className="flex flex-wrap justify-center gap-2">
               {(
                 [
-                  { id: 'WEEKLY', label: t('canIAfford.freqWeekly') },
-                  { id: 'FORTNIGHTLY', label: t('canIAfford.freqFortnightly') },
-                  { id: 'MONTHLY', label: t('canIAfford.freqMonthly') },
+                  { id: 'WEEKLY', label: t('forms.weekly') },
+                  { id: 'FORTNIGHTLY', label: t('forms.fortnightly') },
+                  { id: 'MONTHLY', label: t('forms.monthly') },
                   { id: 'ANNUALLY', label: t('canIAfford.freqAnnually') },
                 ] as const
               ).map((chip) => (

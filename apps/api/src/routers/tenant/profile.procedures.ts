@@ -19,7 +19,6 @@ export const profileProcedures = {
       z.object({
         timezone: z.string().optional(),
         language: z.enum(["en"]).optional(),
-        theme: z.string().optional(),
         showIcons: z.boolean().optional(),
         setupCompleted: z.boolean().optional(),
         appPreferences: z.record(z.string(), z.record(z.string(), z.unknown())).optional(),

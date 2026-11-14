@@ -1,6 +1,5 @@
 "use client";
 
-import React from "react";
 import { t } from "@money-matters/i18n";
 import { ModalDialog } from "@money-matters/ui/web";
 
@@ -31,7 +30,7 @@ export function KeyboardShortcutsModal({ isOpen, onClose }: KeyboardShortcutsMod
           <kbd className="px-2 py-1 bg-zinc-100 border border-zinc-200 rounded text-xs font-mono font-bold text-zinc-600">N</kbd>
         </div>
         <div className="flex justify-between items-center">
-          <span className="text-sm font-semibold text-zinc-700">{t("keyboardShortcuts.search")}</span>
+          <span className="text-sm font-semibold text-zinc-700">{t("common.search")}</span>
           <kbd className="px-2 py-1 bg-zinc-100 border border-zinc-200 rounded text-xs font-mono font-bold text-zinc-600">/</kbd>
         </div>
         <div className="flex justify-between items-center">

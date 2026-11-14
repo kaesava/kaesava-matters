@@ -116,7 +116,7 @@ export const DashboardActionStrip: React.FC<DashboardActionStripProps> = ({
                 className="w-full px-3.5 py-2 text-left text-xs font-semibold text-zinc-700 dark:text-zinc-200 hover:bg-blue-50 dark:hover:bg-zinc-800 hover:text-blue-600 transition-colors flex items-center gap-2.5 cursor-pointer"
               >
                 <ArrowLeftRight className="w-4 h-4 text-blue-500" />
-                <span>{t('dashboard.transferBetweenPools')}</span>
+                <span>{t('dashboard.transferBetweenEnvelopes')}</span>
               </button>
             </div>
           )}

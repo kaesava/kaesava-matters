@@ -38,7 +38,6 @@ export function EnvelopeGroupSection({
   pools,
   isCollapsed,
   onToggleCollapse,
-  bankAccounts,
   groupType,
   onAddPool,
 }: EnvelopeGroupSectionProps) {

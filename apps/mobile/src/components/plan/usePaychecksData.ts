@@ -102,7 +102,7 @@ export function usePaychecksData() {
   const handleDeleteExpenseEvent = (item: { id: string; name?: string | null }) => {
     showMobileConfirm({
       title: t('payday.deleteExpenseEvent'),
-      message: t('payday.deleteExpenseEventConfirm', { name: item.name || t('common.expense') }),
+      message: t('common.deleteConfirmNamed', { name: item.name || t('common.expense') }),
       confirmText: t('common.delete'),
       onConfirm: () => deleteExpenseEventMut.mutate({ eventId: item.id }),
     });

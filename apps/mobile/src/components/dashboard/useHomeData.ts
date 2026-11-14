@@ -171,7 +171,7 @@ export function useHomeData(token?: string) {
           expectedAmount: parseFloat(e.expectedAmount),
           expectedDate: e.expectedDate,
           categoryId: e.envelopeId,
-          categoryName: pool?.name ?? t('poolTypes.bills'),
+          categoryName: pool?.name ?? t('envelopeTypes.bills'),
           isOverdue: new Date(e.expectedDate) < todayObj,
           categoryBalance: poolBal,
         };

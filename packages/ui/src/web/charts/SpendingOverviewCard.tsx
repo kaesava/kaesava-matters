@@ -1,6 +1,5 @@
 "use client";
 
-import React from "react";
 import { SpendingAnalyticsDTO, SpendingTimeframe } from "@money-matters/types";
 import { DonutChart } from "./DonutChart";
 import { BarTrendChart } from "./BarTrendChart";
@@ -151,8 +150,8 @@ export function SpendingOverviewCard({
               <div className="bg-slate-50/50 p-4 rounded-xl border border-slate-100 flex flex-col">
                 <span className="text-xs font-bold text-slate-700 uppercase tracking-tight mb-3">
                   {isFiltered
-                    ? (labels?.filteredTopPoolsTitle || t("history.reporting.topPools.filteredTitle"))
-                    : (labels?.topPoolsTitle || t("history.reporting.topPools.title"))}
+                    ? (labels?.filteredTopPoolsTitle || t("history.reporting.topEnvelopes.filteredTitle"))
+                    : (labels?.topPoolsTitle || t("history.reporting.topEnvelopes.title"))}
                 </span>
                 <HorizontalRankedBarChart
                   topPools={analytics.topPools}

@@ -1,4 +1,3 @@
-import React from 'react';
 import { t } from '@money-matters/i18n';
 import { Badge } from './Badge';
 import { useCurrencyLocale } from '../hooks/CurrencyLocaleContext';

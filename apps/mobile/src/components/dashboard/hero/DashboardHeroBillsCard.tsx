@@ -33,7 +33,7 @@ export const DashboardHeroBillsCard: React.FC<DashboardHeroBillsCardProps> = ({
       style={styles.billsCard}
     >
       <View style={styles.billsTopRow}>
-        <Text style={styles.sectionTag}>{t('dashboard.hero.billsPoolTitle')}</Text>
+        <Text style={styles.sectionTag}>{t('dashboard.hero.billsEnvelopeTitle')}</Text>
         <Text style={styles.billsBalance}>{formatMobileCurrency(billsBalance)}</Text>
       </View>
 

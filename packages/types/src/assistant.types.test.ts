@@ -63,7 +63,7 @@ describe("Assistant Types & Validation", () => {
   it("validates assistant discriminated union result types", () => {
     const answerResult = AssistantResultSchema.parse({
       type: "answer",
-      templateKey: "assistant.answers.poolBalance",
+      templateKey: "assistant.answers.envelopeBalance",
       templateValues: { balance: "$350.00" },
     });
     expect(answerResult.type).toBe("answer");

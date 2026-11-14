@@ -225,7 +225,7 @@ export function EditUpcomingEventModal({
         />
 
         <DatePickerField
-          label={t("modals.eventOverride.overrideDate")}
+          label={t("tables.date")}
           required
           value={expectedDate}
           onChange={(val) => {
@@ -235,7 +235,7 @@ export function EditUpcomingEventModal({
         />
 
         <AmountField
-          label={t("modals.eventOverride.overrideAmount")}
+          label={t("common.amount")}
           required
           value={expectedAmount}
           onChange={(val) => {

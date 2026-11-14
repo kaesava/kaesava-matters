@@ -1,6 +1,6 @@
 "use client";
 import { DEFAULT_TIMEZONE } from "@money-matters/types";
-import { getTenantDateString } from "@money-matters/core";
+import { getTenantDateString } from "@money-matters/types";
 
 
 import { useState, useEffect, useMemo, useCallback } from "react";
@@ -168,9 +168,9 @@ export function usePaydayPlanState({ incomeEventId, returnTo = "/dashboard" }: {
 
   const groupedLines = useMemo(() => {
     const groups: Array<{ type: "EVERYDAY" | "BILL" | "GOAL"; label: string; items: AllocationLineItem[] }> = [
-      { type: "EVERYDAY", label: t("paydayDrawer.everydayPools"), items: [] },
-      { type: "BILL", label: t("paydayDrawer.billsPools"), items: [] },
-      { type: "GOAL", label: t("paydayDrawer.goalsPools"), items: [] },
+      { type: "EVERYDAY", label: t("paydayDrawer.everydaySpending"), items: [] },
+      { type: "BILL", label: t("envelopeTypes.bills"), items: [] },
+      { type: "GOAL", label: t("paydayDrawer.savingsGoals"), items: [] },
     ];
     for (const l of lines) {
       const et = pools.find((pool) => pool.id === l.bucketId)?.envelopeType;

@@ -44,7 +44,7 @@ export const MobileHorizonFrozenColumn: React.FC<MobileHorizonFrozenColumnProps>
       {/* Top Header matching Payday Column Header height */}
       <View style={styles.frozenHeader}>
         <Text style={styles.frozenHeaderText}>
-          {t('paydayDrawer.tableColPool')}
+          {t('categories.typeLabel')}
         </Text>
       </View>
 
@@ -93,7 +93,7 @@ export const MobileHorizonFrozenColumn: React.FC<MobileHorizonFrozenColumnProps>
                       </Text>
                     </TouchableOpacity>
                     <Text style={styles.categoryMetaText} numberOfLines={1}>
-                      {t('matrix.balanceShort')}: {formatMobileCurrency(curBal)}
+                      {t('paydaySchedule.balanceShort')}: {formatMobileCurrency(curBal)}
                       {targetVal != null && targetVal > 0 ? ` / ${formatMobileCurrency(targetVal)}` : ''}
                     </Text>
                   </View>

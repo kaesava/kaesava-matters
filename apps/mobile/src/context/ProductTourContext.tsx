@@ -84,9 +84,9 @@ export const MOBILE_TOUR_STEPS: Array<{
   {
     id: 'history-ledger',
     route: '/(app)/history',
-    titleKey: 'tour.steps.historyLedger.title',
-    descKey: 'tour.steps.historyLedger.desc',
-    badgeKey: 'tour.steps.historyLedger.badge',
+    titleKey: 'tour.steps.historyPlans.title',
+    descKey: 'tour.steps.historyPlans.desc',
+    badgeKey: 'tour.steps.historyPlans.badge',
   },
   {
     id: 'ask-penny',

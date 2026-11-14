@@ -95,7 +95,7 @@ export function MobileTransferModal({
       return null;
     }
     if (sourcePoolId && destinationPoolId && sourcePoolId === destinationPoolId) {
-      setErrorMsg(t('drawers.quickExpense.poolsDifferent'));
+      setErrorMsg(t('drawers.quickExpense.envelopesDifferent'));
       return null;
     }
     return numAmt;

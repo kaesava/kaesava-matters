@@ -9,7 +9,7 @@ export const DEFAULT_AI_MODEL_ID = "@cf/meta/llama-3.1-8b-instruct";
 /**
  * AI Assistant Environment Schema
  */
-export const aiEnvSchema = z
+const aiEnvSchema = z
   .object({
     CF_ACCOUNT_ID: z.string().min(1).default("b0a640370b2b7ba2b84abfd03a9fda56"),
     CF_AI_GATEWAY_ID: z.string().min(1).default("money-matters-ai-dev"),
@@ -18,13 +18,13 @@ export const aiEnvSchema = z
   })
   .strict();
 
-export type AiEnvConfig = z.infer<typeof aiEnvSchema>;
+type AiEnvConfig = z.infer<typeof aiEnvSchema>;
 
 /**
  * Per-tenant monthly and burst limits for AI usage.
  * Deterministic (pre-canned / rule-based) answers bypass the LLM and are always free.
  */
-export interface AiTierLimits {
+interface AiTierLimits {
   monthlyLlmCalls: number;
   burstPerMinute: number;
   burstPerDay: number;

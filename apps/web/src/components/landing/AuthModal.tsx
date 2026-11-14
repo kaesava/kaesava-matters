@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { t } from "@money-matters/i18n";
 import { Logo, FormErrorBanner, ModalDialog } from "@money-matters/ui/web";
 import { SignInForm } from "../auth/SignInForm";

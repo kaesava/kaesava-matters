@@ -1,7 +1,7 @@
 import { getTenantDateString } from "../lib/format";
 import { useEffect } from 'react';
 import { trpc } from '../lib/trpc';
-import { IncomeItem, UserGoalItem, EstimatedCategoryItem } from '@money-matters/types';
+import { IncomeItem, UserGoalItem, EstimatedCategoryItem, SetupFrequency } from '@money-matters/types';
 import { parseRecurrenceRule } from '@money-matters/ui/mobile';
 import { getMobileLocaleConfig } from '../lib/format';
 import { MobileBankAccountItem } from './setup-wizard-types';
@@ -14,7 +14,7 @@ interface PrepopulationProps {
   setGoals: React.Dispatch<React.SetStateAction<UserGoalItem[]>>;
   setCustomCategories: React.Dispatch<React.SetStateAction<EstimatedCategoryItem[]>>;
   setCategoryFrequencies: React.Dispatch<
-    React.SetStateAction<Record<string, 'WEEKLY' | 'FORTNIGHTLY' | 'MONTHLY' | 'QUARTERLY' | 'YEARLY'>>
+    React.SetStateAction<Record<string, SetupFrequency>>
   >;
 }
 
@@ -117,7 +117,7 @@ export function useSetupWizardPrepopulation({
   useEffect(() => {
     if (!isRerun || !poolsQuery.data || poolsQuery.data.length === 0) return;
     const nonGoalEnvelopes = poolsQuery.data.filter((p) => p.envelopeType !== 'GOAL');
-    const freqMap: Record<string, 'WEEKLY' | 'FORTNIGHTLY' | 'MONTHLY' | 'QUARTERLY' | 'YEARLY'> = {};
+    const freqMap: Record<string, SetupFrequency> = {};
     setCustomCategories(
       nonGoalEnvelopes.map((c) => {
         const rawFreq = c.budgetFrequency as string | null | undefined;

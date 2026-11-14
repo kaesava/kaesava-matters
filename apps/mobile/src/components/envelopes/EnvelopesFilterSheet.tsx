@@ -48,9 +48,9 @@ export function EnvelopesFilterSheet({
       onSelect: (val: string) => setTypeFilter(val as PoolTypeFilter),
       options: [
         { id: 'ALL', label: t('common.all') },
-        { id: 'EVERYDAY', label: t('poolTypes.everyday') },
-        { id: 'BILL', label: t('poolTypes.bills') },
-        { id: 'GOAL', label: t('poolTypes.goals') },
+        { id: 'EVERYDAY', label: t('envelopeTypes.everyday') },
+        { id: 'BILL', label: t('envelopeTypes.bills') },
+        { id: 'GOAL', label: t('envelopeTypes.goals') },
       ],
     },
     ...(hasPrivateMode

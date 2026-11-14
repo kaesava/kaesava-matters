@@ -1,36 +1,17 @@
 /**
- * Australian Financial & Banking Calendar Utilities
- * 
- * Provides business day adjustment for public holidays (BECS settlement system)
- * and timezone resolution (AEST/AEDT) for scheduled notification crons.
+ * Timezone and Calendar Utilities for scheduled notification crons and date deltas.
  */
 
-import { getCachedDateFormat } from './formatters.js';
+import { getCachedDateFormat } from "@money-matters/types";
 
-/** Known Australian national and state public holiday calendar dates (ISO YYYY-MM-DD). */
-const AU_NATIONAL_HOLIDAYS = new Set<string>([
-  "2026-01-01", // New Year's Day
-  "2026-01-26", // Australia Day
-  "2026-04-03", // Good Friday
-  "2026-04-06", // Easter Monday
-  "2026-04-25", // ANZAC Day
-  "2026-06-08", // King's Birthday (NSW/VIC/ACT/TAS/SA)
-  "2026-10-05", // Labour Day (NSW/ACT/SA)
-  "2026-12-25", // Christmas Day
-  "2026-12-26", // Boxing Day
-  "2026-12-28", // Boxing Day (observed)
-  "2027-01-01", // New Year's Day
-  "2027-01-26", // Australia Day
-]);
-
-export function todayInZone(timeZone: string = 'UTC', now: Date = new Date()): string {
-  return getCachedDateFormat('en-CA', { timeZone }).format(now);
+export function todayInZone(timeZone: string = "UTC", now: Date = new Date()): string {
+  return getCachedDateFormat("en-CA", { timeZone }).format(now);
 }
 
-export function getLocalHourInZone(timeZone: string = 'UTC', now: Date = new Date()): number {
-  const hourStr = getCachedDateFormat('en-US', {
+export function getLocalHourInZone(timeZone: string = "UTC", now: Date = new Date()): number {
+  const hourStr = getCachedDateFormat("en-US", {
     timeZone,
-    hour: 'numeric',
+    hour: "numeric",
     hour12: false,
   }).format(now);
   return parseInt(hourStr, 10) % 24;
@@ -47,102 +28,24 @@ const WEEKDAY_INDEX: Record<string, number> = {
 };
 
 /** Returns 0 (Sunday) through 6 (Saturday) in the given IANA timezone. */
-export function getLocalDayOfWeekInZone(timeZone: string = 'UTC', now: Date = new Date()): number {
-  const weekday = getCachedDateFormat('en-US', {
+export function getLocalDayOfWeekInZone(timeZone: string = "UTC", now: Date = new Date()): number {
+  const weekday = getCachedDateFormat("en-US", {
     timeZone,
-    weekday: 'short',
+    weekday: "short",
   }).format(now);
   return WEEKDAY_INDEX[weekday] ?? now.getUTCDay();
 }
 
 export function calendarDaysBetween(fromDate: string, toDate: string): number {
-  const [y1, m1, d1] = fromDate.split('-').map(Number);
-  const [y2, m2, d2] = toDate.split('-').map(Number);
+  const [y1, m1, d1] = fromDate.split("-").map(Number);
+  const [y2, m2, d2] = toDate.split("-").map(Number);
   return Math.round((Date.UTC(y2, m2 - 1, d2) - Date.UTC(y1, m1 - 1, d1)) / 86400000);
 }
 
 export function formatInstantInZone(
   instant: Date,
-  timeZone: string = 'Australia/Sydney',
+  timeZone: string = "Australia/Sydney",
   options?: Intl.DateTimeFormatOptions
 ): string {
-  return getCachedDateFormat('en-AU', { timeZone, ...options }).format(instant);
-}
-
-export function getAestIsoDate(date: Date = new Date()): string {
-  return todayInZone('Australia/Sydney', date);
-}
-
-/**
- * Checks whether a given Date is a weekend or an Australian banking public holiday.
- *
- * @param date - The date to check
- * @returns True if the date is a weekend or public holiday
- */
-export function isNonBankingDay(date: Date, countryCode: string = "AU"): boolean {
-  const dayOfWeek = date.getUTCDay();
-  if (dayOfWeek === 0 || dayOfWeek === 6) return true; // Sunday = 0, Saturday = 6
-
-  if (countryCode === "AU") {
-    const isoDate = getAestIsoDate(date);
-    return isoDate ? AU_NATIONAL_HOLIDAYS.has(isoDate) : false;
-  }
-  return false;
-}
-
-/**
- * Adjusts an expected paycheck or bill settlement date for Australian public holidays and weekends.
- *
- * @param scheduledDate - Initial scheduled date
- * @param shiftDirection - Direction to shift: PREVIOUS_BUSINESS_DAY (default) or NEXT_BUSINESS_DAY
- * @param countryCode - Country code (default 'AU')
- * @returns Adjusted business day Date
- */
-export function adjustForBankingCalendar(
-  scheduledDate: Date,
-  shiftDirection: "PREVIOUS_BUSINESS_DAY" | "NEXT_BUSINESS_DAY" = "PREVIOUS_BUSINESS_DAY",
-  countryCode: string = "AU"
-): Date {
-  const result = new Date(scheduledDate.getTime());
-  const step = shiftDirection === "PREVIOUS_BUSINESS_DAY" ? -1 : 1;
-
-  while (isNonBankingDay(result, countryCode)) {
-    result.setUTCDate(result.getUTCDate() + step);
-  }
-
-  return result;
-}
-
-/**
- * Determines current Sydney timezone offset in minutes (+600 for AEST UTC+10, +660 for AEDT UTC+11).
- *
- * @param date - Date object to evaluate
- * @returns Offset in minutes
- */
-export function getSydneyTimezoneOffsetMinutes(date: Date): number {
-  // Daylight savings in Australia (Sydney/Melbourne):
-  // Starts 1st Sunday in October (2:00 AM) -> AEDT (+11:00 = 660 mins)
-  // Ends 1st Sunday in April (3:00 AM) -> AEST (+10:00 = 600 mins)
-  const month = date.getUTCMonth(); // 0 = Jan, 3 = Apr, 9 = Oct
-  
-  if (month > 3 && month < 9) {
-    // May to September: strictly AEST (+10)
-    return 600;
-  }
-  if (month === 0 || month === 1 || month === 2 || month === 10 || month === 11) {
-    // Nov, Dec, Jan, Feb, Mar: strictly AEDT (+11)
-    return 660;
-  }
-
-  // April and October transition months evaluation
-  const day = date.getUTCDate();
-  const dayOfWeek = date.getUTCDay();
-
-  if (month === 3) { // April - transition back to AEST on 1st Sunday
-    const firstSunday = day - dayOfWeek;
-    return day < firstSunday ? 660 : 600;
-  } else { // October - transition to AEDT on 1st Sunday
-    const firstSunday = day - dayOfWeek;
-    return day >= firstSunday ? 660 : 600;
-  }
+  return getCachedDateFormat("en-AU", { timeZone, ...options }).format(instant);
 }

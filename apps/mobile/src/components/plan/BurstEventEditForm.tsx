@@ -63,7 +63,7 @@ export function BurstEventEditForm({
             disabled={submitting}
           >
             <Text style={styles.markPaidConfirmText}>
-              {isIncome ? t('common.runSplit') : t('common.markSpent')}
+              {isIncome ? t('common.planPayday') : t('common.markSpent')}
             </Text>
           </TouchableOpacity>
         )}

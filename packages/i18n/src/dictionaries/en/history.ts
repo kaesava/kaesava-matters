@@ -1,32 +1,22 @@
 export const history = {
   "history": {
     "exportAuditCSV": "Export CSV",
-    "typeCredit": "Income",
     "tabs": {
       "transactions": "History",
       "pendingList": "Upcoming",
       "paydayAllocations": "Payday Plans"
     },
-    "allPools": "All Envelopes",
     "allBanks": "All Bank Accounts",
     "filterByBank": "Filter by Bank",
-    "filterByPool": "Filter by Envelope",
+    "filterByEnvelope": "Filter by Envelope",
     "searchPaydaysPlaceholder": "Search payday plans or bank accounts...",
     "noPaydaysFound": "No Payday Plans Yet",
     "noPaydaysSubtitle": "Plan your first payday on upcoming paychecks to see allocation logs.",
     "sortLabel": "Sort by",
-    "filterAll": "All",
-    "filterDebit": "Expense",
-    "filterCredit": "Income",
-    "filterTransfer": "Transfer",
-    "searchPlaceholder": "Search...",
     "noTransactionsFound": "No history found",
-    "date": "Date",
-    "type": "Type",
     "flowType": "Flow Type",
     "details": "Details",
     "types": {
-      "expense": "Expense",
       "incomeTopup": "Income Topup",
       "incomeDirect": "Direct Income",
       "transferOut": "Transfer Out",
@@ -35,19 +25,10 @@ export const history = {
       "balanceAdjustment": "Balance Adjustment",
       "openingBalance": "Opening Balance"
     },
-    "description": "Description",
-    "amount": "Amount",
     "exportTransactionsDialog": "Export History CSV",
     "exportSplitsDialog": "Export Splits CSV",
     "exportHeaders": {
-      "date": "Date",
-      "type": "Type",
-      "description": "Description",
-      "envelope": "Envelope",
-      "category": "Envelope",
-      "source": "Source",
       "amountWithCurrency": "Amount ({currency})",
-      "amount": "Amount",
       "account": "Account",
       "note": "Note",
       "paydayPlanDate": "Payday Plan Date",
@@ -63,8 +44,6 @@ export const history = {
       "overviewSubtitle": "Spend & Cashflow breakdown",
       "filteredOverviewTitle": "Spending Analysis",
       "filteredOverviewSubtitle": "Drill-down insights for active selection",
-      "toggleShow": "Show Summary",
-      "toggleHide": "Hide Summary",
       "transfersNotice": "Transfers between accounts and envelopes are neutral balance reallocations and are excluded from spending analytics.",
       "timeframe": {
         "d30": "30 Days",
@@ -74,7 +53,7 @@ export const history = {
       "tabs": {
         "horizon": "Horizon",
         "cashFlow": "Cash Flow",
-        "topPools": "Top Envelopes"
+        "topEnvelopes": "Top Envelopes"
       },
       "donut": {
         "title": "Total Spend",
@@ -93,10 +72,10 @@ export const history = {
         "outflow": "Total Spend",
         "empty": "No cash flow activity in this period"
       },
-      "topPools": {
+      "topEnvelopes": {
         "title": "Top Spend Envelopes",
         "filteredTitle": "Top Merchants (Notes)",
-        "otherPools": "Other Envelopes",
+        "otherEnvelopes": "Other Envelopes",
         "empty": "No spend in this period",
         "emptyPayees": "No merchant notes recorded in this period"
       },
@@ -111,13 +90,13 @@ export const history = {
         "filteredCashFlowTitle": "Income vs Surplus Sweep (Filtered)",
         "inflow": "Total Income",
         "sweepOutflow": "Swept to Surplus",
-        "topPoolsTitle": "Top Funded Envelopes",
-        "filteredTopPoolsTitle": "Top Funded Envelopes",
+        "topEnvelopesTitle": "Top Funded Envelopes",
+        "filteredTopEnvelopesTitle": "Top Funded Envelopes",
         "totalAllocated": "Total Planned",
         "empty": "No payday plans in this period",
         "tabHorizon": "Horizon",
         "tabSweep": "Income vs Sweep",
-        "tabTopPools": "Top Envelopes"
+        "tabTopEnvelopes": "Top Envelopes"
       }
     },
     "expenses": "Expenses (Out)",
@@ -129,25 +108,19 @@ export const history = {
   },
   "canIAfford": {
     "title": "Can I Afford It?",
-    "quickCheckSubtext": "Check if a purchase fits your safe-to-spend allowance",
-    "actionCheck": "Check",
     "backToDashboard": "Dashboard",
-    "amountLabel": "Target Amount",
     "purchaseAmount": "Purchase Amount",
     "recurringAmount": "Ongoing Amount",
-    "frequencyLabel": "Frequency",
     "modeOneOff": "One-Off",
     "modeRecurring": "Ongoing",
-    "freqWeekly": "Weekly",
-    "freqFortnightly": "Fortnightly",
-    "freqMonthly": "Monthly",
     "freqAnnually": "Annually",
     "amountPlaceholder": "0.00",
     "targetAmountLabel": "Target Amount",
     "itemNamePlaceholder": "What is this for? (optional)",
     "itemNameLabel": "Purchase name",
-    "includePersonal": "Include Personal Envelopes",
+    "includePersonal": "Include Private Envelopes",
     "includePersonalSubtext": "Simulate against personal allowances in addition to shared envelopes.",
+    "includesPersonalEnvelopes": " (includes Private Envelopes)",
     "detailsTitle": "Financial Details",
     "availableCash": "Available Cash",
     "everydayRemaining": "Everyday Remaining",

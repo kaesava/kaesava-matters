@@ -1,7 +1,6 @@
 import React from 'react';
 import { TouchableOpacity, Text, StyleSheet, View } from 'react-native';
 import { Feather } from '@expo/vector-icons';
-import { DESIGN_TOKENS } from '../tokens';
 
 export interface FilterPillProps {
   label: string;
@@ -15,7 +14,6 @@ export const FilterPill: React.FC<FilterPillProps> = ({
   label,
   isActive = false,
   onPress,
-  icon,
   hasChevron = true,
 }) => {
   return (

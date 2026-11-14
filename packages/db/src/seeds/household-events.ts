@@ -1,13 +1,14 @@
 import { expenseEvents, incomeEvents, transferEvents, transactionLedger } from "@money-matters/db";
+import type { SeedDb } from "./neon-auth-setup.js";
 
 export async function seedHouseholdEvents(
-  db: any,
+  db: SeedDb,
   params: {
     tenantId: string;
     appId: string;
     userId: string;
     misaAccountId: string;
-    envelopeMap: Map<string, any>;
+    envelopeMap: Map<string, { id: string }>;
   }
 ) {
   const { tenantId, appId, userId, misaAccountId, envelopeMap } = params;
@@ -122,7 +123,6 @@ export async function seedHouseholdEvents(
       name: "Ad-hoc Reserve Cushioning Transfer",
       expectedDate: "2026-09-18",
       expectedAmount: "250.00",
-      actualAmount: "250.00",
       status: "CONFIRMED" as const,
       tenantId,
       appId,

@@ -1,6 +1,6 @@
 import type { DbOrTx } from "@money-matters/db";
 import { describe, it, expect, vi } from "vitest";
-import { transactionLedger, incomeEvents, expenseEvents, envelopes, bankAccounts } from "@money-matters/db";
+import { transactionLedger, incomeEvents, expenseEvents, envelopes } from "@money-matters/db";
 import { listBillCoverageQuery } from "./list-bill-coverage.query";
 
 function createMockDb(
@@ -24,6 +24,17 @@ function createMockDb(
         const chainObj: unknown = {
           limit: vi.fn().mockReturnValue(resultPromise),
           orderBy: vi.fn().mockReturnValue(resultPromise),
+          groupBy: vi.fn().mockImplementation(() => {
+            const sums = new Map<string, number>();
+            for (const tx of mockTxs) {
+              const id = String(tx.envelopeId);
+              const amt = Number(tx.amount ?? 0) * (tx.flowType === "DEBIT" ? -1 : 1);
+              sums.set(id, (sums.get(id) ?? 0) + amt);
+            }
+            return Promise.resolve(
+              Array.from(sums.entries()).map(([envelopeId, balance]) => ({ envelopeId, balance: balance.toFixed(2) }))
+            );
+          }),
           then: (cb: (v: Record<string, unknown>[]) => unknown) => resultPromise.then(cb),
           catch: (cb: (e: unknown) => unknown) => resultPromise.catch(cb),
         };

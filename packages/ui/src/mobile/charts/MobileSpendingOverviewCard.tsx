@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import { SpendingAnalyticsDTO, SpendingTimeframe } from '@money-matters/types';
 import { MobileDonutChart } from './MobileDonutChart';

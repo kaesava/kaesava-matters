@@ -22,11 +22,11 @@ function getMonthsDiff(targetDateStr: string): number {
 }
 
 function getFrequencyLabel(freq?: string | null): string {
-  if (freq === 'WEEKLY') return t('categories.frequencyWeekly');
-  if (freq === 'FORTNIGHTLY') return t('categories.frequencyFortnightly');
+  if (freq === 'WEEKLY') return t('forms.weekly');
+  if (freq === 'FORTNIGHTLY') return t('forms.fortnightly');
   if (freq === 'QUARTERLY') return t('setup.frequencyQuarterly');
-  if (freq === 'ANNUALLY') return t('categories.frequencyAnnually');
-  return t('categories.frequencyMonthly');
+  if (freq === 'ANNUALLY') return t('canIAfford.freqAnnually');
+  return t('forms.monthly');
 }
 
 function renderGoalIcon(iconName?: string | null) {

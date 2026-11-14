@@ -10,7 +10,7 @@ export const HouseholdSwitcher: React.FC = () => {
   const tenantsList = tenantsQuery.data || [];
 
   const currentTenant = tenantsList.find((t) => t.isCurrent) || tenantsList[0];
-  const currentTenantName = currentTenant?.name || "My Household";
+  const currentTenantName = currentTenant?.name || t("tenantSwitcher.defaultName");
 
   const handleSwitchTenant = (tenantId: string) => {
     localStorage.setItem("money_matters_active_tenant_id", tenantId);

@@ -95,9 +95,16 @@ export function MobileAffordCheckModal({ visible, onClose, initialAmount }: Mobi
 
           {mode === 'RECURRING' && (
             <View style={styles.freqContainer}>
-              <Text style={styles.freqLabel}>{t('canIAfford.frequencyLabel')}</Text>
+              <Text style={styles.freqLabel}>{t('forms.frequency')}</Text>
               <View style={styles.freqGrid}>
-                {(['WEEKLY', 'FORTNIGHTLY', 'MONTHLY', 'ANNUALLY'] as const).map((freq) => (
+                {(
+                  [
+                    ['WEEKLY', t('forms.weekly')],
+                    ['FORTNIGHTLY', t('forms.fortnightly')],
+                    ['MONTHLY', t('forms.monthly')],
+                    ['ANNUALLY', t('canIAfford.freqAnnually')],
+                  ] as const
+                ).map(([freq, label]) => (
                   <TouchableOpacity
                     key={freq}
                     onPress={() => setFrequency(freq)}
@@ -105,7 +112,7 @@ export function MobileAffordCheckModal({ visible, onClose, initialAmount }: Mobi
                     activeOpacity={0.7}
                   >
                     <Text style={[styles.freqChipText, frequency === freq && styles.freqChipTextActive]}>
-                      {t(`recurrence.frequencies.${freq.toLowerCase()}` as Parameters<typeof t>[0])}
+                      {label}
                     </Text>
                   </TouchableOpacity>
                 ))}

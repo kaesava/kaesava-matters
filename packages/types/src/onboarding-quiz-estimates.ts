@@ -1,4 +1,5 @@
 import type { QuizAnswers, EstimatedCategoryItem, EstimationResult } from "./onboarding-quiz.js";
+import { convertToMonthly } from "./setup-steps.types.js";
 
 /**
  * 2025/2026 ABS & RACQ Australian Benchmark Estimation Engine
@@ -32,15 +33,10 @@ export function calculateQuizEstimates(answers: QuizAnswers): EstimationResult {
 
     everydayCategories.push({ name: "Everyday Spending", type: "EVERYDAY", envelopeType: "EVERYDAY", fundingMode: "TARGET_BALANCE", isPriority: true, monthlyAud: monthlyEverydayTotal, icon: "wallet" });
 
-    let totalMonthlyIncome = 0;
-    answers.incomes.forEach((inc) => {
-      let m = inc.amount;
-      if (inc.frequency === "WEEKLY") m = inc.amount * (52 / 12);
-      else if (inc.frequency === "FORTNIGHTLY") m = inc.amount * (26 / 12);
-      else if (inc.frequency === "QUARTERLY") m = inc.amount * (4 / 12);
-      else if (inc.frequency === "ANNUALLY") m = inc.amount / 12;
-      totalMonthlyIncome += m;
-    });
+    const totalMonthlyIncome = answers.incomes.reduce(
+      (sum, inc) => sum + convertToMonthly(inc.amount, inc.frequency),
+      0
+    );
 
     const totalRegular = regularBills.reduce((acc, i) => acc + i.monthlyAud, 0);
     const totalGoal = goalSinkingFunds.reduce((acc, i) => acc + i.monthlyAud, 0);
@@ -244,16 +240,10 @@ export function calculateQuizEstimates(answers: QuizAnswers): EstimationResult {
     icon: "💳",
   };
 
-  // Convert all income items to monthly sum
-  let totalMonthlyIncome = 0;
-  answers.incomes.forEach((inc) => {
-    let m = inc.amount;
-    if (inc.frequency === "WEEKLY") m = inc.amount * (52 / 12);
-    else if (inc.frequency === "FORTNIGHTLY") m = inc.amount * (26 / 12);
-    else if (inc.frequency === "QUARTERLY") m = inc.amount * (4 / 12);
-    else if (inc.frequency === "ANNUALLY") m = inc.amount / 12;
-    totalMonthlyIncome += m;
-  });
+  const totalMonthlyIncome = answers.incomes.reduce(
+    (sum, inc) => sum + convertToMonthly(inc.amount, inc.frequency),
+    0
+  );
 
   const totalRegular = regularBills.reduce((acc, i) => acc + i.monthlyAud, 0);
   const totalGoal = goalSinkingFunds.reduce((acc, i) => acc + i.monthlyAud, 0);

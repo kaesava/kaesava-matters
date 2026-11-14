@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet } from 'react-native';
 import { Feather } from '@expo/vector-icons';
 import { DESIGN_TOKENS } from '@money-matters/ui/mobile';
 import { t } from '@money-matters/i18n';
@@ -29,8 +29,6 @@ interface MarkPaidShortfallSectionProps {
 }
 
 export function MarkPaidShortfallSection({
-  eventName,
-  formattedPoolType,
   formattedPoolName,
   shortfallAmount,
   groupedPools,
@@ -40,9 +38,6 @@ export function MarkPaidShortfallSection({
   shortfallValidation,
   onToggleGroup,
   onAmountChange,
-  onCoverFromSurplus,
-  surplusPoolName,
-  surplusCoverableAmount = 0,
 }: MarkPaidShortfallSectionProps) {
   return (
     <View style={styles.shortfallSection}>

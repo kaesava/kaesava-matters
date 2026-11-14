@@ -1,6 +1,5 @@
 import type { DbOrTx } from "@money-matters/db";
 import { describe, it, expect, vi } from "vitest";
-import { envelopes, transactionLedger } from "@money-matters/db";
 import { moveMoneyCommand } from "./move-money.command";
 
 vi.mock("@money-matters/db", async (importOriginal) => {
@@ -37,14 +36,14 @@ describe("moveMoneyCommand", () => {
     const mockTx = {
       select: vi.fn().mockImplementation(() => ({
         from: vi.fn().mockImplementation(() => ({
-          where: vi.fn().mockImplementation((condition: unknown) => {
+          where: vi.fn().mockImplementation(() => {
             return Promise.resolve([
               { id: "pool-src", name: "Everyday Expenses" },
             ]);
           }),
         })),
       })),
-      insert: vi.fn().mockImplementation((table: unknown) => ({
+      insert: vi.fn().mockImplementation(() => ({
         values: vi.fn().mockImplementation((vals: unknown) => {
           insertedRows = vals as Record<string, unknown>[];
           return Promise.resolve(vals);

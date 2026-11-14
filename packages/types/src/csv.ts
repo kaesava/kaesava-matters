@@ -6,7 +6,7 @@
  * Escapes a single CSV cell value and neutralizes spreadsheet formula injection
  * by prefixing leading `=`, `+`, `-`, `@`, `\t`, or `\r` with a single quote.
  */
-export function escapeCsvCell(value: unknown): string {
+function escapeCsvCell(value: unknown): string {
   if (value === null || value === undefined) return "";
   let str = String(value);
   if (/^[=+\-@\t\r]/.test(str)) {

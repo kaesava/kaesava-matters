@@ -58,7 +58,7 @@ export const RollupTransferItem: React.FC<RollupTransferItemProps> = ({
 
       <Text style={styles.coversPoolsText}>
         <Text style={styles.coversPoolsBold}>
-          {t('cards.paydayTransfer.coversPools', { count: tx.pools.length })}
+          {t('cards.paydayTransfer.coversEnvelopes', { count: tx.pools.length })}
         </Text>
         {tx.pools.map((p) => `${p.name} (${formatMobileCurrency(p.amount)})`).join(', ')}
       </Text>

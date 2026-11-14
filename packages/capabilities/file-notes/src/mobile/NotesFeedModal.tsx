@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import {
   View,
   Text,
@@ -38,7 +38,7 @@ export function NotesFeedModal({
   const [isUploading, setIsUploading] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
-  const { data: notes, refetch: refetchNotes, isFetching } = service.useListQuery({
+  const { data: notes, refetch: refetchNotes } = service.useListQuery({
     entityType,
     entityId,
   });
@@ -66,7 +66,7 @@ export function NotesFeedModal({
           size: asset.size,
         });
       }
-    } catch (err: unknown) {
+    } catch {
       setErrorMessage(t('fileNotes.errors.pickFailed'));
     }
   };
@@ -89,7 +89,7 @@ export function NotesFeedModal({
           size: asset.fileSize,
         });
       }
-    } catch (err: unknown) {
+    } catch {
       setErrorMessage(t('fileNotes.errors.pickFailed'));
     }
   };
@@ -156,7 +156,7 @@ export function NotesFeedModal({
     try {
       const { downloadUrl } = await service.getDownloadUrl(noteId);
       await Linking.openURL(downloadUrl);
-    } catch (err: unknown) {
+    } catch {
       setErrorMessage(t('fileNotes.errors.downloadFailed'));
     }
   };
@@ -172,7 +172,7 @@ export function NotesFeedModal({
         try {
           await purgeNoteMutation.mutateAsync({ id: noteId });
           refetchNotes();
-        } catch (err: unknown) {
+        } catch {
           setErrorMessage(t('fileNotes.errors.purgeFailed'));
         }
       },

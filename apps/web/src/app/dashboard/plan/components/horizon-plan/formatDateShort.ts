@@ -1,4 +1,4 @@
-import { getCachedDateFormat } from "@money-matters/core";
+import { getCachedDateFormat } from "@money-matters/types";
 export function formatDateShort(
   dateStr?: string,
   fallbackLabel?: string,

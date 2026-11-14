@@ -1,8 +1,6 @@
 import React, { useState } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
-import { Feather } from '@expo/vector-icons';
+import { View, StyleSheet } from 'react-native';
 import {
-  DESIGN_TOKENS,
   AmountInput,
   MobileDatePickerField,
   MobileInput,
@@ -85,17 +83,17 @@ export function QuickTransferTab({
     }
 
     if (!sourcePoolId) {
-      setSourceError(t('drawers.quickExpense.poolsRequired'));
+      setSourceError(t('drawers.quickExpense.envelopesRequired'));
       hasError = true;
     } else {
       setSourceError('');
     }
 
     if (!destPoolId) {
-      setDestError(t('drawers.quickExpense.poolsRequired'));
+      setDestError(t('drawers.quickExpense.envelopesRequired'));
       hasError = true;
     } else if (sourcePoolId === destPoolId) {
-      setDestError(t('drawers.quickExpense.poolsDifferent'));
+      setDestError(t('drawers.quickExpense.envelopesDifferent'));
       hasError = true;
     } else {
       setDestError('');
@@ -148,7 +146,7 @@ export function QuickTransferTab({
 
       {/* Source Pool Picker */}
       <MobileEnvelopePicker
-        label={t('drawers.quickExpense.fromPool')}
+        label={t('drawers.quickExpense.fromEnvelope')}
         required
         displayStyle="field"
         mode="inline"
@@ -156,7 +154,7 @@ export function QuickTransferTab({
         allowAllOption={false}
         pools={pools}
         selectedPoolId={sourcePoolId}
-        placeholder={t('drawers.quickExpense.selectSourcePoolPlaceholder')}
+        placeholder={t('drawers.quickExpense.selectSourceEnvelopePlaceholder')}
         error={sourceError}
         onSelectPool={(pId) => {
           setSourcePoolId(pId);
@@ -166,7 +164,7 @@ export function QuickTransferTab({
 
       {/* Destination Pool Picker */}
       <MobileEnvelopePicker
-        label={t('drawers.quickExpense.toPoolDestination')}
+        label={t('drawers.quickExpense.toEnvelopeDestination')}
         required
         displayStyle="field"
         mode="inline"
@@ -174,7 +172,7 @@ export function QuickTransferTab({
         allowAllOption={false}
         pools={pools.filter((p) => p.id !== sourcePoolId)}
         selectedPoolId={destPoolId}
-        placeholder={t('drawers.quickExpense.selectDestinationPoolPlaceholder')}
+        placeholder={t('drawers.quickExpense.selectDestinationEnvelopePlaceholder')}
         error={destError}
         onSelectPool={(pId) => {
           setDestPoolId(pId);
@@ -184,7 +182,7 @@ export function QuickTransferTab({
 
       <View style={styles.inputGroup}>
         <AmountInput
-          label={t('drawers.quickExpense.amountAud')}
+          label={t('common.amount')}
           required
           value={amount}
           onChangeText={(val) => {
@@ -197,7 +195,7 @@ export function QuickTransferTab({
       </View>
 
       <MobileDatePickerField
-        label={t('drawers.quickExpense.dateLabel')}
+        label={t('tables.date')}
         value={date}
         minDate={todayStr}
         onChange={(val) => {

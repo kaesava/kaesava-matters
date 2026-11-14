@@ -28,7 +28,7 @@ export function useHomeModals(
   const [quickModalType, setQuickModalType] = useState<QuickActionType>('DEBIT');
   const [quickModalData, setQuickModalData] = useState<QuickActionInitialData | undefined>(undefined);
   const [affordModalVisible, setAffordModalVisible] = useState(false);
-  const [affordModalAmount, setAffordModalAmount] = useState<string | undefined>(undefined);
+  const [affordModalAmount] = useState<string | undefined>(undefined);
   const [markPaidEvent, setMarkPaidEvent] = useState<MarkPaidEvent | null>(null);
   const [reconcileAccount, setReconcileAccount] = useState<MobileSyncBalanceModalProps['account']>(null);
 

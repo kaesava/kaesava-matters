@@ -3,7 +3,7 @@ import { trpc } from "../../../../lib/trpc";
 import { t } from "@money-matters/i18n";
 import { useResizableColumns } from "@money-matters/ui/web";
 import { SpendingTimeframe, serializeCsvRows } from "@money-matters/types";
-import { getTenantDateString } from "@money-matters/core";
+import { getTenantDateString } from "@money-matters/types";
 import { useLocale } from "../../../../providers/LocaleProvider";
 
 export interface TransactionRowItem {
@@ -28,7 +28,7 @@ export interface TransactionRowItem {
 export function getTransactionTypeLabel(type?: string | null): string {
   switch (type) {
     case "EXPENSE":
-      return t("history.types.expense");
+      return t("common.expense");
     case "INCOME_SPLIT":
       return t("history.types.incomeTopup");
     case "INCOME_DIRECT":
@@ -254,11 +254,11 @@ export function useHistoryTransactionsData({
     if (sortedTransactions.length === 0) return;
     const currencyLabel = currency || "AUD";
     const headers = [
-      t("history.exportHeaders.date"),
-      t("history.exportHeaders.type"),
-      t("history.exportHeaders.description"),
-      t("history.exportHeaders.envelope"),
-      t("history.exportHeaders.source"),
+      t("tables.date"),
+      t("common.type"),
+      t("common.description"),
+      t("categories.typeLabel"),
+      t("common.source"),
       t("history.exportHeaders.amountWithCurrency", { currency: currencyLabel }),
     ];
     const rows = sortedTransactions.map((tx) => [

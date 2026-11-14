@@ -57,9 +57,9 @@ export default function PoolDetailScreen() {
 
   if (!pool) {
     return (
-      <MobileScreenWrapper title={t('categories.poolNotFound')} showBack onBackPress={handleBack}>
+      <MobileScreenWrapper title={t('categories.envelopeNotFound')} showBack onBackPress={handleBack}>
         <View style={styles.notFoundContainer}>
-          <Text style={styles.notFoundText}>{t('categories.poolNotFound')}</Text>
+          <Text style={styles.notFoundText}>{t('categories.envelopeNotFound')}</Text>
         </View>
       </MobileScreenWrapper>
     );

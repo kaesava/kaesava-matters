@@ -1,85 +1,65 @@
-import { test, expect } from "@playwright/test";
-import { ensureAuthenticatedSession, isAuthenticatedE2E } from "./auth.helper";
+import { test, expect } from '@playwright/test';
 
-test.describe("Screen-by-Screen Tools, Reports & Subscription E2E Suite", () => {
-  test.beforeEach(async ({ page, browser }) => {
-    await ensureAuthenticatedSession(page, browser);
+/**
+ * Authenticated Simulation Tools, Reports & Subscription Flows E2E Suite
+ */
+test.describe('11. Standalone Can I Afford It? Simulator (`/dashboard/afford-check`)', () => {
+  test('11.1 One-Off & Ongoing Frequency Simulation Audit', async ({ page }) => {
+    await page.goto('/dashboard/afford-check');
+
+    await expect(page.getByRole('heading', { level: 1, name: /Can I Afford/i }).first()).toBeVisible();
+    const amountInput = page.locator('input[inputmode="decimal"]').first();
+    await expect(amountInput).toBeVisible();
+    await amountInput.fill('250.00');
+
+    const ongoingBtn = page.getByRole('button', { name: 'Ongoing', exact: true }).first();
+    await expect(ongoingBtn).toBeVisible();
+    await ongoingBtn.click();
+
+    await expect(page.getByRole('button', { name: 'Monthly', exact: true }).first()).toBeVisible();
+    await expect(page.getByRole('button', { name: 'Fortnightly', exact: true }).first()).toBeVisible();
+  });
+});
+
+test.describe('12. Reports & Spending Analytics (`/dashboard/reports`)', () => {
+  test('12.1 Reports Tabs & Filters Audit', async ({ page }) => {
+    await page.goto('/dashboard/reports');
+
+    await expect(page.getByRole('heading', { level: 1, name: /^Reports$/i }).first()).toBeVisible();
+    const spendingTab = page.getByRole('button', { name: 'Spending & Cash Flow' }).first();
+    const paydayTab = page.getByRole('button', { name: 'Payday Plans' }).first();
+
+    await expect(spendingTab).toBeVisible();
+    await expect(paydayTab).toBeVisible();
+    await expect(page.getByRole('button', { name: 'Expenses Only' }).first()).toBeVisible();
+
+    await paydayTab.click();
+    await expect(page.locator('select').first()).toBeVisible();
+  });
+});
+
+test.describe('13. Subscription & Billing Flows (`/subscription/*`)', () => {
+  test('13.1 Subscription Upgrade Plan Selector (`/subscription/upgrade`)', async ({ page }) => {
+    await page.goto('/subscription/upgrade');
+
+    await expect(page.getByRole('heading', { level: 1 }).first()).toBeVisible();
+    await expect(page.locator('main, div').filter({ hasText: /Household/i }).first()).toBeVisible();
   });
 
-  // ---------------------------------------------------------------------------
-  // 13. STANDALONE "CAN I AFFORD IT?" SIMULATOR (`/dashboard/afford-check`)
-  // ---------------------------------------------------------------------------
-  test.describe("13. Standalone Can I Afford It? Simulator (`/dashboard/afford-check`)", () => {
-    test("13.1 One-Off & Ongoing Frequency Simulation Audit", async ({ page }) => {
-      await page.goto("/dashboard/afford-check");
-      if (!isAuthenticatedE2E) {
-        await expect(page).toHaveURL(/\/sign-in/);
-        return;
+  test('13.2 Subscription Manage & Success Pages (`/subscription/manage`, `/subscription/success`)', async ({
+    page,
+  }) => {
+    await page.goto('/subscription/manage', { waitUntil: 'domcontentloaded' });
+    await expect(async () => {
+      const redirectedToStripe = /billing\.stripe\.com|stripe\.com/.test(page.url());
+      if (!redirectedToStripe) {
+        await expect(
+          page.getByText(/Opening Stripe Billing Portal|Failed to load subscription settings/i).first()
+        ).toBeVisible({ timeout: 2000 });
       }
+    }).toPass({ timeout: 15_000 });
 
-      await expect(page.locator("h1").filter({ hasText: /Can I Afford/i }).first()).toBeVisible();
-      const amountInput = page.locator('input[inputmode="decimal"]').first();
-      await expect(amountInput).toBeVisible();
-      await amountInput.fill("250.00");
-
-      const ongoingBtn = page.locator('button:has-text("Ongoing")').first();
-      await expect(ongoingBtn).toBeVisible();
-      await ongoingBtn.click();
-
-      await expect(page.locator('button:has-text("Monthly")').first()).toBeVisible();
-      await expect(page.locator('button:has-text("Fortnightly")').first()).toBeVisible();
-    });
-  });
-
-  // ---------------------------------------------------------------------------
-  // 14. REPORTS & SPENDING ANALYTICS (`/dashboard/reports`)
-  // ---------------------------------------------------------------------------
-  test.describe("14. Reports & Spending Analytics (`/dashboard/reports`)", () => {
-    test("14.1 Reports Tabs & Filters Audit", async ({ page }) => {
-      await page.goto("/dashboard/reports");
-      if (!isAuthenticatedE2E) {
-        await expect(page).toHaveURL(/\/sign-in/);
-        return;
-      }
-
-      await expect(page.locator("h1").filter({ hasText: /^Reports$/i }).first()).toBeVisible();
-      const spendingTab = page.locator('button:has-text("Spending & Cash Flow")').first();
-      const paydayTab = page.locator('button:has-text("Payday Plans")').first();
-
-      await expect(spendingTab).toBeVisible();
-      await expect(paydayTab).toBeVisible();
-      await expect(page.locator('button:has-text("Expenses Only")').first()).toBeVisible();
-
-      await paydayTab.click();
-      await expect(page.locator("select").first()).toBeVisible();
-    });
-  });
-
-  // ---------------------------------------------------------------------------
-  // 15. SUBSCRIPTION UPGRADE, MANAGE & SUCCESS (`/subscription/*`)
-  // ---------------------------------------------------------------------------
-  test.describe("15. Subscription & Billing Flows (`/subscription/*`)", () => {
-    test("15.1 Subscription Upgrade Page Enforces Auth or Shows Plan Selector (`/subscription/upgrade`)", async ({ page }) => {
-      await page.goto("/subscription/upgrade");
-      if (!isAuthenticatedE2E) {
-        await expect(page).toHaveURL(/\/sign-in/);
-        return;
-      }
-
-      await expect(page.locator("h1").first()).toBeVisible();
-      await expect(page.locator("main, div").filter({ hasText: /Household/i }).first()).toBeVisible();
-    });
-
-    test("15.2 Subscription Manage & Success Pages (`/subscription/manage`, `/subscription/success`)", async ({ page }) => {
-      await page.goto("/subscription/manage");
-      if (!isAuthenticatedE2E) {
-        await expect(page).toHaveURL(/\/sign-in/);
-      } else {
-        await expect(page.locator("body")).toBeVisible();
-      }
-
-      await page.goto("/subscription/success");
-      await expect(page.locator("h1").first()).toBeVisible({ timeout: 5000 });
-    });
+    await page.goto('/subscription/success', { waitUntil: 'domcontentloaded' });
+    await expect(page.getByRole('heading', { level: 1 }).first()).toBeVisible({ timeout: 5000 });
   });
 });

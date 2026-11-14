@@ -1,10 +1,7 @@
 import { describe, it, expect, vi } from "vitest";
-import { createEnvelopeCommand } from "./create-envelope.command.js";
-import { updateEnvelopeCommand } from "./update-envelope.command.js";
-import { overrideEventCommand } from "./override-event.command.js";
 import { maintainRollingWindowCommand } from "./maintain-rolling-window.command.js";
 import { restoreItemCommand } from "./restore-item.command.js";
-import { envelopes, expenseEvents, incomeSources, tenants } from "@money-matters/db";
+import { envelopes, incomeSources, tenants } from "@money-matters/db";
 import type { DbOrTx } from "@money-matters/db";
 
 describe("Envelope Lifecycle & Event Sync", () => {
@@ -126,7 +123,7 @@ describe("Envelope Lifecycle & Event Sync", () => {
       insert: vi.fn().mockImplementation(() => ({
         values: vi.fn().mockImplementation((payloads: Record<string, unknown>[]) => {
           insertedExpensePayloads = payloads;
-          return Promise.resolve(payloads);
+          return { onConflictDoNothing: vi.fn().mockResolvedValue(payloads) };
         }),
       })),
       update: vi.fn().mockReturnValue({
@@ -204,7 +201,7 @@ describe("Envelope Lifecycle & Event Sync", () => {
       insert: vi.fn().mockImplementation(() => ({
         values: vi.fn().mockImplementation((payloads: Record<string, unknown>[]) => {
           insertedExpensePayloads = payloads;
-          return Promise.resolve(payloads);
+          return { onConflictDoNothing: vi.fn().mockResolvedValue(payloads) };
         }),
       })),
     } as unknown as DbOrTx;

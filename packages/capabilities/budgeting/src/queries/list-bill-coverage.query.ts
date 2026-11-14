@@ -1,5 +1,5 @@
 import { envelopes, bankAccounts, incomeEvents, expenseEvents, getEnvelopeBalancesMap, tenants, DbOrTx } from "@money-matters/db";
-import { eq, and, sql, desc, asc } from "drizzle-orm";
+import { eq, and, sql, asc } from "drizzle-orm";
 import { BillCoverageResult, BillCoverageItem } from "@money-matters/types";
 import { getTenantDateString } from "@money-matters/core";
 

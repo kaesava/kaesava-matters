@@ -1,4 +1,3 @@
-import React from "react";
 import { Image, View, StyleSheet, ImageSourcePropType, StyleProp, ViewStyle } from "react-native";
 
 export interface MobileLogoProps {

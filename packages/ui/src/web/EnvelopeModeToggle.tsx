@@ -1,4 +1,3 @@
-import React from "react";
 
 export interface EnvelopeModeToggleProps {
   mode: "TARGET_BALANCE" | "RECURRING";

@@ -93,21 +93,21 @@ export const EnvelopeFormFields: React.FC<EnvelopeFormFieldsProps> = ({
   return (
     <View style={styles.content}>
       <MobileInput
-        label={t('categories.poolNameLabel')}
+        label={t('categories.envelopeNameLabel')}
         required
         value={name}
         onChangeText={(val) => {
           setName(val);
           if (nameError) setNameError('');
         }}
-        placeholder={t('categories.placeholderPoolName')}
+        placeholder={t('categories.placeholderEnvelopeName')}
         error={nameError}
         autoFocus={!isEdit}
       />
 
       {!hideTypeOptions && (
         <View style={styles.formGroup}>
-          <FormLabel required>{t('categories.poolTypeLabel')}</FormLabel>
+          <FormLabel required>{t('categories.envelopeTypeLabel')}</FormLabel>
           <ChipSelect
             options={typeOptions}
             value={type}
@@ -141,8 +141,8 @@ export const EnvelopeFormFields: React.FC<EnvelopeFormFieldsProps> = ({
             <MobileEnvelopeModeToggle
               mode={fundingMode}
               onChange={setFundingMode}
-              targetBalanceLabel={t('envelopes.modeToggle.targetBalance')}
-              recurringLabel={t('envelopes.modeToggle.recurring')}
+              targetBalanceLabel={t('common.target')}
+              recurringLabel={t('categories.recurringBadge')}
             />
           )}
 

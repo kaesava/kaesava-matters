@@ -34,11 +34,11 @@ export function EnvelopeRecurrenceFields({
 }: EnvelopeRecurrenceFieldsProps) {
   const { currencySymbol } = useCurrencyLocale();
   const frequencyOptions = [
-    { value: 'WEEKLY', label: t('categories.frequencyWeekly') },
-    { value: 'FORTNIGHTLY', label: t('categories.frequencyFortnightly') },
-    { value: 'MONTHLY', label: t('categories.frequencyMonthly') },
+    { value: 'WEEKLY', label: t('forms.weekly') },
+    { value: 'FORTNIGHTLY', label: t('forms.fortnightly') },
+    { value: 'MONTHLY', label: t('forms.monthly') },
     { value: 'QUARTERLY', label: t('setup.frequencyQuarterly') },
-    { value: 'ANNUALLY', label: t('categories.frequencyAnnually') },
+    { value: 'ANNUALLY', label: t('canIAfford.freqAnnually') },
   ];
 
   const unitLabel =
@@ -64,7 +64,7 @@ export function EnvelopeRecurrenceFields({
           placeholder={placeholder}
         />
         <GenericSelectField
-          label={t('categories.frequencyLabel')}
+          label={t('forms.frequency')}
           value={frequency}
           onChange={(val) => setFrequency?.(val as 'WEEKLY' | 'FORTNIGHTLY' | 'MONTHLY' | 'ANNUALLY')}
           options={frequencyOptions}

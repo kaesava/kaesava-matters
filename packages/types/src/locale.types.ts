@@ -1,6 +1,6 @@
-import { z } from "zod";
+// CurrencyConfig, SUPPORTED_CURRENCIES, etc.
 
-export interface CurrencyConfig {
+interface CurrencyConfig {
   code: string;
   symbol: string;
   minorUnits: number; // 2 for AUD, 0 for JPY
@@ -19,9 +19,9 @@ export const SUPPORTED_CURRENCIES: Record<string, CurrencyConfig> = {
   INR: { code: "INR", symbol: "₹", minorUnits: 2, name: "Indian Rupee (INR)" },
 };
 
-export type SupportedCurrencyCode = keyof typeof SUPPORTED_CURRENCIES;
+type SupportedCurrencyCode = keyof typeof SUPPORTED_CURRENCIES;
 
-export interface LocaleOption {
+interface LocaleOption {
   code: string;
   label: string;
   dateFormatExample: string;
@@ -36,7 +36,7 @@ export const SUPPORTED_LOCALES: LocaleOption[] = [
   { code: "en-CA", label: "English (Canada)", dateFormatExample: "2026-12-31" },
 ];
 
-export interface TimezoneOption {
+interface TimezoneOption {
   value: string;
   label: string;
   labelKey?: string;
@@ -61,7 +61,7 @@ export const COMMON_TIMEZONES: TimezoneOption[] = [
   { value: "UTC", label: "UTC (Universal Coordinated Time)", labelKey: "timezones.utc" },
 ];
 
-export interface AuStateOption {
+interface AuStateOption {
   code: string;
   name: string;
 }
@@ -77,7 +77,7 @@ export const AU_STATES: AuStateOption[] = [
   { code: "NT", name: "Northern Territory (NT)" },
 ];
 
-export interface CountryDefaults {
+interface CountryDefaults {
   country: string;
   currency: SupportedCurrencyCode;
   timezone: string;
@@ -97,12 +97,11 @@ export const COUNTRY_DEFAULTS: Record<string, CountryDefaults> = {
   OT: { country: "OT", currency: "AUD", timezone: "Australia/Sydney", locale: "en-AU", phoneCountryCode: "+61" },
 };
 
-export const DEFAULT_COUNTRY = "AU";
-export const DEFAULT_CURRENCY: SupportedCurrencyCode = "AUD";
+const DEFAULT_COUNTRY = "AU";
 export const DEFAULT_TIMEZONE = "Australia/Sydney";
 export const DEFAULT_LOCALE = "en-AU";
 
-export interface CountryOption {
+interface CountryOption {
   code: string;
   name: string;
   flag: string;
@@ -151,9 +150,4 @@ export function detectBestGuessCountry(locale?: string, timezone?: string): stri
 
   return DEFAULT_COUNTRY;
 }
-
-export const CurrencyCodeSchema = z.string().length(3).refine(
-  (val) => val.toUpperCase() in SUPPORTED_CURRENCIES,
-  { message: "Unsupported currency code" }
-);
 

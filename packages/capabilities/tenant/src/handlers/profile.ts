@@ -31,7 +31,6 @@ export async function getUserPreferencesHandler(userId: string, tenantId: string
     country: currentTenant?.country || "AU",
     language: (globalPref?.language as "en") || "en",
     locale: currentTenant?.country ? (countryDefaults?.locale || `en-${currentTenant.country}`) : DEFAULT_LOCALE,
-    theme: globalPref?.theme ?? "system",
     showIcons: globalPref?.showIcons ?? true,
     notificationEmail: globalPref?.notificationEmail ?? null,
     phoneCountryCode:
@@ -50,7 +49,6 @@ export async function updateUserPreferencesHandler(
   input: {
     timezone?: string;
     language?: "en";
-    theme?: string;
     showIcons?: boolean;
     setupCompleted?: boolean;
     appPreferences?: Record<string, Record<string, unknown>>;
@@ -65,7 +63,6 @@ export async function updateUserPreferencesHandler(
     await db
       .update(userPreferences)
       .set({
-        theme: input.theme ?? existingGlobal.theme,
         showIcons: input.showIcons ?? existingGlobal.showIcons,
         language: input.language ?? existingGlobal.language,
         timezone: input.timezone !== undefined ? input.timezone : existingGlobal.timezone,
@@ -75,7 +72,6 @@ export async function updateUserPreferencesHandler(
   } else {
     await db.insert(userPreferences).values({
       userId,
-      theme: input.theme ?? "system",
       showIcons: input.showIcons ?? true,
       language: input.language ?? "en",
       timezone: input.timezone || null,

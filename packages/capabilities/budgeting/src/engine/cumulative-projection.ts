@@ -1,5 +1,5 @@
 import { runAllocationEngine, EngineBucket, AllocationLine, AllocationStrategyStepItem } from "./allocation-engine.js";
-import { isBillsBucket, isGoalBucket, isEverydayBucket } from "./envelope-engine-mapper.js";
+import { isBillsBucket, isEverydayBucket } from "./envelope-engine-mapper.js";
 
 export interface CumulativeProjectionIncomeEvent {
   id: string;

@@ -1,5 +1,5 @@
 "use client";
-import { getTenantDateString } from "@money-matters/core";
+import { getTenantDateString } from "@money-matters/types";
 
 
 import React, { useState, useMemo } from "react";
@@ -350,7 +350,7 @@ export const AttentionItemsList: React.FC<WebAttentionItemsListProps> = ({
           }
           description={
             selectedDeleteItem.type === "EXPENSE"
-              ? t("common.deleteExpensePrompt", {
+              ? t("common.deleteConfirmNamed", {
                   name: selectedDeleteItem.name,
                 })
               : t("modals.transfer.deletePrompt")

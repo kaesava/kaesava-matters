@@ -99,7 +99,7 @@ export function AffordCheckInputControls({
       </View>
 
       <AmountInput
-        label={t('canIAfford.amountLabel')}
+        label={t('canIAfford.targetAmountLabel')}
         placeholder="0.00"
         value={rawAmount}
         onChangeText={onAmountChange}

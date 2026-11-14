@@ -1,7 +1,7 @@
 import { incomeEvents, incomeSources, DbOrTx } from "@money-matters/db";
 import { getTenantDateString } from "@money-matters/core";
 import { DEFAULT_TIMEZONE } from "@money-matters/types";
-import { and, eq, sql } from "drizzle-orm";
+import { eq } from "drizzle-orm";
 import { generateBurstDates } from "../engine/burst-engine.js";
 
 export async function burstIncomeEvents(
@@ -52,12 +52,7 @@ export async function burstIncomeEvents(
     };
   });
 
-  const insertQuery = tx.insert(incomeEvents).values(eventsToInsert);
-  if ("onConflictDoNothing" in insertQuery && typeof (insertQuery as { onConflictDoNothing?: unknown }).onConflictDoNothing === "function") {
-    await (insertQuery as { onConflictDoNothing: () => Promise<unknown> }).onConflictDoNothing();
-  } else {
-    await insertQuery;
-  }
+  await tx.insert(incomeEvents).values(eventsToInsert).onConflictDoNothing();
 
   const lastDate = eventsToInsert[eventsToInsert.length - 1].expectedDate;
   await tx
@@ -70,22 +65,4 @@ export async function burstIncomeEvents(
     .where(eq(incomeSources.id, params.incomeSourceId));
 
   return eventsToInsert.length;
-}
-
-export async function clearPendingIncomeEvents(
-  tx: DbOrTx,
-  incomeSourceId: string,
-  tenantId: string,
-  appId: string
-): Promise<void> {
-  await tx
-    .delete(incomeEvents)
-    .where(
-      and(
-        eq(incomeEvents.incomeSourceId, incomeSourceId),
-        eq(incomeEvents.status, "PENDING"),
-        eq(incomeEvents.tenantId, tenantId),
-        eq(incomeEvents.appId, appId)
-      )
-    );
 }

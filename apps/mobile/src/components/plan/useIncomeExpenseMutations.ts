@@ -1,4 +1,4 @@
-import { DEFAULT_TIMEZONE, DEFAULT_LOCALE } from "@money-matters/types";
+import { DEFAULT_TIMEZONE } from "@money-matters/types";
 import { getTenantDateString } from "../../lib/format";
 import { trpc } from '../../lib/trpc';
 import { useMobileToast, showMobileConfirm } from '@money-matters/ui/mobile';

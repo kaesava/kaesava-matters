@@ -52,14 +52,14 @@ export function getEnvelopeBadgeInfo(envelope: {
   if (rawType === "BILL") {
     const isTargetBalance = fundingMode === "TARGET_BALANCE";
     return {
-      label: isTargetBalance ? t("categories.targetBalanceBadge") : t("categories.recurringBadge"),
+      label: isTargetBalance ? t("common.target") : t("categories.recurringBadge"),
       tagKey: "BILL",
     };
   }
   if (rawType === "GOAL") {
     const isRecurring = fundingMode === "RECURRING";
     return {
-      label: isRecurring ? t("categories.recurringBadge") : t("categories.targetBalanceBadge"),
+      label: isRecurring ? t("categories.recurringBadge") : t("common.target"),
       tagKey: "GOAL",
     };
   }

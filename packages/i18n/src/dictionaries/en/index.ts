@@ -6,6 +6,7 @@ import { payday } from './payday';
 import { plan } from './plan';
 import { history } from './history';
 import { settings } from './settings';
+import { settingsSections } from './settings-sections';
 import { privacy } from './privacy';
 import { feedback } from './feedback';
 import { setup } from './setup';
@@ -24,6 +25,7 @@ export const en = {
   ...plan,
   ...history,
   ...settings,
+  ...settingsSections,
   ...privacy,
   ...feedback,
   ...setup,

@@ -15,7 +15,7 @@ export const tour = {
       },
       "payday": {
         "title": "Payday Plan",
-        "desc": "When income arrives, tap 'Allocate Payday'. We automatically fund imminent bills first, then future bills and goals. Confirm in 1 tap or customize your draft!",
+        "desc": "When income arrives, tap 'Plan Payday'. We automatically fund imminent bills first, then future bills and goals. Confirm in 1 tap or customize your draft!",
         "badge": "Payday Plan"
       },
       "affordCheck": {
@@ -43,7 +43,7 @@ export const tour = {
         "desc": "Manage your recurring paydays, ongoing bills, and one-off income or expenses. Add or adjust schedules anytime your life changes.",
         "badge": "Schedules"
       },
-      "historyLedger": {
+      "historyPlans": {
         "title": "History & Payday Plans",
         "desc": "View your complete transaction history, envelope balance changes, and past confirmed payday plans in one place.",
         "badge": "History & Plans"
@@ -55,8 +55,6 @@ export const tour = {
       }
     },
     "controls": {
-      "next": "Next",
-      "back": "Back",
       "finish": "Got it, let's go!",
       "skip": "Skip tour"
     },

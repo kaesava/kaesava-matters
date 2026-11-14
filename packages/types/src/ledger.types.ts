@@ -1,23 +1,4 @@
 import { z } from "zod";
-import { BaseSchema } from "./tenant.types.js";
-
-/**
- * Schema for double-entry or single-entry transaction ledger events.
- */
-export const TransactionLedgerSchema = BaseSchema.extend({
-  envelopeId: z.string().uuid(),
-  bankAccountId: z.string().uuid().nullable(),
-  planLineId: z.string().uuid().nullable(),
-  transferGroupId: z.string().uuid().nullable().optional(),
-  flowType: z.enum(["DEBIT", "CREDIT"]),
-  amount: z.string(),
-  idempotencyKey: z.string(),
-  note: z.string().nullable(),
-  source: z.enum(["MANUAL", "AUTO", "IMPORT"]).default("MANUAL"),
-  recordedAt: z.date(),
-}).strict();
-
-export type TransactionLedgerType = z.infer<typeof TransactionLedgerSchema>;
 
 /**
  * Query schema for listing transaction ledger entries with pagination.

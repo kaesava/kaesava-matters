@@ -39,7 +39,7 @@ export const SyncBalanceValidationFooter: React.FC<SyncBalanceValidationFooterPr
       {onOpenTransfer && (
         <TouchableOpacity onPress={onOpenTransfer} style={styles.transferLinkBtn}>
           <Text style={styles.transferLinkText}>
-            {t('bankAccounts.reconcile.transferBetweenPoolsLink')}
+            {t('bankAccounts.reconcile.transferBetweenEnvelopesLink')}
           </Text>
           <Feather name="arrow-right" size={14} color={DESIGN_TOKENS.colors.accent} />
         </TouchableOpacity>

@@ -1,7 +1,6 @@
 import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { useRouter, type Href } from 'expo-router';
-import { Feather } from '@expo/vector-icons';
 import { CardDrawerIndicator, EntityLinkChip, DESIGN_TOKENS } from '@money-matters/ui/mobile';
 import { t } from '@money-matters/i18n';
 import { formatMobileCurrency, formatScheduleDetail } from '../../lib/format';
@@ -32,7 +31,6 @@ export const ExpenseBillCard: React.FC<ExpenseBillCardProps> = ({
   exp,
   categoryName,
   onEdit,
-  onOccurrences,
 }) => {
   const router = useRouter();
   const displayBucket = categoryName || exp.poolName || exp.categoryName;

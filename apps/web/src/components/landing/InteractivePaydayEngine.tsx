@@ -177,7 +177,7 @@ export function InteractivePaydayEngine({ onAuthClick }: InteractivePaydayEngine
                         : "text-slate-600 hover:text-slate-900"
                     }`}
                   >
-                    {t("landing.calcCadenceWeekly")}
+                    {t("forms.weekly")}
                   </button>
                   <button
                     type="button"
@@ -188,7 +188,7 @@ export function InteractivePaydayEngine({ onAuthClick }: InteractivePaydayEngine
                         : "text-slate-600 hover:text-slate-900"
                     }`}
                   >
-                    {t("landing.calcCadenceFortnightly")}
+                    {t("forms.fortnightly")}
                   </button>
                   <button
                     type="button"
@@ -199,7 +199,7 @@ export function InteractivePaydayEngine({ onAuthClick }: InteractivePaydayEngine
                         : "text-slate-600 hover:text-slate-900"
                     }`}
                   >
-                    {t("landing.calcCadenceMonthly")}
+                    {t("forms.monthly")}
                   </button>
                 </div>
               </div>
@@ -226,7 +226,7 @@ export function InteractivePaydayEngine({ onAuthClick }: InteractivePaydayEngine
                     }}
                     className="text-[10px] font-bold text-slate-400 hover:text-[#2563eb] cursor-pointer"
                   >
-                    ⇄ {t("landing.simTransferAction")}
+                    ⇄ {t("common.transfer")}
                   </button>
                 </div>
                 <div>
@@ -261,7 +261,7 @@ export function InteractivePaydayEngine({ onAuthClick }: InteractivePaydayEngine
                     }}
                     className="text-[10px] font-bold text-slate-400 hover:text-[#22c55e] cursor-pointer"
                   >
-                    ⇄ {t("landing.simTransferAction")}
+                    ⇄ {t("common.transfer")}
                   </button>
                 </div>
                 <div>
@@ -296,7 +296,7 @@ export function InteractivePaydayEngine({ onAuthClick }: InteractivePaydayEngine
                     }}
                     className="text-[10px] font-bold text-slate-400 hover:text-indigo-600 cursor-pointer"
                   >
-                    ⇄ {t("landing.simTransferAction")}
+                    ⇄ {t("common.transfer")}
                   </button>
                 </div>
                 <div>
@@ -331,7 +331,7 @@ export function InteractivePaydayEngine({ onAuthClick }: InteractivePaydayEngine
                     }}
                     className="text-[10px] font-bold text-slate-400 hover:text-slate-700 cursor-pointer"
                   >
-                    ⇄ {t("landing.simTransferAction")}
+                    ⇄ {t("common.transfer")}
                   </button>
                 </div>
                 <div>
@@ -488,7 +488,7 @@ export function InteractivePaydayEngine({ onAuthClick }: InteractivePaydayEngine
               onClick={() => setIsTransferModalOpen(false)}
               className="px-4 py-2 text-xs font-bold text-slate-600 hover:bg-slate-100 rounded-lg cursor-pointer"
             >
-              {t("landing.simTransferCancel")}
+              {t("common.cancel")}
             </button>
             <button
               type="button"

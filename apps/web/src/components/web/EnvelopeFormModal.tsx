@@ -135,7 +135,7 @@ export function EnvelopeFormModal({
         utils.listEnvelopes.invalidate(),
         utils.listExpenseEvents.invalidate(),
         utils.listBillSchedules.invalidate(),
-        utils.getProjectedPoolBalances.invalidate(),
+        utils.getProjectedEnvelopeBalances.invalidate(),
       ]);
       toast.success(t("toasts.archived"));
       onSuccess?.();
@@ -172,7 +172,7 @@ export function EnvelopeFormModal({
         utils.listEnvelopes.invalidate(),
         utils.listExpenseEvents.invalidate(),
         utils.listBillSchedules.invalidate(),
-        utils.getProjectedPoolBalances.invalidate(),
+        utils.getProjectedEnvelopeBalances.invalidate(),
       ]);
       const initialBankId = categoryToEdit?.bankAccountId || "";
       const balanceNum = Number(categoryToEdit?.currentBalance ?? 0);
@@ -273,7 +273,7 @@ export function EnvelopeFormModal({
           poolTypeOptions={
             isEdit
               ? [
-                  { value: "EVERYDAY", label: t("categories.typeEveryday") },
+                  { value: "EVERYDAY", label: t("envelopeTypes.everyday") },
                   { value: "BILL", label: t("categories.typeBill") },
                   { value: "GOAL", label: t("categories.typeGoal") },
                 ]
@@ -331,10 +331,10 @@ export function EnvelopeFormModal({
 
           <div className="flex gap-2">
             <Button type="button" variant="secondary" size="sm" onClick={onClose}>
-              {t("categories.cancel")}
+              {t("common.cancel")}
             </Button>
             <Button type="submit" variant="primary" size="sm" disabled={submitting || !isDirty || !isValid} loading={submitting}>
-              {t("categories.savePool")}
+              {t("categories.saveEnvelope")}
             </Button>
           </div>
         </div>
@@ -358,8 +358,8 @@ export function EnvelopeFormModal({
         archiveTitle={initialMode === "BILL_SCHEDULE" ? t("categories.archiveBillSchedule") : t("categories.archiveEnvelope")}
         archiveDescription={
           isLastPrivateEnvelope
-            ? t("categories.archiveLastPrivatePoolConfirm", { name: categoryToEdit?.name || "" })
-            : t("categories.archivePoolConfirm", { name: categoryToEdit?.name || "" })
+            ? t("categories.archiveLastPrivateEnvelopeConfirm", { name: categoryToEdit?.name || "" })
+            : t("categories.archiveEnvelopeConfirm", { name: categoryToEdit?.name || "" })
         }
         archiveConfirmLabel={initialMode === "BILL_SCHEDULE" ? t("categories.archiveBillSchedule") : t("categories.archiveEnvelope")}
         type={type}

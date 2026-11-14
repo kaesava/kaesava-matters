@@ -8,10 +8,11 @@ import {
   allocationStrategies,
   allocationStrategySteps,
 } from "@money-matters/db";
+import type { SeedDb } from "./neon-auth-setup.js";
 import { CANONICAL_ALLOCATION_PRESETS } from "@money-matters/types";
 
 export async function seedTesterHousehold(
-  db: any,
+  db: SeedDb,
   params: {
     tenantId: string;
     appId: string;

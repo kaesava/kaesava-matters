@@ -17,7 +17,9 @@ export async function createCustomerPortalSessionCommand(
     throw new Error("Stripe secret key configuration is missing.");
   }
 
-  const stripe = new Stripe(stripeSecretKey);
+  const stripe = new Stripe(stripeSecretKey, {
+    httpClient: Stripe.createFetchHttpClient(),
+  });
 
   const [tenant] = await db
     .select({

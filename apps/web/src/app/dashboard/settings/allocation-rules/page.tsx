@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect, useMemo, Suspense } from "react";
+import { useState, useEffect, useMemo, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { t, ALLOCATION_STEP_TYPE_KEYS, ALLOCATION_STEP_DESC_KEYS } from "@money-matters/i18n";
 import {
@@ -309,7 +309,7 @@ function AllocationRulesContent() {
                         label={t("settings.paydayRules.targetEnvelopeLabel")}
                         value={step.targetEnvelopeId || ""}
                         options={[
-                          { value: "", label: t("categories.mainPool") },
+                          { value: "", label: t("categories.mainEnvelope") },
                           ...eligibleEnvelopes.map((env) => ({
                             value: env.id,
                             label: env.name,
@@ -376,7 +376,7 @@ function AllocationRulesContent() {
           title={t("modals.discardChanges.title")}
           description={t("modals.discardChanges.description")}
           confirmLabel={t("modals.discardChanges.discard")}
-          cancelLabel={t("modals.discardChanges.cancel")}
+          cancelLabel={t("common.keepEditing")}
           variant="danger"
           onConfirm={() => {
             setShowDiscardConfirm(false);

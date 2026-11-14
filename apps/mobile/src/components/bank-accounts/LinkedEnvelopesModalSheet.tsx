@@ -33,12 +33,12 @@ export function LinkedEnvelopesModalSheet({
     <MobileModalDialog
       visible={visible}
       onClose={onClose}
-      title={t('bankAccounts.linkedPools')}
+      title={t('bankAccounts.linkedEnvelopes')}
       subtitle={accountName}
     >
       <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.list}>
         {pools.length === 0 ? (
-          <Text style={styles.emptyText}>{t('bankAccounts.reconcile.noLinkedPools')}</Text>
+          <Text style={styles.emptyText}>{t('bankAccounts.reconcile.noLinkedEnvelopes')}</Text>
         ) : (
           pools.map((pool) => {
             const bal =
@@ -69,10 +69,10 @@ export function LinkedEnvelopesModalSheet({
                   <View style={styles.typeBadgeWrap}>
                     <Text style={styles.typeBadgeText}>
                       {pool.poolType === 'EVERYDAY'
-                        ? t('poolTypes.everyday')
+                        ? t('envelopeTypes.everyday')
                         : pool.poolType === 'BILL'
-                        ? t('poolTypes.bills')
-                        : t('poolTypes.goals')}
+                        ? t('envelopeTypes.bills')
+                        : t('envelopeTypes.goals')}
                     </Text>
                   </View>
                 </View>

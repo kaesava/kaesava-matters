@@ -1,6 +1,5 @@
 "use client";
 
-import React from "react";
 import { HousingType, VehicleConfig, ChildConfig } from "@money-matters/types";
 import { InfoTooltip } from "@money-matters/ui/web";
 import { t } from "@money-matters/i18n";

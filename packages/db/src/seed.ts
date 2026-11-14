@@ -117,7 +117,6 @@ export async function seedDatabase(connectionString: string, envLabel: string) {
     .values({
       appId,
       email: "kaesava@gmail.com",
-      lastSubscribedAt: now,
     })
     .onConflictDoNothing();
 
@@ -191,8 +190,8 @@ export async function seedDatabase(connectionString: string, envLabel: string) {
   // Tenant Users
   await db.insert(tenantUsers).values([
     { tenantId: household.id, userId, role: "OWNER" as const, inviteStatus: "ACCEPTED" as const, createdBy: userId, updatedBy: userId },
-    { tenantId: household.id, userId: snehaUserId, inviteEmail: snehaEmail, role: "MEMBER" as const, inviteStatus: "ACCEPTED" as const, invitedAt: new Date(now.getTime() - 10 * 24 * 60 * 60 * 1000), createdBy: userId, updatedBy: userId },
-    { tenantId: household.id, userId: raehanUserId, inviteEmail: raehanEmail, role: "MEMBER" as const, inviteStatus: "ACCEPTED" as const, invitedAt: new Date(now.getTime() - 5 * 24 * 60 * 60 * 1000), createdBy: userId, updatedBy: userId },
+    { tenantId: household.id, userId: snehaUserId, inviteEmail: snehaEmail, role: "MEMBER" as const, inviteStatus: "ACCEPTED" as const, createdBy: userId, updatedBy: userId },
+    { tenantId: household.id, userId: raehanUserId, inviteEmail: raehanEmail, role: "MEMBER" as const, inviteStatus: "ACCEPTED" as const, createdBy: userId, updatedBy: userId },
     {
       tenantId: household.id,
       userId: null,
@@ -200,21 +199,20 @@ export async function seedDatabase(connectionString: string, envLabel: string) {
       role: "MEMBER" as const,
       inviteStatus: "PENDING" as const,
       inviteToken: "d3b07384-d113-4ec4-a5a4-000000000099",
-      invitedAt: new Date(now.getTime() - 2 * 24 * 60 * 60 * 1000),
       expiresAt: new Date(now.getTime() + 12 * 24 * 60 * 60 * 1000),
       createdBy: userId,
       updatedBy: userId,
     },
     { tenantId: raehanHousehold.id, userId: raehanUserId, role: "OWNER" as const, inviteStatus: "ACCEPTED" as const, createdBy: raehanUserId, updatedBy: raehanUserId },
-    { tenantId: raehanHousehold.id, userId, inviteEmail: "kaesava@gmail.com", role: "MEMBER" as const, inviteStatus: "ACCEPTED" as const, invitedAt: new Date(now.getTime() - 3 * 24 * 60 * 60 * 1000), createdBy: raehanUserId, updatedBy: raehanUserId },
+    { tenantId: raehanHousehold.id, userId, inviteEmail: "kaesava@gmail.com", role: "MEMBER" as const, inviteStatus: "ACCEPTED" as const, createdBy: raehanUserId, updatedBy: raehanUserId },
     { tenantId: testerHousehold.id, userId: testerUserId, role: "OWNER" as const, inviteStatus: "ACCEPTED" as const, createdBy: testerUserId, updatedBy: testerUserId },
   ]);
 
   await db.insert(userPreferences).values([
-    { userId, theme: "system", showIcons: true, createdBy: userId, updatedBy: userId },
-    { userId: snehaUserId, theme: "system", showIcons: true, createdBy: snehaUserId, updatedBy: snehaUserId },
-    { userId: raehanUserId, theme: "system", showIcons: true, createdBy: raehanUserId, updatedBy: raehanUserId },
-    { userId: testerUserId, theme: "system", showIcons: true, createdBy: testerUserId, updatedBy: testerUserId },
+    { userId, showIcons: true, createdBy: userId, updatedBy: userId },
+    { userId: snehaUserId, showIcons: true, createdBy: snehaUserId, updatedBy: snehaUserId },
+    { userId: raehanUserId, showIcons: true, createdBy: raehanUserId, updatedBy: raehanUserId },
+    { userId: testerUserId, showIcons: true, createdBy: testerUserId, updatedBy: testerUserId },
   ]);
 
   const defaultAppPrefs = {

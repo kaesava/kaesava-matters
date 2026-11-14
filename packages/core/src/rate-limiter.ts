@@ -1,9 +1,5 @@
-/**
- * Sliding window rate limiter powered by Upstash Redis (REST pipeline).
- * Falls back to an in-process sliding-window cache in local development/test.
- */
+import { logger } from "./logger.js";
 
-const WINDOW_MS = 60_000;
 const MAX_REQUESTS = 100;
 
 // ─── In-process fallback (dev / test only) ───────────────────────────────────
@@ -129,7 +125,7 @@ export async function checkAiTenantRateLimit(
 
   if (!isValidUpstashConfig(restUrl, restToken)) {
     if (isProductionEnv()) {
-      return { allowed: false, remaining: 0 };
+      logger.warn("rate_limiter.upstash_missing_or_invalid", { tenantId });
     }
     return checkRateLimit(`ai:tenant:${tenantId}`, limitPerMinute, 60);
   }
@@ -166,16 +162,17 @@ export async function checkAiTenantRateLimit(
         remaining: Math.max(0, limitPerMinute - count),
       };
     }
-    return { allowed: false, remaining: 0 };
-  } catch {
+    logger.warn("rate_limiter.upstash_non_ok", { tenantId, status: res.status });
+    return checkRateLimit(`ai:tenant:${tenantId}`, limitPerMinute, 60);
+  } catch (error) {
     if (isProductionEnv()) {
-      return { allowed: false, remaining: 0 };
+      logger.warn("rate_limiter.upstash_error", { tenantId, error: String(error) });
     }
   } finally {
     clearTimeout(timeoutId);
   }
 
-  // Local/dev fallback
+  // Fallback when Upstash is unavailable or errors
   return checkRateLimit(`ai:tenant:${tenantId}`, limitPerMinute, 60);
 }
 

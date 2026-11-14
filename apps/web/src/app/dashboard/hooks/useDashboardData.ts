@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { trpc } from "../../../lib/trpc";
 import posthog from "../../../lib/posthog-client";
 
-import { getTenantDateString } from "@money-matters/core";
+import { getTenantDateString } from "@money-matters/types";
 
 export function useDashboardData() {
   const router = useRouter();

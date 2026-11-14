@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { t } from '@money-matters/i18n';
 import { CanAffordVerdictType } from '@money-matters/types';
 import { ChevronDown, ChevronUp, FileText } from 'lucide-react';

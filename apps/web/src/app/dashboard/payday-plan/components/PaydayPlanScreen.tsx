@@ -1,6 +1,5 @@
 "use client";
 
-import React from "react";
 import { Spinner } from "@money-matters/ui/web";
 import { t } from "@money-matters/i18n";
 import { IncomeEventInlineCard } from "./IncomeEventInlineCard";

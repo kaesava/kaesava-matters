@@ -1,7 +1,6 @@
 import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { useRouter, type Href } from 'expo-router';
-import { Feather } from '@expo/vector-icons';
 import { CardDrawerIndicator, EntityLinkChip, DESIGN_TOKENS } from '@money-matters/ui/mobile';
 import { formatMobileCurrency, formatScheduleDetail } from '../../lib/format';
 
@@ -25,7 +24,6 @@ interface IncomeSourceCardProps {
 export const IncomeSourceCard: React.FC<IncomeSourceCardProps> = ({
   inc,
   onEdit,
-  onOccurrences,
 }) => {
   const router = useRouter();
 

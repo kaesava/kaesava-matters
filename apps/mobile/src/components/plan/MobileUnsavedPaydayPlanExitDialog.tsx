@@ -17,7 +17,6 @@ export function MobileUnsavedPaydayPlanExitDialog({
   visible,
   isDeficit,
   deficitAmount = '',
-  submitting = false,
   onClose,
   onDiscardAndExit,
 }: MobileUnsavedPaydayPlanExitDialogProps) {
@@ -52,7 +51,7 @@ export function MobileUnsavedPaydayPlanExitDialog({
               onPress={onClose}
               style={styles.primaryBtn}
             >
-              <Text style={styles.primaryBtnText}>{t('paydayDrawer.keepEditing')}</Text>
+              <Text style={styles.primaryBtnText}>{t('common.keepEditing')}</Text>
             </TouchableOpacity>
             <TouchableOpacity
               activeOpacity={0.8}

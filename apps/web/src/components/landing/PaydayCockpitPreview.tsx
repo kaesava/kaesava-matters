@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import { useState } from "react";
 import { t } from "@money-matters/i18n";
 import { useLocale } from "../../providers/LocaleProvider";
 import { ShieldCheck, Target, ShoppingBag, Sparkles, Lock } from "lucide-react";

@@ -23,14 +23,12 @@ export const inviteStatusEnum = pgEnum("invite_status_enum", ["PENDING", "ACCEPT
 export const tenantUsers = pgTable("tenant_users", {
   id: uuid("id").primaryKey().defaultRandom(),
   tenantId: uuid("tenant_id").references(() => tenants.id).notNull(),
-  appId: uuid("app_id").notNull().default("01908bde-34bb-7b19-a178-574211bc93aa"),
   // Nullable for PENDING invitations. Non-null guaranteed for ACCEPTED by DB CHECK constraint.
   userId: uuid("user_id").references(() => users.id),
   inviteEmail: varchar("invite_email", { length: 255 }),
   role: memberRoleEnum("role").notNull().default("MEMBER"),
   inviteToken: uuid("invite_token"),
   inviteStatus: inviteStatusEnum("invite_status").notNull().default("ACCEPTED"),
-  invitedAt: timestamp("invited_at", { withTimezone: true }),
   expiresAt: timestamp("expires_at", { withTimezone: true }),
   ...timestamps,
 });

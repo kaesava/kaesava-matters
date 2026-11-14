@@ -102,6 +102,8 @@ function findJsTsFiles(dir, files = []) {
         file !== 'node_modules' &&
         file !== '.next' &&
         file !== '.open-next' &&
+        file !== '.wrangler' &&
+        file !== '.turbo' &&
         file !== '.expo' &&
         file !== 'dist' &&
         file !== '.gemini' &&
@@ -129,7 +131,18 @@ const packagesDir = path.join(monorepoRoot, 'packages');
 if (fs.existsSync(appsDir)) findJsTsFiles(appsDir, files);
 if (fs.existsSync(packagesDir)) findJsTsFiles(packagesDir, files);
 
+const bannedKeyErrors = [];
+const bannedKeyRegex = /(?:pool|matrix|partner|historyLedger|runSplit|splitIncome)/i;
+for (const key of enKeys) {
+  if (bannedKeyRegex.test(key)) {
+    bannedKeyErrors.push(key);
+  }
+}
+
 const tRegex = /\bt\(\s*(['"`])(.*?)\1/g;
+const dynamicTErrors = [];
+const dynamicTRegex = /(?<![a-zA-Z0-9_.])t\(\s*(?:`[^`]*\$\{[^)]*|(['"`])[^'"`]*\1\s*\+[^)]*)/g;
+const nonTestContents = [];
 
 for (const file of files) {
   if (
@@ -142,6 +155,17 @@ for (const file of files) {
   }
 
   const content = fs.readFileSync(file, 'utf8');
+  nonTestContents.push(content);
+
+  let dynMatch;
+  while ((dynMatch = dynamicTRegex.exec(content)) !== null) {
+    dynamicTErrors.push({
+      file: path.relative(monorepoRoot, file),
+      line: getLineNumber(content, dynMatch.index),
+      expr: dynMatch[0].slice(0, 60),
+    });
+  }
+
   let match;
   while ((match = tRegex.exec(content)) !== null) {
     const key = match[2];
@@ -190,6 +214,29 @@ for (const file of files) {
       }
     }
   }
+}
+
+const combinedSourceText = nonTestContents.join('\n');
+const unusedKeys = enKeys.filter((k) => !combinedSourceText.includes(k));
+
+if (bannedKeyErrors.length > 0) {
+  console.error(`\x1b[31mFound ${bannedKeyErrors.length} banned legacy key name(s) in en.ts:\x1b[0m\n`);
+  for (const k of bannedKeyErrors) console.error(`  \x1b[33m${k}\x1b[0m`);
+  process.exit(1);
+}
+
+if (dynamicTErrors.length > 0) {
+  console.error(`\x1b[31mFound ${dynamicTErrors.length} forbidden dynamic t() call(s):\x1b[0m\n`);
+  for (const err of dynamicTErrors) {
+    console.error(`  \x1b[33m${err.file}:${err.line}\x1b[0m - ${err.expr}`);
+  }
+  process.exit(1);
+}
+
+if (unusedKeys.length > 0) {
+  console.error(`\x1b[31mFound ${unusedKeys.length} unused translation key(s) in en.ts:\x1b[0m\n`);
+  for (const k of unusedKeys) console.error(`  \x1b[33m${k}\x1b[0m`);
+  process.exit(1);
 }
 
 if (errors.length > 0) {

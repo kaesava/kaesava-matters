@@ -37,12 +37,10 @@ export async function getSubscriptionStatus(
     const trialExpiry = new Date(tenant.trialEndsAt);
     if (now > trialExpiry) {
       rawStatus = "TRIAL_EXPIRED";
-      if (typeof db.update === "function") {
-        await db
-          .update(tenants)
-          .set({ subscriptionStatus: "TRIAL_EXPIRED", premiumEnabled: false, updatedAt: now })
-          .where(eq(tenants.id, tenantId));
-      }
+      await db
+        .update(tenants)
+        .set({ subscriptionStatus: "TRIAL_EXPIRED", premiumEnabled: false, updatedAt: now })
+        .where(eq(tenants.id, tenantId));
     }
   }
 
@@ -51,24 +49,20 @@ export async function getSubscriptionStatus(
     const trialExpiry = new Date(tenant.trialEndsAt);
     if (now <= trialExpiry) {
       rawStatus = "TRIAL_ACTIVE";
-      if (typeof db.update === "function") {
-        await db
-          .update(tenants)
-          .set({ subscriptionStatus: "TRIAL_ACTIVE", premiumEnabled: true, updatedAt: now })
-          .where(eq(tenants.id, tenantId));
-      }
+      await db
+        .update(tenants)
+        .set({ subscriptionStatus: "TRIAL_ACTIVE", premiumEnabled: true, updatedAt: now })
+        .where(eq(tenants.id, tenantId));
     }
   }
 
   // Normalize legacy TRIAL_GRACE records directly to TRIAL_EXPIRED
   if (rawStatus === "TRIAL_GRACE") {
     rawStatus = "TRIAL_EXPIRED";
-    if (typeof db.update === "function") {
-      await db
-        .update(tenants)
-        .set({ subscriptionStatus: "TRIAL_EXPIRED", premiumEnabled: false, updatedAt: now })
-        .where(eq(tenants.id, tenantId));
-    }
+    await db
+      .update(tenants)
+      .set({ subscriptionStatus: "TRIAL_EXPIRED", premiumEnabled: false, updatedAt: now })
+      .where(eq(tenants.id, tenantId));
   }
 
   // If status is SUBSCRIBED but scheduled for cancellation and period has ended
@@ -76,12 +70,10 @@ export async function getSubscriptionStatus(
     const periodEnd = new Date(tenant.subscriptionEndsAt);
     if (now > periodEnd) {
       rawStatus = "TRIAL_EXPIRED";
-      if (typeof db.update === "function") {
-        await db
-          .update(tenants)
-          .set({ subscriptionStatus: "TRIAL_EXPIRED", premiumEnabled: false, updatedAt: now })
-          .where(eq(tenants.id, tenantId));
-      }
+      await db
+        .update(tenants)
+        .set({ subscriptionStatus: "TRIAL_EXPIRED", premiumEnabled: false, updatedAt: now })
+        .where(eq(tenants.id, tenantId));
     }
   }
 

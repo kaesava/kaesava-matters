@@ -4,7 +4,6 @@ import {
   UpdateHouseholdFormSchema,
   BankAccountFormSchema,
   computeAccountAvailability,
-  getSubscriptionStatusLabelKey,
   buildExportFileName,
   COMMON_TIMEZONES,
   AU_STATES,
@@ -123,15 +122,6 @@ describe("Settings Types & Schemas", () => {
   });
 
   describe("Subscription Helpers", () => {
-    it("resolves status keys correctly", () => {
-      expect(getSubscriptionStatusLabelKey("SUBSCRIBED")).toBe("subscription.tierActive");
-      expect(getSubscriptionStatusLabelKey("TRIAL_ACTIVE")).toBe("subscription.tierTrial");
-      expect(getSubscriptionStatusLabelKey("PAST_DUE")).toBe("subscription.tierPastDue");
-      expect(getSubscriptionStatusLabelKey("TRIAL_EXPIRED")).toBe("subscription.tierExpired");
-      expect(getSubscriptionStatusLabelKey("DEACTIVATED")).toBe("subscription.noActiveSubscription");
-      expect(getSubscriptionStatusLabelKey(undefined)).toBe("subscription.noActiveSubscription");
-    });
-
     it("builds consistent export file name", () => {
       expect(buildExportFileName("2026-10-03")).toBe("money-matters-backup-2026-10-03.zip");
     });

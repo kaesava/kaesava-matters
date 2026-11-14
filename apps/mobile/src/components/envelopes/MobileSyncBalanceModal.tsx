@@ -183,7 +183,7 @@ export function MobileSyncBalanceModal({
           >
             {isZeroVariance
               ? t('bankAccounts.reconcile.saveBalanceOnly')
-              : t('bankAccounts.reconcile.syncAction')}
+              : t('bankAccounts.reconcile.modalTitle')}
           </MobileButton>
         </View>
       }
@@ -267,7 +267,7 @@ export function MobileSyncBalanceModal({
             <View style={styles.poolsSection}>
               {visiblePools.length === 0 ? (
                 <Text style={styles.noPoolsText}>
-                  {t('bankAccounts.reconcile.noLinkedPools')}
+                  {t('bankAccounts.reconcile.noLinkedEnvelopes')}
                 </Text>
               ) : (
                 visiblePools.map((pool, idx) => (

@@ -5,7 +5,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { DESIGN_TOKENS, useMobileToast, usePushNotifications } from '@money-matters/ui/mobile';
 import { t, setLanguage } from '@money-matters/i18n';
 import { Feather } from '@expo/vector-icons';
-import { trpc, setActiveTenantId, getActiveTenantId, switchActiveTenant } from '../../lib/trpc';
+import { trpc, getActiveTenantId, switchActiveTenant } from '../../lib/trpc';
 import { authClient } from '../../lib/auth';
 import { QuickActionFab } from '../../components/QuickActionFab';
 import { EnvelopeFormModal } from '../../components/EnvelopeFormModal';

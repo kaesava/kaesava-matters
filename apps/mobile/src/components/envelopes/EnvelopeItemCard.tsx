@@ -1,6 +1,5 @@
 import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
-import { Feather } from '@expo/vector-icons';
 import { t } from '@money-matters/i18n';
 import { DESIGN_TOKENS, CardDrawerIndicator, formatRecurrenceSuffix } from '@money-matters/ui/mobile';
 import { formatMobileCurrency } from '../../lib/format';
@@ -44,9 +43,9 @@ export function EnvelopeItemCard({
   const fundingMode = pool.fundingMode || 'TARGET_BALANCE';
 
   const subTypeBadge = isBill
-    ? (fundingMode === 'RECURRING' ? t('categories.scheduledBillBadge') : t('categories.flexibleBillBadge'))
+    ? (fundingMode === 'RECURRING' ? t('categories.recurringBadge') : t('common.target'))
     : isGoal
-    ? (fundingMode === 'RECURRING' ? t('categories.ongoingGoalBadge') : t('categories.targetDateGoalBadge'))
+    ? (fundingMode === 'RECURRING' ? t('categories.recurringBadge') : t('common.target'))
     : isEveryday
     ? t('categories.everydayBadge')
     : null;
@@ -121,11 +120,11 @@ export function EnvelopeItemCard({
                     const freq = pool.budgetFrequency || 'MONTHLY';
                     const suffix = formatRecurrenceSuffix(pool.rrule, freq);
                     const amt = entered > 0 ? entered : monthly > 0 ? monthly : target;
-                    return amt > 0 ? `${formatMobileCurrency(amt)}${suffix}` : t('categories.mainPool');
+                    return amt > 0 ? `${formatMobileCurrency(amt)}${suffix}` : t('categories.mainEnvelope');
                   })()
                 : (monthly > 0 ? monthly : target > 0 ? target : 0) > 0
                 ? `${formatMobileCurrency(monthly > 0 ? monthly : target)}/mo`
-                : t('categories.mainPool')}
+                : t('categories.mainEnvelope')}
             </Text>
           </View>
           <CardDrawerIndicator size={18} />

@@ -1,6 +1,5 @@
 "use client";
 
-import React from "react";
 import { useRouter } from "next/navigation";
 import { t } from "@money-matters/i18n";
 import { Button } from "@money-matters/ui/web";

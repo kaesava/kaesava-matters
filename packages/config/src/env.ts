@@ -6,7 +6,7 @@
  */
 import { z } from "zod";
 
-export const baseEnvSchema = z
+const baseEnvSchema = z
   .object({
     NODE_ENV: z.enum(["development", "test", "production"]).default("development"),
     DATABASE_URL: z.string().url().optional(),
@@ -153,12 +153,5 @@ export function validateEnv(
     envCache = result.data;
   }
   return result.data;
-}
-
-/**
- * Clears cached environment configuration (primarily for unit test isolation).
- */
-export function clearEnvCache(): void {
-  envCache = null;
 }
 

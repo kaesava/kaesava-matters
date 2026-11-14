@@ -224,7 +224,6 @@ export async function executeTransferEventCommand(
     .set({
       status: "CONFIRMED",
       name: transferName,
-      actualAmount: amountToTransfer,
       sourceEnvelopeId,
       destinationEnvelopeId,
       updatedAt: new Date(),

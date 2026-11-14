@@ -25,7 +25,6 @@ const scanDirs = [
   path.join(rootDir, "packages/types"),
   path.join(rootDir, "packages/core"),
   path.join(rootDir, "packages/db/src/seed.ts"),
-  path.join(rootDir, "packages/db/src/create-tester.ts"),
 ];
 
 function getAllFiles(dir, exts = [".ts", ".tsx", ".js", ".mjs"]) {

@@ -41,7 +41,7 @@ export function useSetupEnvelopesDraftHandlers() {
     const matchedCat = allItems.find((c) => c.name.trim().toLowerCase() === name.trim().toLowerCase());
     const matchedGoal = goals.find((g) => g.name.trim().toLowerCase() === name.trim().toLowerCase());
     if (matchedCat?.isSurplusTarget || matchedGoal?.isSurplusTarget) {
-      toast.error(t('setup.surplusTargetDeleteWarning', { name }), t('setup.protectedPoolTitle'));
+      toast.error(t('setup.surplusTargetDeleteWarning', { name }), t('setup.protectedEnvelopeTitle'));
       return;
     }
     const isExistingDbItem = Boolean(

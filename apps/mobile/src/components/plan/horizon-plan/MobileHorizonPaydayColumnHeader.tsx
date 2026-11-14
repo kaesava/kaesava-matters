@@ -47,15 +47,15 @@ export const MobileHorizonPaydayColumnHeader: React.FC<MobileHorizonPaydayColumn
       {/* Row 1: Status Badge on its own row */}
       {isConfirmed ? (
         <View style={styles.confirmedBadge}>
-          <Text style={styles.confirmedBadgeText}>{t('matrix.confirmedBadge')}</Text>
+          <Text style={styles.confirmedBadgeText}>{t('paydaySchedule.confirmedBadge')}</Text>
         </View>
       ) : isSaved ? (
         <View style={styles.savedBadge}>
-          <Text style={styles.savedBadgeText}>{t('matrix.savedBadge')}</Text>
+          <Text style={styles.savedBadgeText}>{t('paydaySchedule.savedBadge')}</Text>
         </View>
       ) : (
         <View style={styles.autoBadge}>
-          <Text style={styles.autoBadgeText}>{t('matrix.autoBadge')}</Text>
+          <Text style={styles.autoBadgeText}>{t('paydaySchedule.autoBadge')}</Text>
         </View>
       )}
 
@@ -74,7 +74,7 @@ export const MobileHorizonPaydayColumnHeader: React.FC<MobileHorizonPaydayColumn
       {isConfirmed ? (
         <View style={styles.actionRow}>
           <TouchableOpacity onPress={() => onReview(col.id)} style={styles.reviewBtn}>
-            <Text style={styles.reviewText}>{t('matrix.review')}</Text>
+            <Text style={styles.reviewText}>{t('paydaySchedule.review')}</Text>
           </TouchableOpacity>
         </View>
       ) : (

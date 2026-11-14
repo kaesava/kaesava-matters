@@ -105,11 +105,6 @@ export const budgetingRouter = {
       return await getProjectedPoolBalancesQuery(ctx.tenantId!, ctx.appId!, ctx.userId!, ctx.db);
     }),
 
-  getProjectedPoolBalances: privateTenantProcedure
-    .query(async ({ ctx }) => {
-      return await getProjectedPoolBalancesQuery(ctx.tenantId!, ctx.appId!, ctx.userId!, ctx.db);
-    }),
-
   saveSetupBudget: privateTenantProcedure
     .input(SaveSetupBudgetCommand)
     .mutation(async ({ input, ctx }) => {

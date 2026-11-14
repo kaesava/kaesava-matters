@@ -144,7 +144,7 @@ export function MobileBurstModal({
 
         <View style={styles.occurrencesSection}>
           <Text style={styles.sectionTitle}>
-            {isIncome ? t('matrix.incomeAllocationGridTitle') : t('planTabs.upcomingTimeline')} ({sourceEvents.length})
+            {isIncome ? t('paydaySchedule.incomeAllocationGridTitle') : t('planTabs.upcomingTimeline')} ({sourceEvents.length})
           </Text>
 
           {sourceEvents.length === 0 ? (

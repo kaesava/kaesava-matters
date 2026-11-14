@@ -26,7 +26,6 @@ describe("canAffordSimulationQuery — verdict logic", () => {
   // ── PACING_TIGHT ──────────────────────────────────────────────────────
   it("PACING_TIGHT: amount within effective spendable but remaining cash < safe cushion", () => {
     const everydayBalance = 600;
-    const totalBills = 0;
     const effectiveSpendable = everydayBalance;
     const amount = 570;
     const daysUntilPayday = 14;

@@ -1,6 +1,5 @@
 "use client";
 
-import React from "react";
 import { SearchInput } from "@money-matters/ui/web";
 import { t } from "@money-matters/i18n";
 import type { PoolTypeFilter } from "../hooks/useEnvelopesTableData";
@@ -53,10 +52,10 @@ export function EnvelopesFilterBar({
                 {fType === "ALL"
                   ? t("common.all")
                   : fType === "EVERYDAY"
-                  ? t("poolTypes.everyday")
+                  ? t("envelopeTypes.everyday")
                   : fType === "BILL"
-                  ? t("poolTypes.bills")
-                  : t("poolTypes.goals")}
+                  ? t("envelopeTypes.bills")
+                  : t("envelopeTypes.goals")}
               </button>
             ))}
           </div>

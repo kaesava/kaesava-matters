@@ -1,4 +1,3 @@
-import React from "react";
 import { MonthlyCashFlowPointDTO } from "@money-matters/types";
 import { DESIGN_TOKENS } from "../../tokens";
 import { t } from "@money-matters/i18n";

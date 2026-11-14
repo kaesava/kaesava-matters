@@ -1,5 +1,5 @@
 "use client";
-import { getTenantDateString } from "@money-matters/core";
+import { getTenantDateString } from "@money-matters/types";
 
 
 import React, { useState, useEffect, useMemo } from "react";
@@ -254,7 +254,7 @@ export function IncomeFormModal({ isOpen, onClose, sourceToEdit, initialPrefill 
       isOpen={isOpen}
       onClose={onClose}
       isDirty={isDirty}
-      title={isEdit ? (sourceToEdit?.name || "") : t("planTabs.addIncomeSchedule")}
+      title={isEdit ? (sourceToEdit?.name || "") : t("payday.addIncomeSchedule")}
       maxWidth="max-w-md"
     >
       <form onSubmit={handleSave} className="space-y-4 text-xs font-semibold">

@@ -1,4 +1,4 @@
-export interface ShortfallValidationResult {
+interface ShortfallValidationResult {
   isValid: boolean;
   shortfallAmount: number;
   totalAllocated: number;
@@ -9,18 +9,9 @@ export interface ShortfallValidationResult {
 }
 
 /**
- * Calculates the shortfall amount between the expected expense amount and the pool's balance.
+ * Calculates the total amount allocated across all funding envelopes.
  */
-export function calculateShortfall(targetAmount: number, poolBalance: number): number {
-  if (isNaN(targetAmount) || targetAmount <= 0) return 0;
-  const balance = isNaN(poolBalance) ? 0 : poolBalance;
-  return Math.max(0, Math.round((targetAmount - balance) * 100) / 100);
-}
-
-/**
- * Calculates the total amount allocated across all funding pools.
- */
-export function calculateTotalAllocated(allocations: Record<string, string | number>): number {
+function calculateTotalAllocated(allocations: Record<string, string | number>): number {
   let sum = 0;
   for (const val of Object.values(allocations)) {
     const num = typeof val === 'number' ? val : parseFloat(String(val || '0'));

@@ -3,10 +3,14 @@ import {
   incomeSources, 
   incomeEvents, 
   expenseEvents, 
+  transferEvents,
   transactionLedger, 
   bankAccounts, 
   allocationPlans,
   allocationPlanLines,
+  allocationStrategies,
+  allocationStrategySteps,
+  fileNotes,
   tenants,
   users,
   DbOrTx,
@@ -14,7 +18,10 @@ import {
 import { eq, and } from "drizzle-orm";
 import { serializeCsvObjects, DEFAULT_TIMEZONE } from "@money-matters/types";
 
-export function exportDataHandler(db: DbOrTx) {
+export function exportDataHandler(
+  db: DbOrTx,
+  getPresignedDownloadUrl?: (fileKey: string, expiresIn?: number) => Promise<string>
+) {
   return async (tenantId: string, userId: string, appId: string) => {
     // 1. Fetch User Profile
     const [userRecord] = await db
@@ -108,6 +115,57 @@ export function exportDataHandler(db: DbOrTx) {
 
     const userAllocationPlanLines = rawAllocationPlanLines.filter((l) => allowedEnvelopeIds.has(l.envelopeId));
 
+    // 9. Fetch Transfer Events (Stealth Privacy: both source and destination must be visible)
+    const rawTransferEvents = await db
+      .select()
+      .from(transferEvents)
+      .where(and(eq(transferEvents.tenantId, tenantId), eq(transferEvents.appId, appId)));
+
+    const userTransferEvents = rawTransferEvents.filter(
+      (t) => allowedEnvelopeIds.has(t.sourceEnvelopeId) && allowedEnvelopeIds.has(t.destinationEnvelopeId)
+    );
+
+    // 10. Fetch Allocation Strategies & Steps
+    const rawStrategies = await db
+      .select()
+      .from(allocationStrategies)
+      .where(and(eq(allocationStrategies.tenantId, tenantId), eq(allocationStrategies.appId, appId)));
+
+    const userStrategies = rawStrategies.filter((s) => !s.isPrivate || s.userId === userId);
+    const allowedStrategyIds = new Set(userStrategies.map((s) => s.id));
+
+    const rawStrategySteps = await db
+      .select()
+      .from(allocationStrategySteps)
+      .where(and(eq(allocationStrategySteps.tenantId, tenantId), eq(allocationStrategySteps.appId, appId)));
+
+    const userStrategySteps = rawStrategySteps.filter((st) => allowedStrategyIds.has(st.strategyId));
+
+    // 11. Fetch File Notes & Generate Time-Limited Presigned Download URLs
+    const rawFileNotes = await db
+      .select()
+      .from(fileNotes)
+      .where(and(eq(fileNotes.tenantId, tenantId), eq(fileNotes.appId, appId)));
+
+    const userFileNotes = rawFileNotes.filter((n) => !n.isPrivate || n.userId === userId);
+    const exportedFileNotes = await Promise.all(
+      userFileNotes.map(async (note) => ({
+        id: note.id,
+        entityType: note.entityType,
+        entityId: note.entityId,
+        comment: note.comment ?? "",
+        fileName: note.fileName ?? "",
+        fileMimeType: note.fileMimeType ?? "",
+        fileSize: note.fileSize ?? "",
+        fileKey: note.fileKey ?? "",
+        downloadUrl: note.fileKey && getPresignedDownloadUrl
+          ? await getPresignedDownloadUrl(note.fileKey, 3600)
+          : "",
+        isPrivate: note.isPrivate,
+        createdAt: note.createdAt,
+      }))
+    );
+
     const csvFiles: Record<string, string> = {
       "User_Profile.csv": serializeCsvObjects(
         userRecord ? [{ ...userRecord, globalTimezone: tenantRecord?.timezone || DEFAULT_TIMEZONE }] : [],
@@ -129,9 +187,13 @@ export function exportDataHandler(db: DbOrTx) {
       "Income_Sources.csv": serializeCsvObjects(userIncomeSources, ["id", "name", "amount", "rrule", "startDate", "receivingAccountId"]),
       "Income_Events.csv": serializeCsvObjects(userIncomeEvents, ["id", "incomeSourceId", "expectedDate", "expectedAmount", "status"]),
       "Expense_Events.csv": serializeCsvObjects(userExpenseEvents, ["id", "expectedDate", "expectedAmount", "envelopeId", "isScheduled", "status"]),
+      "Transfer_Events.csv": serializeCsvObjects(userTransferEvents, ["id", "sourceEnvelopeId", "destinationEnvelopeId", "name", "expectedDate", "expectedAmount", "status"]),
       "Transactions_Ledger.csv": serializeCsvObjects(userLedger, ["id", "recordedAt", "amount", "flowType", "envelopeId", "bankAccountId"]),
       "Income_Split_Plans.csv": serializeCsvObjects(userAllocationPlans, ["id", "incomeEventId", "totalIncomeAmount", "status"]),
       "Income_Split_Plan_Lines.csv": serializeCsvObjects(userAllocationPlanLines, ["id", "planId", "envelopeId", "proposedAmount", "confirmedAmount"]),
+      "Allocation_Strategies.csv": serializeCsvObjects(userStrategies, ["id", "name", "presetKey", "isDefault", "isPrivate"]),
+      "Allocation_Strategy_Steps.csv": serializeCsvObjects(userStrategySteps, ["id", "strategyId", "orderIndex", "stepType", "targetEnvelopeId"]),
+      "File_Notes.csv": serializeCsvObjects(exportedFileNotes, ["id", "entityType", "entityId", "comment", "fileName", "fileMimeType", "fileSize", "fileKey", "downloadUrl", "isPrivate", "createdAt"]),
     };
 
     return {

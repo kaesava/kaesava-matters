@@ -1,5 +1,4 @@
 import {
-  handleUserSignup,
   maintainRollingWindowWorkflow,
   notificationFunctions,
   scheduledNotificationFunctions,
@@ -7,7 +6,6 @@ import {
 } from "./functions.js";
 
 export const functions = [
-  handleUserSignup,
   maintainRollingWindowWorkflow,
   ...notificationFunctions,
   ...scheduledNotificationFunctions,

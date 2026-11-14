@@ -151,16 +151,16 @@ export function formatRecurrenceLabel(
   if (interval === 1) {
     switch (frequency) {
       case "WEEKLY":
-        return t("categories.frequencyWeekly");
+        return t("forms.weekly");
       case "FORTNIGHTLY":
-        return t("categories.frequencyFortnightly");
+        return t("forms.fortnightly");
       case "QUARTERLY":
         return t("categories.frequencyQuarterly");
       case "ANNUALLY":
-        return t("categories.frequencyAnnually");
+        return t("canIAfford.freqAnnually");
       case "MONTHLY":
       default:
-        return t("categories.frequencyMonthly");
+        return t("forms.monthly");
     }
   }
   if (frequency === "QUARTERLY") {

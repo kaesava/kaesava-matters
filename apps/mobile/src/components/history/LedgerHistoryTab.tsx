@@ -187,8 +187,8 @@ export function LedgerHistoryTab({
         sortField={sortField}
         sortOrder={sortDir}
         sortOptions={[
-          { id: 'recordedAt', label: t('history.date') },
-          { id: 'amount', label: t('history.amount') },
+          { id: 'recordedAt', label: t('tables.date') },
+          { id: 'amount', label: t('common.amount') },
         ]}
         onSortFieldChange={(f) =>
           onSortFieldChange(f as 'recordedAt' | 'amount' | 'description')

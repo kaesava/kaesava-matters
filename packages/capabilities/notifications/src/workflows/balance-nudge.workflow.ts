@@ -21,6 +21,7 @@ export function createBalanceNudgeWorkflow(inngest: Inngest) {
             notificationEmail: userPreferences.notificationEmail,
             userTimezone: userPreferences.timezone,
             lastMatchedAt: bankAccounts.lastBalanceMatchedAt,
+            createdAt: bankAccounts.createdAt,
             isPrivateAccount: bankAccounts.isPrivate,
             accountOwnerId: bankAccounts.userId,
             appPreferences: tenantUserPreferences.appPreferences,
@@ -63,7 +64,8 @@ export function createBalanceNudgeWorkflow(inngest: Inngest) {
           const pushOn = isChannelEnabled(prefs, "balance_nudge_push", "balance_nudge_enabled");
           if (!emailOn && !pushOn) continue;
 
-          const isOverdue = !acc.lastMatchedAt || new Date(acc.lastMatchedAt).getTime() < fourteenDaysAgo;
+          const referenceDate = acc.lastMatchedAt ?? acc.createdAt;
+          const isOverdue = referenceDate ? new Date(referenceDate).getTime() < fourteenDaysAgo : false;
           const key = `${acc.tenantId}-${acc.userId}`;
           if (isOverdue && !memberMap.has(key)) {
             memberMap.set(key, {

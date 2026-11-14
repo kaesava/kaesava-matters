@@ -36,7 +36,7 @@ export function MobileSubscriptionModal({
     'subscription.featureCsvImportPaid',
     'subscription.featureFileNotesPaid',
     'subscription.featureNotifications',
-    'subscription.featurePartner',
+    'subscription.featureHouseholdMember',
   ] as const;
 
   return (

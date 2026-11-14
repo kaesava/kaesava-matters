@@ -90,10 +90,17 @@ export function AffordCheckModal({ isOpen, onClose, initialAmount = "" }: Afford
           {mode === "RECURRING" && (
             <div className="space-y-1.5">
               <span className="text-xs font-medium text-slate-600 dark:text-zinc-400">
-                {t("canIAfford.frequencyLabel")}
+                {t("forms.frequency")}
               </span>
               <div className="grid grid-cols-4 gap-1.5">
-                {(["WEEKLY", "FORTNIGHTLY", "MONTHLY", "ANNUALLY"] as const).map((freq) => (
+                {(
+                  [
+                    ["WEEKLY", t("forms.weekly")],
+                    ["FORTNIGHTLY", t("forms.fortnightly")],
+                    ["MONTHLY", t("forms.monthly")],
+                    ["ANNUALLY", t("canIAfford.freqAnnually")],
+                  ] as const
+                ).map(([freq, label]) => (
                   <button
                     key={freq}
                     type="button"
@@ -104,7 +111,7 @@ export function AffordCheckModal({ isOpen, onClose, initialAmount = "" }: Afford
                         : "border-slate-200 dark:border-zinc-700 text-slate-600 dark:text-zinc-400"
                     }`}
                   >
-                    {t(`recurrence.frequencies.${freq.toLowerCase()}` as Parameters<typeof t>[0])}
+                    {label}
                   </button>
                 ))}
               </div>

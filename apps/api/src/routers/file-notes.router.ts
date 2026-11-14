@@ -15,7 +15,6 @@ import {
   getDownloadUrlHandler,
   updateFileNoteCommentHandler,
   archiveFileNoteHandler,
-  purgeFileNoteHandler,
   getStorageQuotaHandler,
 } from "@money-matters/capability-file-notes";
 
@@ -77,16 +76,6 @@ export const fileNotesRouter = router({
     .input(z.object({ id: z.string().uuid() }).strict())
     .mutation(async ({ ctx, input }) => {
       return archiveFileNoteHandler(ctx.db, {
-        tenantId: ctx.tenantId,
-        userId: ctx.userId,
-        appId: ctx.appId,
-      }, input.id);
-    }),
-
-  purge: privateTenantProcedure
-    .input(z.object({ id: z.string().uuid() }).strict())
-    .mutation(async ({ ctx, input }) => {
-      return purgeFileNoteHandler(ctx.db, {
         tenantId: ctx.tenantId,
         userId: ctx.userId,
         appId: ctx.appId,

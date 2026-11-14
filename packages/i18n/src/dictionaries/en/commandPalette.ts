@@ -1,16 +1,13 @@
 export const commandPalette = {
   commandPalette: {
     triggerTitle: "Search & Ask Penny",
-    searchOnlyTitle: "Search",
     triggerSubtitle: "Global Search & Command Palette",
-    mobilePlaceholder: "Search anything...",
     inputPlaceholder: "Search anything or ask Penny...",
     searchOnlyPlaceholder: "Search accounts, envelopes, upcoming, or transactions...",
     askPennyPrefix: "Ask Penny",
     askPennyHint: "Press Enter to ask Penny",
     askPennyTabHint: "Press Tab or click to ask Penny",
     categories: {
-      all: "All",
       accounts: "Bank Accounts",
       envelopes: "Envelopes",
       events: "Upcoming",

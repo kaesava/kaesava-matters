@@ -2,7 +2,7 @@ import React from 'react';
 import { View, Text, TouchableOpacity, ScrollView, StyleSheet } from 'react-native';
 import { FormLabel, SwitchRow, DESIGN_TOKENS } from '@money-matters/ui/mobile';
 import { t } from '@money-matters/i18n';
-import { COMMON_TIMEZONES, SUPPORTED_LOCALES } from '@money-matters/types';
+import { COMMON_TIMEZONES } from '@money-matters/types';
 
 interface ProfilePreferencesFieldsProps {
   timezone: string;

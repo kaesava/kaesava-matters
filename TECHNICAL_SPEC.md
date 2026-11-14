@@ -355,7 +355,7 @@ tenants (id PK, appId FK→apps.id, name, subscriptionTier, stripeCustomerId, st
 
 ---
 
-## 9. Complete tRPC Routers and Procedures Registry (12 Routers, 103 Procedures)
+## 9. Complete tRPC Routers and Procedures Registry (12 Routers, 101 Procedures)
 
 > **Cross-Reference (Zero Redundancy):**  
 > All Web routes, Mobile routes, Modals/Drawers/Confirm Dialogs, Screen-by-Screen Parity mappings, `@money-matters/ui` primitives, and `@money-matters/i18n` dictionary namespaces are documented in [FUNCTIONAL_CAPABILITIES_INVENTORY.md](file:///home/kaesava/projects/money-matters/FUNCTIONAL_CAPABILITIES_INVENTORY.md).  
@@ -422,7 +422,7 @@ tenants (id PK, appId FK→apps.id, name, subscriptionTier, stripeCustomerId, st
 | `envelopes.getProjectedEnvelopeBalances` | 101 | `privateTenantProcedure` | None | `GetProjectedEnvelopeBalancesQuerySchema` (`.strict()`) | None | `getProjectedEnvelopeBalancesQuery` (`envelopes`, `incomeEvents`, `expenseEvents`, `allocationPlans`, `allocationPlanLines`) |
 | `envelopes.getHomeSummary` | 113 | `privateTenantProcedure` | None | None | None | `getHomeSummaryQuery` (`envelopes`, `bankAccounts`, `incomeEvents`, `expenseEvents`, `transferEvents`, `allocationPlans`, `transactionLedger`) |
 | `envelopes.saveSetupBudget` | 124 | `privateOwnerProcedure` | `requiresWriteAccess` | `SaveSetupBudgetInputSchema` (`.strict()`) | None | `saveSetupBudget` (`tenants`, `bankAccounts`, `incomeSources`, `incomeEvents`, `envelopes`, `expenseEvents`, `allocationStrategies`, `allocationStrategySteps`, `transactionLedger`) |
-| `envelopes.listPools` / `createPool` / `updatePool` / `archivePool` / `getPoolRuleChangeImpact` / `getProjectedPoolBalances` | 145–195 | `privateTenantProcedure` | Same as canonical | Same as canonical | None | Deprecated compatibility aliases delegating to canonical `*Envelope*` handlers |
+| `envelopes.listPools` / `createPool` / `updatePool` / `archivePool` / `getPoolRuleChangeImpact` | 145–195 | `privateTenantProcedure` | Same as canonical | Same as canonical | None | Deprecated compatibility aliases delegating to canonical `*Envelope*` handlers |
 
 ### 9.4 `income` Router (`apps/api/src/routers/income.router.ts` + `apps/api/src/routers/income/*.procedures.ts` — 12 Procedures)
 
@@ -511,7 +511,6 @@ tenants (id PK, appId FK→apps.id, name, subscriptionTier, stripeCustomerId, st
 | `fileNotes.getDownloadUrl` | `file-notes.router.ts:55` | `privateTenantProcedure` | `fileNotes` flag | `z.object({ id: uuid }).strict()` | None | `getDownloadUrlHandler` (`fileNotes`, R2 S3 presigner) |
 | `fileNotes.updateComment` | `file-notes.router.ts:65` | `privateTenantProcedure` | `requiresWriteAccess` + `fileNotes` flag | `UpdateFileNoteCommentInput` (`.strict()`) | `FileNoteDto` (`.strict()`) | `updateFileNoteCommentHandler` (`fileNotes`, `users`) |
 | `fileNotes.archive` | `file-notes.router.ts:76` | `privateTenantProcedure` | `requiresWriteAccess` + `fileNotes` flag | `z.object({ id: uuid }).strict()` | None | `archiveFileNoteHandler` (`fileNotes`) |
-| `fileNotes.purge` | `file-notes.router.ts:86` | `privateTenantProcedure` | Deprecated (convert to soft-delete per `SEC-01`) | `z.object({ id: uuid }).strict()` | None | `purgeFileNoteHandler` (`fileNotes`) |
 | `fileNotes.getStorageQuota` | `file-notes.router.ts:96` | `privateTenantProcedure` | None | None | `StorageQuotaDto` (`.strict()`) | `getStorageQuotaHandler` (`fileNotes`) |
 
 ---

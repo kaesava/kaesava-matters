@@ -96,7 +96,7 @@ export function AllocationRuleStepCard({
               onPress={() => onUpdateSurplusTarget(index, null)}
             >
               <Text style={[styles.envelopePillText, !step.targetEnvelopeId && styles.envelopePillTextSelected]}>
-                {t('categories.mainPool')}
+                {t('categories.mainEnvelope')}
               </Text>
             </TouchableOpacity>
             {eligibleEnvelopes.map((env) => {

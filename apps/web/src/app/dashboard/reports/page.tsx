@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useMemo, useEffect, Suspense } from "react";
+import { useState, useMemo, useEffect, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { trpc } from "../../../lib/trpc";
 import { t } from "@money-matters/i18n";
@@ -96,8 +96,8 @@ function ReportsPageContent() {
       filteredDonutTitle: t("history.reporting.incomeSplits.filteredDonutTitle"),
       cashFlowTitle: t("history.reporting.incomeSplits.cashFlowTitle"),
       filteredCashFlowTitle: t("history.reporting.incomeSplits.filteredCashFlowTitle"),
-      topPoolsTitle: t("history.reporting.incomeSplits.topPoolsTitle"),
-      filteredTopPoolsTitle: t("history.reporting.incomeSplits.filteredTopPoolsTitle"),
+      topPoolsTitle: t("history.reporting.incomeSplits.topEnvelopesTitle"),
+      filteredTopPoolsTitle: t("history.reporting.incomeSplits.filteredTopEnvelopesTitle"),
       centerLabel: t("history.reporting.incomeSplits.totalAllocated"),
       inflowLegend: t("history.reporting.incomeSplits.inflow"),
       outflowLegend: t("history.reporting.incomeSplits.sweepOutflow"),
@@ -158,7 +158,7 @@ function ReportsPageContent() {
                   allowAllOption={true}
                   selectedPoolId={spendingPool}
                   allowCategorySelection={false}
-                  placeholder={t("reports.filters.allEnvelopes")}
+                  placeholder={t("common.allEnvelopes")}
                   showBalance={false}
                   onChange={(sel) => setSpendingPool(sel.poolId || "ALL")}
                 />
@@ -191,12 +191,12 @@ function ReportsPageContent() {
                     }`}
                   >
                     {tType === "ALL"
-                      ? t("history.filterAll")
+                      ? t("common.all")
                       : tType === "DEBIT"
-                      ? t("history.filterDebit")
+                      ? t("common.expense")
                       : tType === "CREDIT"
-                      ? t("history.filterCredit")
-                      : t("history.filterTransfer")}
+                      ? t("common.income")
+                      : t("common.transfer")}
                   </button>
                 ))}
               </div>

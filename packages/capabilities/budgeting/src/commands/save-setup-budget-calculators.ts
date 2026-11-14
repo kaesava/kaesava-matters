@@ -107,12 +107,7 @@ export async function insertEnvelopeEventsBulk(
   events: Array<typeof expenseEvents.$inferInsert>
 ): Promise<number> {
   if (events.length > 0) {
-    const query = tx.insert(expenseEvents).values(events);
-    if ("onConflictDoNothing" in query && typeof (query as { onConflictDoNothing?: unknown }).onConflictDoNothing === "function") {
-      await (query as { onConflictDoNothing: () => Promise<unknown> }).onConflictDoNothing();
-    } else {
-      await query;
-    }
+    await tx.insert(expenseEvents).values(events).onConflictDoNothing();
   }
   return events.length;
 }
@@ -172,12 +167,7 @@ export async function insertIncomeEventsBulk(
   events: Array<typeof incomeEvents.$inferInsert>
 ): Promise<number> {
   if (events.length > 0) {
-    const query = tx.insert(incomeEvents).values(events);
-    if ("onConflictDoNothing" in query && typeof (query as { onConflictDoNothing?: unknown }).onConflictDoNothing === "function") {
-      await (query as { onConflictDoNothing: () => Promise<unknown> }).onConflictDoNothing();
-    } else {
-      await query;
-    }
+    await tx.insert(incomeEvents).values(events).onConflictDoNothing();
   }
   return events.length;
 }

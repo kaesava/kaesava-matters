@@ -3,20 +3,20 @@ import { t } from "@money-matters/i18n";
 
 describe("Mobile Envelope Badge & Parity Tests", () => {
   it("resolves correct badge copy for all envelope types", () => {
-    expect(t("categories.scheduledBillBadge")).toBe("Recurring");
-    expect(t("categories.flexibleBillBadge")).toBe("Target");
-    expect(t("categories.targetDateGoalBadge")).toBe("Target");
-    expect(t("categories.ongoingGoalBadge")).toBe("Recurring");
+    expect(t("categories.recurringBadge")).toBe("Recurring");
+    expect(t("common.target")).toBe("Target");
+    expect(t("common.target")).toBe("Target");
+    expect(t("categories.recurringBadge")).toBe("Recurring");
     expect(t("categories.everydayBadge")).toBe("Everyday");
   });
 
   it("maps envelopeType and fundingMode to expected badge text for mobile cards", () => {
     function resolveBadge(envelopeType?: string | null, fundingMode?: string | null) {
       if (envelopeType === "BILL") {
-        return fundingMode === "RECURRING" ? t("categories.scheduledBillBadge") : t("categories.flexibleBillBadge");
+        return fundingMode === "RECURRING" ? t("categories.recurringBadge") : t("common.target");
       }
       if (envelopeType === "GOAL") {
-        return fundingMode === "RECURRING" ? t("categories.ongoingGoalBadge") : t("categories.targetDateGoalBadge");
+        return fundingMode === "RECURRING" ? t("categories.recurringBadge") : t("common.target");
       }
       if (envelopeType === "EVERYDAY") return t("categories.everydayBadge");
       return null;

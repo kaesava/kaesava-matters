@@ -3,8 +3,7 @@
  * Immediately activates the subscription and records initial invoice without waiting for webhooks.
  */
 import Stripe from "stripe";
-import { eq } from "drizzle-orm";
-import { tenants, billingInvoices, type DbOrTx } from "@money-matters/db";
+import { billingInvoices, type DbOrTx } from "@money-matters/db";
 import { validateEnv } from "@money-matters/config";
 import { z } from "zod";
 import { activateSubscriptionCommand } from "./activate-subscription.js";
@@ -24,7 +23,9 @@ export async function verifyCheckoutSessionCommand(
     throw new Error("Stripe secret key is not configured.");
   }
 
-  const stripe = new Stripe(stripeSecretKey);
+  const stripe = new Stripe(stripeSecretKey, {
+    httpClient: Stripe.createFetchHttpClient(),
+  });
 
   const session = await stripe.checkout.sessions.retrieve(cleanSessionId, {
     expand: ["subscription", "invoice"],

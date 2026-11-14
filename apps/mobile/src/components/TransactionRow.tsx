@@ -35,7 +35,6 @@ export function TransactionRow({
   // Use rawFlowType (DEBIT/CREDIT) if provided, or derive from flowType
   const effectiveFlow = rawFlowType || (flowType === 'DEBIT' ? 'DEBIT' : flowType === 'CREDIT' ? 'CREDIT' : 'DEBIT');
   const isDebit = effectiveFlow === 'DEBIT';
-  const isCredit = effectiveFlow === 'CREDIT';
 
   // Fallback label for display
   const displayName = categoryName || poolName || (isTransfer ? 'Transfer' : 'Transaction');

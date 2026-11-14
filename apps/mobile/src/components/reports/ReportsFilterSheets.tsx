@@ -78,7 +78,7 @@ export function ReportsFilterSheets({
             id: 'pool',
             title: t('categories.title'),
             options: [
-              { id: 'ALL', label: t('reports.filters.allEnvelopes') },
+              { id: 'ALL', label: t('common.allEnvelopes') },
               ...pools.map((p) => ({ id: p.id, label: p.name })),
             ],
             selectedValue: spendingPoolId,

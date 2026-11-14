@@ -1,6 +1,5 @@
 "use client";
 
-import React from "react";
 import { ArrowLeft, Trash2 } from "lucide-react";
 import { t } from "@money-matters/i18n";
 import { AmountField, DatePickerField, FormLabel } from "@money-matters/ui/web";

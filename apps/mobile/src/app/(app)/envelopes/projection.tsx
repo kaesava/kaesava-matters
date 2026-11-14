@@ -31,7 +31,7 @@ export default function PoolProjectionScreen() {
   const bankAccountsQuery = trpc.listBankAccounts.useQuery(undefined, {
     enabled: !!session?.user,
   });
-  const projectedBalancesQuery = trpc.getProjectedPoolBalances.useQuery(undefined, {
+  const projectedBalancesQuery = trpc.getProjectedEnvelopeBalances.useQuery(undefined, {
     enabled: !!session?.user,
   });
   const pools = poolsQuery.data ?? [];
@@ -116,14 +116,14 @@ export default function PoolProjectionScreen() {
         ) : (
           <View style={styles.sectionsContainer}>
             <ProjectionEnvelopeGroupSection
-              title={t('categories.everydayPoolsUpper')}
+              title={t('categories.everydayEnvelopesUpper')}
               pools={everydayPools}
               getBankForPool={getBankForPool}
               getPoolBalance={getPoolBalance}
             />
 
             <ProjectionEnvelopeGroupSection
-              title={t('categories.billsPoolsUpper')}
+              title={t('categories.billsEnvelopesUpper')}
               pools={billsPools}
               getBankForPool={getBankForPool}
               getPoolBalance={getPoolBalance}

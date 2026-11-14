@@ -97,7 +97,7 @@ export function QuickExpenseModal({
 
   const titleText =
     state.type === 'TRANSFER'
-      ? t('drawers.quickExpense.transferBetweenPools')
+      ? t('drawers.quickExpense.transferBetweenEnvelopes')
       : state.type === 'CREDIT'
       ? t('drawers.quickExpense.oneOffIncome')
       : t('drawers.quickExpense.oneOffExpense');
@@ -112,9 +112,9 @@ export function QuickExpenseModal({
       >
         <SegmentedTabs<QuickActionType>
           tabs={[
-            { key: 'DEBIT', label: t('drawers.quickExpense.tabExpense') },
-            { key: 'CREDIT', label: t('drawers.quickExpense.tabIncome') },
-            { key: 'TRANSFER', label: t('drawers.quickExpense.tabTransfer') },
+            { key: 'DEBIT', label: t('common.expense') },
+            { key: 'CREDIT', label: t('common.income') },
+            { key: 'TRANSFER', label: t('common.transfer') },
           ]}
           activeKey={state.type}
           onChange={state.setType}

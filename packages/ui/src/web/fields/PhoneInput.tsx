@@ -1,4 +1,4 @@
-import React, { useId } from "react";
+import { useId } from "react";
 export { validateMobileNumber } from "../../lib/phone-validation";
 
 export interface PhoneInputProps {

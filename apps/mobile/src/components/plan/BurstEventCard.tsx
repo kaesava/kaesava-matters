@@ -90,7 +90,7 @@ export function BurstEventCard({
             >
               <Feather name="check" size={12} color={DESIGN_TOKENS.colors.onPrimary} />
               <Text style={styles.actionBtnPrimaryText}>
-                {isIncome ? t('common.runSplit') : t('common.markSpent')}
+                {isIncome ? t('common.planPayday') : t('common.markSpent')}
               </Text>
             </TouchableOpacity>
 

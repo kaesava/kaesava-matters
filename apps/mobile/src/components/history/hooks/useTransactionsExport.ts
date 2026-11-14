@@ -10,11 +10,11 @@ export function useTransactionsExport() {
   const exportLedgerCsv = async (transactions: LedgerTxItem[]) => {
     if (transactions.length === 0) return;
     const headers = [
-      t('history.exportHeaders.date'),
-      t('history.exportHeaders.amount'),
-      t('history.exportHeaders.type'),
-      t('history.exportHeaders.envelope'),
-      t('history.exportHeaders.category'),
+      t('tables.date'),
+      t('common.amount'),
+      t('common.type'),
+      t('categories.typeLabel'),
+      t('categories.typeLabel'),
       t('history.exportHeaders.account'),
       t('history.exportHeaders.note'),
     ];

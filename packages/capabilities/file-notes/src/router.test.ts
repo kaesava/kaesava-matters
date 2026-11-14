@@ -2,11 +2,6 @@ import { describe, it, expect, vi } from "vitest";
 import type { DbOrTx } from "@money-matters/db";
 import {
   createPreSignedUrlHandler,
-  createFileNoteHandler,
-  listFileNotesHandler,
-  archiveFileNoteHandler,
-  purgeFileNoteHandler,
-  getStorageQuotaHandler,
 } from "./handlers/index.js";
 
 describe("FileNotes capability handlers", () => {

@@ -67,10 +67,10 @@ export function SyncBalanceEnvelopeRow({
           <View style={[styles.typeBadge, badgeStyle]}>
             <Text style={styles.typeText}>
               {pool.poolType === 'EVERYDAY'
-                ? t('poolTypes.everyday')
+                ? t('envelopeTypes.everyday')
                 : pool.poolType === 'BILL'
-                ? t('poolTypes.bills')
-                : t('poolTypes.goals')}
+                ? t('envelopeTypes.bills')
+                : t('envelopeTypes.goals')}
             </Text>
           </View>
           <Text style={styles.availText}>

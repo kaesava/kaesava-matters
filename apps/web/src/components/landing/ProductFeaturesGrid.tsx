@@ -1,6 +1,5 @@
 "use client";
 
-import React from "react";
 import { t } from "@money-matters/i18n";
 import { CalendarRange, Users, Sparkles, CheckCircle2 } from "lucide-react";
 

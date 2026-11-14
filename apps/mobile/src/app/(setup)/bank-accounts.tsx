@@ -93,7 +93,7 @@ export default function SetupBankAccountsScreen() {
 
       <View style={styles.actionRow}>
         <TouchableOpacity onPress={() => router.back()} style={styles.backBtn}>
-          <Text style={styles.backBtnText}>{t('setup.previousStep')}</Text>
+          <Text style={styles.backBtnText}>{t('common.back')}</Text>
         </TouchableOpacity>
         <TouchableOpacity
           onPress={handleNext}

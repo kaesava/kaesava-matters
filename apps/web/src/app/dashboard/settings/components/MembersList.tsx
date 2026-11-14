@@ -1,7 +1,6 @@
 "use client";
 
 import Image from "next/image";
-import React from "react";
 import { t } from "@money-matters/i18n";
 import { InfoTooltip } from "@money-matters/ui/web";
 
@@ -112,7 +111,7 @@ export function MembersList({
                       )}
                       {(m.isPending || m.inviteStatus === "PENDING") && (
                         <span className="px-2 py-0.5 text-[10px] font-bold bg-amber-100 text-amber-800 border border-amber-200 rounded-md">
-                          ⌛ {t("partner.pendingAcceptance")}
+                          ⌛ {t("memberInvite.pendingAcceptance")}
                         </span>
                       )}
                     </div>

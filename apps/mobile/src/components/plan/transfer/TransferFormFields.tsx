@@ -80,14 +80,14 @@ export const TransferFormFields: React.FC<TransferFormFieldsProps> = ({
       />
 
       <MobileEnvelopePicker
-        label={t('drawers.quickExpense.fromPool')}
+        label={t('drawers.quickExpense.fromEnvelope')}
         required
         displayStyle="field"
         mode="inline"
         pools={formattedPools}
         selectedPoolId={sourcePoolId}
         allowCategorySelection={false}
-        placeholder={t('common.selectPool')}
+        placeholder={t('common.selectEnvelope')}
         onSelectPool={(pId) => {
           setSourcePoolId(pId);
           onFieldChange();
@@ -95,14 +95,14 @@ export const TransferFormFields: React.FC<TransferFormFieldsProps> = ({
       />
 
       <MobileEnvelopePicker
-        label={t('drawers.quickExpense.toPoolDestination')}
+        label={t('drawers.quickExpense.toEnvelopeDestination')}
         required
         displayStyle="field"
         mode="inline"
         pools={formattedPools}
         selectedPoolId={destinationPoolId}
         allowCategorySelection={false}
-        placeholder={t('common.selectPool')}
+        placeholder={t('common.selectEnvelope')}
         onSelectPool={(pId) => {
           setDestinationPoolId(pId);
           onFieldChange();

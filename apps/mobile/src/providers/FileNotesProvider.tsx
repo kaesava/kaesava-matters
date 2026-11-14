@@ -65,14 +65,17 @@ export function MobileFileNotesProvider({ children }: { children: React.ReactNod
         };
       },
       usePurgeMutation: () => {
-        const mut = trpc.fileNotes.purge.useMutation({
+        const mut = trpc.fileNotes.archive.useMutation({
           onSuccess: () => {
             trpcUtils.fileNotes.list.invalidate();
             trpcUtils.fileNotes.getStorageQuota.invalidate();
           },
         });
         return {
-          mutateAsync: mut.mutateAsync,
+          mutateAsync: async (input: { id: string }) => {
+            const res = await mut.mutateAsync(input);
+            return { success: res.success, purgedId: input.id };
+          },
           isPending: mut.isPending,
         };
       },

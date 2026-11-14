@@ -37,7 +37,9 @@ export async function syncSubscriptionCommand(
     return await getSubscriptionStatus(db, tenantId);
   }
 
-  const stripe = new Stripe(stripeSecretKey);
+  const stripe = new Stripe(stripeSecretKey, {
+    httpClient: Stripe.createFetchHttpClient(),
+  });
 
   try {
     // 1. Fetch latest subscriptions for this customer

@@ -1,6 +1,5 @@
 "use client";
 
-import React from "react";
 import { SchoolType, SchoolStage, ChildConfig } from "@money-matters/types";
 import { AmountField } from "@money-matters/ui/web";
 import { t } from "@money-matters/i18n";

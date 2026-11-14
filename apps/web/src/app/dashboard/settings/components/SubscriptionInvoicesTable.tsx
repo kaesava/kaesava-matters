@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { Spinner, PaginationBar, useCurrencyLocale, formatCurrency } from "@money-matters/ui/web";
 import { t } from "@money-matters/i18n";
 
@@ -55,9 +55,9 @@ export function SubscriptionInvoicesTable({
           <table className="w-full text-left text-xs">
             <thead>
               <tr className="border-b border-zinc-100 dark:border-zinc-800 text-zinc-400 font-bold uppercase tracking-wider">
-                <th className="pb-2 text-center">{t("subscription.invoiceDate")}</th>
-                <th className="pb-2 text-right">{t("subscription.invoiceAmount")}</th>
-                <th className="pb-2 text-center">{t("subscription.invoiceStatus")}</th>
+                <th className="pb-2 text-center">{t("tables.date")}</th>
+                <th className="pb-2 text-right">{t("common.amount")}</th>
+                <th className="pb-2 text-center">{t("common.status")}</th>
                 <th className="pb-2 text-center">{t("subscription.invoiceReceipt")}</th>
               </tr>
             </thead>

@@ -1,6 +1,11 @@
 import { S3Client, PutObjectCommand, DeleteObjectCommand, GetObjectCommand } from '@aws-sdk/client-s3';
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
+import { TRPCError } from '@trpc/server';
 import { logger } from '@money-matters/core';
+
+function isProductionStorage(): boolean {
+  return process.env.NODE_ENV === 'production' || process.env.ENVIRONMENT === 'production';
+}
 
 let _s3Client: S3Client | null = null;
 
@@ -37,6 +42,9 @@ export async function getPresignedDownloadUrl(
   const secretAccessKey = process.env.STORAGE_SECRET_ACCESS_KEY || '';
 
   if (!bucketName || !accessKeyId || !secretAccessKey) {
+    if (isProductionStorage()) {
+      throw new TRPCError({ code: 'INTERNAL_SERVER_ERROR', message: 'storage_not_configured' });
+    }
     logger.warn('[Storage Mock] Returning mock download URL for key: ' + fileKey);
     return `http://localhost:3001/api/mock-download?key=${encodeURIComponent(fileKey)}`;
   }
@@ -66,6 +74,9 @@ export async function getPresignedUploadUrl(
   const secretAccessKey = process.env.STORAGE_SECRET_ACCESS_KEY || '';
 
   if (!bucketName || !accessKeyId || !secretAccessKey) {
+    if (isProductionStorage()) {
+      throw new TRPCError({ code: 'INTERNAL_SERVER_ERROR', message: 'storage_not_configured' });
+    }
     logger.warn('[Storage Mock] Returning mock upload URL for key: ' + fileKey);
     return `http://localhost:3001/api/mock-upload?key=${encodeURIComponent(fileKey)}`;
   }

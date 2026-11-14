@@ -111,8 +111,8 @@ export function HorizonPlanTab({
       <div className="flex flex-wrap items-center justify-between gap-4">
         <div className="flex items-center gap-2">
           <h2 className="text-lg font-bold text-[#1B2B4B] dark:text-white flex items-center gap-2">
-            <span>{t("matrix.incomeAllocationGridTitle")}</span>
-            <InfoTooltip content={t("matrix.incomeAllocationGridTooltip")} />
+            <span>{t("paydaySchedule.incomeAllocationGridTitle")}</span>
+            <InfoTooltip content={t("paydaySchedule.incomeAllocationGridTooltip")} />
           </h2>
         </div>
 
@@ -123,21 +123,21 @@ export function HorizonPlanTab({
               onClick={() => setStatusFilter("ALL")}
               className={"px-3 py-1.5 text-xs font-bold rounded-lg transition-all " + (statusFilter === "ALL" ? "bg-white dark:bg-zinc-900 text-[#1B2B4B] dark:text-white shadow-xs" : "text-zinc-500 hover:text-zinc-900 dark:hover:text-white")}
             >
-              {t("matrix.statusAll")}
+              {t("common.all")}
             </button>
             <button
               type="button"
               onClick={() => setStatusFilter("PENDING")}
               className={"px-3 py-1.5 text-xs font-bold rounded-lg transition-all " + (statusFilter === "PENDING" ? "bg-white dark:bg-zinc-900 text-[#1B2B4B] dark:text-white shadow-xs" : "text-zinc-500 hover:text-zinc-900 dark:hover:text-white")}
             >
-              {t("matrix.statusPending")}
+              {t("paydaySchedule.statusPending")}
             </button>
             <button
               type="button"
               onClick={() => setStatusFilter("CONFIRMED")}
               className={"px-3 py-1.5 text-xs font-bold rounded-lg transition-all " + (statusFilter === "CONFIRMED" ? "bg-white dark:bg-zinc-900 text-[#1B2B4B] dark:text-white shadow-xs" : "text-zinc-500 hover:text-zinc-900 dark:hover:text-white")}
             >
-              {t("matrix.statusConfirmed")}
+              {t("paydaySchedule.statusConfirmed")}
             </button>
           </div>
 
@@ -172,7 +172,7 @@ export function HorizonPlanTab({
             onClick={() => setShowFullHorizon(!showFullHorizon)}
             className="px-4 py-2 bg-zinc-100 hover:bg-zinc-200 dark:bg-zinc-800 dark:hover:bg-zinc-700 text-[#1B2B4B] dark:text-white font-bold text-xs rounded-xl transition-colors shadow-xs cursor-pointer"
           >
-            {showFullHorizon ? t("matrix.showNext5") : t("matrix.showFull12Events")}
+            {showFullHorizon ? t("paydaySchedule.showNext5") : t("paydaySchedule.showFull12Events")}
           </button>
         </div>
       </div>
@@ -240,7 +240,7 @@ export function HorizonPlanTab({
                               const targetVal = rawTarget != null ? Number(rawTarget) : null;
                               return (
                                 <div className="text-[10px] font-medium text-zinc-500 font-mono mt-0.5">
-                                  {t("matrix.balanceShort")}: {fmt(curBal)}
+                                  {t("paydaySchedule.balanceShort")}: {fmt(curBal)}
                                   {targetVal != null && targetVal > 0 ? (" / Target: " + fmt(targetVal)) : ""}
                                 </div>
                               );
@@ -269,7 +269,7 @@ export function HorizonPlanTab({
                                   isSurplusTarget={row.isSurplusTarget}
                                 />
                                 <span className="text-[10px] font-mono text-zinc-500 font-medium mt-0.5">
-                                  {t("matrix.balanceShort")}: {fmt(cell.projectedBalance)}
+                                  {t("paydaySchedule.balanceShort")}: {fmt(cell.projectedBalance)}
                                 </span>
                               </div>
                             </td>
@@ -303,9 +303,9 @@ export function HorizonPlanTab({
             await handleSaveAutoSplit(targetId);
           }
         }}
-        title={t("matrix.saveDialogTitle")}
-        description={t("matrix.saveDialogDescription")}
-        confirmLabel={t("matrix.saveDialogConfirm")}
+        title={t("paydaySchedule.saveDialogTitle")}
+        description={t("paydaySchedule.saveDialogDescription")}
+        confirmLabel={t("paydaySchedule.saveDialogConfirm")}
         variant="primary"
       />
 

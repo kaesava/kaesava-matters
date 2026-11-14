@@ -1,11 +1,9 @@
-import React from 'react';
 import {
   Modal,
   View,
   Text,
   TouchableOpacity,
   StyleSheet,
-  Pressable,
 } from 'react-native';
 import { Feather } from '@expo/vector-icons';
 import { t } from '@money-matters/i18n';
@@ -92,7 +90,7 @@ export function MobileProductTourSheet({
                   activeOpacity={0.8}
                 >
                   <Feather name="arrow-left" size={14} color={D.colors.textMuted} />
-                  <Text style={styles.backBtnText}>{t('tour.controls.back')}</Text>
+                  <Text style={styles.backBtnText}>{t('common.back')}</Text>
                 </TouchableOpacity>
               ) : null}
 
@@ -102,7 +100,7 @@ export function MobileProductTourSheet({
                 activeOpacity={0.85}
               >
                 <Text style={styles.nextBtnText}>
-                  {isLastStep ? t('tour.controls.finish') : t('tour.controls.next')}
+                  {isLastStep ? t('tour.controls.finish') : t('common.next')}
                 </Text>
                 <Feather
                   name={isLastStep ? 'check' : 'arrow-right'}

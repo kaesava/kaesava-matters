@@ -1,4 +1,3 @@
-import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import { TopOutflowPoolDTO, TopPayeeItemDTO } from '@money-matters/types';
 import { DESIGN_TOKENS } from '../../tokens';
@@ -58,7 +57,7 @@ function FilteredMobilePayeesView({
   if (payees.length === 0 || totalOutflow <= 0) {
     return (
       <View style={styles.emptyContainer}>
-        <Text style={styles.emptyText}>{t('history.reporting.topPools.emptyPayees')}</Text>
+        <Text style={styles.emptyText}>{t('history.reporting.topEnvelopes.emptyPayees')}</Text>
       </View>
     );
   }
@@ -110,7 +109,7 @@ function MacroMobilePoolsView({
     return (
       <View style={styles.emptyContainer}>
         <Text style={styles.emptyText}>
-          {emptyText || t('history.reporting.topPools.empty')}
+          {emptyText || t('history.reporting.topEnvelopes.empty')}
         </Text>
       </View>
     );
@@ -150,7 +149,7 @@ function MacroMobilePoolsView({
         <View style={[styles.row, styles.otherRow]}>
           <View style={styles.labelRow}>
             <Text style={styles.otherName} numberOfLines={1}>
-              {t('history.reporting.topPools.otherPools')}
+              {t('history.reporting.topEnvelopes.otherEnvelopes')}
             </Text>
             <View style={styles.amtGroup}>
               <Text style={styles.otherAmount}>{formatCurrency(otherPoolsAmount)}</Text>

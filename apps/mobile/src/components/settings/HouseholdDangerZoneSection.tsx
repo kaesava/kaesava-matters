@@ -28,7 +28,7 @@ export function HouseholdDangerZoneSection() {
   const gov = govQuery.data;
   if (!gov) return null;
 
-  const handleSignOutAndExit = async (hasOtherHousehold: boolean) => {
+  const handleSignOutAndExit = async (_hasOtherHousehold: boolean) => {
     await unregisterCachedPushToken((input) => removeToken.mutateAsync(input));
     await authClient.signOut();
     await SecureStore.deleteItemAsync('money-matters_session_token');

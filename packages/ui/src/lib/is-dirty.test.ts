@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { isFormDirty, isSingleValueDirty } from "./is-dirty";
+import { isFormDirty } from "./is-dirty";
 
 describe("isFormDirty & isSingleValueDirty Utility", () => {
   it("should return false when initial and current states are identical", () => {

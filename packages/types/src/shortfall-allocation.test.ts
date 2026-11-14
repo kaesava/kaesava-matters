@@ -1,54 +1,9 @@
 import { describe, it, expect } from 'vitest';
 import {
-  calculateShortfall,
-  calculateTotalAllocated,
   validateShortfallAllocations,
 } from './shortfall-allocation';
 
 describe('shortfall-allocation in @money-matters/types', () => {
-  describe('calculateShortfall', () => {
-    it('returns 0 when pool balance covers expense', () => {
-      expect(calculateShortfall(100, 150)).toBe(0);
-      expect(calculateShortfall(100, 100)).toBe(0);
-    });
-
-    it('returns exact difference when balance is less than expense', () => {
-      expect(calculateShortfall(100, 40)).toBe(60);
-      expect(calculateShortfall(150.5, 50.25)).toBe(100.25);
-    });
-
-    it('handles negative or zero balances', () => {
-      expect(calculateShortfall(100, -20)).toBe(120);
-      expect(calculateShortfall(100, 0)).toBe(100);
-    });
-
-    it('handles invalid or zero target amounts', () => {
-      expect(calculateShortfall(0, 50)).toBe(0);
-      expect(calculateShortfall(-10, 50)).toBe(0);
-      expect(calculateShortfall(NaN, 50)).toBe(0);
-    });
-  });
-
-  describe('calculateTotalAllocated', () => {
-    it('sums string and number values correctly', () => {
-      const allocations = {
-        pool1: '25.50',
-        pool2: 30.25,
-        pool3: '0',
-        pool4: '',
-      };
-      expect(calculateTotalAllocated(allocations)).toBe(55.75);
-    });
-
-    it('ignores invalid numeric strings', () => {
-      const allocations = {
-        pool1: 'invalid',
-        pool2: 15,
-      };
-      expect(calculateTotalAllocated(allocations)).toBe(15);
-    });
-  });
-
   describe('validateShortfallAllocations', () => {
     it('is valid when there is no shortfall', () => {
       const res = validateShortfallAllocations(0, {});

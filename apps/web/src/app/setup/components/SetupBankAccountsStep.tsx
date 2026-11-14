@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import { useState } from "react";
 import { t } from "@money-matters/i18n";
 import { ConfirmDialog, InfoTooltip, FormErrorBanner } from "@money-matters/ui/web";
 import { computeAccountAvailability } from "@money-matters/types";

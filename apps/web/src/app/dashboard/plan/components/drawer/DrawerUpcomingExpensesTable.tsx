@@ -1,6 +1,5 @@
 "use client";
 
-import React from "react";
 import Link from "next/link";
 import { t } from "@money-matters/i18n";
 import { useLocale } from "../../../../../providers/LocaleProvider";
@@ -46,8 +45,8 @@ export function DrawerUpcomingExpensesTable({
               <tr className="bg-zinc-50 dark:bg-zinc-800/80 border-b border-zinc-200 dark:border-zinc-800 text-zinc-500 font-bold">
                 <th className="p-3 text-left">{t("categoryDrawer.expenseName")}</th>
                 <th className="p-3 text-center">{t("categoryDrawer.dueDate")}</th>
-                <th className="p-3 text-right">{t("categoryDrawer.amount")}</th>
-                <th className="p-3 text-center">{t("categoryDrawer.status")}</th>
+                <th className="p-3 text-right">{t("common.amount")}</th>
+                <th className="p-3 text-center">{t("common.status")}</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-zinc-100 dark:divide-zinc-800">

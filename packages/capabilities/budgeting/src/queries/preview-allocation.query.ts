@@ -92,7 +92,6 @@ export async function previewAllocationQuery(
     freqDays = parseRruleFrequencyDays(event.rrule);
   }
 
-  const todayStr = getTenantDateString(new Date(), { timezone: tenantTz });
   const bufferDays = 3;
   const eventTime = event ? new Date(event.expectedDate + "T00:00:00").getTime() : Date.now();
   const forwardWindowDays = 90;

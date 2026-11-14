@@ -11,7 +11,6 @@ export const transferEvents = pgTable("transfer_events", {
   name: varchar("name", { length: 255 }).notNull(),
   expectedDate: date("expected_date").notNull(),
   expectedAmount: numeric("expected_amount", { precision: 12, scale: 2 }).notNull(),
-  actualAmount: numeric("actual_amount", { precision: 12, scale: 2 }),
   status: transferEventStatusEnum("status").notNull().default("PENDING"),
   ...tenantAndTimestamps,
 });

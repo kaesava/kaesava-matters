@@ -7,15 +7,12 @@ export const reports = {
       "paydayPlans": "Payday Plans"
     },
     "filters": {
-      "allEnvelopes": "All Envelopes",
       "allBanks": "All Bank Accounts",
       "allFlows": "All Flows",
       "debitsOnly": "Expenses Only",
       "creditsOnly": "Income Only",
       "transfersOnly": "Transfers Only",
-      "clearAll": "Clear Filters",
-      "searchSpendingPlaceholder": "Filter payees, notes, or merchants...",
-      "searchPaydaysPlaceholder": "Filter payday plans..."
+      "clearAll": "Clear Filters"
     },
     "kpi": {
     }

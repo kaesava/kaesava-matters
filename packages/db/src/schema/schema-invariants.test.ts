@@ -27,7 +27,9 @@ describe("Database Schema Audit & Multi-Tenancy Invariants", () => {
         if (name !== "tenants") {
           expect(cols, `${name} missing tenantId`).toHaveProperty("tenantId");
         }
-        expect(cols, `${name} missing appId`).toHaveProperty("appId");
+        if (name !== "tenants" && name !== "tenantUsers") {
+          expect(cols, `${name} missing appId`).toHaveProperty("appId");
+        }
       }
     }
   });

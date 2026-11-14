@@ -1,8 +1,8 @@
 import type { EnvelopeType, FundingMode } from "./envelope.types.js";
 
-export type EnvelopeBalanceStatus = "INACTIVE" | "COVERED" | "PARTIAL" | "SHORTFALL" | "ON_TRACK";
+type EnvelopeBalanceStatus = "INACTIVE" | "COVERED" | "PARTIAL" | "SHORTFALL" | "ON_TRACK";
 
-export interface EnvelopeStatusInput {
+interface EnvelopeStatusInput {
   id: string;
   name: string;
   envelopeType: string;

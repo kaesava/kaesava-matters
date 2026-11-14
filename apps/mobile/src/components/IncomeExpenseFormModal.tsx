@@ -181,7 +181,7 @@ export function IncomeExpenseFormModal({
         isEdit
           ? (sourceToEdit?.name || '')
           : mode === 'INCOME'
-          ? t('planTabs.addIncomeSchedule')
+          ? t('payday.addIncomeSchedule')
           : t('modals.incomeExpenseForm.titleAddExpense')
       }
       footer={

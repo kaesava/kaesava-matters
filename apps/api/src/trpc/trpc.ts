@@ -1,7 +1,6 @@
 import { initTRPC, TRPCError } from '@trpc/server';
 import type { EdgeContext as Context } from './edge-context.js';
 
-import { db } from '@money-matters/db';
 import { sql } from 'drizzle-orm';
 import { getSubscriptionStatus } from '@money-matters/capability-billing';
 import type { SubscriptionStatusDto } from '@money-matters/types';

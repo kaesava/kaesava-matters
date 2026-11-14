@@ -69,12 +69,13 @@ export const auth = {
     "label": "Switch Household",
     "title": "Switch Household",
     "subtitle": "Select a household to view and manage its budget",
+    "defaultName": "My Household",
     "active": "Active",
     "switchAction": "Switch",
     "switchSuccess": "Switched to {name}",
     "switchError": "Failed to switch household"
   },
-  "partner": {
+  "memberInvite": {
     "acceptTitle": "Joining your household…",
     "acceptSubtitle": "Checking your invite.",
     "acceptSuccessTitle": "You're in! Welcome to the household 🎉",

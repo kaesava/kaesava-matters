@@ -4,7 +4,8 @@ import type {
   ProjectionExpenseEvent,
   ProjectionIncomeEvent,
 } from "@money-matters/types";
-import { getTenantDateString } from "@money-matters/core";
+import { getTenantDateString } from "@money-matters/types";
+import { t } from "@money-matters/i18n";
 import type { OneOffSimulationParams } from "./simulation-types.js";
 
 export function simulateOneOffPurchase(
@@ -72,7 +73,7 @@ export function simulateOneOffPurchase(
         nextPaydayDate: nextPaycheckDateStr,
         upcomingBillsBeforePayday: totalBillsBeforePayday.toFixed(2),
         rationaleSteps: [
-          `Everyday balance: $${everydayBalance.toFixed(2)}${includePersonal ? " (includes Personal Pools)" : ""}`,
+          `Everyday balance: $${everydayBalance.toFixed(2)}${includePersonal ? t("canIAfford.includesPersonalEnvelopes") : ""}`,
           `Upcoming bills before payday: $${totalBillsBeforePayday.toFixed(2)} (100% protected)`,
           `After purchase: $${everydayRemaining} remaining until payday on ${nextPaycheckDateStr}.`,
           `Comfortably above your recommended safe cushion of $${safeCushion}.`,

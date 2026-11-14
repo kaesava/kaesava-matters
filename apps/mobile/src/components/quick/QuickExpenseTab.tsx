@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
-import { Feather } from '@expo/vector-icons';
+import { View, Text, StyleSheet } from 'react-native';
 import {
   DESIGN_TOKENS,
   AmountInput,
@@ -101,7 +100,7 @@ export function QuickExpenseTab({
     }
 
     if (!selectedPoolId) {
-      setPoolError(t('drawers.quickExpense.poolSelectionRequired'));
+      setPoolError(t('drawers.quickExpense.envelopeSelectionRequired'));
       hasError = true;
     } else {
       setPoolError('');
@@ -144,7 +143,7 @@ export function QuickExpenseTab({
 
       {/* 2. Pool / Category Second */}
       <MobileEnvelopePicker
-        label={t('drawers.quickExpense.category')}
+        label={t('categories.typeLabel')}
         required
         displayStyle="field"
         mode="inline"
@@ -153,7 +152,7 @@ export function QuickExpenseTab({
         pools={enrichedPools}
         selectedPoolId={selectedPoolId}
         selectedCategoryId={selectedSubCategoryId}
-        placeholder={t('drawers.quickExpense.selectPoolOrCategoryPlaceholder')}
+        placeholder={t('common.selectEnvelope')}
         error={poolError}
         onSelectCategory={(poolId, catId) => {
           setSelectedPoolId(poolId);
@@ -165,7 +164,7 @@ export function QuickExpenseTab({
       {/* 3. Amount & Date */}
       <View style={styles.inputGroup}>
         <AmountInput
-          label={t('drawers.quickExpense.amountAud')}
+          label={t('common.amount')}
           required
           autoFocus={isDrawDown}
           value={amount}
@@ -184,7 +183,7 @@ export function QuickExpenseTab({
       </View>
 
       <MobileDatePickerField
-        label={t('drawers.quickExpense.dateLabel')}
+        label={t('tables.date')}
         value={date}
         onChange={setDate}
         required

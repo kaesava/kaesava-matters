@@ -1,8 +1,7 @@
 "use client";
 
-import React from "react";
 import { RecordFilterBadge } from "@money-matters/ui/web";
-import { getTenantDateString } from "@money-matters/core";
+import { getTenantDateString } from "@money-matters/types";
 import { TimelineEventItem } from "./timeline/types";
 import { useUpcomingTimelineData } from "./timeline/useUpcomingTimelineData";
 import { TimelineFiltersBar } from "./timeline/TimelineFiltersBar";

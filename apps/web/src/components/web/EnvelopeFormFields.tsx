@@ -1,4 +1,3 @@
-import React from 'react';
 import {
   Input,
   FormLabel,
@@ -106,17 +105,17 @@ export function EnvelopeFormFields({
   return (
     <>
       <Input
-        label={t('categories.poolNameLabel')}
+        label={t('categories.envelopeNameLabel')}
         required
         value={name}
         onChange={(e) => setName(e.target.value)}
-        placeholder={t('categories.placeholderPoolName')}
+        placeholder={t('categories.placeholderEnvelopeName')}
         autoFocus
       />
 
       {initialMode !== 'BILL_SCHEDULE' && (
         <div className="flex flex-col gap-1.5">
-          <FormLabel required>{t('categories.poolTypeLabel')}</FormLabel>
+          <FormLabel required>{t('categories.envelopeTypeLabel')}</FormLabel>
           <div className="flex items-center gap-2">
             {poolTypeOptions.map((opt) => {
               const isSelected = type === opt.value;
@@ -161,8 +160,8 @@ export function EnvelopeFormFields({
             <EnvelopeModeToggle
               mode={effectiveFundingMode}
               onChange={(m) => onFundingModeChange(m)}
-              targetBalanceLabel={t("envelopes.modeToggle.targetBalance")}
-              recurringLabel={t("envelopes.modeToggle.recurring")}
+              targetBalanceLabel={t("common.target")}
+              recurringLabel={t("categories.recurringBadge")}
             />
           )}
 
@@ -236,8 +235,8 @@ export function EnvelopeFormFields({
           <EnvelopeModeToggle
             mode={effectiveFundingMode}
             onChange={onFundingModeChange}
-            targetBalanceLabel={t("envelopes.modeToggle.targetBalance")}
-            recurringLabel={t("envelopes.modeToggle.recurring")}
+            targetBalanceLabel={t("common.target")}
+            recurringLabel={t("categories.recurringBadge")}
           />
 
           {effectiveFundingMode === 'TARGET_BALANCE' ? (

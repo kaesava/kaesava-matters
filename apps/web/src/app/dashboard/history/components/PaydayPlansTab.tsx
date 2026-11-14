@@ -182,7 +182,7 @@ export function PaydayPlansTab({
                     onClick={() => handlePlanSort("incomeName")}
                   >
                     <div className="flex items-center gap-1">
-                      <span>{t("history.typeCredit")}</span>
+                      <span>{t("common.income")}</span>
                       {planSortColumn === "incomeName" && (
                         <span>{planSortDirection === "asc" ? "↑" : "↓"}</span>
                       )}

@@ -65,8 +65,6 @@ export async function getHomeSummaryQuery(
       userId: envelopes.userId,
       bankAccountUserId: bankAccounts.userId,
       bankAccountIsPrivate: bankAccounts.isPrivate,
-      emoji: envelopes.emoji,
-      colorKey: envelopes.colorKey,
     })
     .from(envelopes)
     .leftJoin(bankAccounts, eq(envelopes.bankAccountId, bankAccounts.id))
@@ -178,8 +176,6 @@ export async function getHomeSummaryQuery(
         currentBalance: bal,
         targetAmount: target > 0 ? target : null,
         progressPercentage: progress,
-        emoji: env.emoji ?? null,
-        colorKey: env.colorKey ?? null,
       });
     }
   }

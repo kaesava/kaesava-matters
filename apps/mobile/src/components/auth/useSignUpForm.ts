@@ -1,6 +1,6 @@
-import { DEFAULT_TIMEZONE, DEFAULT_LOCALE } from "@money-matters/types";
+import { DEFAULT_TIMEZONE } from "@money-matters/types";
 import { useState, useMemo } from "react";
-import { useRouter, type Href } from "expo-router";
+import { useRouter } from "expo-router";
 import { usePostHog } from "posthog-react-native";
 import { t } from "@money-matters/i18n";
 import { SignUpInputSchema, isValidEmail, getCountryDefaults, detectBestGuessCountry } from "@money-matters/types";

@@ -1,6 +1,5 @@
 "use client";
 
-import React from "react";
 import { evaluatePasswordStrength } from "@money-matters/types";
 import { t } from "@money-matters/i18n";
 

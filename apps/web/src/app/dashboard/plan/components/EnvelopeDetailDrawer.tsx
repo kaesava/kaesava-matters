@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState, useMemo } from "react";
+import { useEffect, useState, useMemo } from "react";
 import Link from "next/link";
 import { ArrowDownCircle } from "lucide-react";
 import { t } from "@money-matters/i18n";
@@ -121,7 +121,6 @@ export function EnvelopeDetailDrawer({
   if (!isOpen) return null;
 
   const currentBal = targetPool ? parseFloat(String(targetPool.currentBalance || "0")) : 0;
-  const _isGoalPool = targetPool?.envelopeType === "GOAL";
 
   const resolvedTabs = [
     { id: "expenses" as const, label: `${t("categoryDrawer.tabs.upcomingExpenses")} (${effectiveEvents.length})` },
@@ -151,12 +150,12 @@ export function EnvelopeDetailDrawer({
                     <span className="text-[10px] font-extrabold uppercase px-2 py-0.5 rounded bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-300 border border-zinc-200 dark:border-zinc-700">
                       {targetPool.envelopeType === "BILL"
                         ? (targetPool.fundingMode === "RECURRING"
-                            ? t("categories.scheduledBillBadge")
-                            : t("categories.flexibleBillBadge"))
+                            ? t("categories.recurringBadge")
+                            : t("common.target"))
                         : targetPool.envelopeType === "GOAL"
                         ? (targetPool.fundingMode === "RECURRING"
-                            ? t("categories.ongoingGoalBadge")
-                            : t("categories.targetDateGoalBadge"))
+                            ? t("categories.recurringBadge")
+                            : t("common.target"))
                         : t("categories.everydayBadge")}
                     </span>
                   )}
@@ -285,7 +284,7 @@ export function EnvelopeDetailDrawer({
                       ? fmtDate(targetPool.endDate)
                       : "—"
                     : targetPool?.fundingMode === "TARGET_BALANCE"
-                    ? t("categories.frequencyMonthly")
+                    ? t("forms.monthly")
                     : targetPool?.fundingMode === "RECURRING"
                     ? formatRecurrenceLabel(targetPool.rrule, targetPool.budgetFrequency)
                     : "—"}

@@ -6,7 +6,6 @@ import {
   MobileBankPicker,
   MobileEnvelopePicker,
   MobileEnvelopeOption,
-  MobileBankOption,
   RecurrenceBuilder,
   useRecurrenceBuilder,
   FormErrorBanner,
@@ -124,7 +123,7 @@ export function IncomeExpenseFormFields({
       {mode === 'EXPENSE' && (
         <MobileEnvelopePicker
           displayStyle="field"
-          label={t('modals.incomeExpenseForm.assignedPool')}
+          label={t('categories.typeLabel')}
           required
           pools={pickerPools}
           selectedPoolId={poolId}
@@ -132,7 +131,7 @@ export function IncomeExpenseFormFields({
           allowAllOption={false}
           allowCategorySelection={true}
           onSelectCategory={onPoolSelect}
-          placeholder={t('modals.incomeExpenseForm.selectTargetPool')}
+          placeholder={t('common.selectEnvelope')}
           error={poolError}
         />
       )}

@@ -17,11 +17,11 @@ interface SetupEnvelopeRowProps {
 
 const FREQ_KEYS = ['WEEKLY', 'FORTNIGHTLY', 'MONTHLY', 'QUARTERLY', 'YEARLY'] as const;
 
-function getFreqSuffixLabel(freq: (typeof FREQ_KEYS)[number]): string {
+function getFreqSuffixLabel(freq: SetupFrequency): string {
   if (freq === 'WEEKLY') return t('setup.freqSuffixWk');
   if (freq === 'FORTNIGHTLY') return t('setup.freqSuffixFn');
   if (freq === 'QUARTERLY') return t('setup.freqSuffixQtr');
-  if (freq === 'YEARLY') return t('setup.freqSuffixYr');
+  if (freq === 'YEARLY' || freq === 'ANNUALLY') return t('setup.freqSuffixYr');
   return t('setup.freqSuffixMo');
 }
 
@@ -56,7 +56,7 @@ export function SetupEnvelopeRow({
               style={[styles.typeBadge, isFlexible ? styles.flexibleBadge : styles.scheduledBadge]}
             >
               <Text style={isFlexible ? styles.flexibleBadgeText : styles.scheduledBadgeText}>
-                {isFlexible ? t('categories.flexibleBillBadge') : t('categories.scheduledBillBadge')}
+                {isFlexible ? t('common.target') : t('categories.recurringBadge')}
               </Text>
             </TouchableOpacity>
           )}
@@ -82,7 +82,8 @@ export function SetupEnvelopeRow({
         <TouchableOpacity
           style={styles.freqBadge}
           onPress={() => {
-            const nextIdx = (FREQ_KEYS.indexOf(freq) + 1) % FREQ_KEYS.length;
+            const currentIdx = FREQ_KEYS.findIndex((k) => k === freq || (freq === 'ANNUALLY' && k === 'YEARLY'));
+            const nextIdx = (currentIdx + 1) % FREQ_KEYS.length;
             onUpdateFreq(FREQ_KEYS[nextIdx]!);
           }}
         >

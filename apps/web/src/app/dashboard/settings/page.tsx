@@ -143,6 +143,21 @@ function SettingsPageContent() {
             discardProfileRef.current = fn;
           }}
         />
+        <div className="bg-white/75 dark:bg-zinc-900/75 backdrop-blur-md rounded-2xl border border-slate-200/80 dark:border-zinc-800 p-6 shadow-xs flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div className="space-y-1">
+            <h3 className="text-sm font-bold text-[#1B2B4B] dark:text-white flex items-center gap-2">
+              <span>{t("settings.notifications.title")}</span>
+            </h3>
+            <p className="text-xs text-slate-500 dark:text-slate-400 max-w-xl leading-relaxed">
+              {t("settings.notifications.subtitle")}
+            </p>
+          </div>
+          <Link href="/dashboard/settings/notifications" className="shrink-0 self-start sm:self-center">
+            <Button variant="secondary" className="text-xs h-9 cursor-pointer">
+              {t("settings.notifications.title")}
+            </Button>
+          </Link>
+        </div>
       </div>
 
       <div className={activeTab === "household" ? "space-y-6" : "hidden"}>
@@ -153,16 +168,6 @@ function SettingsPageContent() {
           }}
         />
         <AllocationStrategySection />
-        <HouseholdMemberInviteSection />
-        <HouseholdDangerZoneSection />
-      </div>
-
-      <div className={activeTab === "archived" ? "space-y-6" : "hidden"}>
-        <ArchivedSection />
-      </div>
-
-      <div className={activeTab === "account-data" ? "space-y-6" : "hidden"}>
-        <SubscriptionSection status={status} />
         <div className="bg-white/75 dark:bg-zinc-900/75 backdrop-blur-md rounded-2xl border border-slate-200/80 dark:border-zinc-800 p-6 shadow-xs flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div className="space-y-1">
             <h3 className="text-sm font-bold text-[#1B2B4B] dark:text-white flex items-center gap-2">
@@ -179,6 +184,16 @@ function SettingsPageContent() {
             </Button>
           </Link>
         </div>
+        <HouseholdMemberInviteSection />
+        <HouseholdDangerZoneSection />
+      </div>
+
+      <div className={activeTab === "archived" ? "space-y-6" : "hidden"}>
+        <ArchivedSection />
+      </div>
+
+      <div className={activeTab === "account-data" ? "space-y-6" : "hidden"}>
+        <SubscriptionSection status={status} />
         <PrivacySection />
       </div>
 
@@ -223,7 +238,7 @@ function SettingsPageContent() {
         title={t("modals.discardChanges.title")}
         description={t("modals.discardChanges.description")}
         confirmLabel={t("modals.discardChanges.discard")}
-        cancelLabel={t("modals.discardChanges.cancel")}
+        cancelLabel={t("common.keepEditing")}
         variant="danger"
         onConfirm={handleConfirmDiscard}
         onClose={() => {

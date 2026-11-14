@@ -27,7 +27,7 @@ export const MobileHorizonCell: React.FC<MobileHorizonCellProps> = ({
         </View>
         {projectedBalance !== undefined && (
           <Text style={styles.projectedText}>
-            {t('matrix.balanceShort')}: {formatMobileCurrency(projectedBalance)}
+            {t('paydaySchedule.balanceShort')}: {formatMobileCurrency(projectedBalance)}
           </Text>
         )}
       </View>
@@ -41,7 +41,7 @@ export const MobileHorizonCell: React.FC<MobileHorizonCellProps> = ({
       </Text>
       {projectedBalance !== undefined && (
         <Text style={styles.projectedText}>
-          {t('matrix.balanceShort')}: {formatMobileCurrency(projectedBalance)}
+          {t('paydaySchedule.balanceShort')}: {formatMobileCurrency(projectedBalance)}
         </Text>
       )}
     </View>

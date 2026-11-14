@@ -1,5 +1,5 @@
 import { envelopes, expenseEvents, bankAccounts, DbOrTx } from "@money-matters/db";
-import { eq, and, sql } from "drizzle-orm";
+import { eq, and } from "drizzle-orm";
 
 export async function archiveEnvelopeCommand(
   envelopeId: string,
@@ -41,7 +41,7 @@ export async function archiveEnvelopeCommand(
     throw new Error("The Everyday envelope cannot be archived.");
   }
 
-  if (envelope.isSurplusTarget) {
+  if (envelope.isSurplusTarget && !envelope.isPrivate) {
     throw new Error("Cannot archive an envelope designated as the household Surplus Sweep Target. Please designate another envelope as the Surplus Sweep Target first.");
   }
 

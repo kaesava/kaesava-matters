@@ -19,8 +19,8 @@ describe("saveSetupBudgetHandler", () => {
   const appId = "00000000-0000-0000-0000-000000000002";
   const userId = "00000000-0000-0000-0000-000000000003";
 
-  let insertedRows: Record<string, any[]> = {};
-  let updatedRows: Record<string, any[]> = {};
+  let insertedRows: Record<string, Record<string, unknown>[]> = {};
+  let updatedRows: Record<string, Record<string, unknown>[]> = {};
 
   const createMockDb = (existingData?: {
     accounts?: Record<string, unknown>[];
@@ -68,11 +68,13 @@ describe("saveSetupBudgetHandler", () => {
           } else if (table === expenseEvents) {
             insertedRows["expense_events"] = [...(insertedRows["expense_events"] || []), ...items];
           }
-          return Promise.resolve(vals);
+          return Object.assign(Promise.resolve(vals), {
+            onConflictDoNothing: vi.fn().mockResolvedValue(vals),
+          });
         }),
       })),
       update: vi.fn().mockImplementation((table: unknown) => ({
-        set: vi.fn().mockImplementation((setVals: unknown) => ({
+        set: vi.fn().mockImplementation((setVals: Record<string, unknown>) => ({
           where: vi.fn().mockImplementation(() => {
             const tableName = table === tenants ? "tenants" : table === envelopes ? "envelopes" : (table as { name?: string })?.name || "unknown";
             updatedRows[tableName] = updatedRows[tableName] || [];

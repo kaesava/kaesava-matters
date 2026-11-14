@@ -2,9 +2,7 @@ import { describe, it, expect } from "vitest";
 import {
   SignInInputSchema,
   SignUpInputSchema,
-  ForgotPasswordInputSchema,
   ResetPasswordInputSchema,
-  OtpVerificationInputSchema,
   evaluatePasswordStrength,
   isValidEmail,
 } from "./auth.types.js";
@@ -86,22 +84,6 @@ describe("auth.types DTOs & Validation", () => {
     });
   });
 
-  describe("ForgotPasswordInputSchema", () => {
-    it("accepts valid email", () => {
-      const parsed = ForgotPasswordInputSchema.safeParse({
-        email: "forgot@example.com",
-      });
-      expect(parsed.success).toBe(true);
-    });
-
-    it("rejects invalid email", () => {
-      const parsed = ForgotPasswordInputSchema.safeParse({
-        email: "",
-      });
-      expect(parsed.success).toBe(false);
-    });
-  });
-
   describe("ResetPasswordInputSchema", () => {
     it("accepts valid email, 6-digit otp, and matching 8+ char passwords", () => {
       const parsed = ResetPasswordInputSchema.safeParse({
@@ -141,21 +123,6 @@ describe("auth.types DTOs & Validation", () => {
         confirmPassword: "MismatchPassword123!",
       });
       expect(parsed.success).toBe(false);
-    });
-  });
-
-  describe("OtpVerificationInputSchema", () => {
-    it("accepts 6-digit numeric string", () => {
-      const parsed = OtpVerificationInputSchema.safeParse({
-        email: "verify@example.com",
-        otp: "123456",
-      });
-      expect(parsed.success).toBe(true);
-    });
-
-    it("rejects non-6-digit or non-numeric otp", () => {
-      expect(OtpVerificationInputSchema.safeParse({ email: "v@e.com", otp: "12345" }).success).toBe(false);
-      expect(OtpVerificationInputSchema.safeParse({ email: "v@e.com", otp: "abcdef" }).success).toBe(false);
     });
   });
 

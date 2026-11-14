@@ -5,7 +5,7 @@ describe('i18n Localization Engine', () => {
   it('translates valid nested translation keys accurately', () => {
     expect(t('common.save')).toBe('Save');
     expect(t('common.previous')).toBe('Previous');
-    expect(t('common.nextPage')).toBe('Next');
+    expect(t('common.next')).toBe('Next');
     expect(t('common.pageOf', { page: 1, totalPages: 5 })).toBe('Page 1 of 5');
     expect(t('nav.incomeExpenses')).toBe('Plan');
     expect(t('app.title')).toBe('Money Matters');

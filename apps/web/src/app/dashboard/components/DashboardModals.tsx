@@ -1,6 +1,5 @@
 "use client";
 
-import React from "react";
 import { t } from "@money-matters/i18n";
 import { ConfirmDialog } from "@money-matters/ui/web";
 import { QuickActionDrawer } from "../../../components/web/QuickExpenseDrawer";
@@ -73,7 +72,7 @@ export function DashboardModals({
         <ConfirmDialog
           isOpen={!!incomeToDelete}
           title={t("common.deleteIncomeTitle")}
-          description={t("common.deleteExpensePrompt", {
+          description={t("common.deleteConfirmNamed", {
             name: incomeToDelete.name,
           })}
           confirmLabel={t("common.delete")}

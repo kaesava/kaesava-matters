@@ -1,8 +1,8 @@
 "use client";
-import { getTenantDateString } from "@money-matters/core";
+import { getTenantDateString } from "@money-matters/types";
 
 
-import React, { useState } from "react";
+import { useState } from "react";
 import { t } from "@money-matters/i18n";
 import { InfoTooltip, AmountField, EnvelopeModeToggle, ConfirmDialog } from "@money-matters/ui/web";
 import type { UserGoalItem } from "@money-matters/types";
@@ -158,8 +158,8 @@ export function SetupGoalsStep({
           <EnvelopeModeToggle
             mode={customType}
             onChange={setCustomType}
-            targetBalanceLabel={t("envelopes.modeToggle.targetBalance")}
-            recurringLabel={t("envelopes.modeToggle.recurring")}
+            targetBalanceLabel={t("common.target")}
+            recurringLabel={t("categories.recurringBadge")}
           />
         </div>
         <div className="flex flex-col sm:flex-row gap-2">
@@ -184,11 +184,11 @@ export function SetupGoalsStep({
               onChange={(e) => setCustomFrequency(e.target.value as "WEEKLY" | "FORTNIGHTLY" | "MONTHLY" | "QUARTERLY" | "ANNUALLY")}
               className="w-32 px-2.5 py-2 text-xs font-bold rounded-xl border border-zinc-200 bg-white font-medium cursor-pointer"
             >
-              <option value="WEEKLY">{t("categories.frequencyWeekly")}</option>
-              <option value="FORTNIGHTLY">{t("categories.frequencyFortnightly")}</option>
-              <option value="MONTHLY">{t("categories.frequencyMonthly")}</option>
+              <option value="WEEKLY">{t("forms.weekly")}</option>
+              <option value="FORTNIGHTLY">{t("forms.fortnightly")}</option>
+              <option value="MONTHLY">{t("forms.monthly")}</option>
               <option value="QUARTERLY">{t("setup.frequencyQuarterly")}</option>
-              <option value="ANNUALLY">{t("categories.frequencyAnnually")}</option>
+              <option value="ANNUALLY">{t("canIAfford.freqAnnually")}</option>
             </select>
           )}
           {customType === "TARGET_BALANCE" && (

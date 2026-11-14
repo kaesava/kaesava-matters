@@ -29,10 +29,10 @@ export function MarkPaidAccordionGroup({
 }: MarkPaidAccordionGroupProps) {
   const typeLabel =
     typeKey === 'BILL'
-      ? t('planTabs.bills')
+      ? t('envelopeTypes.bills')
       : typeKey === 'EVERYDAY'
-        ? t('planTabs.everyday')
-        : t('planTabs.goals');
+        ? t('envelopeTypes.everyday')
+        : t('envelopeTypes.goals');
 
   return (
     <View style={styles.accordionGroup}>

@@ -22,7 +22,7 @@ describe("restoreItemCommand", () => {
     const mockDb = {
       transaction: vi.fn().mockImplementation(async (cb: (tx: unknown) => Promise<unknown>) => cb(mockDb)),
       select: vi.fn().mockImplementation((fields?: unknown) => ({
-        from: vi.fn().mockImplementation((table: unknown) => ({
+        from: vi.fn().mockImplementation(() => ({
           where: vi.fn().mockImplementation(() => {
             if ((fields as Record<string, unknown> | undefined)?.timezone) {
               return chainable([{ timezone: "Australia/Sydney" }]);
@@ -53,7 +53,7 @@ describe("restoreItemCommand", () => {
     const mockDb = {
       transaction: vi.fn().mockImplementation(async (cb: (tx: unknown) => Promise<unknown>) => cb(mockDb)),
       select: vi.fn().mockImplementation((fields?: unknown) => ({
-        from: vi.fn().mockImplementation((table: unknown) => ({
+        from: vi.fn().mockImplementation(() => ({
           leftJoin: vi.fn().mockReturnValue({
             where: vi.fn().mockReturnValue(chainable([
               { isPrivate: false, bankAccountUserId: null, archivedAt: new Date() },

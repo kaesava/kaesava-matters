@@ -1,11 +1,11 @@
 import { AllocationStepType } from "./allocation-strategy.types.js";
 
-export interface CanonicalStepConfig {
+interface CanonicalStepConfig {
   stepType: AllocationStepType;
   config?: Record<string, unknown>;
 }
 
-export interface CanonicalPreset {
+interface CanonicalPreset {
   presetKey: "BALANCED" | "BILLS_FORTRESS" | "PAY_YOURSELF_FIRST";
   nameKey: string;
   descriptionKey: string;

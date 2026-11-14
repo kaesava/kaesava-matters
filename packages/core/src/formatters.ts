@@ -1,44 +1,26 @@
-export interface FormatterTenant {
-  country?: string | null;
-  currency?: string | null;
-  timezone?: string | null;
-  locale?: string | null;
-}
+import {
+  DEFAULT_TENANT_FORMATTER,
+  type FormatterTenant,
+  getCachedDateFormat,
+  getCurrencyFromCountry,
+  getLocaleFromCountry,
+  getTenantDateString,
+  toCents,
+  toDollars,
+} from "@money-matters/types";
 
-export const DEFAULT_TENANT_FORMATTER: FormatterTenant = {
-  country: "AU",
-  currency: "AUD",
-  timezone: "Australia/Sydney",
-  locale: "en-AU",
+export {
+  DEFAULT_TENANT_FORMATTER,
+  type FormatterTenant,
+  getCachedDateFormat,
+  getCurrencyFromCountry,
+  getLocaleFromCountry,
+  getTenantDateString,
+  toCents,
+  toDollars,
 };
 
-export function getLocaleFromCountry(countryCode?: string | null): string {
-  if (!countryCode) return "en-AU";
-  return `en-${countryCode}`;
-}
-
-export function getCurrencyFromCountry(countryCode?: string | null): string {
-  switch (countryCode) {
-    case "US":
-      return "USD";
-    case "GB":
-      return "GBP";
-    case "NZ":
-      return "NZD";
-    case "JP":
-      return "JPY";
-    case "CA":
-      return "CAD";
-    case "SG":
-      return "SGD";
-    case "AU":
-    default:
-      return "AUD";
-  }
-}
-
 const numberFormatCache = new Map<string, Intl.NumberFormat>();
-const dateFormatCache = new Map<string, Intl.DateTimeFormat>();
 
 function getCachedNumberFormat(locale: string, options: Intl.NumberFormatOptions): Intl.NumberFormat {
   const key = `${locale}:${JSON.stringify(options)}`;
@@ -50,31 +32,7 @@ function getCachedNumberFormat(locale: string, options: Intl.NumberFormatOptions
   return fmt;
 }
 
-export function getCachedDateFormat(locale: string, options: Intl.DateTimeFormatOptions): Intl.DateTimeFormat {
-  const key = `${locale}:${JSON.stringify(options)}`;
-  let fmt = dateFormatCache.get(key);
-  if (!fmt) {
-    fmt = new Intl.DateTimeFormat(locale, options);
-    dateFormatCache.set(key, fmt);
-  }
-  return fmt;
-}
-
-/**
- * Returns YYYY-MM-DD date string formatted according to tenant timezone.
- * Uses en-CA locale for ISO-style YYYY-MM-DD format.
- */
-export function getTenantDateString(
-  date: Date = new Date(),
-  tenant: FormatterTenant = DEFAULT_TENANT_FORMATTER
-): string {
-  const timezone = tenant?.timezone || DEFAULT_TENANT_FORMATTER.timezone!;
-  return getCachedDateFormat("en-CA", { timeZone: timezone }).format(date);
-}
-
-/**
- * Format a number/string as currency based on tenant country rules.
- */
+/** Format a number/string as currency based on tenant country rules. */
 export function formatCurrency(
   amount: number | string | null | undefined,
   tenant: FormatterTenant = DEFAULT_TENANT_FORMATTER,
@@ -94,9 +52,7 @@ export function formatCurrency(
   }).format(num);
 }
 
-/**
- * Format a date object/string based on tenant timezone rules.
- */
+/** Format a date object/string based on tenant timezone rules. */
 export function formatDate(
   date: Date | string | null | undefined,
   tenant: FormatterTenant = DEFAULT_TENANT_FORMATTER,
@@ -117,9 +73,7 @@ export function formatDate(
   }).format(d);
 }
 
-/**
- * Format a datetime object/string based on tenant timezone rules.
- */
+/** Format a datetime object/string based on tenant timezone rules. */
 export function formatDateTime(
   date: Date | string | null | undefined,
   tenant: FormatterTenant = DEFAULT_TENANT_FORMATTER,
@@ -140,19 +94,4 @@ export function formatDateTime(
     minute: "2-digit",
     ...options,
   }).format(d);
-}
-
-/**
- * Converts a dollar amount (number or string) to integer cents.
- */
-export function toCents(amount: number | string): number {
-  const num = typeof amount === "string" ? parseFloat(amount) : amount;
-  return isNaN(num) ? 0 : Math.round(num * 100);
-}
-
-/**
- * Converts integer cents to a 2-decimal dollar number.
- */
-export function toDollars(cents: number): number {
-  return Number((cents / 100).toFixed(2));
 }

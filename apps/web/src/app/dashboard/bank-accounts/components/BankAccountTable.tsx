@@ -102,7 +102,7 @@ export function BankAccountTable({
                 </div>
               </th>
               <th className="py-3.5 px-4 text-center">
-                <span>{t("bankAccounts.linkedPools")}</span>
+                <span>{t("bankAccounts.linkedEnvelopes")}</span>
               </th>
             </tr>
           </thead>
@@ -223,7 +223,7 @@ export function BankAccountTable({
                     <td className="py-4 px-4 text-center">
                       <div className="flex flex-col items-center gap-1">
                         {(acc.linkedPoolsCount ?? 0) === 0 ? (
-                          <span className="text-[11px] font-medium text-zinc-400 italic">{t("bankAccounts.noPoolsLinked")}</span>
+                          <span className="text-[11px] font-medium text-zinc-400 italic">{t("bankAccounts.noEnvelopesLinked")}</span>
                         ) : (
                           <>
                             <div className="flex flex-wrap items-center justify-center gap-1.5 max-w-xs">
@@ -243,7 +243,7 @@ export function BankAccountTable({
                                   onClick={() => openLinkedPoolsModal ? openLinkedPoolsModal(acc) : setSelectedAccForPools(acc)}
                                   className="text-[11px] font-bold text-slate-600 hover:text-[#2563eb] bg-slate-100 hover:bg-blue-50 border border-slate-200 px-1.5 py-0.5 rounded-md cursor-pointer transition-colors"
                                 >
-                                  {t("bankAccounts.morePoolsCount", { count: (acc.linkedPoolsCount ?? 0) - 2 })}
+                                  {t("bankAccounts.moreEnvelopesCount", { count: (acc.linkedPoolsCount ?? 0) - 2 })}
                                 </button>
                               )}
                             </div>
@@ -279,7 +279,7 @@ export function BankAccountTable({
           <div className="bg-white max-w-sm w-full rounded-2xl shadow-xl border border-zinc-200 p-5 space-y-4 animate-in fade-in duration-150">
             <div className="flex items-center justify-between border-b border-zinc-100 pb-3">
               <div>
-                <h4 className="font-extrabold text-sm text-[#1B2B4B]">{t("bankAccounts.linkedPoolsHeading")}</h4>
+                <h4 className="font-extrabold text-sm text-[#1B2B4B]">{t("bankAccounts.linkedEnvelopesHeading")}</h4>
                 <p className="text-[11px] text-zinc-500">{selectedAccForPools.name}</p>
               </div>
               <button
@@ -293,11 +293,11 @@ export function BankAccountTable({
 
             <div className="space-y-2 max-h-60 overflow-y-auto pr-1">
               {!(selectedAccForPools.linkedPools) || selectedAccForPools.linkedPools.length === 0 ? (
-                <p className="text-xs text-zinc-400 italic py-2">{t("bankAccounts.noPoolsCurrentlyLinked")}</p>
+                <p className="text-xs text-zinc-400 italic py-2">{t("bankAccounts.noEnvelopesCurrentlyLinked")}</p>
               ) : (
                 <>
                   <div className="flex items-center justify-between text-[10px] font-bold text-zinc-400 uppercase tracking-wider px-1 pb-1 border-b border-zinc-100">
-                    <span>{t("bankAccounts.poolNameAndType")}</span>
+                    <span>{t("bankAccounts.envelopeNameAndType")}</span>
                     <span>{t("common.balance")}</span>
                   </div>
                   {selectedAccForPools.linkedPools.map((p) => (
@@ -312,7 +312,7 @@ export function BankAccountTable({
                         </Link>
                         {p.isSurplusTarget && (
                           <span className="text-[9px] font-bold uppercase tracking-wider px-1.5 py-0.5 bg-blue-100 text-blue-700 rounded-md">
-                            {t("bankAccounts.sweepPoolBadge")}
+                            {t("bankAccounts.sweepEnvelopeBadge")}
                           </span>
                         )}
                         {(() => {
@@ -322,7 +322,7 @@ export function BankAccountTable({
                             <span className={`text-[9px] font-black px-1.5 py-0.5 rounded-md ${
                               isEveryday ? "bg-emerald-50 text-emerald-700" : isBill ? "bg-blue-50 text-[#2563eb]" : "bg-indigo-50 text-indigo-700"
                             }`}>
-                              {isEveryday ? t("planTabs.everyday") : isBill ? t("planTabs.bills") : t("planTabs.goals")}
+                              {isEveryday ? t("envelopeTypes.everyday") : isBill ? t("envelopeTypes.bills") : t("envelopeTypes.goals")}
                             </span>
                           );
                         })()}

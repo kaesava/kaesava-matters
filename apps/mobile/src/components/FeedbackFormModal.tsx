@@ -5,7 +5,6 @@ import {
   ScrollView,
   Switch,
   StyleSheet,
-  Linking,
 } from 'react-native';
 import {
   DESIGN_TOKENS,

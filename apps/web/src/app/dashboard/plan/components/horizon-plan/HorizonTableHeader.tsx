@@ -1,6 +1,5 @@
 "use client";
 
-import React from "react";
 import { useRouter } from "next/navigation";
 import { t } from "@money-matters/i18n";
 import { formatDateShort } from "./formatDateShort";
@@ -53,7 +52,7 @@ export function HorizonTableHeader({
     <thead>
       <tr className="bg-zinc-50 dark:bg-zinc-800/80 border-b border-zinc-200 dark:border-zinc-800">
         <th className="sticky left-0 z-20 bg-zinc-50 dark:bg-zinc-800/90 p-4 font-bold text-[#1B2B4B] dark:text-zinc-200 min-w-[260px] border-r border-zinc-200 dark:border-zinc-700">
-          {t("planTabs.matrixTableCategoriesHeader")}
+          {t("planTabs.scheduleEnvelopesHeader")}
         </th>
         {visibleColumns.map((col) => {
           const incomeEvt = incomeEvents.find((e) => e.id === col.id);
@@ -83,15 +82,15 @@ export function HorizonTableHeader({
                 {/* Row 1: Status Badge on its own row */}
                 {isConfirmed ? (
                   <span className="px-1.5 py-0.5 text-[10px] font-bold rounded bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300">
-                    {t("matrix.confirmedBadge")}
+                    {t("paydaySchedule.confirmedBadge")}
                   </span>
                 ) : isSaved ? (
                   <span className="px-1.5 py-0.5 text-[10px] font-bold rounded bg-slate-200 text-slate-800 dark:bg-slate-800 dark:text-slate-300">
-                    {t("matrix.savedBadge")}
+                    {t("paydaySchedule.savedBadge")}
                   </span>
                 ) : (
                   <span className="px-1.5 py-0.5 text-[10px] font-bold rounded bg-zinc-200 text-zinc-700 dark:bg-zinc-700 dark:text-zinc-300">
-                    {t("matrix.autoBadge")}
+                    {t("paydaySchedule.autoBadge")}
                   </span>
                 )}
 
@@ -121,9 +120,9 @@ export function HorizonTableHeader({
                         )
                       }
                       className="font-bold text-[#2563eb] hover:underline cursor-pointer transition-colors"
-                      title={t("matrix.review")}
+                      title={t("paydaySchedule.review")}
                     >
-                      {t("matrix.review")}
+                      {t("paydaySchedule.review")}
                     </button>
                   </div>
                 ) : isSaved ? (

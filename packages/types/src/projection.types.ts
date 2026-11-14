@@ -42,7 +42,7 @@ export interface ProjectionExpenseEvent {
   status: "PENDING" | "CONFIRMED";
 }
 
-export interface ProjectionTimelineStep {
+interface ProjectionTimelineStep {
   incomeEvent: ProjectionIncomeEvent;
   date: string;
   totalIncome: number;
@@ -54,7 +54,7 @@ export interface ProjectionTimelineStep {
   minProjectedBalances: Map<string, number>;
 }
 
-export interface ProjectionOutput {
+interface ProjectionOutput {
   steps: ProjectionTimelineStep[];
   finalBalances: Map<string, number>;
   getStepForEvent(incomeEventId: string): ProjectionTimelineStep | undefined;

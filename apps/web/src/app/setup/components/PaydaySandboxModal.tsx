@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect, useMemo } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { Sparkles, ShieldCheck, Target, Wallet } from "lucide-react";
 import { ModalDialog, AmountField, Button } from "@money-matters/ui/web";
 import {

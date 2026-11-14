@@ -82,10 +82,10 @@ function PoolsPageContent() {
     rawExpenseEvents: expenseEventsQuery.data,
     rawIncomeEvents: incomeEventsQuery.data,
     rawTransactions: transactionsQuery.data,
-    projectionColumns: trpc.getProjectedPoolBalances.useQuery(undefined, {
+    projectionColumns: trpc.getProjectedEnvelopeBalances.useQuery(undefined, {
       enabled: true,
     }).data?.columns,
-    poolBalances: trpc.getProjectedPoolBalances.useQuery(undefined, {
+    poolBalances: trpc.getProjectedEnvelopeBalances.useQuery(undefined, {
       enabled: true,
     }).data?.poolBalances,
     userTimezone,
@@ -190,7 +190,7 @@ function PoolsPageContent() {
             }}
             className="px-4 py-2.5 rounded-xl font-bold text-xs text-white bg-[#2563eb] hover:bg-blue-700 transition-all shadow-md flex items-center gap-2 cursor-pointer"
           >
-            <span>{t("categories.addPool")}</span>
+            <span>{t("categories.addEnvelope")}</span>
           </button>
 
           <EnvelopesOverflowMenu

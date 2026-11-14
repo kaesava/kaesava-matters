@@ -104,9 +104,9 @@ export function MobileHorizonPlanTab({ onOpenCategoryModal }: MobileHorizonPlanT
 
   const handleSave = (incomeEventId: string, totalIncome: number) => {
     showMobileConfirm({
-      title: t('matrix.saveDialogTitle'),
-      message: t('matrix.saveDialogDescription'),
-      confirmText: t('matrix.saveDialogConfirm'),
+      title: t('paydaySchedule.saveDialogTitle'),
+      message: t('paydaySchedule.saveDialogDescription'),
+      confirmText: t('paydaySchedule.saveDialogConfirm'),
       cancelText: t('common.cancel'),
       isDestructive: false,
       onConfirm: async () => {
@@ -118,7 +118,7 @@ export function MobileHorizonPlanTab({ onOpenCategoryModal }: MobileHorizonPlanT
           });
           await utils.listAllAllocationPlans.invalidate();
           await utils.getHorizonProjectionData.invalidate();
-          toast.success(t('matrix.saveSplitSuccess'));
+          toast.success(t('paydaySchedule.saveDraftSuccess'));
         } catch (err: unknown) {
           toast.error((err as Error).message || t('paydayDrawer.saveSplitFailed'));
         } finally {

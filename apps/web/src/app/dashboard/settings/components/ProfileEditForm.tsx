@@ -115,7 +115,7 @@ export function ProfileEditForm({
         {/* Name (Mandatory) */}
         <div className="flex flex-col gap-1.5">
           <label htmlFor="edit-name" className="text-xs font-bold text-[#1B2B4B]">
-            {t("settings.displayNameLabel")} <span className="text-red-500">*</span>
+            {t("common.name")} <span className="text-red-500">*</span>
           </label>
           <input
             id="edit-name"

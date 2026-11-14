@@ -24,12 +24,6 @@ export const SignUpInputSchema = z
     path: ["confirmPassword"],
   });
 
-export const ForgotPasswordInputSchema = z
-  .object({
-    email: z.string().trim().min(1, "fillAllFields").email("invalidEmail"),
-  })
-  .strict();
-
 export const ResetPasswordInputSchema = z
   .object({
     email: z.string().trim().min(1, "fillAllFields").email("invalidEmail"),
@@ -43,14 +37,7 @@ export const ResetPasswordInputSchema = z
     path: ["confirmPassword"],
   });
 
-export const OtpVerificationInputSchema = z
-  .object({
-    email: z.string().trim().min(1, "fillAllFields").email("invalidEmail"),
-    otp: z.string().trim().regex(/^\d{6}$/, "invalidOtp"),
-  })
-  .strict();
-
-export interface PasswordStrengthResult {
+interface PasswordStrengthResult {
   score: number;
   hasMinLength: boolean;
   hasLower: boolean;

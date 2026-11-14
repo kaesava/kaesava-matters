@@ -11,7 +11,7 @@ export async function getEnvelopeBalancesMap(
   appId: string,
   dbClient: DbOrTx
 ): Promise<Record<string, number>> {
-  const query = dbClient
+  const rows = await dbClient
     .select({
       envelopeId: transactionLedger.envelopeId,
       balance: sql<string>`COALESCE(SUM(CASE WHEN ${transactionLedger.flowType} = 'CREDIT' THEN ${transactionLedger.amount}::numeric ELSE -${transactionLedger.amount}::numeric END), 0)::text`,
@@ -23,34 +23,14 @@ export async function getEnvelopeBalancesMap(
         eq(transactionLedger.appId, appId),
         sql`${transactionLedger.archivedAt} IS NULL`
       )
-    );
-
-  type BalanceRow = {
-    envelopeId?: string | null;
-    balance?: string;
-    amount?: string;
-    flowType?: string;
-  };
-  type GroupableQuery = PromiseLike<BalanceRow[]> & {
-    groupBy?: (col: unknown) => Promise<BalanceRow[]>;
-  };
-
-  const groupableQuery = query as unknown as GroupableQuery;
-  const rows = typeof groupableQuery.groupBy === "function"
-    ? await groupableQuery.groupBy(transactionLedger.envelopeId)
-    : await groupableQuery;
+    )
+    .groupBy(transactionLedger.envelopeId);
 
   const balancesMap: Record<string, number> = {};
-  for (const r of (rows || [])) {
-    if (r && r.envelopeId) {
-      if (r.balance !== undefined) {
-        const val = parseFloat(r.balance || "0");
-        balancesMap[r.envelopeId] = (balancesMap[r.envelopeId] || 0) + (isNaN(val) ? 0 : val);
-      } else if (r.amount !== undefined) {
-        const val = parseFloat(r.amount);
-        const signed = r.flowType === "CREDIT" ? val : -val;
-        balancesMap[r.envelopeId] = (balancesMap[r.envelopeId] || 0) + (isNaN(signed) ? 0 : signed);
-      }
+  for (const r of rows) {
+    if (r?.envelopeId) {
+      const val = parseFloat(r.balance || "0");
+      balancesMap[r.envelopeId] = (balancesMap[r.envelopeId] || 0) + (isNaN(val) ? 0 : val);
     }
   }
   return balancesMap;

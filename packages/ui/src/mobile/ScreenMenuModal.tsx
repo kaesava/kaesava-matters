@@ -1,4 +1,3 @@
-import React from "react";
 import { View, Text, TouchableOpacity, Modal, Pressable, Image, ViewStyle, TextStyle, ImageStyle } from "react-native";
 import { Feather } from "@expo/vector-icons";
 import { t } from "@money-matters/i18n";
@@ -29,8 +28,6 @@ export function ScreenMenuModal({
   user,
   getInitials,
   handleMenuAction,
-  onNavigateHome,
-  onNavigateCategories,
   onNavigateSettings,
   onNavigateBankAccounts,
   onNavigateHistory,

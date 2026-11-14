@@ -4,12 +4,16 @@ const eslintConfig = [
   ...nextConfig,
   {
     ignores: [
+      "**/IGNORE_ME/**",
+      "**/.turbo/**",
       ".next/**",
       ".open-next/**",
       "out/**",
       "build/**",
       "dist/**",
       "coverage/**",
+      "playwright-report/**",
+      "test-results/**",
       "next-env.d.ts",
       "global.d.ts"
     ]
@@ -25,7 +29,7 @@ const eslintConfig = [
           caughtErrorsIgnorePattern: "^_",
         }
       ],
-      "@typescript-eslint/no-explicit-any": "warn",
+      "@typescript-eslint/no-explicit-any": "error",
       "@typescript-eslint/no-require-imports": "off",
       "react-hooks/preserve-manual-memoization": "off",
       "react-hooks/set-state-in-render": "off",

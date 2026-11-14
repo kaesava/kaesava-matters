@@ -1,21 +1,11 @@
 import {
   incomeEvents,
   incomeSources,
-  envelopes,
-  transactionLedger,
   allocationPlans,
   allocationPlanLines,
-  expenseEvents,
   DbOrTx,
 } from "@money-matters/db";
 import { eq, and, sql } from "drizzle-orm";
-import {
-  runCumulativeProjection,
-  CumulativeProjectionIncomeEvent,
-  CumulativeProjectionExpenseEvent,
-  SavedPlanLineItem,
-} from "../engine/cumulative-projection.js";
-import { EngineBucket } from "../engine/allocation-engine.js";
 import { previewAllocationQuery } from "./preview-allocation.query.js";
 
 import { bankAccounts } from "@money-matters/db";
@@ -147,7 +137,6 @@ export async function previewPaydayForEvent(
     userId
   );
 
-  const baselineMap = new Map(baselinePreview.lines.map((l) => [l.bucketId, l]));
 
   const lines = baselinePreview.lines.map((bLine) => {
     const saved = savedLines.find((s) => s.envelopeId === bLine.bucketId);

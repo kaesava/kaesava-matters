@@ -20,19 +20,19 @@
 | 8 | `billing_invoices` (`billingInvoices`) | `packages/db/src/schema/billing_invoice.ts` (38L) | `stripeInvoiceId`, `stripeCustomerId`, `stripeSubscriptionId`, `amountPaid`, `currency`, `status`, `paidAt`, `periodStart`, `periodEnd`, `invoicePdfUrl`, `hostedInvoiceUrl` | Complete (`0059`: `appId`, `archivedBy`) | Enabled + **Forced** (`0031`) | `billing_invoices_tenant_isolation`: `tenant_id = current_setting('app.current_tenant_id')` | `packages/capabilities/billing/src/commands/*`, `queries/list-invoices.ts`, `webhooks/handlers/invoice-events.ts`, `tenant/src/delete-account.ts` |
 | 9 | `bug_reports` (`bugReports`) | `0021_add_bug_reports.sql` (table) | `title`, `description`, `category`, `severity`, `status`, `appVersion`, `platform`, `pageUrl`, `deviceInfo` | Complete (`tenantAndTimestamps`) | Enabled (`0021`) + **Forced** (`0058`) | `tenant_isolation`: `tenant_id = current_setting('app.current_tenant_id')` | `packages/capabilities/bug-reports/*`, `packages/capabilities/tenant/src/delete-account.ts` |
 | 10 | `device_tokens` (`deviceTokens`) | `packages/db/src/schema/device_token.ts` (14L) | `userId`, `platform`, `token` | Complete (`tenantAndTimestamps`) | Enabled + **Forced** (`0031`) | `device_tokens_tenant_isolation`: `tenant_id = current_setting('app.current_tenant_id')` | `packages/capabilities/notifications/src/push-tokens.ts`, `retention-workflows.ts`, `tenant/src/delete-account.ts` |
-| 11 | `early_access_subscribers` (`earlyAccessSubscribers`) | `packages/db/src/schema/early_access.ts` (23L) | `appId`, `email`, `lastSubscribedAt` | Global waitlist table: `id`, `appId`, `createdAt`, `createdBy`, `updatedAt`, `updatedBy`, `archivedAt`, `archivedBy` (`0059`) | **Disabled** (Public waitlist table) | None | `apps/api/src/routers/tenant/tenant-core.procedures.ts` |
+| 11 | `early_access_subscribers` (`earlyAccessSubscribers`) | `packages/db/src/schema/early_access.ts` (23L) | `appId`, `email` | Global waitlist table: `id`, `appId`, `createdAt`, `createdBy`, `updatedAt`, `updatedBy`, `archivedAt`, `archivedBy` (`0059`) | **Disabled** (Public waitlist table) | None | `apps/api/src/routers/tenant/tenant-core.procedures.ts` |
 | 12 | `envelopes` (`envelopes`) | `packages/db/src/schema/envelope.ts` (52L) | `name`, `envelopeType`, `bankAccountId`, `safetyBufferFloor`, `monthlyAmount`, `enteredAmount`, `budgetFrequency`, `startDate`, `endDate`, `rrule`, `targetAmount`, `isSurplusTarget`, `isPrivate`, `userId`, `orderIndex`, `goalType`, `fundingMode`, `isPriority`, `lastNotifiedAt`, `lastBurstDate` | Complete (`tenantAndTimestamps`) | Enabled + **Forced** (`0014`, `0016`, `0044`) | `tenant_isolation` + `RESTRICTIVE stealth_privacy_isolation` (`NOT is_private OR user_id = app.current_user_id`) | `apps/api/src/routers/*`, `apps/api/src/inngest/*`, `packages/capabilities/budgeting/*`, `notifications/*`, `simulation/*`, `tenant/*`, `transactions/*`, `packages/db/src/queries/envelope-balances.ts` |
 | 13 | `expense_events` (`expenseEvents`) | `packages/db/src/schema/expense_event.ts` (37L) | `envelopeId`, `name`, `expectedDate`, `actualDate`, `expectedAmount`, `actualAmount`, `isScheduled`, `note`, `status` | Complete (`tenantAndTimestamps`) | Enabled + **Forced** (`0014`, `0044`, `0047`) | `tenant_isolation` + `RESTRICTIVE stealth_privacy_isolation` (joins `envelopes` on `app.current_user_id`) | `apps/api/src/routers/*`, `packages/capabilities/budgeting/*`, `notifications/*`, `simulation/*`, `tenant/*`, `transactions/*` |
 | 14 | `file_notes` (`fileNotes`) | `packages/db/src/schema/file_note.ts` (31L) | `entityType`, `entityId`, `comment`, `fileKey`, `fileName`, `fileMimeType`, `fileSize`, `isPrivate`, `userId` | Complete (`tenantAndTimestamps`) | Enabled (`0051`) + **Forced** (`0058`) | `tenant_and_stealth_isolation` (`tenant_id` + `is_private = false OR user_id = app.current_user_id`) | `packages/capabilities/file-notes/src/handlers/index.ts`, `packages/capabilities/tenant/src/handlers/partner-invites.ts` |
 | 15 | `income_sources` (`incomeSources`) | `packages/db/src/schema/income.ts` (28L) | `name`, `amount`, `incomeType`, `receivingAccountId`, `rrule`, `startDate`, `endDate`, `contributionMode`, `contributionValue`, `lastBurstDate` | Complete (`tenantAndTimestamps`) | Enabled + **Forced** (`0014`, `0047`) | `tenant_isolation` + `RESTRICTIVE stealth_privacy_isolation` (joins `bank_accounts` on `receiving_account_id`) | `apps/api/src/routers/*`, `apps/api/src/inngest/*`, `packages/capabilities/budgeting/*`, `tenant/*` |
 | 16 | `income_events` (`incomeEvents`) | `packages/db/src/schema/income_event.ts` (25L) | `incomeSourceId`, `name`, `expectedDate`, `actualDate`, `expectedAmount`, `actualAmount`, `contributionMode`, `contributionValue`, `note`, `status` | Complete (`tenantAndTimestamps`) | Enabled + **Forced** (`0014`, `0047`) | `tenant_isolation` + `RESTRICTIVE stealth_privacy_isolation` (joins `income_sources -> bank_accounts`) | `apps/api/src/routers/*`, `packages/capabilities/budgeting/*`, `notifications/*`, `simulation/*`, `tenant/*` |
-| 17 | `processed_webhooks` (`processedWebhooks`) | `packages/db/src/schema/processed_webhooks.ts` (9L) | `eventId` (PK), `eventType`, `processedAt` | Global idempotency table | **Disabled** (Global Stripe webhook table) | None | `packages/capabilities/billing/src/webhooks/stripe-webhook-handler.ts`, `packages/capabilities/notifications/src/retention-workflows.ts` |
+| 17 | `processed_webhooks` (`processedWebhooks`) | `packages/db/src/schema/processed_webhooks.ts` (9L) | `eventId` (PK), `processedAt` | Global idempotency table | **Disabled** (Global Stripe webhook table) | None | `packages/capabilities/billing/src/webhooks/stripe-webhook-handler.ts`, `packages/capabilities/notifications/src/retention-workflows.ts` |
 | 18 | `tenants` (`tenants`) | `packages/db/src/schema/tenant.ts` (46L) | `appId`, `name`, `country`, `currency`, `timezone`, `state`, `postcode`, `premiumEnabled`, `subscriptionStatus`, `trialStartedAt`, `trialEndsAt`, `stripeCustomerId`, `stripeSubscriptionId`, `stripePriceId`, `subscribedAt`, `subscriptionEndsAt`, `gracePeriodEndsAt`, `cancelAtPeriodEnd`, `planType`, `nextBillingAt`, `trialConvertedAt`, `setupCompletedAt`, `setupStatus` | Has `id`, `appId`, `...timestamps` (`id` is tenantId) | Enabled + **Forced** (`0014`) | `tenant_isolation`: `id = current_setting('app.current_tenant_id')` | `apps/api/src/routers/*`, `apps/api/src/trpc/edge-context.ts`, `apps/api/src/inngest/*`, `packages/capabilities/assistant/*`, `billing/*`, `budgeting/*`, `notifications/*`, `tenant/*` |
-| 19 | `tenant_users` (`tenantUsers`) | `packages/db/src/schema/tenant_user.ts` (36L) | `tenantId`, `userId`, `inviteEmail`, `role`, `inviteToken`, `inviteStatus`, `invitedAt`, `expiresAt` | Complete (`0059`: `appId`) | Enabled + **Forced** (`0014`) | `tenant_isolation`: `tenant_id = current_setting('app.current_tenant_id')` | `apps/api/src/routers/tenant/*`, `apps/api/src/trpc/edge-context.ts`, `packages/capabilities/notifications/*`, `tenant/*` |
+| 19 | `tenant_users` (`tenantUsers`) | `packages/db/src/schema/tenant_user.ts` (36L) | `tenantId`, `userId`, `inviteEmail`, `role`, `inviteToken`, `inviteStatus`, `expiresAt` | Complete (`id`, `tenantId`, timestamps) | Enabled + **Forced** (`0014`) | `tenant_isolation`: `tenant_id = current_setting('app.current_tenant_id')` | `apps/api/src/routers/tenant/*`, `apps/api/src/trpc/edge-context.ts`, `packages/capabilities/notifications/*`, `tenant/*` |
 | 20 | `tenant_user_preferences` (`tenantUserPreferences`) | `packages/db/src/schema/tenant_user_preference.ts` (60L) | `userId`, `tenantId`, `appId`, `appPreferences` | Complete (`createdBy`/`updatedBy` nullable) | Enabled + **Forced** (`0040`) | `tenant_user_preferences_tenant_isolation`: `tenant_id = current_setting('app.current_tenant_id')` | `apps/api/src/routers/tenant/*`, `packages/capabilities/notifications/*`, `tenant/src/delete-account.ts` |
 | 21 | `transaction_ledger` (`transactionLedger`) | `packages/db/src/schema/transaction_ledger.ts` (43L) | `envelopeId`, `bankAccountId`, `planLineId`, `flowType`, `transactionType`, `amount`, `idempotencyKey`, `note`, `source`, `transferGroupId`, `recordedAt` | Complete (`tenantAndTimestamps`) | Enabled + **Forced** (`0014`, `0016`, `0044`) | `tenant_isolation` + `RESTRICTIVE stealth_privacy_isolation` (joins `envelopes` on `app.current_user_id`) | `apps/api/src/routers/*`, `packages/capabilities/budgeting/*`, `notifications/*`, `simulation/*`, `tenant/*`, `transactions/*`, `packages/db/src/queries/envelope-balances.ts` |
-| 22 | `transfer_events` (`transferEvents`) | `packages/db/src/schema/transfer_event.ts` (19L) | `sourceEnvelopeId`, `destinationEnvelopeId`, `name`, `expectedDate`, `expectedAmount`, `actualAmount`, `status` | Complete (`tenantAndTimestamps`) | Enabled + **Forced** (`0014`, `0044`, `0047`) | `tenant_isolation` + `RESTRICTIVE stealth_privacy_isolation` (checks both `source_envelope_id` and `destination_envelope_id` against `envelopes`) | `apps/api/src/routers/transfers.router.ts`, `packages/capabilities/budgeting/*`, `tenant/src/delete-account.ts` |
-| 23 | `users` (`users`) & `user_preferences` (`userPreferences`) | `packages/db/src/schema/user.ts` (25L) & `user_preference.ts` (28L) | `users`: `email`, `displayName`, `avatarUrl`, `hasUsedTrial`; `user_preferences`: `userId`, `theme`, `language`, `timezone`, `showIcons`, `notificationEmail`, `phoneCountryCode`, `phoneNumber` | Global user tables (`0059`: `createdBy`, `updatedBy`, `archivedAt`, `archivedBy`) | `users`: Disabled; `user_preferences`: Enabled (`0039`) + **Forced** (`0058`) | `user_preferences_user_isolation`: `user_id = current_setting('app.current_user_id')` | `apps/api/src/routers/tenant/*`, `apps/api/src/trpc/edge-context.ts`, `packages/capabilities/billing/*`, `file-notes/*`, `notifications/*`, `tenant/*` |
+| 22 | `transfer_events` (`transferEvents`) | `packages/db/src/schema/transfer_event.ts` (19L) | `sourceEnvelopeId`, `destinationEnvelopeId`, `name`, `expectedDate`, `expectedAmount`, `status` | Complete (`tenantAndTimestamps`) | Enabled + **Forced** (`0014`, `0044`, `0047`) | `tenant_isolation` + `RESTRICTIVE stealth_privacy_isolation` (checks both `source_envelope_id` and `destination_envelope_id` against `envelopes`) | `apps/api/src/routers/transfers.router.ts`, `packages/capabilities/budgeting/*`, `tenant/src/delete-account.ts` |
+| 23 | `users` (`users`) & `user_preferences` (`userPreferences`) | `packages/db/src/schema/user.ts` (25L) & `user_preference.ts` (28L) | `users`: `email`, `displayName`, `avatarUrl`, `hasUsedTrial`; `user_preferences`: `userId`, `language`, `timezone`, `showIcons`, `notificationEmail`, `phoneCountryCode`, `phoneNumber` | Global user tables (`0059`: `createdBy`, `updatedBy`, `archivedAt`, `archivedBy`) | `users`: Disabled; `user_preferences`: Enabled (`0039`) + **Forced** (`0058`) | `user_preferences_user_isolation`: `user_id = current_setting('app.current_user_id')` | `apps/api/src/routers/tenant/*`, `apps/api/src/trpc/edge-context.ts`, `packages/capabilities/billing/*`, `file-notes/*`, `notifications/*`, `tenant/*` |
 
 ---
 
@@ -200,7 +200,6 @@
 | `id` | uuid | No | Primary Key |
 | `appId` | uuid | No | Application ID |
 | `email` | varchar | No | Domain column |
-| `lastSubscribedAt` | timestamp | No | Domain column |
 | `createdAt` | timestamp | No | Creation timestamp |
 | `createdBy` | uuid | Yes | Creator User ID |
 | `updatedAt` | timestamp | No | Last update timestamp |
@@ -230,8 +229,6 @@
 | `isPrivate` | boolean | No | Domain column |
 | `generateEvents` | boolean | No | Controls auto-generation of upcoming scheduled expense events (`true` only for `BILL` + `RECURRING`; normalized to `false` otherwise) |
 | `userId` | uuid | Yes | Domain column |
-| `emoji` | varchar | Yes | Visual envelope emoji icon |
-| `colorKey` | varchar | Yes | Visual envelope theme color key |
 | `orderIndex` | integer | No | Domain column |
 | `lastBurstDate` | date | Yes | Furthest event date generated during previous recurrence burst |
 | `tenantId` | uuid | No | Tenant Foreign Key (RLS isolation) |
@@ -319,7 +316,6 @@
 | Column | Type | Nullable | Description |
 | :--- | :--- | :--- | :--- |
 | `eventId` | varchar | No | Domain column |
-| `eventType` | varchar | No | Domain column |
 | `processedAt` | timestamp | No | Domain column |
 
 ## Table: `tenants` (`tenant.ts`)
@@ -363,13 +359,11 @@
 | :--- | :--- | :--- | :--- |
 | `id` | uuid | No | Primary Key |
 | `tenantId` | uuid | No | Tenant Foreign Key (RLS isolation) |
-| `appId` | uuid | No | Application ID |
 | `userId` | uuid | Yes | Domain column |
 | `inviteEmail` | varchar | Yes | Domain column |
 | `role` | memberRoleEnum | No | Domain column |
 | `inviteToken` | uuid | Yes | Domain column |
 | `inviteStatus` | inviteStatusEnum | No | Domain column |
-| `invitedAt` | timestamp | Yes | Domain column |
 | `expiresAt` | timestamp | Yes | Domain column |
 | `createdAt` | timestamp | No | Creation timestamp |
 | `createdBy` | uuid | No | Creator User ID |
@@ -429,7 +423,6 @@
 | `name` | varchar | No | Domain column |
 | `expectedDate` | date | No | Domain column |
 | `expectedAmount` | numeric | No | Domain column |
-| `actualAmount` | numeric | Yes | Domain column |
 | `status` | transferEventStatusEnum | No | Domain column |
 | `tenantId` | uuid | No | Tenant Foreign Key (RLS isolation) |
 | `appId` | uuid | No | Application ID |
@@ -462,7 +455,6 @@
 | :--- | :--- | :--- | :--- |
 | `id` | uuid | No | Primary Key |
 | `userId` | uuid | No | Domain column |
-| `theme` | varchar | No | Domain column |
 | `language` | varchar | No | Domain column |
 | `timezone` | varchar | Yes | Domain column |
 | `showIcons` | boolean | No | Domain column |
@@ -514,3 +506,7 @@
 | `updatedBy` | uuid | No | Modifier User ID |
 | `archivedAt` | timestamp | Yes | Soft delete timestamp |
 | `archivedBy` | uuid | Yes | User ID who soft-deleted the record |
+
+## Migration `0060_drop_dead_columns`
+
+Drops unused columns: `envelopes.{emoji,colorKey}`, `user_preferences.theme`, `tenant_users.{appId,invitedAt}`, `transfer_events.actualAmount`, `early_access_subscribers.lastSubscribedAt`, `processed_webhooks.eventType`.

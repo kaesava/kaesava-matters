@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { View, Text, TouchableOpacity, ScrollView, StyleSheet } from 'react-native';
 import { Feather } from '@expo/vector-icons';
 import { DESIGN_TOKENS } from '../tokens';
@@ -94,10 +94,10 @@ export function MobileEnvelopeDetailSheet({
       subtitle={
         poolType
           ? poolType.includes('GOAL')
-            ? t('poolTypes.goals')
+            ? t('envelopeTypes.goals')
             : poolType === 'EVERYDAY'
-            ? t('poolTypes.everyday')
-            : t('poolTypes.bills')
+            ? t('envelopeTypes.everyday')
+            : t('envelopeTypes.bills')
           : undefined
       }
     >
@@ -111,7 +111,7 @@ export function MobileEnvelopeDetailSheet({
 
           {(targetNum > 0 || enteredNum > 0 || monthlyNum > 0) && (
             <View style={styles.statCard}>
-              <Text style={styles.statLabel}>{t('paydayDrawer.tableColTarget')}</Text>
+              <Text style={styles.statLabel}>{t('common.target')}</Text>
               <Text style={styles.statAmount}>
                 {isOngoing
                   ? enteredNum > 0

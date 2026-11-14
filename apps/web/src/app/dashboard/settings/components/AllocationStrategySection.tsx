@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useMemo, useEffect } from "react";
+import { useState, useMemo, useEffect } from "react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { t } from "@money-matters/i18n";
@@ -141,6 +141,7 @@ export function AllocationStrategySection() {
                 ? t("settings.paydayRules.tabs.personal")
                 : t("settings.paydayRules.title")}
             </h3>
+            <InfoTooltip content={t("settings.paydayRules.infoTooltip")} />
             {!canEdit && (
               <InfoTooltip content={t("settings.paydayRules.onlyOwnerCanChange")} />
             )}

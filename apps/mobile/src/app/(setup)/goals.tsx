@@ -205,8 +205,8 @@ export default function SetupGoalsScreen() {
           <MobileEnvelopeModeToggle
             mode={customType}
             onChange={setCustomType}
-            targetBalanceLabel={t('envelopes.modeToggle.targetBalance')}
-            recurringLabel={t('envelopes.modeToggle.recurring')}
+            targetBalanceLabel={t('common.target')}
+            recurringLabel={t('categories.recurringBadge')}
           />
         </View>
         {customType === 'RECURRING' && (
@@ -215,14 +215,14 @@ export default function SetupGoalsScreen() {
             <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.freqChipsRow}>
               {(['WEEKLY', 'FORTNIGHTLY', 'MONTHLY', 'QUARTERLY', 'ANNUALLY'] as const).map((f) => {
                 const label = f === 'WEEKLY'
-                  ? t('categories.frequencyWeekly')
+                  ? t('forms.weekly')
                   : f === 'FORTNIGHTLY'
-                  ? t('categories.frequencyFortnightly')
+                  ? t('forms.fortnightly')
                   : f === 'QUARTERLY'
                   ? t('setup.frequencyQuarterly')
                   : f === 'ANNUALLY'
-                  ? t('categories.frequencyAnnually')
-                  : t('categories.frequencyMonthly');
+                  ? t('canIAfford.freqAnnually')
+                  : t('forms.monthly');
                 return (
                   <TouchableOpacity
                     key={f}
@@ -287,7 +287,7 @@ export default function SetupGoalsScreen() {
 
       <View style={styles.actionRow}>
         <TouchableOpacity onPress={handleBack} style={styles.backBtn}>
-          <Text style={styles.backBtnText}>{t('setup.previousStep')}</Text>
+          <Text style={styles.backBtnText}>{t('common.back')}</Text>
         </TouchableOpacity>
         <TouchableOpacity onPress={handleNext} style={styles.nextBtn}>
           <Text style={styles.nextBtnText}>

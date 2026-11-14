@@ -13,7 +13,6 @@ import { TrialBanner } from '../../components/dashboard/TrialBanner';
 import { MarkPaidModal } from '../../components/MarkPaidModal';
 import { QuickExpenseModal } from '../../components/QuickExpenseModal';
 import { MobileAffordCheckModal } from '../../components/afford-check/MobileAffordCheckModal';
-import { SyncBalanceNudgeCard } from '../../components/dashboard/attention/SyncBalanceNudgeCard';
 import { MobileSyncBalanceModal } from '../../components/envelopes/MobileSyncBalanceModal';
 import { useHomeData } from '../../components/dashboard/useHomeData';
 import { useHomeModals } from '../../components/dashboard/useHomeModals';
@@ -34,8 +33,6 @@ export default function HomeScreen() {
     onRefresh,
     pools,
     bankAccounts,
-    incomeCount,
-    billsCount,
     homeSummary,
     safeToSpend,
     dailyPace,
@@ -50,8 +47,6 @@ export default function HomeScreen() {
     billsDue14DaysCount,
     totalBillsDue14Days,
     upcomingIncomeList,
-    incomeEvents,
-    expenseEvents,
     attentionItems,
     goalsList,
     everydayPool,
@@ -79,18 +74,6 @@ export default function HomeScreen() {
     handleOpenEverydayReconciliation,
   } = useHomeModals(pools, bankAccounts, everydayPool);
 
-  const isBalanceMatchOverdue = React.useMemo(() => {
-    if (bankAccounts.length === 0) return false;
-    if (homeSummary?.oldestBalanceMatchAt) {
-      const lastMatch = new Date(homeSummary.oldestBalanceMatchAt).getTime();
-      return (Date.now() - lastMatch) > 14 * 24 * 60 * 60 * 1000;
-    }
-    if (homeSummary?.tenantCreatedAt) {
-      const accountAge = Date.now() - new Date(homeSummary.tenantCreatedAt).getTime();
-      return accountAge > 14 * 24 * 60 * 60 * 1000;
-    }
-    return false;
-  }, [bankAccounts.length, homeSummary?.oldestBalanceMatchAt, homeSummary?.tenantCreatedAt]);
 
   return (
     <AppScreenWrapper

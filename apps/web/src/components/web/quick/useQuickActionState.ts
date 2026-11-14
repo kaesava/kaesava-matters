@@ -1,5 +1,5 @@
 import { DEFAULT_TIMEZONE } from "@money-matters/types";
-import { getTenantDateString } from "@money-matters/core";
+import { getTenantDateString } from "@money-matters/types";
 import { useState, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import { trpc } from "../../../lib/trpc";
@@ -215,11 +215,11 @@ export function useQuickActionState(
 
     if (isTransfer) {
       if (!sourceCategoryId || !destinationCategoryId) {
-        setError(t("drawers.quickExpense.poolsRequired"));
+        setError(t("drawers.quickExpense.envelopesRequired"));
         return;
       }
       if (sourceCategoryId === destinationCategoryId) {
-        setError(t("drawers.quickExpense.poolsDifferent"));
+        setError(t("drawers.quickExpense.envelopesDifferent"));
         return;
       }
       if (date < todayStr) {
@@ -253,7 +253,7 @@ export function useQuickActionState(
 
     if (!isIncome) {
       if (!categoryId) {
-        setError(t("drawers.quickExpense.poolSelectionRequired"));
+        setError(t("drawers.quickExpense.envelopeSelectionRequired"));
         return;
       }
       const targetCat = categories.find((c) => c.id === categoryId);

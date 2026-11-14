@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { t } from "@money-matters/i18n";
 import { Spinner } from "@money-matters/ui/web";
 import { authClient } from "../../lib/auth";

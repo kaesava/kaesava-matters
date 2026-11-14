@@ -96,6 +96,7 @@ export default {
       syncInngestEventKey(env.INNGEST_EVENT_KEY);
       if (isDev) {
         process.env.ENVIRONMENT = 'development';
+        process.env.INNGEST_DEV = '1';
       }
       try {
         validateEnv(env as unknown as Record<string, unknown>);
@@ -142,7 +143,7 @@ export default {
           client: inngest,
           functions,
           servePath: '/api/inngest',
-          signingKey: env.INNGEST_SIGNING_KEY,
+          signingKey: isDev ? undefined : env.INNGEST_SIGNING_KEY,
         }) as unknown as (
           req: Request,
           e: Record<string, string | undefined>,

@@ -346,36 +346,6 @@ export async function archiveFileNoteHandler(
   return { success: true };
 }
 
-export async function purgeFileNoteHandler(
-  db: DbOrTx,
-  ctx: FileNotesContext,
-  id: string
-): Promise<{ success: boolean; purgedId: string }> {
-  const [existing] = await db
-    .select()
-    .from(fileNotes)
-    .where(and(eq(fileNotes.id, id), eq(fileNotes.tenantId, ctx.tenantId), privacyFilter(ctx.userId)))
-    .limit(1);
-
-  if (!existing) {
-    throw new TRPCError({ code: "NOT_FOUND", message: "fileNoteNotFound" });
-  }
-
-  // Soft-archive only; R2 object deletion is deferred to full tenant erasure
-  const now = new Date();
-  await db
-    .update(fileNotes)
-    .set({
-      archivedAt: existing.archivedAt ?? now,
-      archivedBy: existing.archivedBy ?? ctx.userId,
-      updatedAt: now,
-      updatedBy: ctx.userId,
-    })
-    .where(and(eq(fileNotes.id, id), eq(fileNotes.tenantId, ctx.tenantId)));
-
-  return { success: true, purgedId: id };
-}
-
 export async function getStorageQuotaHandler(
   db: DbOrTx,
   ctx: FileNotesContext

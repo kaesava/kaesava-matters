@@ -1,6 +1,5 @@
 "use client";
 
-import React from "react";
 import { t } from "@money-matters/i18n";
 import { InfoTooltip, AmountField } from "@money-matters/ui/web";
 import { useLocale } from "../../../providers/LocaleProvider";

@@ -6,6 +6,8 @@ build/
 .turbo/
 .expo/
 coverage/
+playwright-report/
+test-results/
 # Environment secrets — never commit
 .env
 .env.local

@@ -77,7 +77,7 @@ export function SubscriptionSection({ status }: SubscriptionSectionProps) {
     try {
       const origin = typeof window !== "undefined" ? window.location.origin : "";
       const res = await portalMut.mutateAsync({
-        returnUrl: `${origin}/dashboard/settings?tab=subscription&stripe_sync=true`,
+        returnUrl: `${origin}/dashboard/settings?tab=account-data&stripe_sync=true`,
       });
       if (res.url) {
         window.location.href = res.url;

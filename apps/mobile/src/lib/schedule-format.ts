@@ -20,7 +20,7 @@ export function formatScheduleDetail(
   if (fundingMode === 'TARGET_BALANCE') {
     return {
       isRecurring: false,
-      badgeText: t('categories.billModeFlexible'),
+      badgeText: t('common.target'),
       detailText: t('categories.drawdownAsNeeded'),
       frequencyLabel: t('categories.drawdownAsNeeded'),
     };

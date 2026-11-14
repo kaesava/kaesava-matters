@@ -1,3 +1,6 @@
+#### E2E Test
+pnpm --filter @money-matters/web test:e2e
+E2E_AUTHENTICATED=1 E2E_EMAIL="kaesava@example.com" E2E_PASSWORD="Password1!" pnpm --filter @money-matters/web test:e2e
 
 #### FLAGS
 pnpm app:set-flag --flag=aiAssistant --value=true --env=dev

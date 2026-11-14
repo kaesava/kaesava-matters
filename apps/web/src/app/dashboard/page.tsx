@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { trpc } from "../../lib/trpc";
 import { t } from "@money-matters/i18n";

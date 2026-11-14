@@ -212,9 +212,9 @@ export function usePaycheckStudio(id: string | undefined, returnTo?: string) {
 
   const groupedLines = useMemo(() => {
     const groups: Array<{ type: 'EVERYDAY' | 'BILL' | 'GOAL'; label: string; items: AllocationLineItem[] }> = [
-      { type: 'EVERYDAY', label: t('paydayDrawer.everydayPools'), items: [] },
-      { type: 'BILL', label: t('paydayDrawer.billsPools'), items: [] },
-      { type: 'GOAL', label: t('paydayDrawer.goalsPools'), items: [] },
+      { type: 'EVERYDAY', label: t('paydayDrawer.everydaySpending'), items: [] },
+      { type: 'BILL', label: t('envelopeTypes.bills'), items: [] },
+      { type: 'GOAL', label: t('paydayDrawer.savingsGoals'), items: [] },
     ];
     for (const l of lines) {
       const env = pools.find((pool) => pool.id === l.bucketId);

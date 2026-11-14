@@ -1,6 +1,5 @@
 "use client";
 
-import React from "react";
 import Link from "next/link";
 import { t } from "@money-matters/i18n";
 import { authClient } from "../../lib/auth";
@@ -66,7 +65,7 @@ function PricingCta({ onAuthClick }: PricingSectionProps) {
   if (status?.isSubscribed) {
     return (
       <Link
-        href="/subscription/manage"
+        href="/dashboard/settings?tab=subscription"
         className="w-full mt-6 bg-emerald-600 hover:bg-emerald-700 text-white font-black py-4 rounded-2xl shadow-md hover:shadow-lg text-sm transition-all active:scale-98 cursor-pointer text-center block"
       >
         {t("landing.pricingCtaSubscribed")}

@@ -19,5 +19,5 @@
     "isolatedModules": true,
     "jsx": "react-jsx"
   },
-  "exclude": ["node_modules", "dist", "build", ".next", ".turbo", ".expo", "coverage"]
+  "exclude": ["node_modules", "IGNORE_ME", "dist", "build", ".next", ".turbo", ".expo", "coverage"]
 }

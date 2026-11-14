@@ -40,7 +40,7 @@ export function LedgerFilterControls({
       <View style={styles.controlsRow}>
         <View style={styles.searchWrap}>
           <SearchInput
-            placeholder={t('history.searchPlaceholder')}
+            placeholder={t('common.searchPlaceholder')}
             value={searchQuery}
             onChangeText={onSearchChange}
           />

@@ -220,7 +220,7 @@ export function useHorizonPlanData({
         utils.getHorizonProjectionData.invalidate(),
         utils.previewPayday.invalidate({ incomeEventId: colId }),
       ]);
-      toast.success(t("matrix.saveSplitSuccess"));
+      toast.success(t("paydaySchedule.saveDraftSuccess"));
     } catch (err: unknown) {
       toast.error((err as Error).message || "Failed to save Income Split.");
     } finally {

@@ -1,4 +1,3 @@
-import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import { t } from '@money-matters/i18n';
 import { DESIGN_TOKENS } from '../tokens';
@@ -75,7 +74,7 @@ export function MobilePaginationBar({
           style={[styles.button, page >= totalPages && styles.buttonDisabled]}
         >
           <Text style={[styles.buttonText, page >= totalPages && styles.buttonTextDisabled]}>
-            {t('common.nextPage')}
+            {t('common.next')}
           </Text>
         </TouchableOpacity>
       </View>

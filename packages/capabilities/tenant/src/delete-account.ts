@@ -10,6 +10,9 @@ import {
   tenantUserPreferences,
   allocationPlans,
   allocationPlanLines,
+  allocationStrategies,
+  allocationStrategySteps,
+  fileNotes,
   deviceTokens,
   tenantUsers,
   transferEvents,
@@ -29,7 +32,9 @@ async function cancelStripeResources(tenantRecord: {
   stripeCustomerId: string | null;
 } | undefined) {
   if (!process.env.STRIPE_SECRET_KEY) return;
-  const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
+  const stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
+    httpClient: Stripe.createFetchHttpClient(),
+  });
 
   if (tenantRecord?.stripeSubscriptionId) {
     try {
@@ -73,7 +78,7 @@ async function purgeHouseholdRecords(
   email: string,
   appId: string,
   allUserIdsToPurgeTokens: string[]
-) {
+): Promise<string[]> {
   if (allUserIdsToPurgeTokens.length > 0) {
     await tx.delete(deviceTokens).where(inArray(deviceTokens.userId, allUserIdsToPurgeTokens));
   }
@@ -85,6 +90,25 @@ async function purgeHouseholdRecords(
     await tx.delete(allocationPlanLines).where(inArray(allocationPlanLines.planId, planIds));
   }
   await tx.delete(allocationPlans).where(and(eq(allocationPlans.tenantId, tenantId), eq(allocationPlans.appId, appId)));
+
+  const strategies = await tx
+    .select({ id: allocationStrategies.id })
+    .from(allocationStrategies)
+    .where(and(eq(allocationStrategies.tenantId, tenantId), eq(allocationStrategies.appId, appId)));
+  const strategyIds = strategies.map((s) => s.id);
+  if (strategyIds.length > 0) {
+    await tx.delete(allocationStrategySteps).where(inArray(allocationStrategySteps.strategyId, strategyIds));
+  }
+  await tx.delete(allocationStrategies).where(and(eq(allocationStrategies.tenantId, tenantId), eq(allocationStrategies.appId, appId)));
+
+  const noteFiles = await tx
+    .select({ fileKey: fileNotes.fileKey })
+    .from(fileNotes)
+    .where(and(eq(fileNotes.tenantId, tenantId), eq(fileNotes.appId, appId)));
+  const fileKeysToDelete = noteFiles
+    .map((n) => n.fileKey)
+    .filter((k): k is string => typeof k === "string" && k.length > 0);
+  await tx.delete(fileNotes).where(and(eq(fileNotes.tenantId, tenantId), eq(fileNotes.appId, appId)));
 
   await tx.delete(expenseEvents).where(and(eq(expenseEvents.tenantId, tenantId), eq(expenseEvents.appId, appId)));
   await tx.delete(transferEvents).where(and(eq(transferEvents.tenantId, tenantId), eq(transferEvents.appId, appId)));
@@ -106,12 +130,16 @@ async function purgeHouseholdRecords(
   await tx.delete(users).where(eq(users.id, userId));
 
   await purgeNeonAuthRecords(tx, userId);
+  return fileKeysToDelete;
 }
 
 /**
  * Hard-deletes the entire tenant/household and all financial data. (Owner only)
  */
-export function deleteMyAccountHandler(db: DbOrTx) {
+export function deleteMyAccountHandler(
+  db: DbOrTx,
+  deleteFileFromBucket?: (fileKey: string) => Promise<boolean>
+) {
   return async (tenantId: string, userId: string, email: string, appId: string) => {
     const partnerMemberships = await db
       .select()
@@ -134,7 +162,7 @@ export function deleteMyAccountHandler(db: DbOrTx) {
 
     await cancelStripeResources(tenantRecord);
 
-    await db.transaction(async (tx) => {
+    const fileKeysToDelete = await db.transaction(async (tx) => {
       const [membership] = await tx
         .select()
         .from(tenantUsers)
@@ -145,8 +173,14 @@ export function deleteMyAccountHandler(db: DbOrTx) {
         throw new Error("Only the Household Owner can delete the household tenant. Partners can leave the household.");
       }
 
-      await purgeHouseholdRecords(tx, tenantId, userId, email, appId, allUserIdsToPurgeTokens);
+      return await purgeHouseholdRecords(tx, tenantId, userId, email, appId, allUserIdsToPurgeTokens);
     });
+
+    if (deleteFileFromBucket && fileKeysToDelete.length > 0) {
+      await Promise.allSettled(
+        fileKeysToDelete.map((fileKey) => deleteFileFromBucket(fileKey))
+      );
+    }
 
     await sendNotificationEmail(
       email,
@@ -179,7 +213,7 @@ export function deleteMyAccountHandler(db: DbOrTx) {
  * If user is OWNER and a partner exists, ownership transfers automatically to the partner.
  */
 export function leaveTenantHandler(db: DbOrTx) {
-  return async (tenantId: string, userId: string, email: string, appId: string) => {
+  return async (tenantId: string, userId: string, email: string, _appId: string) => {
     return await db.transaction(async (tx) => {
       const [membership] = await tx
         .select()

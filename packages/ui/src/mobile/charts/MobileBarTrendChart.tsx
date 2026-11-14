@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import { useRef } from 'react';
 import { View, Text, StyleSheet, ScrollView } from 'react-native';
 import { MonthlyCashFlowPointDTO } from '@money-matters/types';
 import { DESIGN_TOKENS } from '../../tokens';

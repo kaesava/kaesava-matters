@@ -53,8 +53,8 @@ export const EnvelopeGoalFields: React.FC<EnvelopeGoalFieldsProps> = ({
         <MobileEnvelopeModeToggle
           mode={fundingMode}
           onChange={setFundingMode}
-          targetBalanceLabel={t('envelopes.modeToggle.targetBalance')}
-          recurringLabel={t('envelopes.modeToggle.recurring')}
+          targetBalanceLabel={t('common.target')}
+          recurringLabel={t('categories.recurringBadge')}
         />
       )}
 

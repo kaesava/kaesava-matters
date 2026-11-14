@@ -32,11 +32,18 @@ export default [
       ...tsPlugin.configs.recommended.rules,
       "react/jsx-uses-react": "error",
       "react/jsx-uses-vars": "error",
-      "@typescript-eslint/no-explicit-any": "off",
+      "@typescript-eslint/no-explicit-any": "error",
       "@typescript-eslint/no-require-imports": "off",
       "@typescript-eslint/no-empty-object-type": "off",
       "no-unused-vars": "off",
-      "@typescript-eslint/no-unused-vars": "off",
+      "@typescript-eslint/no-unused-vars": [
+        "error",
+        {
+          argsIgnorePattern: "^_",
+          varsIgnorePattern: "^_",
+          caughtErrorsIgnorePattern: "^_"
+        }
+      ],
       "no-undef": "off",
       "no-redeclare": "off",
       "@typescript-eslint/no-redeclare": "off"
@@ -48,6 +55,18 @@ export default [
     }
   },
   {
-    ignores: ["**/dist/**", "**/.next/**", "**/node_modules/**", "**/coverage/**"]
+    ignores: [
+      "**/IGNORE_ME/**",
+      "**/dist/**",
+      "**/.next/**",
+      "**/.open-next/**",
+      "**/.turbo/**",
+      "**/.expo/**",
+      "**/.wrangler/**",
+      "**/build/**",
+      "**/out/**",
+      "**/node_modules/**",
+      "**/coverage/**"
+    ]
   }
 ];

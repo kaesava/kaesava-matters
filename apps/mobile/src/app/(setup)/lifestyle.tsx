@@ -299,7 +299,7 @@ export default function SetupLifestyleScreen() {
 
       <View style={styles.actionRow}>
         <TouchableOpacity onPress={() => router.back()} style={styles.backBtn}>
-          <Text style={styles.backBtnText}>{t('setup.previousStep')}</Text>
+          <Text style={styles.backBtnText}>{t('common.back')}</Text>
         </TouchableOpacity>
         <TouchableOpacity onPress={() => router.push('/(setup)/envelopes')} style={styles.nextBtn}>
           <Text style={styles.nextBtnText}>{t('common.next')} →</Text>

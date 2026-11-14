@@ -1,6 +1,5 @@
 'use client';
 
-import React from 'react';
 import { t } from '@money-matters/i18n';
 
 export interface PaginationBarProps {
@@ -75,7 +74,7 @@ export function PaginationBar({
           onClick={() => onPageChange(page + 1)}
           className="px-3 py-1.5 rounded-xl border border-zinc-200 hover:bg-zinc-50 font-bold disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
         >
-          {t('common.nextPage')}
+          {t('common.next')}
         </button>
       </div>
     </div>

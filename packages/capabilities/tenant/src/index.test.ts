@@ -162,7 +162,7 @@ describe('Capability Tenant Handlers', () => {
     }));
     const insertMock = vi.fn().mockReturnValue({ values: valuesMock });
 
-    const mockDb = { select: selectMock, update: updateMock, insert: insertMock };
+    const mockDb = { select: selectMock, update: updateMock, insert: insertMock, execute: vi.fn().mockResolvedValue([]) };
 
     const { acceptInviteHandler } = await import('./index.js');
     const handler = acceptInviteHandler(mockDb as unknown as DbOrTx);
@@ -301,7 +301,8 @@ describe('Capability Tenant Handlers', () => {
       transaction: vi.fn().mockImplementation((cb: (tx: DbOrTx) => Promise<unknown>) => cb(txMock as unknown as DbOrTx)),
     };
 
-    const handler = deleteMyAccountHandler(mockDb as unknown as DbOrTx);
+    const deleteFileMock = vi.fn().mockResolvedValue(true);
+    const handler = deleteMyAccountHandler(mockDb as unknown as DbOrTx, deleteFileMock);
     const result = await handler(tenantId, userId, 'owner@example.com', appId);
 
     expect(result.success).toBe(true);

@@ -1,6 +1,5 @@
 "use client";
 
-import React from "react";
 import { UpcomingTimelineTab, TimelineEventItem } from "./UpcomingTimelineTab";
 import { trpc } from "../../../../lib/trpc";
 import { useToast } from "@money-matters/ui/web";

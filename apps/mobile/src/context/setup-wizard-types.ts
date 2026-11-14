@@ -7,6 +7,7 @@ import {
   UserGoalItem,
   EstimatedCategoryItem,
   calculateQuizEstimates,
+  SetupFrequency,
 } from '@money-matters/types';
 
 export interface MobileBankAccountItem {
@@ -91,9 +92,9 @@ export interface SetupWizardContextValue {
   setBillTypeOverrides: React.Dispatch<
     React.SetStateAction<Record<string, 'RECURRING' | 'TARGET_BALANCE'>>
   >;
-  categoryFrequencies: Record<string, 'WEEKLY' | 'FORTNIGHTLY' | 'MONTHLY' | 'QUARTERLY' | 'YEARLY'>;
+  categoryFrequencies: Record<string, SetupFrequency>;
   setCategoryFrequencies: React.Dispatch<
-    React.SetStateAction<Record<string, 'WEEKLY' | 'FORTNIGHTLY' | 'MONTHLY' | 'QUARTERLY' | 'YEARLY'>>
+    React.SetStateAction<Record<string, SetupFrequency>>
   >;
   estimation: ReturnType<typeof calculateQuizEstimates>;
   activeCategories: EstimatedCategoryItem[];

@@ -3,7 +3,6 @@ import { useRouter } from 'expo-router';
 import { useMobileToast, showMobileConfirm } from '@money-matters/ui/mobile';
 import { t } from '@money-matters/i18n';
 import { triggerHaptic } from '../../lib/haptics';
-import { formatIsoDate } from '../../lib/format';
 import {
   UsePaycheckStudioMutationsParams,
   buildAllocationsPayload,
@@ -18,11 +17,7 @@ export function usePaycheckStudioMutations({
   selectedDate,
   linesMap,
   reasoningMap,
-  initialLinesMap,
-  initialReasoningMap,
   isSavedPlan,
-  isReadOnly,
-  previewQuery,
   sweepPool,
   sweepPoolRemainder,
   numericActual,
@@ -136,7 +131,7 @@ export function usePaycheckStudioMutations({
       if (onSaveSuccess) onSaveSuccess();
       const freshData = await utils.previewPayday.fetch({ incomeEventId: id! }, { staleTime: 0 });
       if (freshData && onApplyFreshData) onApplyFreshData(freshData as PaycheckStudioPreviewData);
-      toast.success(t('matrix.lockSplitSuccess'));
+      toast.success(t('paydaySchedule.saveDraftSuccess'));
       await Promise.all([
         utils.listIncomeEvents.invalidate(),
         utils.listAllAllocationPlans.invalidate(),

@@ -1,5 +1,5 @@
 "use client";
-import { getTenantDateString } from "@money-matters/core";
+import { getTenantDateString } from "@money-matters/types";
 
 
 import { useState, useEffect, useMemo } from "react";
@@ -27,7 +27,7 @@ export function useEnvelopeFormModalState({
   const [interval, setInterval] = useState<number>(1);
   const [goalStartDate, setGoalStartDate] = useState("");
   const [isSurplusTarget, setIsSurplusTarget] = useState(false);
-  const [isPriority, setIsPriority] = useState(false);
+  const [isPriority, setIsPriority] = useState(true);
   const [generateEvents, setGenerateEvents] = useState(true);
   const [submitting, setSubmitting] = useState(false);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);

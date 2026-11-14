@@ -10,6 +10,7 @@ import {
   exportDataHandler,
   deleteMyAccountHandler,
 } from "@money-matters/capability-tenant";
+import { deleteFileFromBucket, getPresignedDownloadUrl } from "@money-matters/capability-file-notes";
 import { CreateTenantCommand, DEFAULT_APP_FEATURE_FLAGS } from "@money-matters/types";
 import { z } from 'zod';
 import { posthog } from '../../lib/posthog.js';
@@ -22,15 +23,6 @@ export const tenantCoreProcedures = {
       const handler = createTenantHandler(ctx.db || db);
       const result = await handler(input, appId, ctx.userId, ctx.email);
       clearEdgeContextCache();
-
-      inngest.send({
-        name: 'auth/user.signup',
-        data: {
-          userId: ctx.userId,
-          email: ctx.email ?? '',
-          displayName: undefined,
-        },
-      }).catch(() => {});
 
       if (posthog && ctx.userId) {
         posthog.identify({
@@ -112,13 +104,13 @@ export const tenantCoreProcedures = {
 
   exportMyData: privateTenantProcedure
     .query(async ({ ctx }) => {
-      const handler = exportDataHandler(ctx.db);
+      const handler = exportDataHandler(ctx.db, getPresignedDownloadUrl);
       return await handler(ctx.tenantId!, ctx.userId!, ctx.appId!);
     }),
 
   deleteMyAccount: privateOwnerProcedure
     .mutation(async ({ ctx }) => {
-      const handler = deleteMyAccountHandler(ctx.db);
+      const handler = deleteMyAccountHandler(ctx.db, deleteFileFromBucket);
       const result = await handler(ctx.tenantId!, ctx.userId!, ctx.email!, ctx.appId!);
 
       inngest.send({
@@ -196,14 +188,12 @@ export const tenantCoreProcedures = {
         .values({
           appId,
           email: normalizedEmail,
-          lastSubscribedAt: now,
           createdAt: now,
           updatedAt: now,
         })
         .onConflictDoUpdate({
           target: [earlyAccessSubscribers.appId, earlyAccessSubscribers.email],
           set: {
-            lastSubscribedAt: now,
             updatedAt: now,
           },
         });

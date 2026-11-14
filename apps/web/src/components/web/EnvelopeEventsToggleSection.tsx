@@ -1,4 +1,3 @@
-import React from 'react';
 import { InfoTooltip, AlertBanner } from '@money-matters/ui/web';
 import { t } from '@money-matters/i18n';
 

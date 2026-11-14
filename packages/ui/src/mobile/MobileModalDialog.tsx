@@ -43,7 +43,7 @@ export default function MobileModalDialog({
         title: t('modals.unsavedChanges.title'),
         message: t('modals.unsavedChanges.description'),
         confirmText: t('modals.unsavedChanges.discard'),
-        cancelText: t('modals.unsavedChanges.keepEditing'),
+        cancelText: t('common.keepEditing'),
         isDestructive: true,
         onConfirm: onClose,
       });

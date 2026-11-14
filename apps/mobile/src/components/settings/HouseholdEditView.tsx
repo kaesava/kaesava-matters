@@ -15,7 +15,6 @@ import {
 } from '@money-matters/ui/mobile';
 import { t } from '@money-matters/i18n';
 import {
-  SUPPORTED_CURRENCIES,
   COMMON_TIMEZONES,
 } from '@money-matters/types';
 import { HouseholdLocationFields } from './household/HouseholdLocationFields';
@@ -43,7 +42,6 @@ export function HouseholdEditView({
   householdName,
   setHouseholdName,
   currency,
-  onSelectCurrency,
   timezone,
   setTimezone,
   country,

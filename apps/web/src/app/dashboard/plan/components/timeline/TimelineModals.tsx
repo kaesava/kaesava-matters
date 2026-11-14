@@ -1,4 +1,3 @@
-import React from "react";
 import { ConfirmDialog } from "@money-matters/ui/web";
 import { MarkPaidModal } from "../MarkPaidModal";
 import { TransferModal } from "../../../../../components/web/TransferModal";

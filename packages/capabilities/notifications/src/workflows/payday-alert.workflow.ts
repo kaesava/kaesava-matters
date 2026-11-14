@@ -95,7 +95,7 @@ export function createPaydayAlertWorkflow(inngest: Inngest) {
                 tenantId: item.tenantId,
                 title: "💰 Payday Alert",
                 body: `An expected deposit of ${formattedAmount} is scheduled today. Tap to allocate.`,
-                data: { route: "/(app)/home" },
+                data: { route: `/(app)/payday-plan/${item.eventId}` },
               },
             }).catch(() => {});
           }

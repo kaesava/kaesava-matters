@@ -1,5 +1,5 @@
 import React, { useState, useRef, useId } from 'react';
-import { Paperclip, Download, Trash2, Edit2, X, Plus } from 'lucide-react';
+import { Paperclip, Download, Trash2, Edit2, X } from 'lucide-react';
 import { t } from '@money-matters/i18n';
 import { useFileNotes } from './useFileNotes.js';
 import { SlideOverDrawer, ConfirmDialog, FormErrorBanner, Button } from '@money-matters/ui/web';
@@ -27,7 +27,6 @@ export function FileNotesPanel({ entityType, entityId, onDirtyChange }: FileNote
     clearError,
     handleCreateNote,
     handleSaveCommentEdit,
-    handleArchiveNote,
     handlePurgeNote,
     downloadNote,
   } = useFileNotes(entityType, entityId);
@@ -71,13 +70,13 @@ export function FileNotesPanel({ entityType, entityId, onDirtyChange }: FileNote
               value={noteComment}
               onChange={(e) => setNoteComment(e.target.value)}
               placeholder={t('fileNotes.inputPlaceholder')}
-              className="w-full text-xs rounded-lg border border-slate-200 bg-white p-2.5 outline-none focus:border-sereneBlue dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100 resize-none min-h-[64px]"
+              className="w-full text-xs rounded-lg border border-slate-200 bg-white p-2.5 outline-none focus:border-[#2563eb] dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100 resize-none min-h-[64px]"
             />
 
             {noteFile && (
               <div className="flex items-center justify-between p-2 rounded-lg bg-white border border-slate-200 dark:bg-slate-800 dark:border-slate-700">
                 <div className="flex items-center gap-2 overflow-hidden mr-2">
-                  <Paperclip className="w-3.5 h-3.5 text-sereneBlue shrink-0" />
+                  <Paperclip className="w-3.5 h-3.5 text-[#2563eb] shrink-0" />
                   <div className="overflow-hidden">
                     <p className="text-xs font-semibold text-slate-800 dark:text-slate-200 truncate">
                       {noteFile.name}
@@ -185,7 +184,7 @@ export function FileNotesPanel({ entityType, entityId, onDirtyChange }: FileNote
                         <textarea
                           value={editingCommentText}
                           onChange={(e) => setEditingCommentText(e.target.value)}
-                          className="w-full text-xs rounded-lg border border-slate-200 bg-slate-50 p-2 outline-none focus:border-sereneBlue dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100 resize-none min-h-[48px]"
+                          className="w-full text-xs rounded-lg border border-slate-200 bg-slate-50 p-2 outline-none focus:border-[#2563eb] dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100 resize-none min-h-[48px]"
                         />
                         <div className="flex justify-end gap-1.5">
                           <button
@@ -195,16 +194,17 @@ export function FileNotesPanel({ entityType, entityId, onDirtyChange }: FileNote
                           >
                             {t('common.cancel')}
                           </button>
-                          <button
+                          <Button
                             type="button"
+                            size="sm"
+                            variant="primary"
                             onClick={() => {
                               handleSaveCommentEdit(note.id, editingCommentText);
                               setEditingNoteId(null);
                             }}
-                            className="px-2.5 py-1 text-[10px] font-medium rounded bg-sereneBlue text-white hover:bg-blue-600"
                           >
                             {t('common.save')}
-                          </button>
+                          </Button>
                         </div>
                       </div>
                     ) : (

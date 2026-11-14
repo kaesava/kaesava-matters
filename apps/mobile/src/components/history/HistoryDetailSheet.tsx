@@ -111,7 +111,7 @@ export function HistoryDetailSheet({
           <View style={styles.divider} />
 
           <View style={styles.metaRow}>
-            <Text style={styles.metaLabel}>{t('history.date')}</Text>
+            <Text style={styles.metaLabel}>{t('tables.date')}</Text>
             <Text style={styles.metaValueMono}>{formatDate(transaction.recordedAt)}</Text>
           </View>
         </View>

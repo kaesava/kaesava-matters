@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { trpc } from "../../../lib/trpc";
 import { authClient } from "../../../lib/auth";
@@ -51,18 +51,18 @@ export default function AcceptInvitePage() {
           {status === "loading" && isPending && (
             <div className="space-y-4">
               <Spinner size="lg" className="text-[#2563eb] mx-auto" />
-              <h1 className="text-xl font-extrabold text-[#1B2B4B]">{t("partner.acceptTitle")}</h1>
-              <p className="text-xs text-slate-500">{t("partner.acceptSubtitle")}</p>
+              <h1 className="text-xl font-extrabold text-[#1B2B4B]">{t("memberInvite.acceptTitle")}</h1>
+              <p className="text-xs text-slate-500">{t("memberInvite.acceptSubtitle")}</p>
             </div>
           )}
 
           {status === "loading" && !isPending && !session?.user && (
             <div className="space-y-4">
               <h1 className="text-2xl font-extrabold text-[#1B2B4B]">
-                {t("partner.joinHouseholdTitle")}
+                {t("memberInvite.joinHouseholdTitle")}
               </h1>
               <p className="text-xs text-slate-500">
-                {t("partner.joinHouseholdSubtitle")}
+                {t("memberInvite.joinHouseholdSubtitle")}
               </p>
               <div className="flex flex-col gap-3 mt-4">
                 <button
@@ -73,7 +73,7 @@ export default function AcceptInvitePage() {
                   {t("auth.signUp")}
                 </button>
                 <p className="text-xs text-slate-500">
-                  {t("partner.alreadyHaveAccountPrompt")}{" "}
+                  {t("memberInvite.alreadyHaveAccountPrompt")}{" "}
                   <button
                     type="button"
                     onClick={() => router.push(`/sign-in?redirect=/invite/${token}`)}
@@ -91,8 +91,8 @@ export default function AcceptInvitePage() {
               <div className="w-12 h-12 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center text-2xl mx-auto font-bold">
                 ✓
               </div>
-              <h1 className="text-xl font-extrabold text-[#1B2B4B]">{t("partner.acceptSuccessTitle")}</h1>
-              <p className="text-xs text-slate-500">{t("partner.acceptSuccessMessage")}</p>
+              <h1 className="text-xl font-extrabold text-[#1B2B4B]">{t("memberInvite.acceptSuccessTitle")}</h1>
+              <p className="text-xs text-slate-500">{t("memberInvite.acceptSuccessMessage")}</p>
             </div>
           )}
 
@@ -101,8 +101,8 @@ export default function AcceptInvitePage() {
               <div className="w-12 h-12 bg-rose-100 text-rose-600 rounded-full flex items-center justify-center text-2xl mx-auto font-bold">
                 ⚠️
               </div>
-              <h1 className="text-xl font-extrabold text-[#1B2B4B]">{t("partner.acceptErrorTitle")}</h1>
-              <p className="text-xs text-slate-500">{errorMsg || t("partner.invalidToken")}</p>
+              <h1 className="text-xl font-extrabold text-[#1B2B4B]">{t("memberInvite.acceptErrorTitle")}</h1>
+              <p className="text-xs text-slate-500">{errorMsg || t("memberInvite.invalidToken")}</p>
               <div className="flex flex-col gap-2 pt-2">
                 <button
                   type="button"
@@ -112,14 +112,14 @@ export default function AcceptInvitePage() {
                   }}
                   className="bg-[#2563eb] text-white text-xs font-extrabold px-4 py-2.5 rounded-xl hover:bg-blue-700 transition-colors w-full cursor-pointer"
                 >
-                  {t("partner.signOutSwitchAccount")}
+                  {t("memberInvite.signOutSwitchAccount")}
                 </button>
                 <button
                   type="button"
                   onClick={() => router.push("/dashboard")}
                   className="text-xs font-bold text-slate-600 hover:text-slate-900 px-4 py-2 rounded-xl transition-colors cursor-pointer"
                 >
-                  {t("partner.goToDashboard")}
+                  {t("memberInvite.goToDashboard")}
                 </button>
               </div>
             </div>

@@ -1,4 +1,4 @@
-import { pgTable, uuid, numeric, pgEnum, timestamp, boolean } from "drizzle-orm/pg-core";
+import { pgTable, uuid, numeric, pgEnum, timestamp } from "drizzle-orm/pg-core";
 import { incomeEvents } from "./income_event.js";
 import { tenantAndTimestamps } from "./base.js";
 

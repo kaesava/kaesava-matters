@@ -89,7 +89,7 @@ export function AppScreenWrapper({
         activeTenantName={activeTenantName}
         onSignOut={handleSignOut}
         onOpenAsk={onOpenAsk || openCommandPalette}
-        askAccessibilityLabel={t(hasAiAssistant ? 'commandPalette.triggerTitle' : 'commandPalette.searchOnlyTitle')}
+        askAccessibilityLabel={t(hasAiAssistant ? 'commandPalette.triggerTitle' : 'common.search')}
         onAskTargetLayout={(rect) => registerTourTarget('ask-penny', rect)}
         scrollable={scrollable}
       >

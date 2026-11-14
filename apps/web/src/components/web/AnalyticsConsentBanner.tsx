@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import posthog from 'posthog-js';
 import { Button } from '@money-matters/ui/web';
 import { t } from '@money-matters/i18n';

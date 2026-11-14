@@ -1,6 +1,6 @@
-import { privateTenantProcedure, privateOwnerProcedure, requiresWriteAccess } from '../../trpc/trpc.js';
-import { bankAccounts, envelopes, transactionLedger } from "@money-matters/db";
-import { and, eq, sql, or, inArray } from "drizzle-orm";
+import { privateTenantProcedure, requiresWriteAccess } from '../../trpc/trpc.js';
+import { bankAccounts, transactionLedger } from "@money-matters/db";
+import { and, eq, sql, or } from "drizzle-orm";
 import { 
   createBankAccountHandler,
   updateBankAccountHandler,

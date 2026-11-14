@@ -1,7 +1,6 @@
 "use client";
 export const dynamic = 'force-dynamic';
 
-import React from "react";
 import { t } from "@money-matters/i18n";
 import { PublicHeader } from "../../components/public/PublicHeader";
 import { PublicFooter } from "../../components/public/PublicFooter";

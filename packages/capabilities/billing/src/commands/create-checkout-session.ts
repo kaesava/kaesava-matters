@@ -64,7 +64,9 @@ export async function createCheckoutSessionCommand(
     throw new Error("No valid Stripe Price ID configured for checkout.");
   }
 
-  const stripe = new Stripe(stripeSecretKey);
+  const stripe = new Stripe(stripeSecretKey, {
+    httpClient: Stripe.createFetchHttpClient(),
+  });
 
   const [tenant] = await db
     .select({

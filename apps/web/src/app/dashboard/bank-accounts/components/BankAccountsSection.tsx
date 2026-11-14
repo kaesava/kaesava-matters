@@ -108,7 +108,7 @@ export function BankAccountsSection() {
               selectedPoolId={list.typeFilter === "ALL" ? null : list.typeFilter}
               allowCategorySelection={false}
               allowAllOption={true}
-              placeholder={t("common.allPools")}
+              placeholder={t("common.allEnvelopes")}
               onChange={(sel) => list.setTypeFilter(sel.poolId || "ALL")}
             />
           </div>

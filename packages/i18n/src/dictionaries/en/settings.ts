@@ -1,5 +1,3 @@
-import { settingsSections } from "./settings-sections";
-
 export const settings = {
   "settings": {
     "title": "Settings",
@@ -16,7 +14,7 @@ export const settings = {
       "restoreTitle": "Restore Item",
       "restoreConfirm": "Are you sure you want to restore \"{name}\"? It will be active again and its upcoming schedule events will be restored.",
       "restoreAction": "Restore",
-      "pools": "Envelopes",
+      "envelopes": "Envelopes",
       "income": "Income Schedules",
       "accounts": "Bank Accounts",
       "types": {
@@ -116,7 +114,6 @@ export const settings = {
     "displayNameRequired": "Name is required.",
     "typeToConfirmLabel": "Type {phrase} to confirm:",
     "myDetailsTitle": "My Details",
-    "displayNameLabel": "Name",
     "displayNamePlaceholder": "e.g. Jane Smith",
     "loginEmailLabel": "Login Email",
     "notificationEmailLabel": "Notification Email",
@@ -143,7 +140,6 @@ export const settings = {
     "signOut": "Sign out",
     "signOutConfirm": "You sure?",
     "income": {
-      "addSchedule": "Add Income Schedule",
       "scheduleName": "Schedule Name",
       "archiveConfirmTitle": "Archive Income Schedule",
       "archiveConfirmMessage": "Are you sure you want to archive \"{name}\"?"
@@ -177,6 +173,7 @@ export const settings = {
       "activeCustomisedBadge": "Active (Customised)",
       "customizeButton": "Customise Rules",
       "loadPresetLabel": "Rule Preset",
+      "infoTooltip": "Payday Rules decide the order your income fills envelopes. Shared Rules apply to your household's shared contribution; Private Rules apply only to your private carve-out and are never visible to other household members.",
       "customBadge": "Custom",
       "discardOrderConfirmTitle": "Replace Unsaved Order?",
       "discardOrderConfirmMessage": "You have unsaved changes to the step order. Loading {presetName} will replace your current edits.",
@@ -187,7 +184,7 @@ export const settings = {
       "onlyOwnerCanChange": "Only household owners can change household rules.",
       "tabs": {
         "household": "Household Rules",
-        "personal": "Personal Rules"
+        "personal": "Private Rules"
       },
       "customiseToActivate": "Customise an existing rule",
       "presets": {
@@ -243,7 +240,10 @@ export const settings = {
       "targetEnvelopeLabel": "Target Envelope",
       "saveChanges": "Save Rules",
       "saveSuccess": "Payday rules updated successfully."
+    },
+    "notifications": {
+      "title": "Notification Preferences",
+      "subtitle": "Manage weekly digest emails, payday alerts, and balance match nudges."
     }
-  },
-  ...settingsSections
+  }
 } as const;

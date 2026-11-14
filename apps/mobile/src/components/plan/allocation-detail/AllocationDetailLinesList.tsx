@@ -25,7 +25,7 @@ export const AllocationDetailLinesList: React.FC<AllocationDetailLinesListProps>
           <View key={line.id || idx} style={styles.lineItem}>
             <View style={styles.flex1}>
               <Text style={styles.poolName}>
-                {line.poolName || t('paydayDrawer.poolAllocationDefault')}
+                {line.poolName || t('paydayDrawer.envelopeAllocationDefault')}
               </Text>
               {line.reasoning ? (
                 <Text style={styles.lineReasoning}>{line.reasoning}</Text>

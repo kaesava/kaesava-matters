@@ -170,7 +170,7 @@ export function ModalDialog({
                 onClick={() => setShowConfirm(false)}
                 className="w-full"
               >
-                {t('modals.unsavedChanges.keepEditing')}
+                {t('common.keepEditing')}
               </Button>
             </div>
           </div>

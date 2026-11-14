@@ -96,7 +96,7 @@ export function EnvelopeFormModal({
     utils.listEnvelopes.invalidate();
     utils.listExpenseEvents.invalidate();
     utils.listBillSchedules.invalidate();
-    utils.getProjectedPoolBalances.invalidate();
+    utils.getProjectedEnvelopeBalances.invalidate();
   };
 
   const createMut = trpc.createEnvelope.useMutation({
@@ -256,8 +256,8 @@ export function EnvelopeFormModal({
     const archiveLabel =
       initialMode === "BILL_SCHEDULE" ? t("categories.archiveBillSchedule") : t("categories.archiveEnvelope");
     const confirmMessage = isLastPrivateEnvelope
-      ? t("categories.archiveLastPrivatePoolConfirm", { name: categoryToEdit.name })
-      : t("categories.archivePoolConfirm", { name: categoryToEdit.name });
+      ? t("categories.archiveLastPrivateEnvelopeConfirm", { name: categoryToEdit.name })
+      : t("categories.archiveEnvelopeConfirm", { name: categoryToEdit.name });
 
     showMobileConfirm({
       title: archiveLabel,
@@ -274,7 +274,7 @@ export function EnvelopeFormModal({
 
   const typeOptions = isEdit
     ? [
-        { key: "EVERYDAY", label: t("categories.typeEveryday") },
+        { key: "EVERYDAY", label: t("envelopeTypes.everyday") },
         { key: "BILL", label: t("categories.typeBill") },
         { key: "GOAL", label: t("categories.typeGoal") },
       ]

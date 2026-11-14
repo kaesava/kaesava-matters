@@ -26,7 +26,6 @@ export const ProjectionEnvelopeCard: React.FC<ProjectionEnvelopeCardProps> = ({
   pool,
   balance,
   bank,
-  nestedCount,
   isGoal,
 }) => {
   const router = useRouter();
@@ -61,7 +60,7 @@ export const ProjectionEnvelopeCard: React.FC<ProjectionEnvelopeCardProps> = ({
                 ? target > 0
                   ? `${pct}% of ${formatMobileCurrency(target)}`
                   : t('categories.noTarget')
-                : t('categories.mainPool')}
+                : t('categories.mainEnvelope')}
             </Text>
           </View>
           <CardDrawerIndicator size={18} />

@@ -201,7 +201,7 @@ export function usePaydayPlanActions({
       setInitialLinesMap({ ...effectiveMap });
       setLinesMap({ ...effectiveMap });
       setInitialReasoningMap({ ...reasoningMap });
-      toast.success(t("matrix.lockSplitSuccess"));
+      toast.success(t("paydaySchedule.saveDraftSuccess"));
 
       const freshData = await utils.previewPayday.fetch({ incomeEventId }, { staleTime: 0 });
       if (freshData) {

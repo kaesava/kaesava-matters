@@ -1,7 +1,6 @@
 "use client";
 
 import React from "react";
-import { useIconVisibility } from "../hooks/IconVisibilityContext";
 
 export interface SearchInputProps {
   value: string;

@@ -1,4 +1,3 @@
-import React from "react";
 import { t } from "@money-matters/i18n";
 import { useRecurrenceBuilder } from "../../hooks/useRecurrenceBuilder";
 import { DatePickerField } from "./DatePickerField";

@@ -22,6 +22,10 @@ describe("exportDataHandler", () => {
       [{ id: "tx-1", envelopeId: "env-shared", bankAccountId: "ba-shared", note: "=SUM(1,2)" }, { id: "tx-bob", envelopeId: "env-bob", bankAccountId: "ba-bob" }], // transactionLedger
       [{ id: "ap-1", incomeEventId: "ie-1" }, { id: "ap-bob", incomeEventId: "ie-bob" }], // allocationPlans
       [{ id: "apl-1", planId: "ap-1", envelopeId: "env-shared" }, { id: "apl-bob", planId: "ap-bob", envelopeId: "env-bob" }], // allocationPlanLines
+      [{ id: "te-1", sourceEnvelopeId: "env-shared", destinationEnvelopeId: "env-shared", name: "Transfer 1", expectedDate: "2026-01-01", expectedAmount: "50", status: "PENDING" }, { id: "te-bob", sourceEnvelopeId: "env-shared", destinationEnvelopeId: "env-bob", name: "Secret Transfer", expectedDate: "2026-01-01", expectedAmount: "20", status: "PENDING" }], // transferEvents
+      [{ id: "st-1", name: "Household Balanced", presetKey: "BALANCED", isDefault: true, isPrivate: false, userId: null }, { id: "st-bob", name: "Bob Strategy", presetKey: "CUSTOM", isDefault: true, isPrivate: true, userId: "user-2" }], // allocationStrategies
+      [{ id: "sts-1", strategyId: "st-1", orderIndex: 0, stepType: "IMMEDIATE_BILLS", targetEnvelopeId: null }, { id: "sts-bob", strategyId: "st-bob", orderIndex: 0, stepType: "IMMEDIATE_BILLS", targetEnvelopeId: null }], // allocationStrategySteps
+      [{ id: "fn-1", entityType: "ENVELOPE", entityId: "env-shared", comment: "Receipt", fileName: "r.pdf", fileMimeType: "application/pdf", fileSize: "100", fileKey: "k-1", isPrivate: false, userId: "user-1", createdAt: new Date("2026-01-01") }, { id: "fn-bob", entityType: "ENVELOPE", entityId: "env-bob", comment: "Secret", fileName: null, fileMimeType: null, fileSize: null, fileKey: "k-bob", isPrivate: true, userId: "user-2", createdAt: new Date("2026-01-01") }], // fileNotes
     ];
 
     let callIdx = 0;
@@ -40,7 +44,8 @@ describe("exportDataHandler", () => {
       }),
     };
 
-    const handler = exportDataHandler(mockDb as unknown as DbOrTx);
+    const presignMock = vi.fn().mockResolvedValue("https://signed.example.com/k-1");
+    const handler = exportDataHandler(mockDb as unknown as DbOrTx, presignMock);
     const result = await handler("tenant-1", "user-1", "money-matters");
 
     expect(result.csvFiles["Bank_Accounts.csv"]).toContain("ba-shared");
@@ -58,5 +63,17 @@ describe("exportDataHandler", () => {
 
     expect(result.csvFiles["Income_Split_Plan_Lines.csv"]).toContain("apl-1");
     expect(result.csvFiles["Income_Split_Plan_Lines.csv"]).not.toContain("apl-bob");
+
+    expect(result.csvFiles["Transfer_Events.csv"]).toContain("te-1");
+    expect(result.csvFiles["Transfer_Events.csv"]).not.toContain("te-bob");
+
+    expect(result.csvFiles["Allocation_Strategies.csv"]).toContain("st-1");
+    expect(result.csvFiles["Allocation_Strategies.csv"]).not.toContain("st-bob");
+
+    expect(result.csvFiles["Allocation_Strategy_Steps.csv"]).toContain("sts-1");
+    expect(result.csvFiles["Allocation_Strategy_Steps.csv"]).not.toContain("sts-bob");
+
+    expect(result.csvFiles["File_Notes.csv"]).toContain("https://signed.example.com/k-1");
+    expect(result.csvFiles["File_Notes.csv"]).not.toContain("fn-bob");
   });
 });

@@ -46,8 +46,6 @@ export function SignUpFormFields({
   setEmail,
   country,
   onCountryChange,
-  timezone,
-  setTimezone,
   password,
   setPassword,
   confirmPassword,

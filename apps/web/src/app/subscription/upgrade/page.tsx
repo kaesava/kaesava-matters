@@ -214,7 +214,7 @@ export default function UpgradePage() {
                       </li>
                       <li className="flex items-center gap-2.5 text-slate-800">
                         <span className="w-5 h-5 rounded-full bg-blue-100 text-[#2563eb] flex items-center justify-center text-xs font-black shrink-0">✓</span>
-                        {t("subscription.featurePartner")}
+                        {t("subscription.featureHouseholdMember")}
                       </li>
                     </ul>
                   </div>

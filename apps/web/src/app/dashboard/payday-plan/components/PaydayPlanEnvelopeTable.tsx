@@ -82,10 +82,10 @@ export function PaydayPlanEnvelopeTable({
             <thead>
               <tr className="border-b border-zinc-200 dark:border-zinc-800 bg-zinc-50/80 dark:bg-zinc-800/60 text-[11px] font-semibold tracking-wide text-zinc-500">
                 <th scope="col" className="py-3 px-4 md:px-6 text-left">
-                  {t("paydayDrawer.tableColPool")}
+                  {t("categories.typeLabel")}
                 </th>
                 <th scope="col" className="py-3 px-3 text-center w-36">
-                  {t("paydayDrawer.tableColTarget")}
+                  {t("common.target")}
                 </th>
                 <th scope="col" className="py-3 px-4 text-right w-36 tabular-nums font-mono">
                   {t("paydayDrawer.tableColBalance")}

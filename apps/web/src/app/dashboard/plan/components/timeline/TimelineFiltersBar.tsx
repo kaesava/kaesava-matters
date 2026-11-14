@@ -1,4 +1,3 @@
-import React from "react";
 import { SearchInput } from "@money-matters/ui/web";
 import { t } from "@money-matters/i18n";
 import { useAppFeatures } from "../../../../../hooks/useAppFeatures";
@@ -148,7 +147,7 @@ export function TimelineFiltersBar({
                 : "text-zinc-500 hover:text-zinc-900 dark:hover:text-white"
             }`}
           >
-            {t("planTabs.transferTab")}
+            {t("common.transfer")}
           </button>
         </div>
       </div>

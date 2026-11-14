@@ -17,31 +17,6 @@ export const BaseSchema = z.object({
 }).strict();
 
 /**
- * Subscription status lifecycle state machine (canonical schema in subscription.types.ts).
- */
-
-/**
- * Schema validating Tenant organisation details including fiscal year parameters and subscription lifecycle.
- */
-export const TenantSchema = BaseSchema.extend({
-  name: z.string().min(1),
-  country: z.string().length(2).default("AU"),
-  currency: z.string().length(3).default("AUD"),
-  timezone: z.string().default("Australia/Sydney"),
-  premiumEnabled: z.boolean().default(false),
-  subscriptionStatus: SubscriptionStatusSchema.default("TRIAL_ACTIVE"),
-  trialStartedAt: z.date().nullable().default(null),
-  trialEndsAt: z.date().nullable().default(null),
-  stripeCustomerId: z.string().nullable().default(null),
-  stripeSubscriptionId: z.string().nullable().default(null),
-  stripePriceId: z.string().nullable().default(null),
-  subscribedAt: z.date().nullable().default(null),
-  subscriptionEndsAt: z.date().nullable().default(null),
-}).strict();
-
-export type TenantType = z.infer<typeof TenantSchema>;
-
-/**
  * DTO summarizing tenant subscription status and trial lifecycle flags.
  */
 export const SubscriptionStatusDto = z.object({
@@ -62,19 +37,6 @@ export const SubscriptionStatusDto = z.object({
 }).strict();
 export type SubscriptionStatusDto = z.infer<typeof SubscriptionStatusDto>;
 
-/**
- * Schema validating tenant membership access control, role levels, and pending invite tokens.
- */
-export const TenantMemberSchema = BaseSchema.extend({
-  tenantId: z.string().uuid(),
-  userId: z.string().uuid(),
-  role: z.enum(["OWNER", "MEMBER"]),
-  inviteToken: z.string().uuid().nullable(),
-  inviteStatus: z.enum(["PENDING", "ACCEPTED", "REVOKED"]),
-}).strict();
-
-export type TenantMemberType = z.infer<typeof TenantMemberSchema>;
-
 export const UpdateHouseholdMemberRoleCommand = z.object({
   memberId: z.string().uuid().optional(),
   targetUserId: z.string().uuid().optional(),
@@ -83,26 +45,15 @@ export const UpdateHouseholdMemberRoleCommand = z.object({
 export type UpdateHouseholdMemberRoleCommandType = z.infer<typeof UpdateHouseholdMemberRoleCommand>;
 
 /**
- * Schema for tenant member UI preferences and localization settings.
- */
-export const UserPreferencesSchema = z.object({
-  timezone: z.string().default("UTC"),
-  language: z.enum(["en"]).default("en"),
-  locale: z.string().default("auto"),
-}).strict();
-
-/**
  * Application Version and Diagnostics DTO
  */
-export const AppVersionInfoSchema = z.object({
-  appId: z.string().uuid(),
-  appName: z.string().min(1),
-  version: z.string().min(1),
-  buildNumber: z.string().min(1),
-  channel: z.enum(["development", "preview", "beta", "production"]),
-  gitCommit: z.string().min(1),
-  platform: z.enum(["web", "ios", "android"]),
-  formattedVersion: z.string().min(1),
-}).strict();
-
-export type AppVersionInfo = z.infer<typeof AppVersionInfoSchema>;
+export interface AppVersionInfo {
+  appId: string;
+  appName: string;
+  version: string;
+  buildNumber: string;
+  channel: "development" | "preview" | "beta" | "production";
+  gitCommit: string;
+  platform: "web" | "ios" | "android";
+  formattedVersion: string;
+}

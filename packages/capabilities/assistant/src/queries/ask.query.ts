@@ -50,16 +50,12 @@ async function resolveLlmQuery(opts: AskAssistantOptions): Promise<AssistantResu
   try {
     outcome = await llmProvider.classifyIntent(query, snapshot);
   } catch (err) {
-    if (typeof usageStore.decrementLlmCalls === "function") {
-      await usageStore.decrementLlmCalls(context.tenantId);
-    }
+    await usageStore.decrementLlmCalls?.(context.tenantId);
     throw err;
   }
 
   if (!outcome.ok) {
-    if (typeof usageStore.decrementLlmCalls === "function") {
-      await usageStore.decrementLlmCalls(context.tenantId);
-    }
+    await usageStore.decrementLlmCalls?.(context.tenantId);
     return { type: "unavailable", reason: "service_error" };
   }
 

@@ -1,23 +1,8 @@
 import { describe, it, expect } from "vitest";
-import { parseSemVer, isVersionOutdated, getFormattedVersionString } from "./version";
+import { buildAppVersionInfo, getFormattedVersionString } from "./version";
 import { AppVersionInfo } from "@money-matters/types";
 
 describe("Version Config Utilities", () => {
-  it("correctly parses SemVer strings", () => {
-    const res = parseSemVer("1.2.3-beta.1");
-    expect(res.major).toBe(1);
-    expect(res.minor).toBe(2);
-    expect(res.patch).toBe(3);
-    expect(res.prerelease).toBe("beta.1");
-  });
-
-  it("evaluates if client version is outdated against minimum version", () => {
-    expect(isVersionOutdated("1.0.0", "1.1.0")).toBe(true);
-    expect(isVersionOutdated("1.1.0", "1.1.0")).toBe(false);
-    expect(isVersionOutdated("2.0.0", "1.9.9")).toBe(false);
-    expect(isVersionOutdated("1.0.5", "1.0.10")).toBe(true);
-  });
-
   it("formats version info into readable string", () => {
     const info: AppVersionInfo = {
       appId: "01908bde-34bb-7b19-a178-574211bc93aa",
@@ -31,5 +16,17 @@ describe("Version Config Utilities", () => {
     };
 
     expect(getFormattedVersionString(info)).toBe("v1.0.0-beta.1 (#42)");
+  });
+
+  it("normalizes invalid channels to development in buildAppVersionInfo", () => {
+    const built = buildAppVersionInfo({
+      appName: "Money Matters",
+      channelRaw: "invalid",
+      platform: "web",
+      version: "2.0.0",
+      buildNumber: "7",
+    });
+    expect(built.channel).toBe("development");
+    expect(built.formattedVersion).toBe("v2.0.0 (#7)");
   });
 });

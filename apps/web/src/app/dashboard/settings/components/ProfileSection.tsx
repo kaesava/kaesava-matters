@@ -96,7 +96,7 @@ export function ProfileSection({
           title={t("modals.discardChanges.title")}
           description={t("modals.discardChanges.description")}
           confirmLabel={t("modals.discardChanges.discard")}
-          cancelLabel={t("modals.discardChanges.cancel")}
+          cancelLabel={t("common.keepEditing")}
           variant="danger"
           onConfirm={form.handleDiscardConfirm}
           onClose={() => form.setShowDiscardDialog(false)}

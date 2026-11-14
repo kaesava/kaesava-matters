@@ -76,13 +76,13 @@ async function poolBalanceAnswer(
   if (!matched) {
     return {
       type: "answer",
-      templateKey: "assistant.answers.poolNotFound",
+      templateKey: "assistant.answers.envelopeNotFound",
       templateValues: { envelopeName: poolName?.trim() || "Everyday" },
     };
   }
   return {
     type: "answer",
-    templateKey: "assistant.answers.poolBalance",
+    templateKey: "assistant.answers.envelopeBalance",
     templateValues: { envelopeName: matched.name, balance: fmtAmt(balancesMap[matched.id] ?? 0, fmt) },
   };
 }

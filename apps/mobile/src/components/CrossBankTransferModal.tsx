@@ -33,7 +33,6 @@ export function CrossBankTransferModal({
 }: CrossBankTransferModalProps) {
   const [copied, setCopied] = useState(false);
   const { currencySymbol } = useCurrencyLocale();
-  const D = DESIGN_TOKENS;
 
   const handleCopyAmount = async () => {
     try {

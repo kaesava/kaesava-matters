@@ -103,7 +103,7 @@ export function SlideOverDrawer({
         title={t('modals.unsavedChanges.title')}
         description={t('modals.unsavedChanges.description')}
         confirmLabel={t('modals.unsavedChanges.discard')}
-        cancelLabel={t('modals.unsavedChanges.keepEditing')}
+        cancelLabel={t('common.keepEditing')}
         variant="danger"
       />
     </div>

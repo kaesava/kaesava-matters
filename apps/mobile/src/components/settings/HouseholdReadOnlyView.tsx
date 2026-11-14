@@ -1,4 +1,4 @@
-import { DEFAULT_TIMEZONE, DEFAULT_LOCALE } from "@money-matters/types";
+import { DEFAULT_TIMEZONE } from "@money-matters/types";
 import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import { Feather } from '@expo/vector-icons';

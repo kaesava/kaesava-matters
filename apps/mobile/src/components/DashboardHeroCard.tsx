@@ -2,7 +2,6 @@ import React from 'react';
 import { View, StyleSheet } from 'react-native';
 import { DashboardHeroEverydayCard } from './dashboard/hero/DashboardHeroEverydayCard';
 import { DashboardHeroBillsCard } from './dashboard/hero/DashboardHeroBillsCard';
-import { DashboardHealthFilterStrip } from './dashboard/hero/DashboardHealthFilterStrip';
 
 export interface DashboardHeroCardProps {
   readonly everydayBalance: number;
@@ -32,8 +31,6 @@ export const DashboardHeroCard: React.FC<DashboardHeroCardProps> = ({
   billsMonthlyBudget = 0,
   daysUntilPayday,
   safeToSpend,
-  dailyPace: passedDailyPace,
-  paceStatus,
   isAwaitingFirstPayday = false,
   billsShortfall,
   billsDue14DaysCount,

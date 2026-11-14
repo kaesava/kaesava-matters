@@ -1,4 +1,3 @@
-import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { Feather } from '@expo/vector-icons';
 import { SpendingTimeframe } from '@money-matters/types';
@@ -114,8 +113,8 @@ export function TabSwitcher({
     : (labels?.tabCashFlow || labels?.cashFlowTitle || t('history.reporting.tabs.cashFlow'));
 
   const topPoolsLabel = isFiltered
-    ? (labels?.filteredTopPoolsTitle || t('history.reporting.topPools.filteredTitle'))
-    : (labels?.tabTopPools || labels?.topPoolsTitle || t('history.reporting.tabs.topPools'));
+    ? (labels?.filteredTopPoolsTitle || t('history.reporting.topEnvelopes.filteredTitle'))
+    : (labels?.tabTopPools || labels?.topPoolsTitle || t('history.reporting.tabs.topEnvelopes'));
 
   const tabs: Array<{ key: ChartTab; label: string }> = [
     { key: 'HORIZON', label: horizonLabel },

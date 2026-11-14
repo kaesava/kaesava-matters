@@ -27,8 +27,8 @@ function resolveLeaveWarning(myMember: DbMember | undefined, otherMembers: DbMem
 
 function resolveDeleteWarning(partnerMember: DbMember | undefined, otherMembersCount: number) {
   if (!partnerMember) return null;
-  if (otherMembersCount > 1) return { key: "privacy.deleteMultiPartnerWarning" };
-  return { key: "privacy.deletePartnerWarning", params: { email: partnerMember.inviteEmail ?? partnerMember.email ?? "" } };
+  if (otherMembersCount > 1) return { key: "privacy.deleteMultiMemberWarning" };
+  return { key: "privacy.deleteMemberWarning", params: { email: partnerMember.inviteEmail ?? partnerMember.email ?? "" } };
 }
 
 export async function getHouseholdGovernanceInfoHandler(tenantId: string, userId: string, db: DbOrTx) {

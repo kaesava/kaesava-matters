@@ -1,6 +1,5 @@
 "use client";
 
-import React from "react";
 import { Sparkles, CheckCircle2, Lock } from "lucide-react";
 import { t } from "@money-matters/i18n";
 import { Button, InfoTooltip, DESIGN_TOKENS } from "@money-matters/ui/web";

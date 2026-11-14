@@ -71,7 +71,7 @@ describe("createAssistantIntentHandler", () => {
     const res = await handler.handlePoolBalance(tenantCtx, "NonExistent");
     expect(res).toEqual({
       type: "answer",
-      templateKey: "assistant.answers.poolNotFound",
+      templateKey: "assistant.answers.envelopeNotFound",
       templateValues: { envelopeName: "NonExistent" },
     });
   });

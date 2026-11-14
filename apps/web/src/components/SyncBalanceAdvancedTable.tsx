@@ -60,7 +60,7 @@ export const SyncBalanceAdvancedTable: React.FC<SyncBalanceAdvancedTableProps> =
         <table className="w-full text-left text-xs border-collapse">
           <thead>
             <tr className="border-b border-slate-200 dark:border-zinc-800 text-slate-400 font-bold uppercase text-[10px] tracking-wider">
-              <th className="py-2 text-left">{t("bankAccounts.reconcile.tablePool")}</th>
+              <th className="py-2 text-left">{t("categories.typeLabel")}</th>
               <th className="py-2 text-right">{t("bankAccounts.reconcile.tableAvailable")}</th>
               <th className="py-2 text-right w-44">{t("bankAccounts.reconcile.tableAdjustment")}</th>
             </tr>
@@ -68,7 +68,7 @@ export const SyncBalanceAdvancedTable: React.FC<SyncBalanceAdvancedTableProps> =
           <tbody className="divide-y divide-slate-100 dark:divide-zinc-800 font-medium text-slate-800 dark:text-zinc-200">
             {visiblePools.length === 0 ? (
               <tr>
-                <td colSpan={3} className="py-4 text-center text-slate-400 italic">{t("bankAccounts.reconcile.noLinkedPools")}</td>
+                <td colSpan={3} className="py-4 text-center text-slate-400 italic">{t("bankAccounts.reconcile.noLinkedEnvelopes")}</td>
               </tr>
             ) : (
               visiblePools.map((pool) => {
@@ -87,7 +87,7 @@ export const SyncBalanceAdvancedTable: React.FC<SyncBalanceAdvancedTableProps> =
                           )}
                         </div>
                         <span className={`text-[9px] font-bold inline-block w-max mt-0.5 rounded px-1.5 py-0.2 ${badgeStyle}`}>
-                          {pool.poolType === "EVERYDAY" ? t("poolTypes.everyday") : pool.poolType === "BILL" ? t("poolTypes.bills") : t("poolTypes.goals")}
+                          {pool.poolType === "EVERYDAY" ? t("envelopeTypes.everyday") : pool.poolType === "BILL" ? t("envelopeTypes.bills") : t("envelopeTypes.goals")}
                         </span>
                       </div>
                     </td>

@@ -6,9 +6,8 @@ import {
   allocationPlans,
   allocationPlanLines,
   transactionLedger,
-  expenseEvents,
-  transferEvents,
 } from "@money-matters/db";
+import type { SeedDb } from "./neon-auth-setup.js";
 import { seedHouseholdEvents } from "./household-events.js";
 import { seedStrategiesDraftsAndNotes } from "./household-strategies-and-notes.js";
 import {
@@ -21,7 +20,7 @@ import {
 } from "./seed-data.js";
 
 export async function seedSampleHousehold(
-  db: any,
+  db: SeedDb,
   params: {
     tenantId: string;
     appId: string;
@@ -168,7 +167,7 @@ export async function seedSampleHousehold(
   const pastSplitsData = SEED_PAST_SPLITS_DATA;
 
   for (const past of pastSplitsData) {
-    const keshEv = insertedIncomeEvents.find((e: any) => e.expectedDate === past.date && e.name === "Kesh - Salary")!;
+    const keshEv = insertedIncomeEvents.find((e) => e.expectedDate === past.date && e.name === "Kesh - Salary")!;
     const paydayInfo = paydays.find((p) => p.date === past.date)!;
 
     const [plan] = await db
@@ -202,7 +201,7 @@ export async function seedSampleHousehold(
 
     await db.insert(allocationPlanLines).values(planLinesToInsert);
 
-    const snehaEv = insertedIncomeEvents.find((e: any) => e.expectedDate === past.date && e.name === "Sneha - Salary");
+    const snehaEv = insertedIncomeEvents.find((e) => e.expectedDate === past.date && e.name === "Sneha - Salary");
     if (snehaEv) {
       await db.insert(allocationPlans).values({
         incomeEventId: snehaEv.id,

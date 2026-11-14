@@ -1,5 +1,5 @@
 import { DEFAULT_TIMEZONE, DEFAULT_LOCALE } from "@money-matters/types";
-import React, { useState, useMemo } from 'react';
+import React, { useState } from 'react';
 import { QueryCache, MutationCache, QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { PostHogProvider } from 'posthog-react-native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';

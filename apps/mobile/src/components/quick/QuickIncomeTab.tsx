@@ -140,7 +140,7 @@ export function QuickIncomeTab({
       {/* 3. Amount & Date */}
       <View style={styles.inputGroup}>
         <AmountInput
-          label={t('drawers.quickExpense.amountAud')}
+          label={t('common.amount')}
           required
           value={amount}
           onChangeText={(val) => {
@@ -153,7 +153,7 @@ export function QuickIncomeTab({
       </View>
 
       <MobileDatePickerField
-        label={t('drawers.quickExpense.dateLabel')}
+        label={t('tables.date')}
         value={date}
         onChange={setDate}
         required
@@ -188,7 +188,7 @@ export function QuickIncomeTab({
           loading={isSubmitting}
           style={styles.flexBtn}
         >
-          {t('common.splitIncome')}
+          {t('common.allocateIncome')}
         </MobileButton>
       </View>
     </View>

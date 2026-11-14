@@ -37,9 +37,9 @@ export function EnvelopeSummaryCard({
   const fundingMode = pool.fundingMode || 'TARGET_BALANCE';
 
   const badgeText = isBill
-    ? (fundingMode === 'RECURRING' ? t('categories.scheduledBillBadge') : t('categories.flexibleBillBadge'))
+    ? (fundingMode === 'RECURRING' ? t('categories.recurringBadge') : t('common.target'))
     : isGoal
-    ? (fundingMode === 'RECURRING' ? t('categories.ongoingGoalBadge') : t('categories.targetDateGoalBadge'))
+    ? (fundingMode === 'RECURRING' ? t('categories.recurringBadge') : t('common.target'))
     : isEveryday
     ? t('categories.everydayBadge')
     : null;
@@ -110,7 +110,7 @@ export function EnvelopeSummaryCard({
         )}
         <TouchableOpacity onPress={onEdit} style={styles.primaryActionBtn}>
           <Feather name="edit-2" size={15} color="#FFFFFF" />
-          <Text style={styles.primaryActionBtnText}>{t('categories.editPool')}</Text>
+          <Text style={styles.primaryActionBtnText}>{t('categories.editEnvelope')}</Text>
         </TouchableOpacity>
       </View>
     </View>

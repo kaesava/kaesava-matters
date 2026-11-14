@@ -50,7 +50,7 @@ export async function createEnvelopeCommand(
     }
 
     const fundingMode = input.fundingMode ?? (input.envelopeType === "GOAL" ? "TARGET_BALANCE" : "RECURRING");
-    const isPriority = input.isPriority ?? false;
+    const isPriority = input.isPriority ?? (input.envelopeType === "BILL");
 
     const isScheduled = input.envelopeType === "BILL" && fundingMode === "RECURRING";
     let tenantTz = DEFAULT_TIMEZONE;

@@ -1,6 +1,5 @@
 "use client";
 
-import React from "react";
 import { PaginationBar, SkeletonTable } from "@money-matters/ui/web";
 import { t } from "@money-matters/i18n";
 import { useLocale } from "../../../../providers/LocaleProvider";
@@ -93,7 +92,7 @@ export function EnvelopesTable({
                 onClick={() => toggleSort("targetAmount")}
               >
                 <div className="flex items-center justify-end gap-1">
-                  <span>{t("tables.target")}</span>
+                  <span>{t("common.target")}</span>
                   {sortField === "targetAmount" && <span>{sortDir === "asc" ? "▲" : "▼"}</span>}
                 </div>
               </th>

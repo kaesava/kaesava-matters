@@ -35,7 +35,7 @@ export default function AcceptInviteMobileScreen() {
       acceptInviteMutation.mutate({ inviteToken: token });
     } else if (!token) {
       setStatus('error');
-      setErrorMsg(t("partner.invalidToken"));
+      setErrorMsg(t("memberInvite.invalidToken"));
     }
   }, [token, acceptInviteMutation]);
 
@@ -53,8 +53,8 @@ export default function AcceptInviteMobileScreen() {
         {status === 'loading' && (
           <View style={styles.stateWrapper}>
             <ActivityIndicator size="large" color={DESIGN_TOKENS.colors.primary} />
-            <Text style={styles.title}>{t("partner.acceptTitle")}</Text>
-            <Text style={styles.subtitle}>{t("partner.acceptSubtitle")}</Text>
+            <Text style={styles.title}>{t("memberInvite.acceptTitle")}</Text>
+            <Text style={styles.subtitle}>{t("memberInvite.acceptSubtitle")}</Text>
           </View>
         )}
 
@@ -63,8 +63,8 @@ export default function AcceptInviteMobileScreen() {
             <View style={styles.successIconBadge}>
               <Feather name="check" size={28} color={DESIGN_TOKENS.colors.onPrimary} />
             </View>
-            <Text style={styles.title}>{t("partner.acceptSuccessTitle")}</Text>
-            <Text style={styles.subtitle}>{t("partner.acceptSuccessMessage")}</Text>
+            <Text style={styles.title}>{t("memberInvite.acceptSuccessTitle")}</Text>
+            <Text style={styles.subtitle}>{t("memberInvite.acceptSuccessMessage")}</Text>
           </View>
         )}
 
@@ -73,15 +73,15 @@ export default function AcceptInviteMobileScreen() {
             <View style={styles.errorIconBadge}>
               <Feather name="alert-triangle" size={28} color={DESIGN_TOKENS.colors.onPrimary} />
             </View>
-            <Text style={styles.title}>{t("partner.acceptErrorTitle")}</Text>
-            <Text style={styles.subtitle}>{errorMsg || t("partner.invalidToken")}</Text>
+            <Text style={styles.title}>{t("memberInvite.acceptErrorTitle")}</Text>
+            <Text style={styles.subtitle}>{errorMsg || t("memberInvite.invalidToken")}</Text>
 
             <TouchableOpacity
               style={styles.actionBtn}
               onPress={() => router.replace('/(auth)/sign-in' as Href)}
               activeOpacity={0.8}
             >
-              <Text style={styles.actionBtnText}>{t("partner.goToDashboard")}</Text>
+              <Text style={styles.actionBtnText}>{t("memberInvite.goToDashboard")}</Text>
             </TouchableOpacity>
           </View>
         )}

@@ -1,5 +1,5 @@
 "use client";
-import { getTenantDateString } from "@money-matters/core";
+import { getTenantDateString } from "@money-matters/types";
 
 
 import React, { useState, useEffect, useMemo, useId } from "react";
@@ -196,7 +196,7 @@ export function TransferModal({
       <ModalDialog
         isOpen={isOpen}
         onClose={onClose}
-        title={t("modals.transfer.title")}
+        title={t("common.transfer")}
         isDirty={isDirty}
         maxWidth="max-w-lg"
       >
@@ -205,10 +205,10 @@ export function TransferModal({
           <div className="bg-slate-50 dark:bg-slate-800/60 p-3 rounded-xl border border-slate-200 dark:border-slate-700 flex items-center justify-between text-xs font-semibold">
             <div className="space-y-0.5">
               <span className="text-slate-500 uppercase tracking-wider text-[10px] block">
-                {t("modals.transfer.sourcePool")}
+                {t("modals.transfer.sourceEnvelope")}
               </span>
               <span className="text-slate-800 dark:text-slate-200 font-bold block">
-                {sourcePool?.name || transfer.sourcePoolName || t("modals.transfer.sourceDefault")}
+                {sourcePool?.name || transfer.sourcePoolName || t("common.source")}
               </span>
               <span className="text-[11px] text-slate-500 font-mono">
                 {t("modals.transfer.available", {
@@ -219,7 +219,7 @@ export function TransferModal({
             <span className="text-slate-400 font-bold text-sm">➔</span>
             <div className="space-y-0.5 text-right">
               <span className="text-slate-500 uppercase tracking-wider text-[10px] block">
-                {t("modals.transfer.destinationPool")}
+                {t("modals.transfer.destinationEnvelope")}
               </span>
               <span className="text-slate-800 dark:text-slate-200 font-bold block">
                 {destinationPool?.name || transfer.destinationPoolName || t("modals.transfer.destinationDefault")}
@@ -244,7 +244,7 @@ export function TransferModal({
           </div>
 
           <AmountField
-            label={t("modals.transfer.amountLabel")}
+            label={t("common.amount")}
             value={amount}
             onChange={setAmount}
             required
@@ -257,7 +257,7 @@ export function TransferModal({
           {isInsufficient && (
             <div className="p-3 bg-rose-50 dark:bg-rose-950/30 border border-rose-200 dark:border-rose-800 rounded-xl text-xs text-rose-700 dark:text-rose-300">
               {t("modals.transfer.insufficientBalanceWarning", {
-                envelopeName: sourcePool?.name || t("modals.transfer.sourcePool"),
+                envelopeName: sourcePool?.name || t("modals.transfer.sourceEnvelope"),
                 available: format(sourceBalance),
                 amount: format(numAmount),
               })}

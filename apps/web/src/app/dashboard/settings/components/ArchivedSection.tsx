@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import { useState } from "react";
 import { trpc } from "../../../../lib/trpc";
 import { t, ARCHIVED_ITEM_TYPE_KEYS } from "@money-matters/i18n";
 import { PaginationBar, Spinner, InfoTooltip, SearchInput, SkeletonTable, ConfirmDialog, useToast } from "@money-matters/ui/web";
@@ -105,7 +105,7 @@ export function ArchivedSection() {
               type === "ALL"
                 ? t("common.all")
                 : type === "ENVELOPE"
-                  ? t("settings.archived.pools")
+                  ? t("settings.archived.envelopes")
                   : type === "INCOME_SOURCE"
                     ? t("settings.archived.income")
                     : t("settings.archived.accounts");

@@ -28,7 +28,7 @@ export const PaycheckEventActionButtons: React.FC<PaycheckEventActionButtonsProp
         }}
       >
         <Feather name="play" size={12} color={DESIGN_TOKENS.colors.onAccent} />
-        <Text style={styles.processBtnText}>{t('common.runSplit')}</Text>
+        <Text style={styles.processBtnText}>{t('common.planPayday')}</Text>
       </TouchableOpacity>
     );
   }

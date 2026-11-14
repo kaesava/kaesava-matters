@@ -1,4 +1,3 @@
-import React from "react";
 import { t } from "@money-matters/i18n";
 import {
   SlideOverDrawer,
@@ -81,7 +80,7 @@ export function QuickActionDrawer({ onClose, initialTab = "DEBIT", initialData }
     : quickExpensePresets;
 
   const titleText = isTransfer
-    ? t("drawers.quickExpense.transferBetweenPools")
+    ? t("drawers.quickExpense.transferBetweenEnvelopes")
     : isIncome
     ? t("drawers.quickExpense.oneOffIncome")
     : t("drawers.quickExpense.oneOffExpense");
@@ -117,7 +116,7 @@ export function QuickActionDrawer({ onClose, initialTab = "DEBIT", initialData }
                     type === "DEBIT" ? "bg-white text-[#2563eb] shadow-xs" : "text-zinc-500 hover:text-zinc-800"
                   }`}
                 >
-                  <span>{t("drawers.quickExpense.tabExpense")}</span>
+                  <span>{t("common.expense")}</span>
                 </button>
                 <button
                   type="button"
@@ -126,7 +125,7 @@ export function QuickActionDrawer({ onClose, initialTab = "DEBIT", initialData }
                     type === "CREDIT" ? "bg-white text-emerald-700 shadow-xs" : "text-zinc-500 hover:text-zinc-800"
                   }`}
                 >
-                  <span>{t("drawers.quickExpense.tabIncome")}</span>
+                  <span>{t("common.income")}</span>
                 </button>
                 <button
                   type="button"
@@ -135,7 +134,7 @@ export function QuickActionDrawer({ onClose, initialTab = "DEBIT", initialData }
                     type === "TRANSFER" ? "bg-white text-indigo-700 shadow-xs" : "text-zinc-500 hover:text-zinc-800"
                   }`}
                 >
-                  <span>{t("drawers.quickExpense.tabTransfer")}</span>
+                  <span>{t("common.transfer")}</span>
                 </button>
               </div>
 
@@ -166,7 +165,7 @@ export function QuickActionDrawer({ onClose, initialTab = "DEBIT", initialData }
                   </div>
 
                   <div className="flex flex-col gap-1">
-                    <FormLabel required>{t("drawers.quickExpense.fromPool")}</FormLabel>
+                    <FormLabel required>{t("drawers.quickExpense.fromEnvelope")}</FormLabel>
                     <PoolPicker
                       pools={categories.map((p) => ({
                         id: p.id,
@@ -177,14 +176,14 @@ export function QuickActionDrawer({ onClose, initialTab = "DEBIT", initialData }
                       }))}
                       selectedPoolId={sourceCategoryId || null}
                       allowCategorySelection={false}
-                      placeholder={t("drawers.quickExpense.selectSourcePoolPlaceholder")}
+                      placeholder={t("drawers.quickExpense.selectSourceEnvelopePlaceholder")}
                       showBalance={true}
                       onChange={(sel) => setSourceCategoryId(sel.poolId)}
                     />
                   </div>
 
                   <div className="flex flex-col gap-1">
-                    <FormLabel required>{t("drawers.quickExpense.toPoolDestination")}</FormLabel>
+                    <FormLabel required>{t("drawers.quickExpense.toEnvelopeDestination")}</FormLabel>
                     <PoolPicker
                       pools={categories.map((p) => ({
                         id: p.id,
@@ -195,7 +194,7 @@ export function QuickActionDrawer({ onClose, initialTab = "DEBIT", initialData }
                       }))}
                       selectedPoolId={destinationCategoryId || null}
                       allowCategorySelection={false}
-                      placeholder={t("drawers.quickExpense.selectDestinationPoolPlaceholder")}
+                      placeholder={t("drawers.quickExpense.selectDestinationEnvelopePlaceholder")}
                       showBalance={true}
                       onChange={(sel) => setDestinationCategoryId(sel.poolId)}
                     />
@@ -221,7 +220,7 @@ export function QuickActionDrawer({ onClose, initialTab = "DEBIT", initialData }
                   {!isIncome && (
                     <div className="flex flex-col gap-1">
                       <FormLabel required>
-                        {t("drawers.quickExpense.category")}
+                        {t("categories.typeLabel")}
                       </FormLabel>
                       <PoolPicker
                         pools={categories.map((p) => ({
@@ -235,7 +234,7 @@ export function QuickActionDrawer({ onClose, initialTab = "DEBIT", initialData }
                         selectedPoolId={categoryId || null}
                         selectedCategoryId={selectedSubCategoryId || null}
                         allowCategorySelection={true}
-                        placeholder={t("drawers.quickExpense.selectPoolOrCategoryPlaceholder")}
+                        placeholder={t("common.selectEnvelope")}
                         showBalance={true}
                         onChange={(sel) => {
                           setCategoryId(sel.poolId);
@@ -267,7 +266,7 @@ export function QuickActionDrawer({ onClose, initialTab = "DEBIT", initialData }
 
               <div className="grid grid-cols-2 gap-3 items-end">
                 <AmountField
-                  label={t("drawers.quickExpense.amountAud")}
+                  label={t("common.amount")}
                   required
                   autoFocus={isDrawDown}
                   value={amount}
@@ -275,7 +274,7 @@ export function QuickActionDrawer({ onClose, initialTab = "DEBIT", initialData }
                 />
 
                 <div className="flex flex-col gap-1">
-                  <FormLabel required>{t("drawers.quickExpense.dateLabel")}</FormLabel>
+                  <FormLabel required>{t("tables.date")}</FormLabel>
                   <input
                     type="date"
                     required
@@ -335,7 +334,7 @@ export function QuickActionDrawer({ onClose, initialTab = "DEBIT", initialData }
                     ? t("common.saveOnly")
                     : t("common.transfer")
                     : isIncome
-                    ? t("common.splitIncome")
+                    ? t("common.allocateIncome")
                     : isFutureDate
                     ? t("common.saveOnly")
                     : t("common.markSpent")}

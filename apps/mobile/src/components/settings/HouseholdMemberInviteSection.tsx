@@ -85,7 +85,7 @@ export function HouseholdMemberInviteSection() {
       });
       toast.success(
         t('settings.members.changeRoleSuccess', {
-          role: t(`settings.members.role${newRole === 'OWNER' ? 'Owner' : 'Member'}`),
+          role: newRole === 'OWNER' ? t('settings.members.roleOwner') : t('settings.members.roleMember'),
           name: member.name,
         }),
         t('common.success')

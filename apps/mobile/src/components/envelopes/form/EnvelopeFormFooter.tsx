@@ -54,7 +54,7 @@ export const EnvelopeFormFooter: React.FC<EnvelopeFormFooterProps> = ({
         onPress={onSubmit}
         style={styles.submitBtn}
       >
-        {t('categories.savePool')}
+        {t('categories.saveEnvelope')}
       </MobileButton>
     </View>
   );

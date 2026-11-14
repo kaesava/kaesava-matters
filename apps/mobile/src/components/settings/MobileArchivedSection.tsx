@@ -219,7 +219,7 @@ export function MobileArchivedSection() {
             },
             options: [
               { id: 'ALL', label: t('common.all') },
-              { id: 'POOL', label: t('settings.archived.pools') },
+              { id: 'POOL', label: t('settings.archived.envelopes') },
               { id: 'INCOME_SOURCE', label: t('settings.archived.income') },
               { id: 'BANK_ACCOUNT', label: t('settings.archived.accounts') },
             ],

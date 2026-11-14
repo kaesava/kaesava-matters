@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useMemo } from "react";
+import { useState, useMemo } from "react";
 import Link from "next/link";
 import { t } from "@money-matters/i18n";
 import { ModalDialog, Button, CelebrationBanner } from "@money-matters/ui/web";

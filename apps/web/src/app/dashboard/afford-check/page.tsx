@@ -1,4 +1,4 @@
-import React, { Suspense } from "react";
+import { Suspense } from "react";
 import { AffordCheckScreen } from "./components/AffordCheckScreen";
 import { AffordCheckSkeleton } from "./components/AffordCheckSkeleton";
 

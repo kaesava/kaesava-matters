@@ -32,7 +32,7 @@ export function ProfileContactFields({
     <>
       {/* Name (Mandatory) */}
       <View style={styles.inputGroup}>
-        <FormLabel label={t('settings.displayNameLabel')} required />
+        <FormLabel label={t('common.name')} required />
         <TextInput
           style={styles.textInput}
           value={name}

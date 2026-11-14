@@ -1,6 +1,5 @@
 import { describe, it, expect } from "vitest";
 import { runAllocationEngine, EngineBucket } from "./allocation-engine.js";
-import { CANONICAL_ALLOCATION_PRESETS } from "@money-matters/types";
 
 describe("paycheck cascade allocation engine", () => {
   it("allocates regular bills, committed savings, and sweeps residual excess everyday", () => {

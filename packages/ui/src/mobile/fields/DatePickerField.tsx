@@ -1,7 +1,6 @@
-import React, { useState, useMemo } from 'react';
+import { useState } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import { Feather } from '@expo/vector-icons';
-import { t } from '@money-matters/i18n';
 import FormLabel from '../FormLabel';
 import FormFieldError from '../FormFieldError';
 import { CalendarModal } from './CalendarModal';
@@ -21,15 +20,9 @@ export interface DatePickerFieldProps {
   timeZone?: string;
 }
 
-function padZero(num: number): string {
-  return num < 10 ? `0${num}` : `${num}`;
-}
 
-function toIso(d: Date): string {
-  return `${d.getFullYear()}-${padZero(d.getMonth() + 1)}-${padZero(d.getDate())}`;
-}
 
-function formatDisplayDate(isoDate?: string, locale: string = 'en-AU', timeZone: string = 'Australia/Sydney', compact: boolean = false): string {
+function formatDisplayDate(isoDate?: string, locale: string = 'en-AU', _timeZone?: string, compact: boolean = false): string {
   if (!isoDate) return 'Select date';
   const parts = isoDate.split('-');
   if (parts.length === 3) {

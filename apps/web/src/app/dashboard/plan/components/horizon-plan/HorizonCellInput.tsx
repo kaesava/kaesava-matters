@@ -1,6 +1,5 @@
 "use client";
 
-import React from "react";
 import { t } from "@money-matters/i18n";
 import { useLocale } from "../../../../../providers/LocaleProvider";
 
@@ -23,7 +22,7 @@ export function HorizonCellInput({
               ? "bg-red-100 text-red-800 border-red-500 font-black animate-pulse"
               : "bg-emerald-50 text-emerald-800 border-emerald-200"
           }`}
-          title={isDeficit ? t("matrix.deficitWarning") : t("matrix.surplusTargetTitle")}
+          title={isDeficit ? t("paydaySchedule.deficitWarning") : t("paydaySchedule.surplusTargetTitle")}
         >
           {isDeficit ? `-${fmt(Math.abs(value))}` : fmt(value)}
         </span>

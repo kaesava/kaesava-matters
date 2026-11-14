@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect } from "react";
 import Link from "next/link";
 import { InfoTooltip, formatRecurrenceLabel } from "@money-matters/ui/web";
 import { t } from "@money-matters/i18n";
@@ -56,9 +56,9 @@ export function EnvelopeTableRowItem({
   const fundingMode = pool.rawPool.fundingMode || (pool.envelopeType === "GOAL" ? "TARGET_BALANCE" : "RECURRING");
 
   const subTypeBadge = isBill
-    ? (fundingMode === "RECURRING" ? t("categories.scheduledBillBadge") : t("categories.flexibleBillBadge"))
+    ? (fundingMode === "RECURRING" ? t("categories.recurringBadge") : t("common.target"))
     : isGoal
-    ? (fundingMode === "RECURRING" ? t("categories.ongoingGoalBadge") : t("categories.targetDateGoalBadge"))
+    ? (fundingMode === "RECURRING" ? t("categories.recurringBadge") : t("common.target"))
     : isEveryday
     ? t("categories.everydayBadge")
     : null;
@@ -114,7 +114,7 @@ export function EnvelopeTableRowItem({
                 🎯
               </span>
               <InfoTooltip
-                content={t("categories.targetPoolShortfallSurplus")}
+                content={t("categories.targetEnvelopeShortfallSurplus")}
               />
             </span>
           )}
@@ -200,10 +200,10 @@ export function EnvelopeTableRowItem({
             {pool.envelopeType === "GOAL" && pool.fundingMode === "TARGET_BALANCE" && pool.targetDate
               ? t("categories.targetByDate", { date: fmtDate(pool.targetDate) })
               : pool.envelopeType === "EVERYDAY"
-              ? t("categories.frequencyMonthly")
+              ? t("forms.monthly")
               : pool.rawPool.rrule || pool.rawPool.budgetFrequency
               ? formatRecurrenceLabel(pool.rawPool.rrule, pool.rawPool.budgetFrequency)
-              : t("categories.frequencyMonthly")}
+              : t("forms.monthly")}
           </span>
         </div>
       </td>

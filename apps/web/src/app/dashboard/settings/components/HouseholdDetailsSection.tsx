@@ -174,7 +174,7 @@ export function HouseholdDetailsSection({
           title={t("modals.discardChanges.title")}
           description={t("modals.discardChanges.description")}
           confirmLabel={t("modals.discardChanges.discard")}
-          cancelLabel={t("modals.discardChanges.cancel")}
+          cancelLabel={t("common.keepEditing")}
           variant="danger"
           onConfirm={handleDiscardConfirm}
           onClose={() => setShowDiscardDialog(false)}

@@ -1,8 +1,8 @@
 "use client";
-import { getTenantDateString } from "@money-matters/core";
+import { getTenantDateString } from "@money-matters/types";
 
 
-import React, { useState, useEffect, useMemo } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { t } from "@money-matters/i18n";
 import { Button, AmountField, DatePickerField, ModalDialog } from "@money-matters/ui/web";
 import { useLocale } from "../../../../providers/LocaleProvider";
@@ -212,11 +212,11 @@ export function MarkPaidModal({
       maxWidth="max-w-xl"
     >
       <div className="flex flex-col gap-4">
-        {/* {t("categories.targetPool")} & {t("tables.currentBalance")} Header Card */}
+        {/* {t("categories.targetEnvelope")} & {t("tables.currentBalance")} Header Card */}
         <div className="p-3.5 bg-slate-50 dark:bg-zinc-800/60 rounded-xl border border-zinc-200/80 dark:border-zinc-700/80 flex items-center justify-between text-xs">
           <div>
             <span className="text-[11px] font-semibold text-zinc-400 uppercase tracking-wider block">
-              {t("categories.targetPool")}
+              {t("categories.targetEnvelope")}
             </span>
             <span className="font-bold text-sm text-[#1B2B4B] dark:text-white">
               {formattedPoolName} <span className="text-xs font-normal text-zinc-500">({formattedPoolType})</span>

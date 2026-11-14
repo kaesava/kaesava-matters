@@ -3,7 +3,7 @@ import { trpc } from "../../../../lib/trpc";
 import { t } from "@money-matters/i18n";
 import { useResizableColumns } from "@money-matters/ui/web";
 import { SpendingTimeframe, serializeCsvRows } from "@money-matters/types";
-import { getTenantDateString } from "@money-matters/core";
+import { getTenantDateString } from "@money-matters/types";
 import { useLocale } from "../../../../providers/LocaleProvider";
 import { PaydayPlanRecord } from "../../../../components/web/SlideOverPaydayPlanDrawer";
 
@@ -93,8 +93,8 @@ export function useHistoryPaydayData({
       filteredDonutTitle: t("history.reporting.incomeSplits.filteredDonutTitle"),
       cashFlowTitle: t("history.reporting.incomeSplits.cashFlowTitle"),
       filteredCashFlowTitle: t("history.reporting.incomeSplits.filteredCashFlowTitle"),
-      topPoolsTitle: t("history.reporting.incomeSplits.topPoolsTitle"),
-      filteredTopPoolsTitle: t("history.reporting.incomeSplits.filteredTopPoolsTitle"),
+      topPoolsTitle: t("history.reporting.incomeSplits.topEnvelopesTitle"),
+      filteredTopPoolsTitle: t("history.reporting.incomeSplits.filteredTopEnvelopesTitle"),
       inflowLegend: t("history.reporting.incomeSplits.inflow"),
       outflowLegend: t("history.reporting.incomeSplits.sweepOutflow"),
       centerLabel: t("history.reporting.incomeSplits.totalAllocated"),

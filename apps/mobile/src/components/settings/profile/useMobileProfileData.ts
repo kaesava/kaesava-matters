@@ -1,5 +1,5 @@
-import { DEFAULT_TIMEZONE, DEFAULT_LOCALE } from "@money-matters/types";
-import React, { useState, useEffect, useRef, useCallback } from 'react';
+import { DEFAULT_TIMEZONE } from "@money-matters/types";
+import { useState, useEffect, useRef, useCallback } from 'react';
 import * as SecureStore from 'expo-secure-store';
 import {
   showMobileConfirm,
@@ -142,7 +142,7 @@ export function useMobileProfileData({
         title: t('modals.discardChanges.title'),
         message: t('modals.discardChanges.description'),
         confirmText: t('modals.discardChanges.discard'),
-        cancelText: t('modals.discardChanges.cancel'),
+        cancelText: t('common.keepEditing'),
         isDestructive: true,
         onConfirm: handleDiscard,
       });

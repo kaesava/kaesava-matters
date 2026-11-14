@@ -19,9 +19,6 @@ import { EnvelopeGroupSection } from '../../components/envelopes/EnvelopeGroupSe
 import { EnvelopesFilterSheet } from '../../components/envelopes/EnvelopesFilterSheet';
 import {
   useEnvelopesFilter,
-  type PoolSortField,
-  type PoolTypeFilter,
-  type PrivacyFilter,
 } from '../../components/envelopes/useEnvelopesFilter';
 
 export default function PoolsScreen() {
@@ -120,7 +117,7 @@ export default function PoolsScreen() {
           <RecordFilterBadge
             label={
               matchedActivePool
-                ? t('categories.filteredToPool', { name: matchedActivePool.name })
+                ? t('categories.filteredToEnvelope', { name: matchedActivePool.name })
                 : t('common.all')
             }
             onClear={() => {
@@ -135,7 +132,7 @@ export default function PoolsScreen() {
         ) : (
           <View style={styles.sectionsContainer}>
             <EnvelopeGroupSection
-              title={t('categories.everydayPoolsUpper')}
+              title={t('categories.everydayEnvelopesUpper')}
               pools={filteredPools.filter((p) => p.envelopeType === 'EVERYDAY')}
               isCollapsed={!!collapsedTypes['EVERYDAY']}
               onToggleCollapse={() => toggleTypeCollapse('EVERYDAY')}
@@ -143,7 +140,7 @@ export default function PoolsScreen() {
               groupType="EVERYDAY"
             />
             <EnvelopeGroupSection
-              title={t('categories.billsPoolsUpper')}
+              title={t('categories.billsEnvelopesUpper')}
               pools={filteredPools.filter((p) => p.envelopeType === 'BILL')}
               isCollapsed={!!collapsedTypes['BILL']}
               onToggleCollapse={() => toggleTypeCollapse('BILL')}
@@ -169,7 +166,7 @@ export default function PoolsScreen() {
             {filteredPools.length === 0 && (
               <View style={styles.emptyCard}>
                 <Text style={styles.emptyCardText}>
-                  {poolsQuery.isError ? t('common.error') : pools.length === 0 ? t('categories.poolNotFound') : t('categories.noEnvelopesFound')}
+                  {poolsQuery.isError ? t('common.error') : pools.length === 0 ? t('categories.envelopeNotFound') : t('categories.noEnvelopesFound')}
                 </Text>
               </View>
             )}

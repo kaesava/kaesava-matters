@@ -25,7 +25,6 @@ export function invitePartnerHandler(db: DbOrTx) {
         inviteToken,
         inviteStatus: "PENDING" as const,
         role: "MEMBER" as const,
-        invitedAt: now,
         expiresAt,
         createdBy: userId,
         updatedBy: userId,
@@ -135,9 +134,7 @@ export function acceptInviteHandler(db: DbOrTx) {
       });
     }
 
-    if (typeof db.execute === "function") {
-      await db.execute(sql`UPDATE neon_auth.user SET "emailVerified" = true, "updatedAt" = NOW() WHERE id = ${userId} AND ("emailVerified" = false OR "emailVerified" IS NULL)`);
-    }
+    await db.execute(sql`UPDATE neon_auth.user SET "emailVerified" = true, "updatedAt" = NOW() WHERE id = ${userId} AND ("emailVerified" = false OR "emailVerified" IS NULL)`);
 
     return {
       success: true,

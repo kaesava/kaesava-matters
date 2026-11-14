@@ -1,7 +1,10 @@
 import { sql } from "drizzle-orm";
+import type { NeonHttpDatabase } from "drizzle-orm/neon-http";
+
+export type SeedDb = NeonHttpDatabase<Record<string, never>>;
 
 export async function ensureNeonAuthUser(
-  db: any,
+  db: SeedDb,
   authUrl: string,
   originUrl: string,
   _email: string,
@@ -16,7 +19,7 @@ export async function ensureNeonAuthUser(
     const existingRes = await db.execute(
       sql`SELECT id FROM neon_auth.user WHERE email = ${email} LIMIT 1`
     );
-    const rows = Array.isArray(existingRes) ? existingRes : (existingRes as any)?.rows ?? [];
+    const rows = Array.isArray(existingRes) ? existingRes : (existingRes as unknown as { rows?: Array<{ id: string }> })?.rows ?? [];
 
     if (rows.length > 0) {
       resolvedId = rows[0].id;
@@ -36,7 +39,7 @@ export async function ensureNeonAuthUser(
       });
 
       if (response.ok) {
-        const resBody = (await response.json()) as any;
+        const resBody = (await response.json()) as { user?: { id?: string }; id?: string };
         resolvedId = resBody.user?.id || resBody.id || fallbackId;
       } else {
         await db.execute(sql`
@@ -57,7 +60,7 @@ export async function ensureNeonAuthUser(
       const raehanAccRes = await db.execute(
         sql`SELECT password FROM neon_auth.account WHERE "providerId" = 'credential' AND password IS NOT NULL LIMIT 1`
       );
-      const raehanRows = Array.isArray(raehanAccRes) ? raehanAccRes : (raehanAccRes as any)?.rows ?? [];
+      const raehanRows = Array.isArray(raehanAccRes) ? raehanAccRes : (raehanAccRes as { rows?: Array<{ password?: string }> })?.rows ?? [];
       if (raehanRows.length > 0 && raehanRows[0].password) {
         await db.execute(sql`
           UPDATE neon_auth.account 
@@ -75,7 +78,7 @@ export async function ensureNeonAuthUser(
   return resolvedId;
 }
 
-export async function cleanupTables(db: any, isProd: boolean, userIds: string[]) {
+export async function cleanupTables(db: SeedDb, isProd: boolean, userIds: string[]) {
   if (!isProd && process.env.NODE_ENV !== "production") {
     try {
       await db.execute(sql`DELETE FROM neon_auth.session`);

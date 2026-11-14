@@ -1,4 +1,3 @@
-import React from 'react';
 import { View, Text, TouchableOpacity, ScrollView, StyleSheet } from 'react-native';
 import { DESIGN_TOKENS } from '../tokens';
 import { t } from '@money-matters/i18n';
@@ -32,7 +31,7 @@ export function MobileHorizonFilterBar({
             onPress={() => onStatusChange('PENDING')}
           >
             <Text style={[styles.pillText, statusFilter === 'PENDING' && styles.pillTextActive]}>
-              {t('matrix.statusPending')}
+              {t('paydaySchedule.statusPending')}
             </Text>
           </TouchableOpacity>
           <TouchableOpacity
@@ -40,7 +39,7 @@ export function MobileHorizonFilterBar({
             onPress={() => onStatusChange('CONFIRMED')}
           >
             <Text style={[styles.pillText, statusFilter === 'CONFIRMED' && styles.pillTextActive]}>
-              {t('matrix.statusConfirmed')}
+              {t('paydaySchedule.statusConfirmed')}
             </Text>
           </TouchableOpacity>
           <TouchableOpacity
@@ -48,7 +47,7 @@ export function MobileHorizonFilterBar({
             onPress={() => onStatusChange('ALL')}
           >
             <Text style={[styles.pillText, statusFilter === 'ALL' && styles.pillTextActive]}>
-              {t('matrix.statusAll')}
+              {t('common.all')}
             </Text>
           </TouchableOpacity>
         </View>
@@ -94,7 +93,7 @@ export function MobileHorizonFilterBar({
             onPress={() => onHorizonChange(false)}
           >
             <Text style={[styles.pillText, !showFullHorizon && styles.pillTextActive]}>
-              {t('matrix.showNext5')}
+              {t('paydaySchedule.showNext5')}
             </Text>
           </TouchableOpacity>
           <TouchableOpacity
@@ -102,7 +101,7 @@ export function MobileHorizonFilterBar({
             onPress={() => onHorizonChange(true)}
           >
             <Text style={[styles.pillText, showFullHorizon && styles.pillTextActive]}>
-              {t('matrix.showFull12Events')}
+              {t('paydaySchedule.showFull12Events')}
             </Text>
           </TouchableOpacity>
         </View>

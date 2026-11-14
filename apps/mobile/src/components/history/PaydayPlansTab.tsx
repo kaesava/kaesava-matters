@@ -131,9 +131,9 @@ export function PaydayPlansTab({
         sortField={sortField}
         sortOrder={sortDir}
         sortOptions={[
-          { id: 'expectedDate', label: t('history.date') },
-          { id: 'amount', label: t('history.amount') },
-          { id: 'incomeName', label: t('history.description') },
+          { id: 'expectedDate', label: t('tables.date') },
+          { id: 'amount', label: t('common.amount') },
+          { id: 'incomeName', label: t('common.description') },
           { id: 'receivingAccount', label: t('bankAccounts.title') },
           { id: 'createdAt', label: t('common.created') },
         ]}

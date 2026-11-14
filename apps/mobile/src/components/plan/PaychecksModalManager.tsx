@@ -134,7 +134,7 @@ export function PaychecksModalManager({
           } else {
             showMobileConfirm({
               title: t('payday.deleteExpenseEvent'),
-              message: t('payday.deleteExpenseEventConfirm', { name: evt.name || t('common.expense') }),
+              message: t('common.deleteConfirmNamed', { name: evt.name || t('common.expense') }),
               confirmText: t('common.delete'),
               isDestructive: true,
               onConfirm: () => {

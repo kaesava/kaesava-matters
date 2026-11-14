@@ -1,4 +1,3 @@
-import React from 'react';
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { ToastProvider, useToast, ToastContextValue } from './ToastContext';
 
@@ -18,12 +17,11 @@ describe('ToastContext and useToast hook', () => {
   });
 
   it('exports valid ToastProvider and useToast context structure', () => {
-    let capturedCtx: ToastContextValue | null = null;
 
     // Verify context can be provided and consumed
     const element = (
       <ToastProvider>
-        <TestConsumer onContext={(ctx) => { capturedCtx = ctx; }} />
+        <TestConsumer onContext={() => { }} />
       </ToastProvider>
     );
 
@@ -31,9 +29,8 @@ describe('ToastContext and useToast hook', () => {
   });
 
   it('correctly creates toast items with types and auto-dismiss timing', () => {
-    let capturedCtx: ToastContextValue | null = null;
     <ToastProvider>
-      <TestConsumer onContext={(ctx) => { capturedCtx = ctx; }} />
+      <TestConsumer onContext={() => { }} />
     </ToastProvider>;
 
     // Pure logic test for toast creation helper shape

@@ -1,37 +1,34 @@
 import { z } from "zod";
 
 /**
- * Sub-schema for an upcoming bill item shown in affordability simulation breakdowns.
+ * Sub-type for an upcoming bill item shown in affordability simulation breakdowns.
  */
-export const UpcomingBillItemSchema = z.object({
-  name: z.string(),
-  amount: z.string(),
-  dueDate: z.string(),
-}).strict();
-export type UpcomingBillItem = z.infer<typeof UpcomingBillItemSchema>;
+export interface UpcomingBillItem {
+  name: string;
+  amount: string;
+  dueDate: string;
+}
 
 /**
- * Sub-schema describing how a goal's target date is impacted by a purchase or recurring commitment.
+ * Sub-type describing how a goal's target date is impacted by a purchase or recurring commitment.
  */
-export const GoalDelayImpactSchema = z.object({
-  goalId: z.string().uuid(),
-  goalName: z.string(),
-  isPriority: z.boolean().default(false).optional(),
-  originalTargetDate: z.string().nullable(),
-  newTargetDate: z.string().nullable(),
-  delayDays: z.number().int(),
-}).strict();
-export type GoalDelayImpact = z.infer<typeof GoalDelayImpactSchema>;
+export interface GoalDelayImpact {
+  goalId: string;
+  goalName: string;
+  isPriority?: boolean;
+  originalTargetDate: string | null;
+  newTargetDate: string | null;
+  delayDays: number;
+}
 
-export const OneOffGoalAlternativeSchema = z.object({
-  goalId: z.string().uuid(),
-  goalName: z.string(),
-  availableGoalBalance: z.string(),
-  shortfallCovered: z.string(),
-  delayDays: z.number().int(),
-  newTargetDate: z.string().nullable(),
-}).strict();
-export type OneOffGoalAlternative = z.infer<typeof OneOffGoalAlternativeSchema>;
+export interface OneOffGoalAlternative {
+  goalId: string;
+  goalName: string;
+  availableGoalBalance: string;
+  shortfallCovered: string;
+  delayDays: number;
+  newTargetDate: string | null;
+}
 
 /**
  * Input query schema for the "Can I Afford It?" simulation.
@@ -49,98 +46,80 @@ export const CanAffordQuery = z.object({
  * Discriminated union DTO defining all affordability simulation outcomes.
  * Produced by the simulation capability's canAffordSimulationQuery.
  */
-export const CanAffordVerdictDto = z.discriminatedUnion("verdict", [
-  // SAFE_YES: affordable now, comfortable safe cushion
-  z.object({
-    verdict: z.literal("SAFE_YES"),
-    availableCash: z.string(),
-    effectiveSpendable: z.string(),
-    everydayRemaining: z.string(),
-    safeCushion: z.string(),
-    daysUntilPayday: z.number().int(),
-    nextPaydayDate: z.string(),
-    upcomingBillsBeforePayday: z.string(),
-    startAdvice: z.string().optional(),
-    rationaleSteps: z.array(z.string()),
-  }).strict(),
-
-  // PACING_TIGHT: affordable now, but below recommended safe cushion
-  z.object({
-    verdict: z.literal("PACING_TIGHT"),
-    availableCash: z.string(),
-    effectiveSpendable: z.string(),
-    everydayRemaining: z.string(),
-    safeCushion: z.string(),
-    cushionShortfall: z.string(),
-    daysUntilPayday: z.number().int(),
-    nextPaydayDate: z.string(),
-    upcomingBillsBeforePayday: z.string(),
-    startAdvice: z.string().optional(),
-    rationaleSteps: z.array(z.string()),
-  }).strict(),
-
-  // BILLS_RISK: balance sufficient but upcoming bills eat the buffer
-  z.object({
-    verdict: z.literal("BILLS_RISK"),
-    availableCash: z.string(),
-    upcomingBillsBeforePayday: z.string(),
-    effectiveAfterBills: z.string(),
-    billsDueItems: z.array(UpcomingBillItemSchema),
-    rationaleSteps: z.array(z.string()),
-  }).strict(),
-
-  // WAIT_FOR_PAYCYCLE: find earliest income event step where Everyday covers amount
-  z.object({
-    verdict: z.literal("WAIT_FOR_PAYCYCLE"),
-    canAffordAt: z.string(),
-    paycyclesAway: z.number().int(),
-    projectedEverydayAtThatDate: z.string(),
-    shortfallToday: z.string(),
-    goalAlternative: OneOffGoalAlternativeSchema.optional(),
-    rationaleSteps: z.array(z.string()),
-  }).strict(),
-
-  // GOAL_DELAYED: recurring commitment delays one or more goals
-  z.object({
-    verdict: z.literal("GOAL_DELAYED"),
-    isAffordable: z.boolean(),
-    goalDelays: z.array(GoalDelayImpactSchema),
-    recurringMonthlyImpact: z.string(),
-    startAdvice: z.string().optional(),
-    rationaleSteps: z.array(z.string()),
-  }).strict(),
-
-  // HARD_NO: 12-month projection exhausted, no affordable paycycle found
-  z.object({
-    verdict: z.literal("HARD_NO"),
-    shortfall: z.string(),
-    horizonMonths: z.number().int(),
-    rationaleSteps: z.array(z.string()),
-  }).strict(),
-]);
-
-export type CanAffordVerdictType = z.infer<typeof CanAffordVerdictDto>;
+export type CanAffordVerdictType =
+  | {
+      verdict: "SAFE_YES";
+      availableCash: string;
+      effectiveSpendable: string;
+      everydayRemaining: string;
+      safeCushion: string;
+      daysUntilPayday: number;
+      nextPaydayDate: string;
+      upcomingBillsBeforePayday: string;
+      startAdvice?: string;
+      rationaleSteps: string[];
+    }
+  | {
+      verdict: "PACING_TIGHT";
+      availableCash: string;
+      effectiveSpendable: string;
+      everydayRemaining: string;
+      safeCushion: string;
+      cushionShortfall: string;
+      daysUntilPayday: number;
+      nextPaydayDate: string;
+      upcomingBillsBeforePayday: string;
+      startAdvice?: string;
+      rationaleSteps: string[];
+    }
+  | {
+      verdict: "BILLS_RISK";
+      availableCash: string;
+      upcomingBillsBeforePayday: string;
+      effectiveAfterBills: string;
+      billsDueItems: UpcomingBillItem[];
+      rationaleSteps: string[];
+    }
+  | {
+      verdict: "WAIT_FOR_PAYCYCLE";
+      canAffordAt: string;
+      paycyclesAway: number;
+      projectedEverydayAtThatDate: string;
+      shortfallToday: string;
+      goalAlternative?: OneOffGoalAlternative;
+      rationaleSteps: string[];
+    }
+  | {
+      verdict: "GOAL_DELAYED";
+      isAffordable: boolean;
+      goalDelays: GoalDelayImpact[];
+      recurringMonthlyImpact: string;
+      startAdvice?: string;
+      rationaleSteps: string[];
+    }
+  | {
+      verdict: "HARD_NO";
+      shortfall: string;
+      horizonMonths: number;
+      rationaleSteps: string[];
+    };
 
 /**
- * Bill coverage item and overall result schemas.
+ * Bill coverage item and overall result types.
  */
-export const BillCoverageItemSchema = z.object({
-  envelopeId: z.string(),
-  envelopeName: z.string(),
-  monthlyAmount: z.string().nullable(),
-  nextDueDate: z.string().nullable(),
-  nextDueAmount: z.string().nullable(),
-  coverageStatus: z.enum(["COVERED", "SHORT_BY", "NO_SCHEDULE"]),
-  shortfallAmount: z.string().nullable(),
-}).strict();
+export interface BillCoverageItem {
+  envelopeId: string;
+  envelopeName: string;
+  monthlyAmount: string | null;
+  nextDueDate: string | null;
+  nextDueAmount: string | null;
+  coverageStatus: "COVERED" | "SHORT_BY" | "NO_SCHEDULE";
+  shortfallAmount: string | null;
+}
 
-export type BillCoverageItem = z.infer<typeof BillCoverageItemSchema>;
-
-export const BillCoverageResultSchema = z.object({
-  billsPoolBalance: z.number(),
-  totalUpcomingBeforePayday: z.number(),
-  nextPaydayDate: z.string().nullable(),
-  items: z.array(BillCoverageItemSchema),
-}).strict();
-
-export type BillCoverageResult = z.infer<typeof BillCoverageResultSchema>;
+export interface BillCoverageResult {
+  billsPoolBalance: number;
+  totalUpcomingBeforePayday: number;
+  nextPaydayDate: string | null;
+  items: BillCoverageItem[];
+}

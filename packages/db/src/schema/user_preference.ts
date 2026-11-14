@@ -6,13 +6,11 @@ import { users } from "./user.js";
  * Scoped exclusively by `userId` (without tenantId or appId).
  *
  * Contains user-centric, app-agnostic settings:
- * - `theme`: UI appearance theme (default: "system")
  * - `showIcons`: Global visual icon preference (default: true)
  */
 export const userPreferences = pgTable("user_preferences", {
   id: uuid("id").primaryKey().defaultRandom(),
   userId: uuid("user_id").notNull().unique().references(() => users.id, { onDelete: "cascade" }),
-  theme: varchar("theme", { length: 20 }).notNull().default("system"),
   language: varchar("language", { length: 10 }).notNull().default("en"),
   timezone: varchar("timezone", { length: 100 }),
   showIcons: boolean("show_icons").notNull().default(true),

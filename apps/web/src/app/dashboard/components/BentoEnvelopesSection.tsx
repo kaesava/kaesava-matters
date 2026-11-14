@@ -133,7 +133,7 @@ export const BentoEnvelopesSection: React.FC<BentoEnvelopesSectionProps> = ({
           <div className="space-y-3">
             <div className="flex justify-between items-center">
               <span className="text-[11px] font-extrabold uppercase tracking-widest text-gray-500">
-                {t('dashboard.hero.billsPoolTitle')}
+                {t('dashboard.hero.billsEnvelopeTitle')}
               </span>
               <BillCoverageBadge
                 status={billsShortfall > 0 ? "SHORT_BY" : "COVERED"}

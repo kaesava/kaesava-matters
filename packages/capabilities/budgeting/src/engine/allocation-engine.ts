@@ -4,7 +4,6 @@ import { isBillsBucket, isGoalBucket, isEverydayBucket } from "./envelope-engine
 import { toCents, toDollars, calculateCycleFactor } from "./allocation-engine-utils.js";
 import {
   StepContext,
-  allocate,
   runStep1ImmediateBills,
   runStep2DeficitRepair,
   runStep3BillsSafetyFloor,
@@ -292,6 +291,11 @@ export function runAllocationEngine(input: AllocationEngineInput): AllocationEng
   const isInsufficient = lines.some((l) => {
     const bucket = input.buckets.find((b) => b.id === l.bucketId);
     if (!bucket || (!bucket.isPriority && !isBillsBucket(bucket))) return false;
+    if (bucket.envelopeType === "GOAL" && bucket.targetAmount) {
+      const targetCents = toCents(bucket.targetAmount);
+      const balanceCents = toCents(bucket.currentBalance ?? 0);
+      if (targetCents > 0 && balanceCents >= targetCents) return false;
+    }
     const monthlyTarget = toCents(bucket.monthlyAmount ?? bucket.targetAmount ?? 0);
     return l.proposedAmount === 0 && monthlyTarget > 0;
   });

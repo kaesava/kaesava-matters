@@ -1,7 +1,6 @@
 import { getTenantDateString } from "../../../lib/format";
 import { useState, useEffect, useMemo } from "react";
 import { parseRecurrenceRule, buildRecurrenceRule, RecurrenceFrequency } from "@money-matters/ui/mobile";
-import { t } from "@money-matters/i18n";
 import { formatIsoDate } from "../../../lib/format";
 import type { EnvelopeItem } from "../../EnvelopeFormModal";
 
@@ -34,7 +33,7 @@ export function useMobileEnvelopeFormState({
   const [goalStartDate, setGoalStartDate] = useState("");
   const [bankAccountId, setBankAccountId] = useState("");
   const [isSurplusTarget, setIsSurplusTarget] = useState(false);
-  const [isPriority, setIsPriority] = useState(false);
+  const [isPriority, setIsPriority] = useState(defaultType === "BILL");
   const [generateEvents, setGenerateEvents] = useState(true);
 
   useEffect(() => {

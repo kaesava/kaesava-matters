@@ -57,14 +57,14 @@ export const EnvelopeRecurrenceFields: React.FC<EnvelopeRecurrenceFieldsProps> =
       />
 
       <View style={styles.formGroup}>
-        <FormLabel>{t('categories.frequencyLabel')}</FormLabel>
+        <FormLabel>{t('forms.frequency')}</FormLabel>
         <ChipSelect
           options={[
-            { key: 'WEEKLY', label: t('categories.frequencyWeekly') },
-            { key: 'FORTNIGHTLY', label: t('categories.frequencyFortnightly') },
-            { key: 'MONTHLY', label: t('categories.frequencyMonthly') },
+            { key: 'WEEKLY', label: t('forms.weekly') },
+            { key: 'FORTNIGHTLY', label: t('forms.fortnightly') },
+            { key: 'MONTHLY', label: t('forms.monthly') },
             { key: 'QUARTERLY', label: t('setup.frequencyQuarterly') },
-            { key: 'ANNUALLY', label: t('categories.frequencyAnnually') },
+            { key: 'ANNUALLY', label: t('canIAfford.freqAnnually') },
           ]}
           value={frequency}
           onChange={(val) => setFrequency?.(val as RecurrenceFrequency)}

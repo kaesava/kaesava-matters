@@ -80,7 +80,7 @@ export const MobileCommandPaletteSheet: React.FC<MobileCommandPaletteSheetProps>
   });
 
   const categories: { id: CommandPaletteCategory; label: string }[] = [
-    { id: "all", label: t("commandPalette.categories.all") },
+    { id: "all", label: t("common.all") },
     { id: "accounts", label: t("commandPalette.categories.accounts") },
     { id: "envelopes", label: t("commandPalette.categories.envelopes") },
     { id: "events", label: t("commandPalette.categories.events") },
@@ -121,7 +121,7 @@ export const MobileCommandPaletteSheet: React.FC<MobileCommandPaletteSheetProps>
     <MobileModalDialog
       visible={isOpen}
       onClose={onClose}
-      title={t(hasAiAssistant ? "commandPalette.triggerTitle" : "commandPalette.searchOnlyTitle")}
+      title={t(hasAiAssistant ? "commandPalette.triggerTitle" : "common.search")}
     >
       <View style={styles.container}>
         <View style={styles.inputBar}>

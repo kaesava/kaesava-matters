@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useId, useRef, useEffect, useMemo } from "react";
+import { useState, useId, useRef, useEffect, useMemo } from "react";
 import { Lock, ChevronDown, Search, X, Check } from "lucide-react";
 import { t } from "@money-matters/i18n";
 import { useCurrencyLocale } from "../hooks/CurrencyLocaleContext";
@@ -54,7 +54,7 @@ export function PoolPicker({
     (p) => p.id === "" || p.id === "ALL" || p.name.toLowerCase().includes("all pools")
   );
   const showAllOption = allowAllOption || Boolean(explicitAllOption);
-  const allLabel = explicitAllOption?.name || allOptionLabel || t("common.allPools");
+  const allLabel = explicitAllOption?.name || allOptionLabel || t("common.allEnvelopes");
   const isAllSelected = !selectedPoolId || selectedPoolId === "" || selectedPoolId === "ALL";
 
   const regularPools = useMemo(
@@ -65,7 +65,7 @@ export function PoolPicker({
   const currentPool = regularPools.find((p) => p.id === selectedPoolId);
   const currentCategory = currentPool?.categories?.find((c) => c.id === selectedCategoryId);
 
-  let displayLabel = placeholder || (showAllOption ? allLabel : t("common.selectPool"));
+  let displayLabel = placeholder || (showAllOption ? allLabel : t("common.selectEnvelope"));
   if (!isAllSelected && currentPool) {
     if (selectedCategoryId && currentCategory) {
       displayLabel = `${currentPool.name} › ${currentCategory.name}`;
@@ -172,7 +172,7 @@ export function PoolPicker({
                 type="text"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder={t("common.searchPoolOrCategory")}
+                placeholder={t("common.searchEnvelope")}
                 className="w-full rounded-lg border border-slate-200 bg-white pl-8 pr-3 py-1.5 text-xs text-slate-800 placeholder-slate-400 focus:border-[#2563eb] focus:outline-none dark:border-slate-700 dark:bg-slate-800 dark:text-white"
                 autoFocus
               />
@@ -197,7 +197,7 @@ export function PoolPicker({
 
             {filteredPools.length === 0 && !showAllOption ? (
               <div className="px-3 py-4 text-center text-xs text-slate-400 font-medium">
-                {searchQuery ? t("common.noPoolsFoundMatching", { query: searchQuery }) : t("common.noPoolsAvailable")}
+                {searchQuery ? t("common.noEnvelopesFoundMatching", { query: searchQuery }) : t("common.noEnvelopesAvailable")}
               </div>
             ) : (
               filteredPools.map((pool) => {

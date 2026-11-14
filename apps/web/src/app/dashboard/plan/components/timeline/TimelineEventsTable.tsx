@@ -105,7 +105,7 @@ export function TimelineEventsTable({
                   onClick={() => onSort("name")}
                   className="flex items-center gap-1 hover:text-zinc-700 dark:hover:text-zinc-200 font-bold"
                 >
-                  <span>{t("tables.name")}</span>
+                  <span>{t("common.name")}</span>
                   {sortField === "name" && (
                     <span>{sortOrder === "asc" ? "↑" : "↓"}</span>
                   )}
@@ -130,7 +130,7 @@ export function TimelineEventsTable({
                   onClick={() => onSort("amount")}
                   className="flex items-center gap-1 justify-end hover:text-zinc-700 dark:hover:text-zinc-200 font-bold w-full"
                 >
-                  <span>{t("tables.amount")}</span>
+                  <span>{t("common.amount")}</span>
                   {sortField === "amount" && (
                     <span>{sortOrder === "asc" ? "↑" : "↓"}</span>
                   )}
@@ -292,7 +292,7 @@ export function TimelineEventsTable({
                             className="text-xs font-bold text-[#2563eb] hover:underline cursor-pointer transition-colors px-1.5 py-0.5"
                             title={t("dashboard.nextPay.reviewSplits")}
                           >
-                            {t("common.runSplit")}
+                            {t("common.planPayday")}
                           </button>
                         </div>
                       ) : isTransfer ? (

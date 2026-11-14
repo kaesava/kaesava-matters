@@ -36,11 +36,13 @@ export async function handleStripeWebhook(
     throw new Error("Stripe secret key is not configured.");
   }
 
-  const stripe = new Stripe(stripeSecretKey);
+  const stripe = new Stripe(stripeSecretKey, {
+    httpClient: Stripe.createFetchHttpClient(),
+  });
 
   let event: Stripe.Event;
   try {
-    event = stripe.webhooks.constructEvent(rawBody, signature, webhookSecret);
+    event = await stripe.webhooks.constructEventAsync(rawBody, signature, webhookSecret);
   } catch (err) {
     throw new StripeSignatureError(`Stripe webhook signature verification failed: ${(err as Error).message}`);
   }
@@ -54,7 +56,6 @@ export async function handleStripeWebhook(
     .insert(processedWebhooks)
     .values({
       eventId: event.id,
-      eventType: event.type,
       processedAt: new Date(),
     })
     .onConflictDoNothing()

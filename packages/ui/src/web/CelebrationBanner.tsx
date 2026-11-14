@@ -132,7 +132,6 @@ export const CelebrationBanner: React.FC<CelebrationBannerProps> = ({
             const isGoalMet = target.type === 'GOAL_TARGET_MET';
             const isRecurringGoal = target.type === 'RECURRING_GOAL_FUNDED';
             const isBillsCovered = target.type === 'BILLS_COVERED';
-            const isSurplus = target.type === 'SURPLUS_SWEPT';
 
             const icon = isGoalMet ? '🏆' : isRecurringGoal ? '✨' : isBillsCovered ? '🛡️' : '🚀';
 

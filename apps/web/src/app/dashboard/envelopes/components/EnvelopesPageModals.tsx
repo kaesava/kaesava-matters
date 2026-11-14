@@ -1,6 +1,5 @@
 "use client";
 
-import React from "react";
 import { ConfirmDialog } from "@money-matters/ui/web";
 import { t } from "@money-matters/i18n";
 import { trpc } from "../../../../lib/trpc";
@@ -80,7 +79,7 @@ export function EnvelopesPageModals({
           await Promise.all([
             utils.listEnvelopes.refetch(),
             utils.listExpenseEvents.refetch(),
-            utils.getProjectedPoolBalances.refetch(),
+            utils.getProjectedEnvelopeBalances.refetch(),
           ]);
         }}
       />
@@ -102,7 +101,7 @@ export function EnvelopesPageModals({
         onClose={() => setPoolToArchive(null)}
         onConfirm={onConfirmArchive}
         title={t("categories.archiveEnvelope")}
-        description={t("categories.archivePoolConfirm", { name: poolToArchive?.name || "" })}
+        description={t("categories.archiveEnvelopeConfirm", { name: poolToArchive?.name || "" })}
         confirmLabel={t("categories.archiveEnvelope")}
         variant="danger"
         isLoading={isArchiving}

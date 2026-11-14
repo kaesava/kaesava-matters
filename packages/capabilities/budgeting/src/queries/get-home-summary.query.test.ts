@@ -29,8 +29,6 @@ describe("getHomeSummaryQuery", () => {
               isPrivate: false,
               userId: null,
               bankAccountUserId: null,
-              emoji: "🛒",
-              colorKey: "sereneBlue",
             },
           ]);
         };

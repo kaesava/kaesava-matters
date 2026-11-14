@@ -1,18 +1,16 @@
 import { z } from "zod";
 import { BaseSchema } from "./tenant.types.js";
 
-export const AppFeatureFlagsSchema = z.object({
-  aiAssistant: z.boolean(),
-  privateMode: z.boolean(),
-  fileNotes: z.boolean(),
-  fileNotesMaxStorageMb: z.number().int().positive(),
-  fileNotesMaxFileMb: z.number().int().positive(),
-  simulation: z.boolean(),
-  customAllocationRules: z.boolean(),
-  reports: z.boolean(),
-}).strict();
-
-export type AppFeatureFlags = z.infer<typeof AppFeatureFlagsSchema>;
+export interface AppFeatureFlags {
+  aiAssistant: boolean;
+  privateMode: boolean;
+  fileNotes: boolean;
+  fileNotesMaxStorageMb: number;
+  fileNotesMaxFileMb: number;
+  simulation: boolean;
+  customAllocationRules: boolean;
+  reports: boolean;
+}
 
 export const DEFAULT_APP_FEATURE_FLAGS: AppFeatureFlags = {
   aiAssistant: true,
@@ -33,8 +31,7 @@ export const StorageQuotaDto = z.object({
 
 export type StorageQuotaDto = z.infer<typeof StorageQuotaDto>;
 
-export const FileNoteEntityTypeEnum = z.enum(["ENVELOPE", "BANK_ACCOUNT"]);
-export type FileNoteEntityType = z.infer<typeof FileNoteEntityTypeEnum>;
+const FileNoteEntityTypeEnum = z.enum(["ENVELOPE", "BANK_ACCOUNT"]);
 
 export const CreatePreSignedUrlInput = z.object({
   entityType: FileNoteEntityTypeEnum,
@@ -46,14 +43,12 @@ export const CreatePreSignedUrlInput = z.object({
 
 export type CreatePreSignedUrlInput = z.infer<typeof CreatePreSignedUrlInput>;
 
-export const FileNoteAttachmentInput = z.object({
+const FileNoteAttachmentInput = z.object({
   fileKey: z.string().min(1).max(512),
   fileName: z.string().min(1).max(255),
   fileMimeType: z.string().min(1).max(100),
   fileSize: z.number().int().positive(),
 }).strict();
-
-export type FileNoteAttachmentInput = z.infer<typeof FileNoteAttachmentInput>;
 
 export const CreateFileNoteInput = z.object({
   entityType: FileNoteEntityTypeEnum,

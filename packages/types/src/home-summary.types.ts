@@ -29,8 +29,6 @@ export const HomeSummaryGoalItemSchema = z.object({
   currentBalance: z.number(),
   targetAmount: z.number().nullable(),
   progressPercentage: z.number(),
-  emoji: z.string().nullable().optional(),
-  colorKey: z.string().nullable().optional(),
 }).strict();
 export type HomeSummaryGoalItem = z.infer<typeof HomeSummaryGoalItemSchema>;
 

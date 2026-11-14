@@ -95,8 +95,6 @@ export function runStep1ImmediateBills(
   }
 }
 
-export const runStep2ImmediateBills = runStep1ImmediateBills;
-
 export function runStep2DeficitRepair(ctx: StepContext, buckets: EngineBucket[]): void {
   const sym = ctx.currencySymbol;
   for (const b of buckets) {
@@ -159,8 +157,6 @@ export function runStep4EverydayAllowance(ctx: StepContext, everydayBuckets: Eng
     }
   }
 }
-
-export const runStep1EverydayAllowance = runStep4EverydayAllowance;
 
 export function runStep5ProRataBills(
   ctx: StepContext,

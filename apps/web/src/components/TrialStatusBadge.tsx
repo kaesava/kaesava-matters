@@ -3,53 +3,6 @@
 import { useSubscriptionStatus } from "../hooks/useSubscriptionStatus";
 import { t } from "@money-matters/i18n";
 
-export function TrialStatusBadge() {
-  const { status, isLoading } = useSubscriptionStatus();
-
-  if (isLoading || !status || status.isSubscribed) {
-    return null;
-  }
-
-  if (status.isTrialActive) {
-    const days = status.daysRemainingInTrial ?? 30;
-    const isUrgent = days <= 7;
-    return (
-      <div
-        className={`px-2.5 py-1 rounded-full text-xs font-semibold flex items-center gap-1.5 ${
-          isUrgent
-            ? "bg-amber-100 text-amber-900 border border-amber-300"
-            : "bg-blue-50 text-blue-800 border border-blue-200"
-        }`}
-      >
-        <span className="w-1.5 h-1.5 rounded-full bg-current animate-pulse" />
-        <span>
-          {t("subscription.trialActive")} ({days}d left)
-        </span>
-      </div>
-    );
-  }
-
-  if (status.isTrialExpired) {
-    return (
-      <div className="px-2.5 py-1 rounded-full text-xs font-semibold bg-rose-100 text-rose-800 border border-rose-300 flex items-center gap-1.5">
-        <span className="w-1.5 h-1.5 rounded-full bg-rose-600" />
-        <span>{t("subscription.trialExpired")} — $9.95/mo</span>
-      </div>
-    );
-  }
-
-  if (status.isPastDue) {
-    return (
-      <div className="px-2.5 py-1 rounded-full text-xs font-semibold bg-amber-100 text-amber-900 border border-amber-300 flex items-center gap-1.5">
-        <span className="w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse" />
-        <span>{t("subscription.pastDue")}</span>
-      </div>
-    );
-  }
-
-  return null;
-}
-
 export function SidebarTrialNavItem({ collapsed, onNavigate }: { collapsed: boolean; onNavigate?: () => void }) {
   const { status, isLoading } = useSubscriptionStatus();
 
@@ -58,25 +11,20 @@ export function SidebarTrialNavItem({ collapsed, onNavigate }: { collapsed: bool
   const days = status.daysRemainingInTrial ?? 60;
   const isUrgent = days <= 7;
 
-  const icon = status.isSubscribed ? "👑" : "✨";
-
-  const label = status.isSubscribed
-    ? t("subscription.subscribed")
-    : status.isTrialExpired
+  const label = status.isTrialExpired
     ? t("subscription.trialExpired")
     : t("subscription.trialDaysLeftBadge", { days: String(days) });
 
-  const fullLabel = status.isSubscribed
-    ? t("subscription.subscribed")
-    : `${t("subscription.trialActive")} (${days}d left)`;
+  const fullLabel = status.isTrialExpired
+    ? t("subscription.trialExpired")
+    : t("subscription.tierTrial", { days: String(days) });
 
-  const actionText = status.isSubscribed ? "Active" : "Upgrade";
+  const actionText = t("subscription.upgradeBadge");
 
-  const badgeColor = status.isSubscribed
-    ? "bg-emerald-500/20 text-emerald-300 border-emerald-500/30 hover:bg-emerald-500/30"
-    : isUrgent || status.isTrialExpired
-    ? "bg-rose-500/20 text-rose-300 border-rose-500/30 hover:bg-rose-500/30"
-    : "bg-blue-500/20 text-blue-200 border-blue-400/30 hover:bg-blue-500/30";
+  const badgeColor =
+    isUrgent || status.isTrialExpired
+      ? "bg-rose-500/20 text-rose-300 border-rose-500/30 hover:bg-rose-500/30"
+      : "bg-blue-500/20 text-blue-200 border-blue-400/30 hover:bg-blue-500/30";
 
   return (
     <a
@@ -90,7 +38,7 @@ export function SidebarTrialNavItem({ collapsed, onNavigate }: { collapsed: bool
       }`}
     >
       <div className="flex items-center gap-2 min-w-0">
-        <span className="text-sm shrink-0">{icon}</span>
+        <span className="text-sm shrink-0">✨</span>
         {!collapsed && <span className="text-white font-bold whitespace-nowrap">{label}</span>}
       </div>
       {!collapsed && (

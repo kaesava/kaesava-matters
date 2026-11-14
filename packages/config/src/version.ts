@@ -1,46 +1,45 @@
 import { AppVersionInfo } from "@money-matters/types";
 
-/**
- * Parses a Semantic Version string into numerical components.
- * Format: MAJOR.MINOR.PATCH[-PRERELEASE]
- *
- * @param version - SemVer string e.g. "1.2.3" or "1.0.0-beta.1"
- */
-export function parseSemVer(version: string): {
-  major: number;
-  minor: number;
-  patch: number;
-  prerelease?: string;
-} {
-  const clean = version.trim().replace(/^v/, "");
-  const [mainPart, prerelease] = clean.split("-");
-  const parts = mainPart.split(".").map((num) => parseInt(num, 10));
+const RELEASE_CHANNELS = new Set<AppVersionInfo["channel"]>([
+  "development",
+  "preview",
+  "beta",
+  "production",
+]);
 
-  return {
-    major: isNaN(parts[0]) ? 0 : parts[0],
-    minor: isNaN(parts[1]) ? 0 : parts[1],
-    patch: isNaN(parts[2]) ? 0 : parts[2],
-    prerelease: prerelease || undefined,
-  };
-}
-
-/**
- * Checks if client version is older than minimum supported API version.
- * Returns true if client version < minVersion.
- */
-export function isVersionOutdated(clientVersion: string, minVersion: string): boolean {
-  const vClient = parseSemVer(clientVersion);
-  const vMin = parseSemVer(minVersion);
-
-  if (vClient.major !== vMin.major) return vClient.major < vMin.major;
-  if (vClient.minor !== vMin.minor) return vClient.minor < vMin.minor;
-  return vClient.patch < vMin.patch;
-}
-
-/**
- * Formats AppVersionInfo into a user-facing concise string.
- * e.g. "v1.0.0-beta.1 (#42)"
- */
+/** Formats AppVersionInfo into a user-facing concise string (e.g. "v1.0.0-beta.1 (#42)"). */
 export function getFormattedVersionString(version: AppVersionInfo): string {
   return `v${version.version} (#${version.buildNumber})`;
+}
+
+/** Builds normalized AppVersionInfo consistently across Web and Mobile. */
+export function buildAppVersionInfo(params: {
+  appId?: string;
+  appName: string;
+  version?: string;
+  buildNumber?: string;
+  channelRaw?: string;
+  gitCommit?: string;
+  platform: AppVersionInfo["platform"];
+}): AppVersionInfo {
+  const channel: AppVersionInfo["channel"] = RELEASE_CHANNELS.has(
+    params.channelRaw as AppVersionInfo["channel"]
+  )
+    ? (params.channelRaw as AppVersionInfo["channel"])
+    : "development";
+
+  const info: Omit<AppVersionInfo, "formattedVersion"> = {
+    appId: params.appId || "01908bde-34bb-7b19-a178-574211bc93aa",
+    appName: params.appName,
+    version: params.version || "1.0.0-beta.1",
+    buildNumber: params.buildNumber || "1",
+    channel,
+    gitCommit: params.gitCommit || "dev",
+    platform: params.platform,
+  };
+
+  return {
+    ...info,
+    formattedVersion: getFormattedVersionString(info as AppVersionInfo),
+  };
 }

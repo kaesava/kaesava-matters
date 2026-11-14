@@ -1,5 +1,8 @@
 /**
  * Web Application Structured Logger
- * Re-exports universal logger from @money-matters/core with PII redaction.
+ * Instantiates universal PII-safe logger from @money-matters/types.
  */
-export { logger, type LogLevel } from "@money-matters/core";
+import { createPiiSafeLogger } from "@money-matters/types";
+export type { LogLevel } from "@money-matters/types";
+
+export const logger = createPiiSafeLogger(() => process.env.NODE_ENV !== "production");

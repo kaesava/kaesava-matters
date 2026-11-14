@@ -1,4 +1,4 @@
-import { DEFAULT_TIMEZONE, DEFAULT_LOCALE } from "@money-matters/types";
+import { DEFAULT_TIMEZONE } from "@money-matters/types";
 import React, { useState, useEffect, useRef } from 'react';
 import { View, ActivityIndicator, StyleSheet } from 'react-native';
 import { useMobileToast, showMobileConfirm, DESIGN_TOKENS } from '@money-matters/ui/mobile';
@@ -113,7 +113,7 @@ export function HouseholdDetailsSection({
         title: t('modals.discardChanges.title'),
         message: t('modals.discardChanges.description'),
         confirmText: t('modals.discardChanges.discard'),
-        cancelText: t('modals.discardChanges.cancel'),
+        cancelText: t('common.keepEditing'),
         isDestructive: true,
         onConfirm: handleDiscard,
       });

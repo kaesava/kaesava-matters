@@ -1,6 +1,5 @@
 "use client";
 
-import React from "react";
 import { ShieldCheck, Target, ShoppingBag, Wallet } from "lucide-react";
 import { t } from "@money-matters/i18n";
 

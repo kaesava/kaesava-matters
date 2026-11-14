@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState, useId } from "react";
+import { useEffect, useState, useId } from "react";
 import { createPortal } from "react-dom";
 import { AlertTriangle, AlertCircle } from "lucide-react";
 import { t } from "@money-matters/i18n";
@@ -72,7 +72,7 @@ export function UnsavedPaydayPlanExitDialog({
 
         <div className="flex flex-col gap-2 mt-2">
           <Button type="button" variant="primary" onClick={onClose} className="w-full">
-            {t("paydayDrawer.keepEditing")}
+            {t("common.keepEditing")}
           </Button>
           <Button type="button" variant="danger" onClick={onDiscardAndExit} className="w-full">
             {t("paydayDrawer.discardAndExit")}

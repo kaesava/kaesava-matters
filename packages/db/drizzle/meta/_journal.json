@@ -414,6 +414,13 @@
       "when": 1784348494251,
       "tag": "0059_standardize_audit_columns_and_app_id",
       "breakpoints": true
+    },
+    {
+      "idx": 59,
+      "version": "7",
+      "when": 1784358494251,
+      "tag": "0060_drop_dead_columns",
+      "breakpoints": true
     }
   ]
 }

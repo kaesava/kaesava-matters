@@ -173,7 +173,7 @@ export const CommandPaletteModal: React.FC<CommandPaletteModalProps> = ({
   if (!isOpen) return null;
 
   const categories: { id: CommandPaletteCategory; label: string }[] = [
-    { id: "all", label: t("commandPalette.categories.all") },
+    { id: "all", label: t("common.all") },
     { id: "accounts", label: t("commandPalette.categories.accounts") },
     { id: "envelopes", label: t("commandPalette.categories.envelopes") },
     { id: "events", label: t("commandPalette.categories.events") },
@@ -184,7 +184,7 @@ export const CommandPaletteModal: React.FC<CommandPaletteModalProps> = ({
     <div
       role="dialog"
       aria-modal="true"
-      aria-label={t(hasAiAssistant ? "commandPalette.triggerTitle" : "commandPalette.searchOnlyTitle")}
+      aria-label={t(hasAiAssistant ? "commandPalette.triggerTitle" : "common.search")}
       className="fixed inset-0 z-50 flex items-start justify-center pt-16 sm:pt-24 px-4 bg-slate-900/60 backdrop-blur-sm"
       onClick={(e) => { if (e.target === e.currentTarget) onClose(); }}
     >

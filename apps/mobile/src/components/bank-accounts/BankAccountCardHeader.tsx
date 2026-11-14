@@ -23,7 +23,6 @@ export function BankAccountCardHeader({
   isPrivate,
   availBal,
   actualBal,
-  buffer,
   onPressNotes,
 }: BankAccountCardHeaderProps) {
   return (

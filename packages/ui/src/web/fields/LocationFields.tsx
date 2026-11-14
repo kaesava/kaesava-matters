@@ -1,4 +1,3 @@
-import React from "react";
 import { CountrySelect } from "./CountrySelect";
 import { t } from "@money-matters/i18n";
 

@@ -1,4 +1,3 @@
-import React from "react";
 import { t } from "@money-matters/i18n";
 import { InfoTooltip } from "@money-matters/ui/web";
 import { useLocale } from "../../../providers/LocaleProvider";

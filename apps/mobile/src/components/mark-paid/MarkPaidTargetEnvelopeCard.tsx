@@ -18,7 +18,7 @@ export function MarkPaidTargetEnvelopeCard({
   return (
     <View style={styles.poolCard}>
       <View>
-        <Text style={styles.poolCardLabel}>{t('planTabs.targetPool')}</Text>
+        <Text style={styles.poolCardLabel}>{t('categories.typeLabel')}</Text>
         <Text style={styles.poolCardName}>
           {poolName} <Text style={styles.poolCardType}>({poolType})</Text>
         </Text>

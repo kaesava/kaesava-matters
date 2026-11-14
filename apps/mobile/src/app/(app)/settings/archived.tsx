@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, StyleSheet, ScrollView } from 'react-native';
+import { StyleSheet, ScrollView } from 'react-native';
 import { useRouter } from 'expo-router';
 import { MobileScreenWrapper } from '@money-matters/ui/mobile';
 import { t } from '@money-matters/i18n';

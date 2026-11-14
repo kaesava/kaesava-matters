@@ -11,7 +11,6 @@ interface MobileSocialAuthButtonsProps {
   onSuccess?: () => void;
 }
 
-const API_URL = process.env["EXPO_PUBLIC_API_URL"] || "https://api.moneymatters.kaesava.au";
 
 export function MobileSocialAuthButtons({
   mode,

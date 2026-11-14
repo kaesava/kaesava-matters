@@ -75,14 +75,14 @@ export const MobileEnvelopePicker: React.FC<MobileEnvelopePickerProps> = ({
   const [isInlineOpen, setIsInlineOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
 
-  const resolvedAllLabel = allOptionLabel || t('history.allPools');
+  const resolvedAllLabel = allOptionLabel || t('common.allEnvelopes');
   const selectedPool = pools.find((p) => p.id === selectedPoolId);
   const selectedCat = selectedPool?.categories?.find((c) => c.id === selectedCategoryId);
 
   const displayLabel = useMemo(() => {
     if (!selectedPoolId || selectedPoolId === 'ALL') {
       if (displayStyle === 'field') {
-        return placeholder || t('common.selectPool');
+        return placeholder || t('common.selectEnvelope');
       }
       return compact ? resolvedAllLabel : (placeholder || resolvedAllLabel);
     }
@@ -126,14 +126,14 @@ export const MobileEnvelopePicker: React.FC<MobileEnvelopePickerProps> = ({
   };
 
   const modalTitle = useMemo(() => {
-    if (allowCategorySelection) return t('categories.poolOrCategory');
+    if (allowCategorySelection) return t('categories.typeLabel');
     return t('categories.typeLabel');
   }, [allowCategorySelection]);
 
   const modalSubtitle = useMemo(() => {
-    if (allowCategorySelection) return t('categories.selectPoolOrCategory');
-    if (displayStyle === 'field') return t('categories.selectPool');
-    return t('history.filterByPool');
+    if (allowCategorySelection) return t('categories.selectEnvelope');
+    if (displayStyle === 'field') return t('categories.selectEnvelope');
+    return t('history.filterByEnvelope');
   }, [allowCategorySelection, displayStyle]);
 
   const renderSearchInput = () => (

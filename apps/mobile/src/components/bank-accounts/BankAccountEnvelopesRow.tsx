@@ -21,9 +21,9 @@ export function BankAccountEnvelopesRow({
 
   return (
     <View style={styles.poolsRow}>
-      <Text style={styles.poolsLabel}>{t('bankAccounts.poolsLabel')}</Text>
+      <Text style={styles.poolsLabel}>{t('bankAccounts.envelopesLabel')}</Text>
       {linkedPools.length === 0 ? (
-        <Text style={styles.noPoolsText}>{t('bankAccounts.noPoolsLinked')}</Text>
+        <Text style={styles.noPoolsText}>{t('bankAccounts.noEnvelopesLinked')}</Text>
       ) : (
         <View style={styles.pillsContainer}>
           {displayPools.map((p) => {
@@ -57,7 +57,7 @@ export function BankAccountEnvelopesRow({
               style={styles.morePill}
             >
               <Text style={styles.morePillText}>
-                {t('bankAccounts.morePoolsCount', { count: String(remainingCount) })}
+                {t('bankAccounts.moreEnvelopesCount', { count: String(remainingCount) })}
               </Text>
             </TouchableOpacity>
           )}

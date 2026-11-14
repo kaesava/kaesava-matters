@@ -21,7 +21,6 @@ export const UpdateUserPreferencesCommand = z.object({
   timezone: z.string().optional(),
   language: z.enum(["en"]).optional(),
   locale: z.string().optional(),
-  theme: z.string().optional(),
   showIcons: z.boolean().optional(),
   setupCompleted: z.boolean().optional(),
   appPreferences: z.record(z.string(), z.record(z.string(), z.unknown())).optional(),
@@ -64,8 +63,6 @@ export const CreateEnvelopeCommand = z.object({
   isPriority: z.boolean().default(false).optional(),
   isSurplusTarget: z.boolean().default(false).optional(),
   isPrivate: z.boolean().default(false).optional(),
-  emoji: z.string().max(16).optional().nullable(),
-  colorKey: z.string().max(30).optional().nullable(),
   orderIndex: z.number().int().default(0).optional(),
   generateEvents: z.boolean().optional(),
 }).strict().superRefine((data, ctx) => {
@@ -86,6 +83,13 @@ export const CreateEnvelopeCommand = z.object({
       });
     }
   }
+  if (data.isSurplusTarget && data.envelopeType === "BILL") {
+    ctx.addIssue({
+      code: z.ZodIssueCode.custom,
+      message: "Bill envelopes cannot be set as the surplus target",
+      path: ["isSurplusTarget"],
+    });
+  }
 });
 
 export const UpdateEnvelopeCommand = z.object({
@@ -104,11 +108,17 @@ export const UpdateEnvelopeCommand = z.object({
   isPriority: z.boolean().optional(),
   isSurplusTarget: z.boolean().optional(),
   isPrivate: z.boolean().optional(),
-  emoji: z.string().max(16).optional().nullable(),
-  colorKey: z.string().max(30).optional().nullable(),
   orderIndex: z.number().int().optional(),
   generateEvents: z.boolean().optional(),
-}).strict();
+}).strict().superRefine((data, ctx) => {
+  if (data.isSurplusTarget && data.envelopeType === "BILL") {
+    ctx.addIssue({
+      code: z.ZodIssueCode.custom,
+      message: "Bill envelopes cannot be set as the surplus target",
+      path: ["isSurplusTarget"],
+    });
+  }
+});
 
 export const CreateIncomeSourceCommand = z.object({
   name: z.string().min(1),
@@ -187,7 +197,7 @@ export const MoveMoneyCommand = z.object({
       });
     }
   }
-});
+      });
 
 export const OverrideEventCommand = z.object({
   eventId: z.string().uuid(),
@@ -207,7 +217,7 @@ export const OverrideEventCommand = z.object({
 }).strict().refine((val) => !(val.eventType === "EXPENSE" && val.status === "CONFIRMED"), {
   message: "Expense events cannot be set to CONFIRMED status",
   path: ["status"],
-});
+      });
 
 export const DeleteUpcomingEventCommand = z.object({
   eventId: z.string().uuid(),
@@ -238,7 +248,7 @@ export const ConfirmPaydayCommand = z.object({
 }, {
   message: "Sum of allocation lines must equal total actual income amount",
   path: ["lines"],
-});
+      });
 
 export const InvitePartnerCommand = z.object({
   email: z.string().email(),

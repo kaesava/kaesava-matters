@@ -4,7 +4,7 @@ import type {
   ProjectionExpenseEvent,
   ProjectionIncomeEvent,
 } from "@money-matters/types";
-import { getTenantDateString } from "@money-matters/core";
+import { getTenantDateString } from "@money-matters/types";
 import { toMonthlyAmount } from "../can-afford-simulation.query.js";
 import type { RecurringSimulationParams } from "./simulation-types.js";
 

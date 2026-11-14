@@ -1,7 +1,7 @@
 import { FetchCreateContextFnOptions } from '@trpc/server/adapters/fetch';
 import { verifyJwt, upsertUserFromJwt, logger, createDbClient } from '@money-matters/core';
 import { db, tenantUsers, tenants } from '@money-matters/db';
-import { eq, and, isNull, sql, desc, asc } from 'drizzle-orm';
+import { eq, and, isNull, sql, asc } from 'drizzle-orm';
 
 export const MONEY_MATTERS_APP_ID = '01908bde-34bb-7b19-a178-574211bc93aa';
 
@@ -238,7 +238,7 @@ export async function resolveTenantMembership(
   requestDb: ReturnType<typeof createDbClient> | typeof db,
   claims: ResolvedClaims,
   requestedTenantId: string | null,
-  correlationId: string
+  _correlationId: string
 ): Promise<{ tenantId: string | null; role: string | null; appId: string }> {
   const cacheKey = `${claims.userId}:${requestedTenantId ?? ''}`;
   const now = Date.now();

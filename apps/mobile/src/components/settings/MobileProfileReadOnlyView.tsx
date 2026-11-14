@@ -14,7 +14,6 @@ import {
   SwitchRow,
 } from '@money-matters/ui/mobile';
 import { t } from '@money-matters/i18n';
-import { SUPPORTED_LOCALES } from '@money-matters/types';
 
 interface MobileProfileReadOnlyViewProps {
   name: string;
@@ -90,7 +89,7 @@ export function MobileProfileReadOnlyView({
 
         {/* Read-Only Details */}
         <View style={styles.detailsList}>
-          <ReadOnlyField label={t('settings.displayNameLabel')} value={name} />
+          <ReadOnlyField label={t('common.name')} value={name} />
           <ReadOnlyField label={t('settings.loginEmailLabel')} value={email} />
           <ReadOnlyField
             label={t('settings.notificationEmailLabel')}

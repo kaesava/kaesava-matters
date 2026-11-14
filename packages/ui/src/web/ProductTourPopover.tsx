@@ -142,7 +142,7 @@ export function ProductTourPopover({
                 className="!py-1.5 !px-2.5 !text-xs !gap-1"
               >
                 <ArrowLeft className="w-3.5 h-3.5" />
-                <span>{t('tour.controls.back')}</span>
+                <span>{t('common.back')}</span>
               </Button>
             )}
             <Button
@@ -151,7 +151,7 @@ export function ProductTourPopover({
               onClick={onNext}
               className="!py-1.5 !px-3.5 !text-xs !gap-1.5 font-bold"
             >
-              <span>{isLastStep ? t('tour.controls.finish') : t('tour.controls.next')}</span>
+              <span>{isLastStep ? t('tour.controls.finish') : t('common.next')}</span>
               {isLastStep ? <Check className="w-3.5 h-3.5" /> : <ArrowRight className="w-3.5 h-3.5" />}
             </Button>
           </div>

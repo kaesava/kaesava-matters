@@ -1,6 +1,5 @@
 "use client";
 
-import React from "react";
 import { t } from "@money-matters/i18n";
 import { useLocale } from "../../../../providers/LocaleProvider";
 
@@ -66,7 +65,7 @@ export function DestinationTransferItem({
 
       <p className="text-[11px] text-zinc-500 dark:text-zinc-400 leading-snug">
         <span className="font-bold text-zinc-600 dark:text-zinc-300">
-          {t("cards.paydayTransfer.coversPools", {
+          {t("cards.paydayTransfer.coversEnvelopes", {
             count: group.pools.length,
           })}
         </span>

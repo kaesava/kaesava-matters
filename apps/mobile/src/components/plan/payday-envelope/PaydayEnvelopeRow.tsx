@@ -93,7 +93,7 @@ export const PaydayEnvelopeRow: React.FC<PaydayEnvelopeRowProps> = ({
             </Text>
             {targetNum > 0 && (
               <Text style={styles.statMetaText}>
-                • {t('paydayDrawer.tableColTarget')}: {formatMobileCurrency(targetNum)}
+                • {t('common.target')}: {formatMobileCurrency(targetNum)}
                 {groupType === 'BILL' ? t('paydayDrawer.perMonth') : ''}
                 {poolObj?.endDate ? ` (${formatDate(poolObj.endDate)})` : ''}
               </Text>

@@ -137,15 +137,15 @@ export default function ReportsScreen() {
       filteredDonutTitle: t('history.reporting.incomeSplits.filteredDonutTitle'),
       cashFlowTitle: t('history.reporting.incomeSplits.cashFlowTitle'),
       filteredCashFlowTitle: t('history.reporting.incomeSplits.filteredCashFlowTitle'),
-      topPoolsTitle: t('history.reporting.incomeSplits.topPoolsTitle'),
-      filteredTopPoolsTitle: t('history.reporting.incomeSplits.filteredTopPoolsTitle'),
+      topPoolsTitle: t('history.reporting.incomeSplits.topEnvelopesTitle'),
+      filteredTopPoolsTitle: t('history.reporting.incomeSplits.filteredTopEnvelopesTitle'),
       inflowLegend: t('history.reporting.incomeSplits.inflow'),
       outflowLegend: t('history.reporting.incomeSplits.sweepOutflow'),
       centerLabel: t('history.reporting.incomeSplits.totalAllocated'),
       emptyText: t('history.reporting.incomeSplits.empty'),
       tabHorizon: t('history.reporting.incomeSplits.tabHorizon'),
       tabCashFlow: t('history.reporting.incomeSplits.tabSweep'),
-      tabTopPools: t('history.reporting.incomeSplits.tabTopPools'),
+      tabTopPools: t('history.reporting.incomeSplits.tabTopEnvelopes'),
     }),
     []
   );
@@ -178,7 +178,7 @@ export default function ReportsScreen() {
             <View style={styles.filterRow}>
               <View style={styles.searchWrap}>
                 <SearchInput
-                  placeholder={t('history.searchPlaceholder')}
+                  placeholder={t('common.searchPlaceholder')}
                   value={spendingSearch}
                   onChangeText={setSpendingSearch}
                 />

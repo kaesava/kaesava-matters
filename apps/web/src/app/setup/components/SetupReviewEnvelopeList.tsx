@@ -87,7 +87,7 @@ export function SetupReviewEnvelopeList({
                         : "bg-blue-50 text-blue-700 border-blue-200 hover:bg-blue-100"
                     }`}
                   >
-                    {isFlexible ? t("categories.flexibleBillBadge") : t("categories.scheduledBillBadge")}
+                    {isFlexible ? t("common.target") : t("categories.recurringBadge")}
                   </button>
                 )}
                 {isBill && !isFlexible && cat.generateEvents === false && (

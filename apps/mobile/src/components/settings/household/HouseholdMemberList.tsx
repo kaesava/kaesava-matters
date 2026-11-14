@@ -96,7 +96,7 @@ export function HouseholdMemberList({
                       {(m.isPending || m.inviteStatus === 'PENDING') && (
                         <View style={styles.pendingBadge}>
                           <Text style={styles.pendingBadgeText}>
-                            ⌛ {t('partner.pendingAcceptance')}
+                            ⌛ {t('memberInvite.pendingAcceptance')}
                           </Text>
                         </View>
                       )}

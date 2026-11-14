@@ -87,7 +87,7 @@ export function HistoryTab({
           <SearchInput
             value={searchQuery}
             onChange={setSearchQuery}
-            placeholder={t("history.searchPlaceholder")}
+            placeholder={t("common.searchPlaceholder")}
           />
 
           <div className="h-6 w-px bg-zinc-200 hidden sm:block" />
@@ -104,7 +104,7 @@ export function HistoryTab({
               allowAllOption={true}
               selectedPoolId={selectedPool || "ALL"}
               allowCategorySelection={false}
-              placeholder={t("common.allPools")}
+              placeholder={t("common.allEnvelopes")}
               showBalance={false}
               onChange={(sel) => setSelectedPool(sel.poolId || "ALL")}
             />
@@ -125,12 +125,12 @@ export function HistoryTab({
                 }`}
               >
                 {tType === "ALL"
-                  ? t("history.filterAll")
+                  ? t("common.all")
                   : tType === "DEBIT"
-                  ? t("history.filterDebit")
+                  ? t("common.expense")
                   : tType === "CREDIT"
-                  ? t("history.filterCredit")
-                  : t("history.filterTransfer")}
+                  ? t("common.income")
+                  : t("common.transfer")}
               </button>
             ))}
           </div>
@@ -210,7 +210,7 @@ export function HistoryTab({
                     onClick={() => handleSort("recordedAt")}
                   >
                     <div className="flex items-center justify-center gap-1">
-                      <span>{t("history.date")}</span>
+                      <span>{t("tables.date")}</span>
                       {sortColumn === "recordedAt" && (
                         <span>{sortDirection === "asc" ? "↑" : "↓"}</span>
                       )}
@@ -223,7 +223,7 @@ export function HistoryTab({
                     onClick={() => handleSort("transactionType")}
                   >
                     <div className="flex items-center justify-center gap-1">
-                      <span>{t("history.type")}</span>
+                      <span>{t("common.type")}</span>
                       {sortColumn === "transactionType" && (
                         <span>{sortDirection === "asc" ? "↑" : "↓"}</span>
                       )}
@@ -236,7 +236,7 @@ export function HistoryTab({
                     onClick={() => handleSort("description")}
                   >
                     <div className="flex items-center gap-1">
-                      <span>{t("history.description")}</span>
+                      <span>{t("common.description")}</span>
                       {sortColumn === "description" && (
                         <span>{sortDirection === "asc" ? "↑" : "↓"}</span>
                       )}
@@ -256,7 +256,7 @@ export function HistoryTab({
                     onClick={() => handleSort("amount")}
                   >
                     <div className="flex items-center justify-end gap-1">
-                      <span>{t("history.amount")}</span>
+                      <span>{t("common.amount")}</span>
                       {sortColumn === "amount" && (
                         <span>{sortDirection === "asc" ? "↑" : "↓"}</span>
                       )}

@@ -74,7 +74,7 @@ export function MobileNextPaydayCard({
   const handleDeletePress = (item: MobileIncomeItem) => {
     showMobileConfirm({
       title: t('dashboard.deleteIncomeTitle'),
-      message: t('dashboard.deleteIncomeConfirmPrompt', { name: item.name }),
+      message: t('common.deleteConfirmNamed', { name: item.name }),
       confirmText: t('common.delete'),
       cancelText: t('common.cancel'),
       isDestructive: true,

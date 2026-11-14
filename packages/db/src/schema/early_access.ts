@@ -6,7 +6,6 @@ export const earlyAccessSubscribers = pgTable(
     id: uuid("id").primaryKey().defaultRandom(),
     appId: uuid("app_id").notNull(),
     email: varchar("email", { length: 255 }).notNull(),
-    lastSubscribedAt: timestamp("last_subscribed_at", { withTimezone: true }).notNull().defaultNow(),
     createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
     createdBy: uuid("created_by"),
     updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),

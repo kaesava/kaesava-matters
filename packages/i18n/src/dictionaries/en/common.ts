@@ -52,13 +52,11 @@ export const common = {
     "tryAgain": "Try Again",
     "advancedOptions": "Advanced Options",
     "searchPlaceholder": "Search...",
-    "tapToSelect": "Tap to select...",
     "noMatchingOptions": "No matching options found",
     "confirmDelete": "You sure? This can't be undone.",
     "confirmDeleteDescription": "Are you sure you want to delete this item? This action cannot be undone.",
     "source": "Source",
     "destination": "Destination",
-    "refresh": "Refresh",
     "user": "User",
     "search": "Search",
     "description": "Description",
@@ -66,27 +64,27 @@ export const common = {
     "showingRange": "Showing {start}–{end} of {total}",
     "previous": "Previous",
     "pageOf": "Page {page} of {totalPages}",
-    "nextPage": "Next",
     "clear": "Clear",
     "filter": "Filter",
-    "selectPool": "Select Envelope...",
-    "allPools": "All Envelopes",
-    "noPoolsAvailable": "No envelopes available",
-    "searchPoolOrCategory": "Search envelope...",
-    "noPoolsFoundMatching": "No envelopes found matching \"{query}\"",
+    "selectEnvelope": "Select Envelope...",
+    "allEnvelopes": "All Envelopes",
+    "noEnvelopesAvailable": "No envelopes available",
+    "searchEnvelope": "Search envelope...",
+    "noEnvelopesFoundMatching": "No envelopes found matching \"{query}\"",
     "collapseCategories": "Collapse envelopes",
     "expandCategories": "Expand envelopes",
-    "runSplit": "Plan Payday",
+    "planPayday": "Plan Payday",
     "deleteIncomeTitle": "Delete Income",
     "deleteIncomePrompt": "Are you sure you want to delete this income schedule?",
     "deleteExpenseTitle": "Delete Expense",
-    "deleteExpensePrompt": "Are you sure you want to delete \"{name}\"?",
+    "deleteConfirmNamed": "Are you sure you want to delete \"{name}\"?",
     "max": "Max",
     "showMore": "Show More →",
     "overdue": "Overdue",
     "transfer": "Transfer",
     "saveOnly": "Save Only",
-    "splitIncome": "Split Income",
+    "allocateIncome": "Plan Payday",
+    "keepEditing": "Keep Editing",
     "proceed": "Proceed",
     "dueSoon": "Due Soon"
   },
@@ -102,26 +100,20 @@ export const common = {
     "reports": "Reports",
     "history": "History"
   },
-  "actions": {
-  },
   "badges": {
     "bill": "BILL",
     "income": "INCOME",
     "noUpcomingBills": "No upcoming bills scheduled."
   },
   "tables": {
-    "name": "Name",
-    "amount": "Amount",
     "date": "Date",
     "bankAccount": "Bank Account",
     "currentBalance": "Current Balance",
-    "target": "Target",
     "actions": "Actions",
     "details": "Details",
     "history": "History",
     "expenses": "Expenses",
     "available": "Available",
-    "transferAmount": "Transfer",
     "envelopeOrBankAccount": "Envelope / Bank Account",
     "scheduleName": "SCHEDULE NAME",
     "bankAccountUpper": "BANK ACCOUNT",
@@ -219,7 +211,6 @@ export const common = {
   "keyboardShortcuts": {
     "title": "Keyboard Shortcuts",
     "quickExpense": "Quick Expense",
-    "search": "Search",
     "close": "Close",
     "shortcuts": "Shortcuts"
   },
@@ -238,11 +229,5 @@ export const common = {
   "app": {
     "title": "Money Matters",
     "tagline": "Real progress on long-term goals. Guilt-free spending. Zero bill shock. No daily tracking."
-  },
-  "searchSelect": {
-    "selectPlaceholder": "Select option...",
-    "searchPlaceholder": "Search...",
-    "clearSelection": "Clear Selection",
-    "noResults": "No options found"
   }
 } as const;

@@ -1,5 +1,5 @@
 import { InfoTooltip } from "../InfoTooltip";
-import React, { useId } from "react";
+import { useId } from "react";
 
 export interface CountrySelectProps {
   value: string;

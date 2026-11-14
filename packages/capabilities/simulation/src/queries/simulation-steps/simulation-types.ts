@@ -1,8 +1,6 @@
 import type {
   ProjectionEngineFn,
   ProjectionEngineBucket,
-  ProjectionIncomeEvent,
-  ProjectionExpenseEvent,
   EnvelopeType,
   FundingMode,
 } from "@money-matters/types";

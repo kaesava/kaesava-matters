@@ -1,6 +1,5 @@
 "use client";
 
-import React from "react";
 import { t } from "@money-matters/i18n";
 import { Button, InfoTooltip } from "@money-matters/ui/web";
 import { SUPPORTED_CURRENCIES, SUPPORTED_COUNTRIES } from "@money-matters/types";

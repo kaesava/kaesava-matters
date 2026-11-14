@@ -1,5 +1,5 @@
 import { envelopes, expenseEvents, bankAccounts, tenants, DbOrTx } from "@money-matters/db";
-import { eq, and, sql } from "drizzle-orm";
+import { eq, and, sql, isNull } from "drizzle-orm";
 import { z } from "zod";
 import { UpdateEnvelopeCommand, DEFAULT_TIMEZONE } from "@money-matters/types";
 import {
@@ -97,10 +97,12 @@ export async function updateEnvelopeCommand(
       ? (targetAccount?.userId ?? existing.userId ?? userId)
       : null;
 
+    const rawEnvelopeType = input.envelopeType ?? existing.envelopeType;
+    const effectiveEnvelopeType = rawEnvelopeType ?? existing.envelopeType;
     const willBeSurplusTarget = input.isSurplusTarget !== undefined ? input.isSurplusTarget : existing.isSurplusTarget;
 
-    if (willBeSurplusTarget && effectiveIsPrivate) {
-      throw new Error("A Surplus Sweep Target cannot be private. Please designate another public envelope as the Surplus Sweep Target first.");
+    if (willBeSurplusTarget && effectiveEnvelopeType === "BILL") {
+      throw new Error("A Bill envelope cannot be set as a Surplus Sweep Target.");
     }
 
     if (input.isSurplusTarget === false && existing.isSurplusTarget && !effectiveIsPrivate) {
@@ -112,7 +114,8 @@ export async function updateEnvelopeCommand(
             eq(envelopes.tenantId, tenantId),
             eq(envelopes.appId, appId),
             eq(envelopes.isSurplusTarget, true),
-            eq(envelopes.isPrivate, false)
+            eq(envelopes.isPrivate, false),
+            isNull(envelopes.archivedAt)
           )
         );
       if (otherSurplusTargets.length <= 1) {
@@ -137,9 +140,6 @@ export async function updateEnvelopeCommand(
     }
 
     const { fundingMode, isPriority, ...restInput } = input;
-
-    const rawEnvelopeType = restInput.envelopeType ?? existing.envelopeType;
-    const effectiveEnvelopeType = rawEnvelopeType ?? existing.envelopeType;
     const effectiveFundingMode = fundingMode ?? existing.fundingMode ?? (effectiveEnvelopeType === "GOAL" ? "TARGET_BALANCE" : "RECURRING");
     const effectiveIsPriority = isPriority !== undefined ? isPriority : existing.isPriority;
 

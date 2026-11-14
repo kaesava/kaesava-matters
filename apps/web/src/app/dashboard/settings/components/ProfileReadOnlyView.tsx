@@ -1,7 +1,6 @@
 "use client";
 
 import Image from "next/image";
-import React from "react";
 import { t } from "@money-matters/i18n";
 import { Button, InfoTooltip } from "@money-matters/ui/web";
 
@@ -73,7 +72,7 @@ export function ProfileReadOnlyView({
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div className="p-3.5 bg-slate-50/70 border border-slate-200/80 rounded-xl flex flex-col gap-1">
           <span className="text-[11px] font-bold text-slate-500 uppercase tracking-wider">
-            {t("settings.displayNameLabel")}
+            {t("common.name")}
           </span>
           <span className="text-xs font-semibold text-[#1B2B4B]">
             {displayName || "—"}

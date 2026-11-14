@@ -43,7 +43,7 @@ export function useSettingsTabManagement() {
         title: t('modals.discardChanges.title'),
         message: t('modals.discardChanges.description'),
         confirmText: t('modals.discardChanges.discard'),
-        cancelText: t('modals.discardChanges.cancel'),
+        cancelText: t('common.keepEditing'),
         isDestructive: true,
         onConfirm: () => {
           discardProfileRef.current?.();
@@ -58,7 +58,7 @@ export function useSettingsTabManagement() {
         title: t('modals.discardChanges.title'),
         message: t('modals.discardChanges.description'),
         confirmText: t('modals.discardChanges.discard'),
-        cancelText: t('modals.discardChanges.cancel'),
+        cancelText: t('common.keepEditing'),
         isDestructive: true,
         onConfirm: () => {
           discardHouseholdRef.current?.();
