@@ -1,0 +1,105 @@
+"use client";
+
+import { useState, useEffect, Suspense, useCallback } from "react";
+import { useSearchParams } from "next/navigation";
+import { trpc } from "../../lib/trpc";
+import { useToast } from "@money-matters/ui/web";
+import { t } from "@money-matters/i18n";
+import { trackAnalyticsEvent } from "../../lib/analytics";
+import { AuthModal } from "./AuthModal";
+import { EarlyAccessModal } from "./EarlyAccessModal";
+import { LandingHeader } from "./LandingHeader";
+import { LandingHero } from "./LandingHero";
+import { ProductFeaturesGrid } from "./ProductFeaturesGrid";
+import { InteractivePaydayEngine } from "./InteractivePaydayEngine";
+import { FeaturedBlogsSection } from "./FeaturedBlogsSection";
+import { PricingSection } from "./PricingSection";
+import { TrustSection } from "./TrustSection";
+import { FaqSection } from "./FaqSection";
+import { LandingFooter } from "./LandingFooter";
+
+const isAuthEnabled = process.env.NEXT_PUBLIC_ENABLE_AUTH !== "false";
+
+function EarlyAccessQueryWatcher({ onTrigger }: { onTrigger: () => void }) {
+  const searchParams = useSearchParams();
+
+  useEffect(() => {
+    const earlyAccess = searchParams.get("early_access");
+    const authDisabled = searchParams.get("auth_disabled");
+    if (earlyAccess === "true" || authDisabled === "true") {
+      onTrigger();
+    }
+  }, [searchParams, onTrigger]);
+
+  return null;
+}
+
+export function LandingPageClient() {
+  const toast = useToast();
+  const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
+  const [authModalTab, setAuthModalTab] = useState<"signIn" | "signUp">("signIn");
+  const [isEarlyAccessOpen, setIsEarlyAccessOpen] = useState(false);
+  const [emailInput, setEmailInput] = useState("");
+
+  const openEarlyAccessModal = useCallback(() => {
+    setIsEarlyAccessOpen(true);
+  }, []);
+
+  const subscribeMut = trpc.subscribeEarlyAccess.useMutation({
+    onSuccess: () => {
+      setIsEarlyAccessOpen(false);
+      setEmailInput("");
+      toast.success(
+        t("toasts.earlyAccessRegistered"),
+        t("landing.earlyAccess.title"),
+        6000
+      );
+    },
+    onError: (err) => {
+      toast.error(err.message || t("toasts.error"), t("common.error"));
+    },
+  });
+
+  const handleOpenAuth = (tab: "signIn" | "signUp") => {
+    trackAnalyticsEvent("auth_modal_opened", { tab });
+    if (!isAuthEnabled) {
+      setIsEarlyAccessOpen(true);
+      return;
+    }
+    setAuthModalTab(tab);
+    setIsAuthModalOpen(true);
+  };
+
+  return (
+    <div className="min-h-screen flex flex-col bg-[#F7F8FA] text-[#1B2B4B] font-sans selection:bg-[#2563eb] selection:text-white relative">
+      <Suspense fallback={null}>
+        <EarlyAccessQueryWatcher onTrigger={openEarlyAccessModal} />
+      </Suspense>
+
+      <EarlyAccessModal
+        isOpen={isEarlyAccessOpen}
+        onClose={() => setIsEarlyAccessOpen(false)}
+        emailInput={emailInput}
+        setEmailInput={setEmailInput}
+        onSubmit={(email) => subscribeMut.mutate({ email })}
+        isPending={subscribeMut.isPending}
+      />
+
+      <AuthModal
+        isOpen={isAuthModalOpen}
+        onClose={() => setIsAuthModalOpen(false)}
+        initialTab={authModalTab}
+      />
+
+      <LandingHeader onAuthClick={handleOpenAuth} />
+      <LandingHero onAuthClick={handleOpenAuth} />
+      <ProductFeaturesGrid />
+      <InteractivePaydayEngine onAuthClick={handleOpenAuth} />
+      <FeaturedBlogsSection />
+      <PricingSection onAuthClick={handleOpenAuth} />
+      <TrustSection />
+      <FaqSection />
+      <LandingFooter onAuthClick={handleOpenAuth} />
+    </div>
+  );
+}

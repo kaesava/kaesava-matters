@@ -5,10 +5,9 @@ export default function sitemap(): MetadataRoute.Sitemap {
   const baseUrl = "https://moneymatters.kaesava.au";
   const releaseDate = "2026-11-15T00:00:00.000Z";
 
-  // Static public routes
   const staticRoutes: MetadataRoute.Sitemap = [
     {
-      url: `${baseUrl}`,
+      url: baseUrl,
       lastModified: releaseDate,
       changeFrequency: "daily",
       priority: 1.0,
@@ -17,13 +16,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
       url: `${baseUrl}/blog`,
       lastModified: releaseDate,
       changeFrequency: "weekly",
-      priority: 0.8,
-    },
-    {
-      url: `${baseUrl}/subscription/upgrade`,
-      lastModified: releaseDate,
-      changeFrequency: "weekly",
-      priority: 0.8,
+      priority: 0.9,
     },
     {
       url: `${baseUrl}/privacy`,
@@ -37,21 +30,8 @@ export default function sitemap(): MetadataRoute.Sitemap {
       changeFrequency: "monthly",
       priority: 0.5,
     },
-    {
-      url: `${baseUrl}/sign-in`,
-      lastModified: releaseDate,
-      changeFrequency: "monthly",
-      priority: 0.6,
-    },
-    {
-      url: `${baseUrl}/sign-up`,
-      lastModified: releaseDate,
-      changeFrequency: "monthly",
-      priority: 0.7,
-    },
   ];
 
-  // Dynamic blog post routes
   const blogRoutes: MetadataRoute.Sitemap = BLOG_POSTS.map((post) => {
     let parsedDate = releaseDate;
     try {
@@ -66,7 +46,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
       url: `${baseUrl}/blog/${post.slug}`,
       lastModified: parsedDate,
       changeFrequency: "monthly",
-      priority: 0.7,
+      priority: 0.8,
     };
   });
 

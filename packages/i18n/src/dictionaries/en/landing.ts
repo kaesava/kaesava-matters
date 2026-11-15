@@ -161,6 +161,7 @@ export const landing = {
     "blogNextRead": "Keep Reading",
     "blogCtaTitle": "Try Money Matters Free for 60 Days",
     "blogCtaDesc": "Live on Web today, with our Android mobile app in beta testing. No credit card required—cancel or export your full CSV data anytime.",
+    "blogTrySimulatorCta": "Try the Payday Calculator →",
     "footerLegalEntity": "Operated by KSHETRAPALAPURAM, KALYANARAMAN KAESAVA (Sole Trader, VIC 3030, Australia)",
     "footerFinancialDisclaimer": "General information only — not personal financial, tax, or credit advice.",
     "footerPrivacy": "Privacy Policy",

@@ -1,8 +1,14 @@
-"use client";
-
+import type { Metadata } from "next";
 import { t } from "@money-matters/i18n";
 import { PublicHeader } from "../../components/public/PublicHeader";
 import { PublicFooter } from "../../components/public/PublicFooter";
+
+export const metadata: Metadata = {
+  title: "Privacy Policy",
+  description:
+    "How Money Matters protects household financial data under the Australian Privacy Principles (APPs) and Privacy Act 1988 (Cth).",
+  alternates: { canonical: "https://moneymatters.kaesava.au/privacy" },
+};
 
 export default function PrivacyPolicyPage() {
   return (

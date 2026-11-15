@@ -49,6 +49,7 @@ const baseEnvSchema = z
     POSTHOG_HOST: z.string().url().optional(),
     NEXT_PUBLIC_POSTHOG_HOST: z.string().url().optional(),
     NEXT_PUBLIC_GA_MEASUREMENT_ID: z.string().min(1).optional(),
+    NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION: z.string().min(1).optional(),
     // Cloudflare Workers AI & Gateway
     CF_ACCOUNT_ID: z.string().min(1).optional(),
     CF_AI_GATEWAY_ID: z.string().min(1).optional(),

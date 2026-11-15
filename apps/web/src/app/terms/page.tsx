@@ -1,9 +1,14 @@
-"use client";
-export const dynamic = 'force-dynamic';
-
+import type { Metadata } from "next";
 import { t } from "@money-matters/i18n";
 import { PublicHeader } from "../../components/public/PublicHeader";
 import { PublicFooter } from "../../components/public/PublicFooter";
+
+export const metadata: Metadata = {
+  title: "Terms of Service",
+  description:
+    "Money Matters Terms of Service, 60-day free trial terms, Australian Consumer Law guarantees, and Victorian governing law.",
+  alternates: { canonical: "https://moneymatters.kaesava.au/terms" },
+};
 
 export default function TermsOfServicePage() {
   return (

@@ -1,0 +1,21 @@
+# Money Matters
+
+> Automated forward-looking payday cashflow and bill protection for Australian households—with zero daily receipt tracking.
+
+## Overview
+- **Product:** Money Matters (Web app live at https://moneymatters.kaesava.au; Android mobile app currently in beta testing).
+- **Operator:** KSHETRAPALAPURAM, KALYANARAMAN KAESAVA (Individual/Sole Trader, VIC 3030, Australia).
+- **Trial & Pricing:** 60-day full-access free trial (no credit card required). After trial: A$9.95/month or A$89/year (Founding Member offer: A$69/year). Cancel anytime.
+- **Data Ownership:** Full CSV export is always free, even after a trial expires.
+
+## Core Capabilities
+- **Allocate Payday & Presets:** Priority envelopes protect upcoming rent, mortgage, and bills first using presets (Balanced, Safety First, Debt Crusher). Override and save/freeze payday drafts anytime.
+- **Zero Daily Receipt Tracking:** 1-click bank balance reconciliation ("Match Balance") and 12-month Projection Mode.
+- **Can I Afford It?:** Real-time affordability check against upcoming bills and goals before spending, paired with Project Envelopes, Reports, and Ask Penny.
+- **Every Household:** Supports solo earners, sharehouses/housemates, couples, and families with Shared Envelopes and PostgreSQL RLS-enforced Private Envelopes.
+
+## Key Pages
+- Home & Payday Calculator: https://moneymatters.kaesava.au/
+- Founder Philosophy Blog: https://moneymatters.kaesava.au/blog
+- Privacy Policy: https://moneymatters.kaesava.au/privacy
+- Terms of Service: https://moneymatters.kaesava.au/terms

@@ -3,6 +3,7 @@ import Link from "next/link";
 import { t } from "@money-matters/i18n";
 import { Logo } from "@money-matters/ui/web";
 import { BLOG_POSTS } from "../../../lib/blog-data";
+import { BlogReadTracker } from "../../../components/web/BlogReadTracker";
 
 const BASE_URL = "https://moneymatters.kaesava.au";
 
@@ -57,9 +58,11 @@ export default async function BlogPostReaderPage({
   }
 
   const relatedPosts = BLOG_POSTS.filter((p) => p.slug !== post.slug).slice(0, 2);
+  const wordCount = post.paragraphs.join(" ").split(/\s+/).filter(Boolean).length;
 
   return (
     <div className="min-h-screen flex flex-col bg-[#F7F8FA] text-[#1B2B4B] font-sans selection:bg-[#2563eb] selection:text-white">
+      <BlogReadTracker slug={post.slug} />
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{
@@ -68,9 +71,12 @@ export default async function BlogPostReaderPage({
             "@type": "BlogPosting",
             headline: post.title,
             description: post.excerpt,
+            image: `${BASE_URL}/blog/${post.slug}/opengraph-image`,
+            wordCount,
             author: { "@type": "Person", name: post.authorName, jobTitle: post.authorRole },
             publisher: { "@type": "Organization", name: "Money Matters Australia", url: BASE_URL },
             datePublished: post.publishedAt,
+            dateModified: post.publishedAt,
             mainEntityOfPage: { "@type": "WebPage", "@id": `${BASE_URL}/blog/${post.slug}` },
           }),
         }}
@@ -182,12 +188,20 @@ export default async function BlogPostReaderPage({
           <p className="text-xs sm:text-sm text-slate-300 max-w-xl mx-auto leading-relaxed">
             {t("landing.blogCtaDesc")}
           </p>
-          <Link
-            href="/sign-up"
-            className="bg-[#2563eb] hover:bg-blue-700 text-white font-bold text-sm px-6 py-3 rounded-xl transition-all shadow-md inline-block"
-          >
-            {t("landing.createAccount")} →
-          </Link>
+          <div className="flex flex-wrap items-center justify-center gap-3 pt-1">
+            <Link
+              href="/sign-up"
+              className="bg-[#2563eb] hover:bg-blue-700 text-white font-bold text-sm px-6 py-3 rounded-xl transition-all shadow-md inline-block"
+            >
+              {t("landing.createAccount")} →
+            </Link>
+            <Link
+              href="/#simulator"
+              className="bg-white/10 hover:bg-white/20 text-white font-bold text-sm px-5 py-3 rounded-xl border border-white/20 transition-all inline-block"
+            >
+              {t("landing.blogTrySimulatorCta")}
+            </Link>
+          </div>
         </div>
 
         {/* Keep Reading (Retention Loop) */}

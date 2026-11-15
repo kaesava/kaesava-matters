@@ -30,11 +30,11 @@ const baseUrl = "https://moneymatters.kaesava.au";
 export const metadata: Metadata = {
   metadataBase: new URL(baseUrl),
   title: {
-    default: "Money Matters — Zero bill shock. Real progress on long-term goals. Zero daily tracking.",
+    default: "Money Matters — Payday Cashflow & Bill Protection (AU)",
     template: "%s | Money Matters",
   },
   description:
-    "Ring-fence upcoming bills on payday, make real progress on long-term goals, and spend your everyday money with zero guilt and zero micro-tracking.",
+    "Ring-fence upcoming bills on payday, fund long-term goals, and spend freely with zero daily receipt tracking. 60-day free trial, no card required.",
   keywords: [
     "household budgeting Australia",
     "zero bill shock",
@@ -110,23 +110,36 @@ export const metadata: Metadata = {
       "max-snippet": -1,
     },
   },
+  ...(process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION
+    ? { verification: { google: process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION } }
+    : {}),
 };
 
 // JSON-LD Structured Data Schema for Search Engine Snippets (SERPs)
 const webAppJsonLd = {
   "@context": "https://schema.org",
   "@type": "SoftwareApplication",
-  "name": "Money Matters — Zero bill shock. Real progress on long-term goals.",
-  "operatingSystem": "Web, iOS, Android",
+  "name": "Money Matters",
+  "operatingSystem": "Web, Android",
   "applicationCategory": "FinanceApplication",
+  "screenshot": `${baseUrl}/og-image.png`,
+  "featureList": [
+    "Automated Allocate Payday with Priority Envelopes and Presets",
+    "1-Click Match Balance Bank Reconciliation",
+    "12-Month Envelope Projection Mode",
+    "Can I Afford It? Real-Time Purchase Check",
+    "Shared & Stealth-Private Household Envelopes",
+    "Free Full CSV Data Export",
+  ],
   "offers": {
     "@type": "Offer",
     "price": "0",
     "priceCurrency": "AUD",
+    "description": "60-day full-access free trial (no credit card required), then A$9.95/month or A$89/year.",
     "availability": "https://schema.org/InStock",
   },
   "description":
-    "Ring-fence upcoming bills on payday, make real progress on long-term goals, and spend your everyday money with zero guilt and zero micro-tracking.",
+    "Ring-fence upcoming bills on payday, fund long-term goals, and spend freely with zero daily receipt tracking.",
   "url": baseUrl,
   "author": {
     "@type": "Organization",
