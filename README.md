@@ -60,6 +60,12 @@ pnpm typecheck
 # Run Vitest unit tests
 pnpm test
 
+# Run only tests affected by uncommitted changes (file-level)
+pnpm test:affected
+
+# Run coverage only on affected packages
+pnpm test:coverage:affected
+
 # Run automated version bump CLI (major | minor | patch | beta)
 pnpm version:bump --type=patch --app=all
 
