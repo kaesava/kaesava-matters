@@ -66,7 +66,30 @@ export function useSignInMethods() {
   const handleDisconnectGoogle = async () => {
     setIsDisconnectingGoogle(true);
     try {
-      const result = await authClient.unlinkAccount({ providerId: "google" });
+      const accountsRes = await authClient.listAccounts();
+      const googleAccount = accountsRes?.data?.find(
+        (acc: { id?: string; providerId: string; accountId: string }) => acc.providerId === "google"
+      );
+      const accountId = googleAccount?.accountId ?? authMethods?.googleAccountId ?? undefined;
+      if (!accountId) {
+        toast.error(t("settings.profile.signInMethods.googleDisconnectFailed"));
+        return;
+      }
+      let result = await authClient.unlinkAccount({
+        providerId: "google",
+        accountId,
+      });
+      if (
+        result?.error &&
+        googleAccount?.id &&
+        googleAccount.id !== accountId &&
+        (result.error.code === "ACCOUNT_NOT_FOUND" || /account not found/i.test(result.error.message || ""))
+      ) {
+        result = await authClient.unlinkAccount({
+          providerId: "google",
+          accountId: googleAccount.id,
+        });
+      }
       if (result?.error) {
         toast.error(result.error.message || t("settings.profile.signInMethods.googleDisconnectFailed"));
         return;

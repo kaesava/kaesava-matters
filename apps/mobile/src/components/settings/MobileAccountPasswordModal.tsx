@@ -9,6 +9,7 @@ import {
   FormErrorBanner,
   MobileButton,
 } from "@money-matters/ui/mobile";
+import { MobilePasswordStrength } from "../auth/MobilePasswordStrength";
 import { useMobileAccountPasswordForm } from "./profile/useMobileAccountPasswordForm";
 
 interface MobileAccountPasswordModalProps {
@@ -62,6 +63,7 @@ export function MobileAccountPasswordModal({ visible, hasPassword, onClose }: Mo
             onChangeText={form.setPassword}
             autoFocus={!hasPassword}
           />
+          {form.password.length > 0 && <MobilePasswordStrength password={form.password} />}
           {form.password.length > 0 && form.password.length < 8 && (
             <FormFieldError error={t("auth.passwordTooShort")} />
           )}

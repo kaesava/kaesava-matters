@@ -3,6 +3,7 @@
 import React from "react";
 import { t } from "@money-matters/i18n";
 import { ModalDialog, FormLabel, Input, FormFieldError, FormErrorBanner, Button } from "@money-matters/ui/web";
+import { PasswordStrengthIndicator } from "../../../../components/auth/PasswordStrengthIndicator";
 import { useAccountPasswordForm } from "./useAccountPasswordForm";
 
 interface AccountPasswordModalProps {
@@ -44,6 +45,7 @@ export function AccountPasswordModal({ isOpen, hasPassword, onClose }: AccountPa
             className="h-10"
             autoComplete="new-password"
           />
+          {form.password.length > 0 && <PasswordStrengthIndicator password={form.password} />}
           {form.password.length > 0 && form.password.length < 8 && (
             <FormFieldError error={t("auth.passwordTooShort")} />
           )}

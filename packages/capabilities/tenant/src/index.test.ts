@@ -333,22 +333,24 @@ describe('Capability Tenant Handlers', () => {
 
   it('getAuthMethodsHandler returns hasPassword and hasGoogle flags accurately', async () => {
     const googleOnlyDb = {
-      execute: vi.fn().mockResolvedValue([{ providerId: 'google', password: null }]),
+      execute: vi.fn().mockResolvedValue([{ providerId: 'google', accountId: 'google-123', password: null }]),
     };
     expect(await getAuthMethodsHandler(googleOnlyDb as unknown as DbOrTx)(userId)).toEqual({
       hasPassword: false,
       hasGoogle: true,
+      googleAccountId: 'google-123',
     });
 
     const bothDb = {
       execute: vi.fn().mockResolvedValue([
-        { providerId: 'google', password: null },
-        { providerId: 'credential', password: 'salt:hashedvalue' },
+        { providerId: 'google', accountId: 'google-123', password: null },
+        { providerId: 'credential', accountId: userId, password: 'salt:hashedvalue' },
       ]),
     };
     expect(await getAuthMethodsHandler(bothDb as unknown as DbOrTx)(userId)).toEqual({
       hasPassword: true,
       hasGoogle: true,
+      googleAccountId: 'google-123',
     });
   });
 

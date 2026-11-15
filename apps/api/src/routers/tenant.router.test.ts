@@ -64,8 +64,8 @@ describe("tenant router", () => {
     const dbWithExecute = {
       ...createMockDb(),
       execute: async () => [
-        { providerId: "google", password: null },
-        { providerId: "credential", password: "salt:hash" },
+        { providerId: "google", accountId: "google-123", password: null },
+        { providerId: "credential", accountId: "user-1", password: "salt:hash" },
       ],
     };
     const caller = appRouter.createCaller({
@@ -90,6 +90,7 @@ describe("tenant router", () => {
     await expect(caller.getAuthMethods()).resolves.toEqual({
       hasPassword: true,
       hasGoogle: true,
+      googleAccountId: "google-123",
     });
   });
 

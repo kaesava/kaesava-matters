@@ -41,15 +41,17 @@ export function checkEmailAuthProviderHandler(db: DbOrTx) {
  */
 export function getAuthMethodsHandler(db: DbOrTx) {
   return async (userId: string): Promise<AccountAuthMethods> => {
-    const result = await db.execute<{ providerId: string; password: string | null }>(
-      sql`SELECT "providerId", password
+    const result = await db.execute<{ providerId: string; accountId: string | null; password: string | null }>(
+      sql`SELECT "providerId", "accountId", password
           FROM neon_auth.account
           WHERE "userId" = ${userId}`
     );
-    const rows = extractRows<{ providerId: string; password: string | null }>(result);
+    const rows = extractRows<{ providerId: string; accountId: string | null; password: string | null }>(result);
+    const googleRow = rows.find((r) => r.providerId === "google");
     return {
       hasPassword: rows.some((r) => r.providerId === "credential" && Boolean(r.password)),
-      hasGoogle: rows.some((r) => r.providerId === "google"),
+      hasGoogle: Boolean(googleRow),
+      googleAccountId: googleRow?.accountId ?? null,
     };
   };
 }

@@ -2,7 +2,7 @@
 
 import React from "react";
 import { t } from "@money-matters/i18n";
-import { Badge, Button, ConfirmDialog } from "@money-matters/ui/web";
+import { Button, ConfirmDialog } from "@money-matters/ui/web";
 import { useSignInMethods } from "./useSignInMethods";
 import { AccountPasswordModal } from "./AccountPasswordModal";
 
@@ -23,16 +23,16 @@ export function ProfileSignInMethodsCard() {
 
         <div className="space-y-3">
           <div className="flex items-center justify-between gap-4 p-3.5 bg-slate-50/70 border border-slate-200/80 rounded-xl">
-            <div className="flex items-center gap-3">
+            <div className="flex flex-col gap-0.5">
               <span className="text-xs font-bold text-[#1B2B4B]">
                 {t("settings.profile.signInMethods.emailPasswordLabel")}
               </span>
               {!sm.isLoading && (
-                <Badge variant={sm.hasPassword ? "success" : "primary"}>
+                <span className={`text-[11px] font-medium ${sm.hasPassword ? "text-slate-500" : "text-slate-400"}`}>
                   {sm.hasPassword
                     ? t("settings.profile.signInMethods.passwordSet")
                     : t("settings.profile.signInMethods.passwordNotSet")}
-                </Badge>
+                </span>
               )}
             </div>
             <Button variant="secondary" size="sm" disabled={sm.isLoading} onClick={() => sm.setIsPasswordModalOpen(true)}>
@@ -44,16 +44,16 @@ export function ProfileSignInMethodsCard() {
 
           <div className="p-3.5 bg-slate-50/70 border border-slate-200/80 rounded-xl space-y-2">
             <div className="flex items-center justify-between gap-4">
-              <div className="flex items-center gap-3">
+              <div className="flex flex-col gap-0.5">
                 <span className="text-xs font-bold text-[#1B2B4B]">
                   {t("settings.profile.signInMethods.googleLabel")}
                 </span>
                 {!sm.isLoading && (
-                  <Badge variant={sm.hasGoogle ? "success" : "primary"}>
+                  <span className={`text-[11px] font-medium ${sm.hasGoogle ? "text-slate-500" : "text-slate-400"}`}>
                     {sm.hasGoogle
                       ? t("settings.profile.signInMethods.connected")
                       : t("settings.profile.signInMethods.notConnected")}
-                  </Badge>
+                  </span>
                 )}
               </div>
               {sm.hasGoogle ? (

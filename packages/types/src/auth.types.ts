@@ -119,6 +119,7 @@ export function mapOtpResetErrorKey(error: AuthErrorLike | null | undefined): st
 export interface AccountAuthMethods {
   hasPassword: boolean;
   hasGoogle: boolean;
+  googleAccountId: string | null;
 }
 
 export const SetAccountPasswordInputSchema = z
@@ -135,6 +136,10 @@ export const SetAccountPasswordFormSchema = z
     confirmPassword: z.string().min(8, "passwordTooShort").max(128, "passwordTooLong"),
   })
   .strict()
+  .refine((data) => evaluatePasswordStrength(data.password).score === 4, {
+    message: "passwordTooShort",
+    path: ["password"],
+  })
   .refine((data) => data.password === data.confirmPassword, {
     message: "passwordsMustMatch",
     path: ["confirmPassword"],
@@ -147,6 +152,10 @@ export const ChangeAccountPasswordFormSchema = z
     confirmPassword: z.string().min(8, "passwordTooShort").max(128, "passwordTooLong"),
   })
   .strict()
+  .refine((data) => evaluatePasswordStrength(data.password).score === 4, {
+    message: "passwordTooShort",
+    path: ["password"],
+  })
   .refine((data) => data.password === data.confirmPassword, {
     message: "passwordsMustMatch",
     path: ["confirmPassword"],
