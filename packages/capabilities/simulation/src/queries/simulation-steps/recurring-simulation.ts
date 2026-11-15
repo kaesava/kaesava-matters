@@ -71,16 +71,16 @@ export function simulateRecurringCommitment(
   for (let k = 0; k < count; k++) {
     let d: Date;
     if (frequency === "MONTHLY") {
-      const targetYear = today.getFullYear();
-      const targetMonth = today.getMonth() + k;
-      const originalDay = today.getDate();
+      const targetYear = today.getUTCFullYear();
+      const targetMonth = today.getUTCMonth() + k;
+      const originalDay = today.getUTCDate();
       // Use day 1 to safely advance month, then clamp to last day of target month
       d = new Date(Date.UTC(targetYear, targetMonth, 1));
-      const daysInTargetMonth = new Date(Date.UTC(d.getFullYear(), d.getMonth() + 1, 0)).getDate();
+      const daysInTargetMonth = new Date(Date.UTC(d.getUTCFullYear(), d.getUTCMonth() + 1, 0)).getUTCDate();
       d.setUTCDate(Math.min(originalDay, daysInTargetMonth));
     } else if (frequency === "ANNUALLY") {
-      d = new Date(today);
-      d.setFullYear(d.getFullYear() + k);
+      d = new Date(today.getTime());
+      d.setUTCFullYear(d.getUTCFullYear() + k);
     } else if (frequency === "WEEKLY") {
       d = new Date(today.getTime() + k * 7 * 24 * 60 * 60 * 1000);
     } else {
@@ -89,7 +89,7 @@ export function simulateRecurringCommitment(
     }
 
     phantomExpenses.push({
-      envelopeId: phantomBucket.id,
+      poolId: phantomBucket.id,
       amount,
       dueDate: getTenantDateString(d, { timezone }),
       status: "PENDING",
@@ -120,10 +120,15 @@ export function simulateRecurringCommitment(
     expenseEvents: [...baseExpenses, ...phantomExpenses],
   });
 
-  // --- CHECK 1: PHANTOM BUCKET DEFICIT (Bills shortfall) ---
+  // --- CHECK 1: PHANTOM BUCKET DEFICIT (Bills shortfall across all steps) ---
   const phantomFinalBal = projectionWith.finalBalances.get(phantomBucket.id) ?? 0;
-  if (phantomFinalBal < -1) {
-    const totalDeficit = Math.abs(phantomFinalBal);
+  let minPhantomBal = phantomFinalBal;
+  for (const step of projectionWith.steps) {
+    const stepMin = step.minProjectedBalances.get(phantomBucket.id) ?? step.balancesAfterExpenses.get(phantomBucket.id) ?? 0;
+    if (stepMin < minPhantomBal) minPhantomBal = stepMin;
+  }
+  if (minPhantomBal < -1) {
+    const totalDeficit = Math.abs(minPhantomBal);
     return {
       verdict: "HARD_NO",
       shortfall: totalDeficit.toFixed(2),
@@ -198,7 +203,7 @@ export function simulateRecurringCommitment(
 
     const poolMonthlyContrib =
       pool.fundingMode === "RECURRING"
-        ? parseFloat(pool.targetAmount)
+        ? parseFloat(pool.monthlyAmount ?? pool.enteredAmount ?? pool.targetAmount)
         : (pool.monthlyAmount ? parseFloat(pool.monthlyAmount) : parseFloat(pool.targetAmount) / 12);
     const dailyContrib = poolMonthlyContrib > 0 ? poolMonthlyContrib / 30 : 1;
     const delayDays = Math.max(1, Math.round(balanceDrop / dailyContrib));

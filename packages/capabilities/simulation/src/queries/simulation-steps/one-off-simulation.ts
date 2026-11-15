@@ -114,7 +114,7 @@ export function simulateOneOffPurchase(
     if (goalBal >= shortfall) {
       const poolMonthlyContrib =
         candidateGoal.fundingMode === "RECURRING"
-          ? parseFloat(candidateGoal.targetAmount || "0")
+          ? parseFloat(candidateGoal.monthlyAmount ?? candidateGoal.enteredAmount ?? candidateGoal.targetAmount ?? "0")
           : (candidateGoal.monthlyAmount ? parseFloat(candidateGoal.monthlyAmount) : (candidateGoal.targetAmount ? parseFloat(candidateGoal.targetAmount) / 12 : 0));
       const dailyContrib = poolMonthlyContrib > 0 ? poolMonthlyContrib / 30 : 1;
       const delayDays = Math.max(1, Math.round(shortfall / dailyContrib));
@@ -170,8 +170,8 @@ export function simulateOneOffPurchase(
 
     let daysInStep = 14;
     if (i < projection.steps.length - 1) {
-      const tCurr = new Date(step.date + "T00:00:00").getTime();
-      const tNext = new Date(projection.steps[i + 1].date + "T00:00:00").getTime();
+      const tCurr = new Date(step.date + "T00:00:00Z").getTime();
+      const tNext = new Date(projection.steps[i + 1].date + "T00:00:00Z").getTime();
       daysInStep = Math.max(1, Math.round((tNext - tCurr) / (1000 * 60 * 60 * 24)));
     }
     const stepCushion = dailyAllowance > 0 ? dailyAllowance * 0.25 * daysInStep : 15 * daysInStep;
@@ -179,18 +179,22 @@ export function simulateOneOffPurchase(
     const paycyclesAway = i + 1;
     const ordinal = ordinals[i] ?? "th";
 
-    // TIER 1: Check fresh discretionary capacity injected on this payday
+    // TIER 1: Check fresh discretionary capacity OR cumulative Everyday + Surplus capacity at this payday
     let freshEveryday = 0;
+    let accumulatedEveryday = 0;
     for (const envId of everydayEnvelopeIds) {
       freshEveryday += step.allocations.get(envId)?.proposedAmount ?? 0;
+      accumulatedEveryday += step.balancesAfterAlloc.get(envId) ?? 0;
     }
     const freshSurplus = surplusEnvelope ? (step.allocations.get(surplusEnvelope.id)?.proposedAmount ?? 0) : 0;
+    const accumulatedSurplusAtAlloc = surplusEnvelope ? (step.balancesAfterAlloc.get(surplusEnvelope.id) ?? 0) : 0;
     const freshDiscretionary = freshEveryday + freshSurplus;
+    const cumulativeDiscretionary = Math.max(freshDiscretionary, accumulatedEveryday + accumulatedSurplusAtAlloc);
 
-    if (freshDiscretionary - amount >= stepCushion) {
+    if (cumulativeDiscretionary - amount >= stepCushion) {
       const rationaleSteps = [
         `Current safe-to-spend Everyday cash: $${effectiveSpendable.toFixed(2)} (shortfall: -$${shortfall.toFixed(2)}).`,
-        `By your ${paycyclesAway === 1 ? "next" : `${paycyclesAway}${ordinal}`} paycycle (${step.date}), your incoming paycheck provides enough safe discretionary cash ($${freshDiscretionary.toFixed(2)}) to cover this purchase while keeping all bills and living essentials 100% protected.`,
+        `By your ${paycyclesAway === 1 ? "next" : `${paycyclesAway}${ordinal}`} paycycle (${step.date}), your incoming paycheck provides enough safe discretionary cash ($${cumulativeDiscretionary.toFixed(2)}) to cover this purchase while keeping all bills and living essentials 100% protected.`,
       ];
 
       if (goalAlternative) {
@@ -203,7 +207,7 @@ export function simulateOneOffPurchase(
         verdict: "WAIT_FOR_PAYCYCLE",
         canAffordAt: step.date,
         paycyclesAway,
-        projectedEverydayAtThatDate: freshDiscretionary.toFixed(2),
+        projectedEverydayAtThatDate: cumulativeDiscretionary.toFixed(2),
         shortfallToday: shortfall.toFixed(2),
         goalAlternative,
         rationaleSteps,

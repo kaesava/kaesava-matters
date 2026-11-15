@@ -71,10 +71,10 @@ export function AffordCheckVerdict({ data }: AffordCheckVerdictProps) {
             {data.verdict === 'SAFE_YES' && (
               <div>
                 <p className="text-sm opacity-90 mt-0.5 font-medium">
-                  {t('canIAfford.remainingUntilPayday', { amount: data.everydayRemaining, date: fmtDate(data.nextPaydayDate) })}
+                  {t('canIAfford.remainingUntilPayday', { amount: fmt(data.everydayRemaining), date: fmtDate(data.nextPaydayDate) })}
                 </p>
                 <p className="text-xs opacity-75 mt-0.5">
-                  {t('canIAfford.safeCushionLabel', { amount: data.safeCushion })} • {t('canIAfford.billsProtectedNotice')}
+                  {t('canIAfford.safeCushionLabel', { amount: fmt(data.safeCushion) })} • {t('canIAfford.billsProtectedNotice')}
                 </p>
                 {data.startAdvice && (
                   <p className="text-xs font-medium text-emerald-800 dark:text-emerald-200 mt-2 bg-emerald-100/60 dark:bg-emerald-900/40 px-3 py-1.5 rounded-lg border border-emerald-200 dark:border-emerald-800">
@@ -130,7 +130,7 @@ export function AffordCheckVerdict({ data }: AffordCheckVerdictProps) {
             )}
             {data.verdict === 'HARD_NO' && (
               <p className="text-sm opacity-90 mt-0.5">
-                {t('canIAfford.shortfallLabel', { amount: data.shortfall })} • 12-month horizon
+                {t('canIAfford.shortfallLabel', { amount: fmt(data.shortfall) })}
               </p>
             )}
           </div>
@@ -142,7 +142,7 @@ export function AffordCheckVerdict({ data }: AffordCheckVerdictProps) {
           <span className="font-semibold block text-sm">🎯 {t('canIAfford.goalAlternativeTitle')}</span>
           <p>
             {t('canIAfford.goalAlternativeBody', {
-              shortfall: data.goalAlternative.shortfallCovered,
+              shortfall: fmt(data.goalAlternative.shortfallCovered),
               goalName: data.goalAlternative.goalName,
               delay: data.goalAlternative.delayDays,
             })}

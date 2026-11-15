@@ -122,6 +122,12 @@ export async function canAffordSimulationQuery(
           actualAmount: incomeEvents.actualAmount,
           status: incomeEvents.status,
           rrule: incomeSources.rrule,
+          incomeCreatedBy: incomeEvents.createdBy,
+          sourceCreatedBy: incomeSources.createdBy,
+          incomeContributionMode: incomeEvents.contributionMode,
+          incomeContributionValue: incomeEvents.contributionValue,
+          sourceContributionMode: incomeSources.contributionMode,
+          sourceContributionValue: incomeSources.contributionValue,
           bankAccountIsPrivate: bankAccounts.isPrivate,
           bankAccountUserId: bankAccounts.userId,
         })
@@ -173,8 +179,9 @@ export async function canAffordSimulationQuery(
   const visibleEnvelopeIds = new Set(visibleEnvelopes.map((e) => e.id));
 
   const filteredIncomes = pendingIncomesRaw.filter((inc) => {
+    if (inc.expectedDate < todayStr) return false;
     if (!inc.bankAccountIsPrivate) return true;
-    return inc.bankAccountUserId === userId;
+    return includePersonal && inc.bankAccountUserId === userId;
   });
 
   const filteredExpenses = pendingExpensesRaw.filter(

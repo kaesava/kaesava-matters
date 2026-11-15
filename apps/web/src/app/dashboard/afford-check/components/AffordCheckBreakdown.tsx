@@ -4,12 +4,14 @@ import { useState } from 'react';
 import { t } from '@money-matters/i18n';
 import { CanAffordVerdictType } from '@money-matters/types';
 import { ChevronDown, ChevronUp, FileText } from 'lucide-react';
+import { useLocale } from '../../../../providers/LocaleProvider';
 
 interface AffordCheckBreakdownProps {
   data: CanAffordVerdictType;
 }
 
 export function AffordCheckBreakdown({ data }: AffordCheckBreakdownProps) {
+  const { fmt } = useLocale();
   const [isOpen, setIsOpen] = useState(false);
 
   return (
@@ -48,7 +50,7 @@ export function AffordCheckBreakdown({ data }: AffordCheckBreakdownProps) {
                     <div className="flex items-center gap-3">
                       <span className="text-slate-500">{bill.dueDate}</span>
                       <span className="font-mono font-semibold tabular-nums text-slate-900 dark:text-slate-100">
-                        ${bill.amount}
+                        {fmt(bill.amount)}
                       </span>
                     </div>
                   </div>
