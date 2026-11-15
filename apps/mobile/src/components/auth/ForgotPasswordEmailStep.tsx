@@ -7,6 +7,7 @@ import {
   MobileButton,
   MobileInput,
   FormLabel,
+  FormErrorBanner,
 } from "@money-matters/ui/mobile";
 import { isValidEmail } from "@money-matters/types";
 
@@ -15,6 +16,7 @@ interface ForgotPasswordEmailStepProps {
   setEmail: (v: string) => void;
   onSubmit: () => void;
   loading: boolean;
+  error?: string | null;
 }
 
 export function ForgotPasswordEmailStep({
@@ -22,11 +24,13 @@ export function ForgotPasswordEmailStep({
   setEmail,
   onSubmit,
   loading,
+  error,
 }: ForgotPasswordEmailStepProps) {
   const router = useRouter();
 
   return (
     <View style={styles.form}>
+      <FormErrorBanner message={error ?? null} />
       <View style={styles.inputGroup}>
         <FormLabel required={true}>{t("auth.emailLabel")}</FormLabel>
         <MobileInput

@@ -26,7 +26,7 @@ export {
 import { Platform } from "react-native";
 
 const isDev = typeof __DEV__ !== "undefined" ? __DEV__ : process.env["NODE_ENV"] !== "production";
-const DEV_API_URL = process.env["EXPO_PUBLIC_DEV_API_URL"] || "http://localhost:3000";
+const DEV_API_URL = "http://localhost:3001";
 const PROD_API_URL = "https://api.moneymatters.kaesava.au";
 
 function resolveApiBaseUrl(): string {
@@ -34,7 +34,7 @@ function resolveApiBaseUrl(): string {
   if (Platform.OS !== "web") {
     // Physical mobile devices cannot reach localhost or 127.0.0.1 over wireless/tunnel.
     if (!envUrl || envUrl.includes("localhost") || envUrl.includes("127.0.0.1")) {
-      return isDev ? (process.env["EXPO_PUBLIC_DEV_API_URL"] || PROD_API_URL) : PROD_API_URL;
+      return PROD_API_URL;
     }
   }
   return envUrl || (isDev ? DEV_API_URL : PROD_API_URL);

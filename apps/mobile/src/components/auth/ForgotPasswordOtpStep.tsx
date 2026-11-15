@@ -23,6 +23,8 @@ interface ForgotPasswordOtpStepProps {
   setConfirmPassword: (v: string) => void;
   resendSuccess: boolean;
   isResending: boolean;
+  resendCooldown: number;
+  resendLimitReached: boolean;
   onResend: () => void;
   error: string | null;
   fieldErrors: { otp?: string; password?: string; confirmPassword?: string };
@@ -43,6 +45,8 @@ export function ForgotPasswordOtpStep({
   setConfirmPassword,
   resendSuccess,
   isResending,
+  resendCooldown,
+  resendLimitReached,
   onResend,
   error,
   fieldErrors,
@@ -85,15 +89,28 @@ export function ForgotPasswordOtpStep({
           placeholder={t("auth.otpPlaceholder")}
           error={fieldErrors.otp}
         />
-        <TouchableOpacity
-          onPress={onResend}
-          disabled={isResending}
-          style={styles.resendBtn}
-        >
-          <Text style={[styles.resendText, isResending && styles.disabledText]}>
-            {t("auth.resendCode")}
-          </Text>
-        </TouchableOpacity>
+        <View style={styles.otpFooter}>
+          <Text style={styles.expiryNotice}>{t("auth.otpExpiryNotice")}</Text>
+          <TouchableOpacity
+            onPress={onResend}
+            disabled={isResending || resendCooldown > 0 || resendLimitReached}
+            style={styles.resendBtn}
+          >
+            <Text
+              style={[
+                styles.resendText,
+                (isResending || resendCooldown > 0 || resendLimitReached) && styles.disabledText,
+              ]}
+            >
+              {resendCooldown > 0
+                ? t("auth.resendCodeIn", { seconds: resendCooldown })
+                : t("auth.resendCode")}
+            </Text>
+          </TouchableOpacity>
+        </View>
+        {resendLimitReached && (
+          <Text style={styles.limitNotice}>{t("auth.resendLimitReached")}</Text>
+        )}
       </View>
 
       <View style={styles.inputGroup}>
@@ -168,7 +185,10 @@ const styles = StyleSheet.create({
   emailCardLabel: { fontSize: 11, color: DESIGN_TOKENS.colors.textMuted, fontWeight: "500" },
   emailCardValue: { fontSize: 13, color: DESIGN_TOKENS.colors.textPrimary, fontWeight: "700", marginTop: 2 },
   changeEmailText: { fontSize: 12, color: DESIGN_TOKENS.colors.accent, fontWeight: "600" },
-  resendBtn: { alignSelf: "flex-end", marginTop: -6, marginBottom: 8, paddingVertical: 4 },
+  otpFooter: { flexDirection: "row", justifyContent: "space-between", alignItems: "center", gap: 8, marginTop: -4, marginBottom: 8 },
+  expiryNotice: { flex: 1, fontSize: 11, color: DESIGN_TOKENS.colors.textMuted, lineHeight: 15 },
+  limitNotice: { fontSize: 11, color: DESIGN_TOKENS.colors.warning, marginBottom: 8, fontWeight: "500" },
+  resendBtn: { paddingVertical: 4 },
   resendText: { fontSize: 12, color: DESIGN_TOKENS.colors.accent, fontWeight: "600" },
   disabledText: { opacity: 0.5 },
   resendSuccessBanner: {

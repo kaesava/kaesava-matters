@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import {
   View,
   Text,
@@ -12,112 +12,40 @@ import { useRouter } from "expo-router";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { t } from "@money-matters/i18n";
 import { DESIGN_TOKENS } from "@money-matters/ui/mobile";
-import { isValidEmail, ResetPasswordInputSchema } from "@money-matters/types";
-import { authClient } from "../../lib/auth";
 import { ForgotPasswordEmailStep } from "../../components/auth/ForgotPasswordEmailStep";
 import { ForgotPasswordOtpStep } from "../../components/auth/ForgotPasswordOtpStep";
 import { ForgotPasswordSuccessStep } from "../../components/auth/ForgotPasswordSuccessStep";
+import { useForgotPassword } from "../../components/auth/useForgotPassword";
 
 export default function ForgotPasswordScreen() {
   const insets = useSafeAreaInsets();
   const router = useRouter();
-
-  const [step, setStep] = useState<"email" | "reset" | "success">("email");
-  const [email, setEmail] = useState("");
-  const [otp, setOtp] = useState("");
-  const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
-
-  const [isRequestingCode, setIsRequestingCode] = useState(false);
-  const [isResetting, setIsResetting] = useState(false);
-  const [isResending, setIsResending] = useState(false);
-  const [resendSuccess, setResendSuccess] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const [fieldErrors, setFieldErrors] = useState<{
-    otp?: string;
-    password?: string;
-    confirmPassword?: string;
-  }>({});
-
-  const handleRequestCode = async () => {
-    if (!isValidEmail(email)) return;
-    setError(null);
-    setIsRequestingCode(true);
-    try {
-      await authClient.emailOtp.requestPasswordReset({
-        email: email.trim().toLowerCase(),
-      });
-      setStep("reset");
-    } catch {
-      setStep("reset");
-    } finally {
-      setIsRequestingCode(false);
-    }
-  };
-
-  const handleResendCode = async () => {
-    setIsResending(true);
-    setError(null);
-    setResendSuccess(false);
-    try {
-      await authClient.emailOtp.requestPasswordReset({
-        email: email.trim().toLowerCase(),
-      });
-      setResendSuccess(true);
-    } catch {
-      setResendSuccess(true);
-    } finally {
-      setIsResending(false);
-    }
-  };
-
-  const handleResetPassword = async () => {
-    setError(null);
-    setFieldErrors({});
-
-    const validation = ResetPasswordInputSchema.safeParse({
-      email: email.trim().toLowerCase(),
-      otp: otp.trim(),
-      password,
-      confirmPassword,
-    });
-
-    if (!validation.success) {
-      const formatted = validation.error.format();
-      setFieldErrors({
-        otp: formatted.otp?._errors[0] ? t("auth.invalidOtp") : undefined,
-        password: formatted.password?._errors[0] ? t("auth.passwordTooShort") : undefined,
-        confirmPassword: formatted.confirmPassword?._errors[0] ? t("auth.passwordsMustMatch") : undefined,
-      });
-      return;
-    }
-
-    setIsResetting(true);
-    try {
-      const result = await authClient.emailOtp.resetPassword({
-        email: email.trim().toLowerCase(),
-        otp: otp.trim(),
-        password,
-      });
-
-      if (result.error) {
-        setError(t("auth.invalidOtp"));
-        return;
-      }
-
-      setStep("success");
-    } catch (_err: unknown) {
-      setError(t("auth.invalidOtp"));
-    } finally {
-      setIsResetting(false);
-    }
-  };
-
-  const isResetValid =
-    otp.trim().length === 6 &&
-    password.length >= 8 &&
-    confirmPassword.length >= 8 &&
-    password === confirmPassword;
+  const {
+    step,
+    setStep,
+    email,
+    setEmail,
+    otp,
+    setOtp,
+    password,
+    setPassword,
+    confirmPassword,
+    setConfirmPassword,
+    isRequestingCode,
+    isResetting,
+    isResending,
+    resendSuccess,
+    resendCooldown,
+    resendLimitReached,
+    error,
+    setError,
+    fieldErrors,
+    setFieldErrors,
+    handleRequestCode,
+    handleResendCode,
+    handleResetPassword,
+    isResetValid,
+  } = useForgotPassword();
 
   return (
     <KeyboardAvoidingView
@@ -170,6 +98,7 @@ export default function ForgotPasswordScreen() {
             setEmail={setEmail}
             onSubmit={handleRequestCode}
             loading={isRequestingCode}
+            error={error}
           />
         )}
 
@@ -179,6 +108,7 @@ export default function ForgotPasswordScreen() {
             onEditEmail={() => {
               setStep("email");
               setOtp("");
+              setError(null);
             }}
             otp={otp}
             setOtp={setOtp}
@@ -188,6 +118,8 @@ export default function ForgotPasswordScreen() {
             setConfirmPassword={setConfirmPassword}
             resendSuccess={resendSuccess}
             isResending={isResending}
+            resendCooldown={resendCooldown}
+            resendLimitReached={resendLimitReached}
             onResend={handleResendCode}
             error={error}
             fieldErrors={fieldErrors}

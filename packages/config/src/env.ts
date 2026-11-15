@@ -14,7 +14,7 @@ const baseEnvSchema = z
     // Async workflows (Inngest)
     INNGEST_SIGNING_KEY: z.string().min(1).default("mock-inngest-key"),
     INNGEST_EVENT_KEY: z.string().min(1).default("mock-inngest-event-key"),
-    APP_MONEY_MATTERS_ID: z.string().uuid().default("01908bde-34bb-7b19-a178-574211bc93aa"),
+    MONEY_MATTERS_APP_ID: z.string().uuid().default("01908bde-34bb-7b19-a178-574211bc93aa"),
     // Email and Storage capabilities
     RESEND_API_KEY: z.string().min(1).optional(),
     RESEND_FROM_EMAIL: z
@@ -45,7 +45,6 @@ const baseEnvSchema = z
     STRIPE_PRICE_FOUNDING_ANNUAL: z.string().min(1).optional(),
     // PostHog product analytics
     POSTHOG_API_KEY: z.string().min(1).optional(),
-    POSTHOG_PROJECT_TOKEN: z.string().min(1).optional(),
     NEXT_PUBLIC_POSTHOG_PROJECT_TOKEN: z.string().min(1).optional(),
     POSTHOG_HOST: z.string().url().optional(),
     NEXT_PUBLIC_POSTHOG_HOST: z.string().url().optional(),

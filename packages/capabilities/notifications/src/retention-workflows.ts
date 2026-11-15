@@ -32,9 +32,24 @@ export function createRetentionWorkflows(inngest: Inngest) {
         return result;
       });
 
+      // 3. Prune expired OTP / verification tokens from neon_auth.verification
+      const prunedVerificationsCount = await step.run('prune-expired-verifications', async () => {
+        try {
+          return await db.execute(
+            sql`DELETE FROM neon_auth.verification WHERE "expiresAt" < NOW()`
+          );
+        } catch (err) {
+          logger.warn('[Retention] Skipping neon_auth.verification cleanup', {
+            error: err instanceof Error ? err.message : String(err),
+          });
+          return null;
+        }
+      });
+
       logger.info('[Retention] Pruned retention records cleanly', {
         prunedWebhooksCount,
         prunedAiUsageCount,
+        prunedVerificationsCount,
       });
 
       return { success: true };

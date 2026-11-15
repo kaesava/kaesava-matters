@@ -1,8 +1,7 @@
 "use client";
 
-import React, { useState } from "react";
+import React from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import { t } from "@money-matters/i18n";
 import {
   Button,
@@ -12,123 +11,39 @@ import {
   OtpInput,
   Spinner,
 } from "@money-matters/ui/web";
-import { isValidEmail, ResetPasswordInputSchema } from "@money-matters/types";
-import { authClient } from "../../lib/auth";
+import { isValidEmail } from "@money-matters/types";
 import { PublicHeader } from "../../components/public/PublicHeader";
 import { PublicFooter } from "../../components/public/PublicFooter";
 import { PasswordStrengthIndicator } from "../../components/auth/PasswordStrengthIndicator";
+import { useForgotPassword } from "./useForgotPassword";
 
 export default function ForgotPasswordPage() {
-  const router = useRouter();
-
-  const [step, setStep] = useState<"email" | "reset" | "success">("email");
-  const [email, setEmail] = useState("");
-  const [otp, setOtp] = useState("");
-  const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
-
-  const [isRequestingCode, setIsRequestingCode] = useState(false);
-  const [isResetting, setIsResetting] = useState(false);
-  const [isResending, setIsResending] = useState(false);
-  const [resendSuccess, setResendSuccess] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const [fieldErrors, setFieldErrors] = useState<{
-    otp?: string;
-    password?: string;
-    confirmPassword?: string;
-  }>({});
-
-  const handleRequestCode = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!isValidEmail(email)) return;
-
-    setError(null);
-    setIsRequestingCode(true);
-
-    try {
-      await authClient.emailOtp.requestPasswordReset({
-        email: email.trim().toLowerCase(),
-      });
-      setStep("reset");
-    } catch (_err) {
-      // Quiet UX to prevent user enumeration
-      setStep("reset");
-    } finally {
-      setIsRequestingCode(false);
-    }
-  };
-
-  const handleResendCode = async () => {
-    setIsResending(true);
-    setError(null);
-    setResendSuccess(false);
-
-    try {
-      await authClient.emailOtp.requestPasswordReset({
-        email: email.trim().toLowerCase(),
-      });
-      setResendSuccess(true);
-    } catch (_err) {
-      setResendSuccess(true);
-    } finally {
-      setIsResending(false);
-    }
-  };
-
-  const handleResetPassword = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setError(null);
-    setFieldErrors({});
-
-    const validation = ResetPasswordInputSchema.safeParse({
-      email: email.trim().toLowerCase(),
-      otp: otp.trim(),
-      password,
-      confirmPassword,
-    });
-
-    if (!validation.success) {
-      const formatted = validation.error.format();
-      setFieldErrors({
-        otp: formatted.otp?._errors[0] ? t("auth.invalidOtp") : undefined,
-        password: formatted.password?._errors[0] ? t("auth.passwordTooShort") : undefined,
-        confirmPassword: formatted.confirmPassword?._errors[0]
-          ? (formatted.confirmPassword._errors[0] === "passwordsMustMatch"
-              ? t("auth.passwordsMustMatch")
-              : t("auth.passwordTooShort"))
-          : undefined,
-      });
-      return;
-    }
-
-    setIsResetting(true);
-    try {
-      const res = await authClient.emailOtp.resetPassword({
-        email: email.trim().toLowerCase(),
-        otp: otp.trim(),
-        password,
-      });
-
-      if (res.error) {
-        throw new Error(t("auth.invalidOtp"));
-      }
-
-      setStep("success");
-      setTimeout(() => {
-        router.push("/sign-in");
-      }, 3000);
-    } catch (_err: unknown) {
-      setError(t("auth.invalidOtp"));
-    } finally {
-      setIsResetting(false);
-    }
-  };
-
-  const isResetValid =
-    otp.length === 6 &&
-    password.length >= 8 &&
-    confirmPassword.length >= 8 &&
-    password === confirmPassword;
+  const {
+    step,
+    setStep,
+    email,
+    setEmail,
+    otp,
+    setOtp,
+    password,
+    setPassword,
+    confirmPassword,
+    setConfirmPassword,
+    isRequestingCode,
+    isResetting,
+    isResending,
+    resendSuccess,
+    resendCooldown,
+    resendLimitReached,
+    error,
+    setError,
+    fieldErrors,
+    setFieldErrors,
+    handleRequestCode,
+    handleResendCode,
+    handleResetPassword,
+    isResetValid,
+  } = useForgotPassword();
 
   return (
     <div className="min-h-screen bg-[#F7F8FA] flex flex-col font-sans justify-between">
@@ -222,6 +137,7 @@ export default function ForgotPasswordPage() {
                   onClick={() => {
                     setStep("email");
                     setOtp("");
+                    setError(null);
                   }}
                   className="text-xs text-[#2563eb] hover:underline font-semibold shrink-0 cursor-pointer"
                 >
@@ -249,17 +165,29 @@ export default function ForgotPasswordPage() {
                   placeholder={t("auth.otpPlaceholder")}
                   error={fieldErrors.otp}
                 />
-                <div className="flex justify-end mt-1">
+                <div className="flex items-center justify-between gap-2 mt-1.5">
+                  <p className="text-[11px] text-slate-500">
+                    {t("auth.otpExpiryNotice")}
+                  </p>
                   <button
                     type="button"
                     onClick={handleResendCode}
-                    disabled={isResending}
-                    className="text-xs text-[#2563eb] hover:underline font-semibold cursor-pointer disabled:opacity-50 inline-flex items-center gap-1"
+                    disabled={isResending || resendCooldown > 0 || resendLimitReached}
+                    className="text-xs text-[#2563eb] hover:underline font-semibold cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed inline-flex items-center gap-1 shrink-0"
                   >
                     {isResending && <Spinner size="sm" />}
-                    <span>{t("auth.resendCode")}</span>
+                    <span>
+                      {resendCooldown > 0
+                        ? t("auth.resendCodeIn", { seconds: resendCooldown })
+                        : t("auth.resendCode")}
+                    </span>
                   </button>
                 </div>
+                {resendLimitReached && (
+                  <p className="text-[11px] text-amber-600 mt-1 font-medium">
+                    {t("auth.resendLimitReached")}
+                  </p>
+                )}
               </div>
 
               <div>

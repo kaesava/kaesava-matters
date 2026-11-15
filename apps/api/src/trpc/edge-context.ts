@@ -7,7 +7,6 @@ export const MONEY_MATTERS_APP_ID = '01908bde-34bb-7b19-a178-574211bc93aa';
 
 export interface EdgeContextEnv {
   DATABASE_URL?: string;
-  NEXT_PUBLIC_NEON_AUTH_URL?: string;
   NEON_AUTH_BASE_URL?: string;
 }
 
@@ -168,9 +167,7 @@ export async function resolveClaimsFromNeonAuth(
   correlationId: string
 ): Promise<ResolvedClaims | null> {
   const authBase =
-    env?.NEXT_PUBLIC_NEON_AUTH_URL ||
     env?.NEON_AUTH_BASE_URL ||
-    process.env.NEXT_PUBLIC_NEON_AUTH_URL ||
     process.env.NEON_AUTH_BASE_URL;
 
   if (!authBase) {

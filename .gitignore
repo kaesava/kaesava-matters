@@ -16,6 +16,7 @@ test-results/
 !.env.example
 .dev.vars*
 !.dev.vars.example
+IGNORE_ME/
 .aider*
 test_credentials.txt
 seed_credentials.local.md

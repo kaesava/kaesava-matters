@@ -33,6 +33,7 @@ export async function seedDatabase(connectionString: string, envLabel: string) {
   const appId = "01908bde-34bb-7b19-a178-574211bc93aa";
 
   const authUrl =
+    process.env.NEON_AUTH_BASE_URL ||
     process.env.NEXT_PUBLIC_NEON_AUTH_URL ||
     (isProd
       ? "https://ep-spring-snow-a70f61xz.neonauth.ap-southeast-2.aws.neon.tech/neondb/auth"

@@ -33,7 +33,7 @@ async function resolveApiBase(): Promise<string> {
     return cachedActiveBase;
   }
 
-  const customUrl = process.env.API_URL || process.env.NEXT_PUBLIC_API_URL;
+  const customUrl = process.env.NEXT_PUBLIC_API_URL;
   if (customUrl && !customUrl.includes("moneymatters.kaesava.au")) {
     const cleanUrl = customUrl.trim().replace(/\/+$/, "").replace(/\/trpc$/, "");
     try {

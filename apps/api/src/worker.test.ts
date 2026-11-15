@@ -34,7 +34,6 @@ describe('API Worker - Correlation ID and Endpoints', () => {
     STORAGE_ENDPOINT: 'http://localhost',
     STORAGE_REGION: 'auto',
     GLOBAL_MAX_FILE_SIZE_MB: '10',
-    NEXT_PUBLIC_NEON_AUTH_URL: 'http://localhost/auth',
     NEON_AUTH_BASE_URL: 'http://localhost/auth',
     NEON_AUTH_JWKS_URL: 'http://localhost/auth/jwks',
   };

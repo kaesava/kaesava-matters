@@ -21,7 +21,6 @@ export interface WorkerEnv {
   STORAGE_ENDPOINT: string;
   STORAGE_REGION: string;
   GLOBAL_MAX_FILE_SIZE_MB: string;
-  NEXT_PUBLIC_NEON_AUTH_URL: string;
   NEON_AUTH_BASE_URL: string;
   NEON_AUTH_JWKS_URL: string;
   DATABASE_URL?: string;
