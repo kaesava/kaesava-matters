@@ -1,7 +1,7 @@
 import { privateTenantProcedure, requiresWriteAccess } from '../../trpc/trpc.js';
 import { incomeEvents, incomeSources, bankAccounts, apps } from "@money-matters/db";
 import { and, eq, sql } from "drizzle-orm";
-import { posthog } from '../../lib/posthog.js';
+import { captureIfConsented } from '../../lib/posthog.js';
 import {
   runAllocationCommand,
   previewPaydayQuery,
@@ -61,14 +61,10 @@ export const paydayExecutionProcedures = {
         input.runwayDays
       );
 
-      if (posthog && ctx.userId) {
-        posthog.capture({
-          distinctId: ctx.userId,
-          event: 'payday_confirmed',
-          properties: { tenant_id: ctx.tenantId, actual_amount: parseFloat(input.actualAmount), line_count: customLines?.length ?? 0 },
-        });
-        await posthog.flush();
-      }
+      await captureIfConsented(ctx.db, ctx.userId, 'payday_confirmed', {
+        tenant_id: ctx.tenantId,
+        line_count: customLines?.length ?? 0,
+      });
       return result;
     }),
 

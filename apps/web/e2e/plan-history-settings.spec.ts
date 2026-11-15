@@ -206,4 +206,36 @@ test.describe('10. Settings 4-Tab Layout, Governance & Subpages (`/dashboard/set
       page.locator('input[type="checkbox"]').first().click(),
     ]);
   });
+
+  test('10.6 Anonymous Product Telemetry Consent & Persistence (`/dashboard/settings?tab=account-data`)', async ({
+    page,
+  }) => {
+    await page.goto('/dashboard/settings?tab=account-data');
+    await expect(page.getByText('Anonymous Product Telemetry').first()).toBeVisible();
+
+    const toggle = page.getByRole('checkbox', { name: /Anonymous Product Telemetry/i });
+    const initialChecked = await toggle.isChecked();
+
+    await Promise.all([
+      page.waitForResponse(
+        (res) => res.url().includes('/api/trpc/updateUserPreferences') && res.ok(),
+        { timeout: 15_000 }
+      ),
+      toggle.click({ force: true }),
+    ]);
+
+    await page.reload({ waitUntil: 'domcontentloaded' });
+    await expect(page.getByRole('checkbox', { name: /Anonymous Product Telemetry/i })).toBeChecked({
+      checked: !initialChecked,
+    });
+
+    // Restore initial state
+    await Promise.all([
+      page.waitForResponse(
+        (res) => res.url().includes('/api/trpc/updateUserPreferences') && res.ok(),
+        { timeout: 15_000 }
+      ),
+      page.getByRole('checkbox', { name: /Anonymous Product Telemetry/i }).click({ force: true }),
+    ]);
+  });
 });

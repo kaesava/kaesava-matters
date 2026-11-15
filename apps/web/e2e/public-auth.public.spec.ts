@@ -78,7 +78,7 @@ test.describe('1. Public Marketing, SEO, Blog & Legal Pages', () => {
   test('1.6 Blog Index, Article Reader & Missing Slug 404 (`/blog`, `/blog/[slug]`)', async ({ page }) => {
     await page.goto('/blog');
     await expect(page.getByRole('heading', { level: 1 }).first()).toContainText(
-      /Practical Systems for Household Cashflow/i
+      /Why We Built Money Matters/i
     );
 
     const firstArticleCard = page.getByRole('article').first();

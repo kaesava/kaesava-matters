@@ -4,7 +4,7 @@ import {
   updateIncomeSourceCommand,
   listIncomeSourcesQuery,
 } from "@money-matters/capability-budgeting";
-import { posthog } from '../../lib/posthog.js';
+import { captureIfConsented } from '../../lib/posthog.js';
 import { z } from 'zod';
 
 const IncomeInputSchema = z.object({
@@ -26,17 +26,12 @@ export const incomeSourcesProcedures = {
     .mutation(async ({ input, ctx }) => {
       requiresWriteAccess(ctx);
       const result = await createIncomeSourceCommand(input, ctx.tenantId!, ctx.appId!, ctx.userId!, ctx.db);
-      if (input.isRecurring && posthog && ctx.userId) {
-        posthog.capture({
-          distinctId: ctx.userId,
-          event: 'income_source_created',
-          properties: {
-            tenant_id: ctx.tenantId,
-            is_recurring: input.isRecurring,
-            frequency: input.frequency ?? 'MONTHLY',
-          },
+      if (input.isRecurring) {
+        await captureIfConsented(ctx.db, ctx.userId, 'income_source_created', {
+          tenant_id: ctx.tenantId,
+          is_recurring: input.isRecurring,
+          frequency: input.frequency ?? 'MONTHLY',
         });
-        await posthog.flush();
       }
       return result;
     }),

@@ -13,7 +13,7 @@ import {
   UpdateBankAccountCommand,
 } from "@money-matters/types";
 import { z } from 'zod';
-import { posthog } from '../../lib/posthog.js';
+import { captureIfConsented } from '../../lib/posthog.js';
 
 export const bankAccountsProcedures = {
   createBankAccount: privateTenantProcedure
@@ -22,17 +22,10 @@ export const bankAccountsProcedures = {
       requiresWriteAccess(ctx);
       const handler = createBankAccountHandler(ctx.db);
       const result = await handler(input, ctx.tenantId!, ctx.appId!, ctx.userId!);
-      if (posthog && ctx.userId) {
-        posthog.capture({
-          distinctId: ctx.userId,
-          event: 'bank_account_created',
-          properties: {
-            tenant_id: ctx.tenantId,
-            account_name: input.name,
-          },
-        });
-        await posthog.flush();
-      }
+      await captureIfConsented(ctx.db, ctx.userId, 'bank_account_created', {
+        tenant_id: ctx.tenantId,
+        account_type: input.accountType,
+      });
       return result;
     }),
 

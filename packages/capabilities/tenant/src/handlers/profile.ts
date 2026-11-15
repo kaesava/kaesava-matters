@@ -32,6 +32,7 @@ export async function getUserPreferencesHandler(userId: string, tenantId: string
     language: (globalPref?.language as "en") || "en",
     locale: currentTenant?.country ? (countryDefaults?.locale || `en-${currentTenant.country}`) : DEFAULT_LOCALE,
     showIcons: globalPref?.showIcons ?? true,
+    telemetryConsent: (globalPref?.telemetryConsent as "granted" | "denied" | null) ?? null,
     notificationEmail: globalPref?.notificationEmail ?? null,
     phoneCountryCode:
       globalPref?.phoneCountryCode && globalPref.phoneCountryCode !== "+61"
@@ -45,11 +46,21 @@ export async function getUserPreferencesHandler(userId: string, tenantId: string
   };
 }
 
+export async function isUserTelemetryGranted(db: DbOrTx, userId: string): Promise<boolean> {
+  const [pref] = await db
+    .select({ telemetryConsent: userPreferences.telemetryConsent })
+    .from(userPreferences)
+    .where(eq(userPreferences.userId, userId))
+    .limit(1);
+  return pref?.telemetryConsent === "granted";
+}
+
 export async function updateUserPreferencesHandler(
   input: {
     timezone?: string;
     language?: "en";
     showIcons?: boolean;
+    telemetryConsent?: "granted" | "denied";
     setupCompleted?: boolean;
     appPreferences?: Record<string, Record<string, unknown>>;
   },
@@ -64,6 +75,7 @@ export async function updateUserPreferencesHandler(
       .update(userPreferences)
       .set({
         showIcons: input.showIcons ?? existingGlobal.showIcons,
+        telemetryConsent: input.telemetryConsent !== undefined ? input.telemetryConsent : existingGlobal.telemetryConsent,
         language: input.language ?? existingGlobal.language,
         timezone: input.timezone !== undefined ? input.timezone : existingGlobal.timezone,
         updatedAt: new Date(),
@@ -73,6 +85,7 @@ export async function updateUserPreferencesHandler(
     await db.insert(userPreferences).values({
       userId,
       showIcons: input.showIcons ?? true,
+      telemetryConsent: input.telemetryConsent ?? null,
       language: input.language ?? "en",
       timezone: input.timezone || null,
     });

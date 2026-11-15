@@ -20,6 +20,7 @@ export const profileProcedures = {
         timezone: z.string().optional(),
         language: z.enum(["en"]).optional(),
         showIcons: z.boolean().optional(),
+        telemetryConsent: z.enum(["granted", "denied"]).optional(),
         setupCompleted: z.boolean().optional(),
         appPreferences: z.record(z.string(), z.record(z.string(), z.unknown())).optional(),
       }).strict()

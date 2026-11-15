@@ -3,7 +3,7 @@ import { BLOG_POSTS } from "../lib/blog-data";
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const baseUrl = "https://moneymatters.kaesava.au";
-  const releaseDate = "2026-08-23T00:00:00.000Z";
+  const releaseDate = "2026-11-15T00:00:00.000Z";
 
   // Static public routes
   const staticRoutes: MetadataRoute.Sitemap = [

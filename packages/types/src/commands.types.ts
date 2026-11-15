@@ -22,6 +22,7 @@ export const UpdateUserPreferencesCommand = z.object({
   language: z.enum(["en"]).optional(),
   locale: z.string().optional(),
   showIcons: z.boolean().optional(),
+  telemetryConsent: z.enum(["granted", "denied"]).optional(),
   setupCompleted: z.boolean().optional(),
   appPreferences: z.record(z.string(), z.record(z.string(), z.unknown())).optional(),
 }).strict();

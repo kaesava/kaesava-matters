@@ -1,37 +1,53 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import JSZip from "jszip";
 import { t } from "@money-matters/i18n";
 import { trpc } from "../../../../lib/trpc";
 import { useToast, InfoTooltip, Button, fmtDateIso } from "@money-matters/ui/web";
 import { useLocale } from "../../../../providers/LocaleProvider";
 import { buildExportFileName } from "@money-matters/types";
-import posthog from "posthog-js";
+import posthog from "../../../../lib/posthog-client";
 import { ANALYTICS_CONSENT_KEY } from "../../../../components/web/AnalyticsConsentBanner";
 
 export function PrivacySection() {
   const toast = useToast();
   const { userTimezone } = useLocale();
   const [exporting, setExporting] = useState(false);
+  const userPrefQuery = trpc.getUserPreferences.useQuery(undefined, { staleTime: 60_000 });
+  const updatePrefs = trpc.updateUserPreferences.useMutation();
   const [telemetryEnabled, setTelemetryEnabled] = useState(() => {
     try {
-      return localStorage.getItem(ANALYTICS_CONSENT_KEY) !== "denied";
+      return localStorage.getItem(ANALYTICS_CONSENT_KEY) === "granted";
     } catch {
-      return true;
+      return false;
     }
   });
   const exportQuery = trpc.exportMyData.useQuery(undefined, { enabled: false });
 
+  useEffect(() => {
+    const dbConsent = userPrefQuery.data?.telemetryConsent;
+    if (dbConsent === "granted" || dbConsent === "denied") {
+      setTelemetryEnabled(dbConsent === "granted");
+      try {
+        localStorage.setItem(ANALYTICS_CONSENT_KEY, dbConsent);
+      } catch {
+        // Ignore
+      }
+    }
+  }, [userPrefQuery.data?.telemetryConsent]);
+
   const handleToggleTelemetry = (enabled: boolean) => {
+    const value = enabled ? "granted" : "denied";
     setTelemetryEnabled(enabled);
     try {
-      localStorage.setItem(ANALYTICS_CONSENT_KEY, enabled ? "granted" : "denied");
+      localStorage.setItem(ANALYTICS_CONSENT_KEY, value);
       if (enabled) {
         posthog.opt_in_capturing();
       } else {
         posthog.opt_out_capturing();
       }
+      updatePrefs.mutate({ telemetryConsent: value });
     } catch {
       // Ignore
     }
@@ -120,6 +136,7 @@ export function PrivacySection() {
           <label className="relative inline-flex items-center cursor-pointer shrink-0">
             <input
               type="checkbox"
+              aria-label={t("privacy.analyticsConsentToggle")}
               checked={telemetryEnabled}
               onChange={(e) => handleToggleTelemetry(e.target.checked)}
               className="sr-only peer"

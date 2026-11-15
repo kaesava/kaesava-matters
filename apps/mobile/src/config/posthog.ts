@@ -36,6 +36,12 @@ export const posthog = new PostHog(projectToken || 'placeholder_disabled', {
   // We never want dev traffic polluting production analytics.
   disabled: !isPostHogConfigured || __DEV__,
 
+  // Strict opt-in: remain opted out on cold launch until consent is verified as 'granted'.
+  defaultOptIn: false,
+
+  // Never record screen replays in a financial app.
+  enableSessionReplay: false,
+
   // Capture app lifecycle events (install, update, open, background)
   captureAppLifecycleEvents: true,
 

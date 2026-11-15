@@ -17,29 +17,36 @@ export function PrivacyGovernanceSection() {
   const toast = useMobileToast();
   const posthog = usePostHog();
   const [isExporting, setIsExporting] = useState(false);
-  const [telemetryEnabled, setTelemetryEnabled] = useState(true);
+  const [telemetryEnabled, setTelemetryEnabled] = useState(false);
+  const userPrefQuery = trpc.getUserPreferences.useQuery(undefined, { staleTime: 60_000 });
+  const updatePrefs = trpc.updateUserPreferences.useMutation();
 
   React.useEffect(() => {
+    const dbConsent = userPrefQuery.data?.telemetryConsent;
+    if (dbConsent === 'granted' || dbConsent === 'denied') {
+      setTelemetryEnabled(dbConsent === 'granted');
+      SecureStore.setItemAsync(ANALYTICS_CONSENT_KEY, dbConsent).catch(() => {});
+      return;
+    }
+
     SecureStore.getItemAsync(ANALYTICS_CONSENT_KEY)
       .then((val) => {
-        if (val === 'denied') {
-          setTelemetryEnabled(false);
-        } else {
-          setTelemetryEnabled(true);
-        }
+        setTelemetryEnabled(val === 'granted');
       })
       .catch(() => {});
-  }, []);
+  }, [userPrefQuery.data?.telemetryConsent]);
 
   const handleToggleTelemetry = async (val: boolean) => {
+    const consentValue = val ? 'granted' : 'denied';
     setTelemetryEnabled(val);
     try {
-      await SecureStore.setItemAsync(ANALYTICS_CONSENT_KEY, val ? 'granted' : 'denied');
+      await SecureStore.setItemAsync(ANALYTICS_CONSENT_KEY, consentValue);
       if (val) {
         posthog?.optIn();
       } else {
         posthog?.optOut();
       }
+      updatePrefs.mutate({ telemetryConsent: consentValue });
     } catch {
       // Ignore
     }

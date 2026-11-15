@@ -137,7 +137,7 @@ test.describe('5. Main Dashboard Controls, Navigation, Sync Balance & Shortcuts 
     await expect(drawer.getByRole('button', { name: 'Income', exact: true }).first()).toBeVisible();
     await expect(drawer.getByRole('button', { name: 'Transfer', exact: true }).first()).toBeVisible();
 
-    await page.keyboard.press('Escape');
+    await drawer.getByRole('button', { name: /Cancel/i }).first().click();
     await expect(drawer).not.toBeVisible();
   });
 

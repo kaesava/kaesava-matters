@@ -43,11 +43,12 @@ const baseEnvSchema = z
     STRIPE_PRICE_MONTHLY: z.string().min(1).optional(),
     STRIPE_PRICE_ANNUAL: z.string().min(1).optional(),
     STRIPE_PRICE_FOUNDING_ANNUAL: z.string().min(1).optional(),
-    // PostHog product analytics
+    // PostHog product analytics & Google Analytics
     POSTHOG_API_KEY: z.string().min(1).optional(),
     NEXT_PUBLIC_POSTHOG_PROJECT_TOKEN: z.string().min(1).optional(),
     POSTHOG_HOST: z.string().url().optional(),
     NEXT_PUBLIC_POSTHOG_HOST: z.string().url().optional(),
+    NEXT_PUBLIC_GA_MEASUREMENT_ID: z.string().min(1).optional(),
     // Cloudflare Workers AI & Gateway
     CF_ACCOUNT_ID: z.string().min(1).optional(),
     CF_AI_GATEWAY_ID: z.string().min(1).optional(),

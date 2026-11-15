@@ -21,6 +21,14 @@ import * as Sentry from "@sentry/react-native";
 Sentry.init({
   dsn: process.env.EXPO_PUBLIC_SENTRY_DSN,
   enabled: !__DEV__, // Enables error logging in production/standalone builds
+  sendDefaultPii: false,
+  beforeSend(event) {
+    if (event.request?.headers) {
+      delete event.request.headers.authorization;
+      delete event.request.headers.cookie;
+    }
+    return event;
+  },
 });
 export default Sentry.wrap(RootLayout);
 

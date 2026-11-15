@@ -1,6 +1,7 @@
 #### E2E Test
-pnpm --filter @money-matters/web test:e2e
-E2E_AUTHENTICATED=1 E2E_EMAIL="kaesava@example.com" E2E_PASSWORD="Password1!" pnpm --filter @money-matters/web test:e2e
+E2E_AUTHENTICATED=1 E2E_EMAIL="kaesava@gmail.com" E2E_PASSWORD="Password123!" pnpm --filter @money-matters/web exec playwright test --project=auth-setup
+E2E_AUTHENTICATED=1 E2E_EMAIL="kaesava@gmail.com" E2E_PASSWORD='asdASD123!@#' pnpm --filter @money-matters/web exec playwright test --last-failed --reporter=list
+
 
 #### FLAGS
 pnpm app:set-flag --flag=aiAssistant --value=true --env=dev
@@ -27,7 +28,22 @@ pnpm app:set-flag --flag=customAllocationRules --value=true --env=prod
 * As you build code, you decide whether you want to run pnpm typecheck/lint/test/test coverage/i8ln-check/install/ and any other scripts/checks as you complete changes. However, at the end, ensure pnpm validate:prod runs successfully. Once successful, commit code, but ask me before pushing the code.
 
 
+# Web
 
+# Forgot Password
+- Prod - Says it sent a code, but I didn't receive it (I've checked my email incl Spam folders). Resend code also didn't work. Also, should we put some security around the use of "Resend code" - like waiting time, or number of attempts, etc? Interestingly, it worked in dev (I received email). Also, check that the timeout of the code (for example, if a new code was requested, or code timed out) is correctly implemented, including clean-up of expired codes in the system. Applies to web and mobile.
+
+
+/plan-feature
+
+# Signin with GOogle
+- Dev - web - Sign-in with Google - "This site can’t be reached" - "https://kesh-imac.tail09ef18.ts.net/dev-callback/http/localhost:3000?neon_auth_session_verifier=S_AzgXtFV5TxRuDx
+- Prod - web - Sign-in with Google - "An unexpected error occurred. Please try again."
+- Fix and also do a deep audit of the codebase to ensure that all combinations of the user attempting to sign-up/sign-in with Google followed by email (and vice-versa) work as expected, including the correct and full setup fo the tenant and all related information like country? (consistent between sign-in methods). Be thorough. Be critical. Ensure all combinations of sign-up and sign-in across Google and email/password work as expected for a modern SaaS product. This should be across web and mobile.
+
+
+
+# Telemetry testing - does this work - privacy warning
 
 
 Manual Verification

@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { Inter, JetBrains_Mono } from "next/font/google";
 import { DESIGN_TOKENS } from "@money-matters/ui/tokens";
 import { AppProviders } from "../providers/AppProviders";
+import { GoogleAnalytics } from "../components/web/GoogleAnalytics";
 import "./globals.css";
 
 const inter = Inter({
@@ -61,7 +62,6 @@ export const metadata: Metadata = {
     canonical: baseUrl,
     languages: {
       "en-AU": baseUrl,
-      "ja-JP": `${baseUrl}?lang=ja`,
     },
   },
   icons: {
@@ -162,6 +162,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         />
       </head>
       <body className="min-h-full flex flex-col">
+        <GoogleAnalytics />
         <AppProviders>{children}</AppProviders>
       </body>
     </html>

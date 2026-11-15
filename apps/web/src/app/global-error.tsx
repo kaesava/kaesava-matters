@@ -2,7 +2,7 @@
 
 import { useEffect } from 'react';
 import Link from 'next/link';
-import posthog from '../lib/posthog-client';
+import * as Sentry from '@sentry/nextjs';
 import { t } from '@money-matters/i18n';
 import { DESIGN_TOKENS } from '@money-matters/ui';
 
@@ -14,7 +14,7 @@ export default function GlobalError({
   reset: () => void;
 }) {
   useEffect(() => {
-    posthog.captureException(error);
+    Sentry.captureException(error);
   }, [error]);
 
   return (

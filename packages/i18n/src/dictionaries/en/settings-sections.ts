@@ -25,7 +25,6 @@ export const settingsSections = {
     "alreadySubscribedTitle": "Active Household Subscription",
     "alreadySubscribedSubtitle": "Your household currently has full access to all features. You can manage payment methods, download invoices, or cancel anytime.",
     "backToDashboard": "Return to Dashboard",
-    "startTrial": "Start 60-day free trial",
     "upgradePageTitle": "Household Tier Subscription",
     "upgradePageSubtitle": "Full access during your 60-day trial. Subscribe anytime to keep your household budget running smoothly.",
     "householdTierName": "Household Tier",

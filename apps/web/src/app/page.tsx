@@ -5,12 +5,14 @@ import { useSearchParams } from "next/navigation";
 import { trpc } from "../lib/trpc";
 import { useToast } from "@money-matters/ui/web";
 import { t } from "@money-matters/i18n";
+import { trackAnalyticsEvent } from "../lib/analytics";
 import { AuthModal } from "../components/landing/AuthModal";
 import { EarlyAccessModal } from "../components/landing/EarlyAccessModal";
 import { LandingHeader } from "../components/landing/LandingHeader";
 import { LandingHero } from "../components/landing/LandingHero";
 import { ProductFeaturesGrid } from "../components/landing/ProductFeaturesGrid";
 import { InteractivePaydayEngine } from "../components/landing/InteractivePaydayEngine";
+import { FeaturedBlogsSection } from "../components/landing/FeaturedBlogsSection";
 import { PricingSection } from "../components/landing/PricingSection";
 import { TrustSection } from "../components/landing/TrustSection";
 import { FaqSection } from "../components/landing/FaqSection";
@@ -34,7 +36,6 @@ function EarlyAccessQueryWatcher({ onTrigger }: { onTrigger: () => void }) {
 
 export default function Home() {
   const toast = useToast();
-  const [isClient, setIsClient] = useState(false);
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
   const [authModalTab, setAuthModalTab] = useState<"signIn" | "signUp">("signIn");
   const [isEarlyAccessOpen, setIsEarlyAccessOpen] = useState(false);
@@ -60,6 +61,7 @@ export default function Home() {
   });
 
   const handleOpenAuth = (tab: "signIn" | "signUp") => {
+    trackAnalyticsEvent("auth_modal_opened", { tab });
     if (!isAuthEnabled) {
       setIsEarlyAccessOpen(true);
       return;
@@ -67,12 +69,6 @@ export default function Home() {
     setAuthModalTab(tab);
     setIsAuthModalOpen(true);
   };
-
-  useEffect(() => {
-    setIsClient(true);
-  }, []);
-
-  if (!isClient) return null;
 
   return (
     <div className="min-h-screen flex flex-col bg-[#F7F8FA] text-[#1B2B4B] font-sans selection:bg-[#2563eb] selection:text-white relative">
@@ -99,6 +95,7 @@ export default function Home() {
       <LandingHero onAuthClick={handleOpenAuth} />
       <ProductFeaturesGrid />
       <InteractivePaydayEngine onAuthClick={handleOpenAuth} />
+      <FeaturedBlogsSection />
       <PricingSection onAuthClick={handleOpenAuth} />
       <TrustSection />
       <FaqSection />

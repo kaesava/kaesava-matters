@@ -24,7 +24,7 @@ import { hashPassword } from "better-auth/crypto";
 import { checkRateLimit } from "@money-matters/core";
 import { TRPCError } from '@trpc/server';
 import { z } from 'zod';
-import { posthog } from '../../lib/posthog.js';
+import { captureIfConsented, identifyIfConsented } from '../../lib/posthog.js';
 
 export const tenantCoreProcedures = {
   createTenant: authenticatedProcedure
@@ -48,24 +48,14 @@ export const tenantCoreProcedures = {
         }).catch(() => {});
       }
 
-      if (posthog && ctx.userId) {
-        posthog.identify({
-          distinctId: ctx.userId,
-          properties: {
-            app_id: appId,
-            has_tenant: true,
-          },
-        });
-        posthog.capture({
-          distinctId: ctx.userId,
-          event: 'tenant_created',
-          properties: {
-            app_id: appId,
-            has_tenant: true,
-          },
-        });
-        await posthog.flush();
-      }
+      await identifyIfConsented(ctx.db, ctx.userId, {
+        app_id: appId,
+        has_tenant: true,
+      });
+      await captureIfConsented(ctx.db, ctx.userId, 'tenant_created', {
+        app_id: appId,
+        has_tenant: true,
+      });
       return result;
     }),
 

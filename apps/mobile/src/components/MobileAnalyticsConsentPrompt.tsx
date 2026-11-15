@@ -4,24 +4,62 @@ import * as SecureStore from 'expo-secure-store';
 import { usePostHog } from 'posthog-react-native';
 import { MobileModalDialog, MobileButton, DESIGN_TOKENS } from '@money-matters/ui/mobile';
 import { t } from '@money-matters/i18n';
+import { authClient } from '../lib/auth';
+import { trpc } from '../lib/trpc';
 
 export const ANALYTICS_CONSENT_KEY = 'mm_analytics_consent';
 
 export function MobileAnalyticsConsentPrompt() {
   const posthog = usePostHog();
   const [visible, setVisible] = useState(false);
+  const { data: session } = authClient.useSession();
+  const isAuthenticated = Boolean((session?.user as { id?: unknown } | undefined)?.id);
+  const tenantStatusQuery = trpc.getTenantStatus.useQuery(undefined, {
+    enabled: isAuthenticated,
+    retry: false,
+    staleTime: 60_000,
+  });
+  const hasTenant = tenantStatusQuery.data?.hasTenant ?? false;
+  const userPrefQuery = trpc.getUserPreferences.useQuery(undefined, {
+    enabled: isAuthenticated && hasTenant,
+    retry: false,
+    staleTime: 60_000,
+  });
+  const updatePrefs = trpc.updateUserPreferences.useMutation();
 
   useEffect(() => {
     let isMounted = true;
     SecureStore.getItemAsync(ANALYTICS_CONSENT_KEY)
-      .then((val) => {
+      .then((localConsent) => {
         if (!isMounted) return;
-        if (val === null) {
-          setVisible(true);
-        } else if (val === 'denied') {
-          posthog?.optOut();
-        } else if (val === 'granted') {
+        const dbConsent = userPrefQuery.data?.telemetryConsent ?? null;
+        const effectiveConsent =
+          dbConsent ?? (localConsent === 'granted' || localConsent === 'denied' ? localConsent : null);
+
+        if (effectiveConsent === 'granted') {
+          SecureStore.setItemAsync(ANALYTICS_CONSENT_KEY, 'granted').catch(() => {});
           posthog?.optIn();
+          setVisible(false);
+        } else if (effectiveConsent === 'denied') {
+          SecureStore.setItemAsync(ANALYTICS_CONSENT_KEY, 'denied').catch(() => {});
+          posthog?.optOut();
+          setVisible(false);
+        } else {
+          posthog?.optOut();
+          if (!isAuthenticated || !hasTenant || userPrefQuery.isFetched) {
+            setVisible(true);
+          }
+        }
+
+        if (
+          dbConsent === null &&
+          (localConsent === 'granted' || localConsent === 'denied') &&
+          isAuthenticated &&
+          hasTenant &&
+          userPrefQuery.isFetched &&
+          !updatePrefs.isPending
+        ) {
+          updatePrefs.mutate({ telemetryConsent: localConsent });
         }
       })
       .catch(() => {});
@@ -29,15 +67,19 @@ export function MobileAnalyticsConsentPrompt() {
     return () => {
       isMounted = false;
     };
-  }, [posthog]);
+  }, [posthog, isAuthenticated, hasTenant, userPrefQuery.data?.telemetryConsent, userPrefQuery.isFetched]);
 
   const handleConsent = async (granted: boolean) => {
+    const value = granted ? 'granted' : 'denied';
     try {
-      await SecureStore.setItemAsync(ANALYTICS_CONSENT_KEY, granted ? 'granted' : 'denied');
+      await SecureStore.setItemAsync(ANALYTICS_CONSENT_KEY, value);
       if (granted) {
         posthog?.optIn();
       } else {
         posthog?.optOut();
+      }
+      if (isAuthenticated && hasTenant) {
+        updatePrefs.mutate({ telemetryConsent: value });
       }
     } catch {
       // Ignore storage errors

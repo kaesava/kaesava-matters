@@ -69,6 +69,14 @@ function SessionSyncTracker({ children }: { children: React.ReactNode }) {
 
     if (identifiedDistinctId.current === distinctId) return;
 
+    let isConsented = false;
+    try {
+      isConsented = window.localStorage?.getItem("mm_analytics_consent") === "granted";
+    } catch {
+      isConsented = false;
+    }
+    if (!isConsented) return;
+
     const identifiedUserId = posthog.get_property("$user_id");
     if (typeof identifiedUserId === "string" && identifiedUserId !== distinctId) {
       posthog.reset();

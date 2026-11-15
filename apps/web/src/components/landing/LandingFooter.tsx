@@ -86,13 +86,18 @@ export function LandingFooter({ onAuthClick }: LandingFooterProps) {
       {/* Footer */}
       <footer className="border-t border-slate-200 bg-[#F7F8FA] py-8 text-center text-xs text-slate-500 font-sans">
         <div className="max-w-6xl mx-auto px-6 flex flex-col sm:flex-row justify-between items-center gap-4">
-          <div className="flex flex-col sm:flex-row items-center gap-2 text-center sm:text-left">
-            <span className="font-semibold text-slate-700">
-              © {currentYear} {t("app.title")}
-            </span>
-            <span className="hidden sm:inline text-slate-300">•</span>
-            <span className="text-slate-500">
-              {t("app.tagline")}
+          <div className="flex flex-col items-center sm:items-start gap-1 text-center sm:text-left">
+            <div className="flex flex-col sm:flex-row items-center gap-2">
+              <span className="font-semibold text-slate-700">
+                © {currentYear} {t("app.title")}
+              </span>
+              <span className="hidden sm:inline text-slate-300">•</span>
+              <span className="text-slate-500">
+                {t("landing.footerLegalEntity")}
+              </span>
+            </div>
+            <span className="text-[11px] text-slate-400">
+              {t("landing.footerFinancialDisclaimer")}
             </span>
           </div>
 

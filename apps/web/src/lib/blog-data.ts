@@ -14,141 +14,95 @@ export interface BlogPost {
 
 export const BLOG_POSTS: BlogPost[] = [
   {
-    slug: "why-we-built-money-matters",
-    title: "Moving Beyond Spreadsheets: Why We Built Money Matters",
-    subtitle: "How a personal 2-tab cashflow spreadsheet evolved into an automated 5-step payday plan for Aussie households.",
-    category: "FOUNDER STORY",
+    slug: "why-i-stopped-micromanaging-every-dollar",
+    title: "Why I Stopped Micro-Managing Every Dollar (And Built Something Calmer)",
+    subtitle: "Traditional budgeting apps worked for me for about three weeks—until the daily receipt tracking made me dread opening them.",
+    category: "PHILOSOPHY",
+    readTimeMinutes: 3,
+    publishedAt: "November 10, 2026",
+    authorName: "Kesh",
+    authorRole: "Founder, Melbourne VIC",
+    excerpt: "I didn't stop budgeting because I stopped caring about money. I stopped because categorising every $4.80 coffee felt like a second job.",
+    paragraphs: [
+      "Every time I tried a traditional budgeting app, the first two weeks felt great. I'd dutifully tag groceries, coffees, petrol, and chemist runs. By week four, life would get busy, twenty transactions would pile up uncategorised, and I'd quietly stop opening the app.",
+      "The problem wasn't discipline—it was the premise. Most budgeting software forces you to look backwards and justify every small purchase. If you miss a few days, the whole system feels broken.",
+      "I wanted the opposite: a system where my important bills and savings goals are sorted the day my pay lands, and whatever is left for everyday life is genuinely mine to spend without logging a single receipt.",
+      "Instead of forcing you to reconcile line by line, Money Matters gives you 1-click bank reconciliation—we call it Match Balance. Whenever you glance at your banking app, you just type in the real balance once and the app aligns everything in a second.",
+      "And because I still wanted to know where things were heading, I built Projection Mode right into your envelopes. You can scrub forward across the next 12 months and see how your bills and savings look before you ever get there—no spreadsheets, no guilt, and no daily homework."
+    ],
+    keyTakeaways: [
+      "Backward-looking receipt tracking burns people out within weeks.",
+      "1-click Match Balance keeps your numbers honest without line-by-line chores.",
+      "Projection Mode shows where your envelopes are heading over the next 12 months."
+    ]
+  },
+  {
+    slug: "can-i-afford-it-peace-of-mind",
+    title: "Can I Afford It? Buying Without the Guesswork (or the Guilt)",
+    subtitle: "When cost of living is tight, the hardest part of spending isn't the price tag—it's wondering what bill you forgot about.",
+    category: "PEACE OF MIND",
+    readTimeMinutes: 3,
+    publishedAt: "November 11, 2026",
+    authorName: "Kesh",
+    authorRole: "Founder, Melbourne VIC",
+    excerpt: "Seeing $2,400 in your bank account doesn't tell you if you can afford a $300 car service. Here is why we built a real-time check before you tap.",
+    paragraphs: [
+      "With rent, groceries, and power bills all costing more lately, most families I know carry a quiet background hum of financial second-guessing. You look at your bank balance, see a healthy number, and still wonder if buying new school shoes or booking a weekend away is going to hurt you next Thursday.",
+      "That uncertainty is why I built the 'Can I Afford It?' check. Before you commit to a purchase, you type in the amount and pick where it's coming from. Money Matters looks at every bill due before your next pay, checks your real buffers, and gives you an honest answer—from a clean 'Safe Yes' to 'Wait for Payday' or 'Impacts Goal'.",
+      "It pairs naturally with Project Envelopes too. If you're saving for a bathroom fix, a family trip, or Christmas, you can ring-fence a dedicated project envelope and test whether a purchase delays that milestone.",
+      "When you want the bigger picture, Reports gives you clean visual trends without drowning you in spreadsheets. And if you just want a quick answer in plain English—like 'how much did we put toward utilities this quarter?'—you can Ask Penny right from the search bar.",
+      "The goal isn't to tell you 'no'. It's to give you genuine peace of mind when the answer is 'yes'."
+    ],
+    keyTakeaways: [
+      "Your raw bank balance hides upcoming bills—'Can I Afford It?' checks them first.",
+      "Project Envelopes keep big one-off plans separate from everyday cash.",
+      "Reports and Ask Penny give you fast clarity whenever you need a wider view."
+    ]
+  },
+  {
+    slug: "payday-allocation-without-the-headache",
+    title: "Allocate Payday: Let the Software Do the Heavy Lifting",
+    subtitle: "Payday shouldn't mean 45 minutes with a calculator. Pick a preset, protect your priority bills, and let the plan run.",
+    category: "PAYDAY ENGINE",
     readTimeMinutes: 4,
-    publishedAt: "August 15, 2026",
+    publishedAt: "November 12, 2026",
     authorName: "Kesh",
-    authorRole: "Principal Software Architect & Founder",
-    excerpt: "Managing family money shouldn't require complex spreadsheets or endless manual math. Here is why we built an engine that automates cashflow calm.",
+    authorRole: "Founder, Melbourne VIC",
+    excerpt: "This is the heart of Money Matters: presets, priority envelopes that protect your bills automatically, and the freedom to override and freeze a plan when life is messy.",
     paragraphs: [
-      "Like many Aussie households, our family journey started with a simple realization: earning more income doesn't automatically create financial clarity.",
-      "When I first moved to Melbourne, money was tight. Every dollar mattered, and a small emergency buffer was the only thing standing between peace of mind and financial stress. Having a clear system for every dollar wasn't optional—it was essential.",
-      "As professional life progressed and income grew, so did the financial noise. Without a structured system, cash flow gets messy, bills creep up unexpectedly, and savings goals fall behind.",
-      "To stay in control, I built a personal 2-tab spreadsheet that ring-fenced bills and savings before calculating a safe daily spending allowance. It gave our household complete calm—allowing us to plan family milestones and holidays with 100% guilt-free confidence.",
-      "Spreadsheets work, but they require constant manual upkeep. Money Matters was built to turn those proven cashflow principles into an automated engine so every household can experience complete payday clarity."
+      "If there's one part of Money Matters I'm proudest of, it's Allocate Payday. The moment income lands, the software figures out exactly where every dollar should go so your bills are never exposed.",
+      "You don't have to invent a strategy from scratch either. We include presets—like Balanced, Safety First, or Debt Crusher—that order your priorities automatically. Priority envelopes sit at the top of the queue so rent, mortgage, power, and rego are always topped up before discretionary spending gets a look-in.",
+      "Of course, real life isn't static. Sometimes you get a bonus, or an unexpected vet bill lands mid-week. You can override any payday plan on the spot, save it as a draft, and freeze your numbers in place until you're ready to confirm and apply.",
+      "Behind the scenes, your Income Schedules and Expense Schedules keep track of when money arrives and when bills fall due, sending gentle reminders before anything catches you off guard.",
+      "You shouldn't have to be a spreadsheet wizard to know your bills are covered. The engine does the heavy lifting; you just review and tap confirm."
     ],
     keyTakeaways: [
-      "Income alone doesn't create financial calm—structured cashflow systems do.",
-      "Ring-fencing bills on payday prevents unexpected bill shock.",
-      "Automating the manual math frees up mental energy for what truly matters."
+      "Presets (Balanced, Safety First, Debt Crusher) set your payday order in seconds.",
+      "Priority envelopes protect essential bills before discretionary spending.",
+      "Override and freeze payday drafts anytime, backed by income and expense reminders."
     ]
   },
   {
-    slug: "the-5-step-payday-plan",
-    title: "The 5-Step Payday Plan: Ring-Fencing Bills Before You Spend",
-    subtitle: "A mechanical framework for allocating every paycheck the moment it lands in your account.",
-    category: "CASHFLOW METHOD",
-    readTimeMinutes: 5,
-    publishedAt: "August 10, 2026",
+    slug: "built-for-real-households-and-your-data",
+    title: "Built for Real Households—From Sharehouses to Growing Families",
+    subtitle: "Money looks different in every home. Share what belongs together, keep personal spending private, and always own your data.",
+    category: "HOUSEHOLDS & TRUST",
+    readTimeMinutes: 3,
+    publishedAt: "November 14, 2026",
     authorName: "Kesh",
-    authorRole: "Principal Software Architect & Founder",
-    excerpt: "Discover how an automated 5-step payday plan ring-fences bill buffers and target goals so you can spend what's left with zero guilt.",
+    authorRole: "Founder, Melbourne VIC",
+    excerpt: "Whether you're splitting rent with housemates or running a dual-income family budget, you shouldn't have to choose between collaboration and privacy.",
     paragraphs: [
-      "Traditional budgeting asks you to track every cup of coffee after you've spent the money. Backward-looking tracking creates guilt without offering proactive direction.",
-      "The 5-Step Payday Plan flips this paradigm. The moment income lands in your bank account, funds flow automatically through five sequential priorities.",
-      "First, any negative category deficits are repaired. Second, your unified Bills Pool is topped up to cover upcoming fixed commitments. Third, committed savings goals are funded.",
-      "Fourth, your Everyday discretionary allowance is allocated for safe spending. Finally, any residual surplus is automatically swept into your Offset Reserve.",
-      "By ring-fencing bills and savings first, you can spend your Everyday allowance with 100% confidence, knowing every obligation is already taken care of."
+      "A single person, a sharehouse of three mates, and a family with two kids all handle money differently—yet most finance apps force everyone into one rigid template.",
+      "In Money Matters, Shared Envelopes let everyone in the household see and fund common costs like rent, groceries, and utilities together. At the same time, any envelope or bank account you mark as Private stays strictly yours—invisible to everyone else in the household, right down to the database layer.",
+      "That means you can split household bills transparently with a partner or housemate without exposing birthday gifts, personal treats, or your own side savings.",
+      "I also feel strongly that you should never be locked in. Full CSV export is built right in and stays free forever—even if your 60-day trial ends and you decide Money Matters isn't for you. Your financial history belongs to you, full stop.",
+      "Right now, the full Web app is live and ready for your household to try free for 60 days—and our Android mobile app is actively being tested for release so you can carry that same calm in your pocket."
     ],
     keyTakeaways: [
-      "Proactive allocation beats reactive expense tracking every single time.",
-      "Prorating bills across pay periods ensures zero payday surprises.",
-      "Ring-fencing fixed commitments on payday eliminates spending anxiety and daily friction."
-    ]
-  },
-  {
-    slug: "why-spreadsheets-fail-aussie-families",
-    title: "Why Spreadsheets Break (And Why Household Cashflow Needs an Engine)",
-    subtitle: "Excel and Google Sheets are great for static analysis, but struggle with dynamic real-life cashflow.",
-    category: "HOUSEHOLD FINANCE",
-    readTimeMinutes: 4,
-    publishedAt: "August 4, 2026",
-    authorName: "Kesh",
-    authorRole: "Principal Software Architect & Founder",
-    excerpt: "Why spreadsheets break down when income is irregular, bills shift dates, or multiple family members need shared real-time clarity.",
-    paragraphs: [
-      "Most financially conscious Australians start their budgeting journey with a spreadsheet. They work brilliantly for the first few weeks—until real life happens.",
-      "When a bill lands 3 days earlier than expected, or when pay frequencies between partners don't align, static formulas quickly break down or require complex manual adjustments.",
-      "Furthermore, spreadsheets lack proactive alerts. They can't warn you 3 days before a direct debit if your bill buffer is $40 short, nor can they instantly compute whether a impulse purchase will impact next week's pacing.",
-      "A dedicated cashflow engine combines database integrity, real-time pacing calculations, and multi-user sync so partners stay aligned effortlessly without spending weekends tweaking formulas."
-    ],
-    keyTakeaways: [
-      "Static formulas can't dynamically adjust to shifting bill dates and irregular income.",
-      "Proactive push alerts prevent overdrafts before direct debits hit.",
-      "Shared partner visibility keeps both decision-makers on the same page."
-    ]
-  },
-  {
-    slug: "the-2-account-blueprint",
-    title: "The 2-Account Blueprint: Why Aussie Households Split Everyday Spending From Bills",
-    subtitle: "How physical separation eliminates daily budgeting anxiety and unlocks truly guilt-free tap-and-go spending.",
-    category: "BANKING ARCHITECTURE",
-    readTimeMinutes: 5,
-    publishedAt: "September 1, 2026",
-    authorName: "Kesh",
-    authorRole: "Principal Software Architect & Founder",
-    excerpt: "When your daily coffee card is the same account where your mortgage lives, spending always feels risky. Here is how two accounts automate financial calm.",
-    paragraphs: [
-      "Most Australians manage their daily lives from a single bank account. Their salary lands in it, rent or mortgage is debited from it, electricity bills pull from it, and their phone or debit card taps from it at the grocery store.",
-      "This setup creates subconscious friction. Every time you tap your card for lunch or drinks on a Saturday, you see an aggregate balance of $3,500. But how much of that is actually yours to spend freely, and how much is reserved for council rates and car insurance due in 12 days?",
-      "To answer that, traditional budgeting apps demand that you manually log every coffee, tag every transaction, and calculate your daily spending velocity. That is exhausting and unsustainable.",
-      "The 2-Account Blueprint solves this mechanically. You designate one account for Bills & Sinking Funds (direct debits only) and a separate card for Everyday Discretionary Spending.",
-      "On payday, Money Matters' payday plan calculates your safe allowance and tells you to transfer that exact figure to your Everyday card. From that second on, you never have to check a budget or log an expense. When the card reaches zero, spending pauses—and your bills are 100% ring-fenced and secure."
-    ],
-    keyTakeaways: [
-      "Card taps should never share a balance with direct debits and rent.",
-      "Separating accounts eliminates the need for daily expense logging or mental math.",
-      "Your Everyday debit card becomes your hard spending boundary with zero guilt."
-    ]
-  },
-  {
-    slug: "yours-mine-ours-couples-banking",
-    title: "Yours, Mine, and Ours: How Modern Aussie Couples Manage Shared Finances Without Sacrificing Freedom",
-    subtitle: "The hybrid banking framework combining shared household commitments with complete personal autonomy.",
-    category: "COUPLES FINANCE",
-    readTimeMinutes: 6,
-    publishedAt: "September 8, 2026",
-    authorName: "Kesh",
-    authorRole: "Principal Software Architect & Founder",
-    excerpt: "How Australian couples eliminate money arguments by funding joint bills together while keeping personal spending cards 100% private.",
-    paragraphs: [
-      "Money is one of the most common sources of friction in relationships, but the root cause is rarely the amount of income. It is the clash between shared responsibility and personal autonomy.",
-      "Complete financial pooling often leads to resentment: one partner feels judged for buying golf clubs, while the other feels scrutinized for skincare or dining with friends. Conversely, keeping finances 100% separate makes managing shared rent, groceries, and kids' expenses a nightmare of constant transfers and manual splitting.",
-      "The gold standard for Australian couples is the 'Yours, Mine, and Ours' hybrid model. The household maintains a Joint Bills Account (for rent/mortgage, utilities, groceries) and each partner maintains a Private Personal Account.",
-      "Both partners contribute their agreed share into the Joint Bills pool on payday. The remainder is split into each partner's personal account as 'no-questions-asked' money.",
-      "With Money Matters' built-in stealth privacy and PostgreSQL Row-Level Security, partners share full transparency over household bills while personal accounts remain strictly visible only to their owner."
-    ],
-    keyTakeaways: [
-      "Shared household commitments require mutual visibility; personal spending does not.",
-      "Personal 'no-questions-asked' accounts eliminate guilt and resentment.",
-      "Stealth privacy at the database layer ensures personal autonomy without hiding household obligations."
-    ]
-  },
-  {
-    slug: "60-second-aussie-sub-accounts-guide",
-    title: "The 60-Second Sub-Account Guide: How to Add a Fee-Free Second Account at CommBank, Up, Macquarie, and ING",
-    subtitle: "You don't need to switch banks or fill out mountains of paperwork to get the 2-account advantage.",
-    category: "PRACTICAL GUIDE",
-    readTimeMinutes: 4,
-    publishedAt: "September 15, 2026",
-    authorName: "Kesh",
-    authorRole: "Principal Software Architect & Founder",
-    excerpt: "A step-by-step cheat sheet for creating instant, fee-free sub-accounts inside Australia's most popular banking apps.",
-    paragraphs: [
-      "When people hear they should separate their everyday spending from their bills, the most common hesitation is: 'I don't want to open another bank account with ID checks, credit checks, and monthly fees.'",
-      "Here is the reality: over 90% of Australians already bank with an institution that allows you to spin up a fee-free sub-account or digital saver directly inside their mobile app in under 60 seconds.",
-      "At Commonwealth Bank, you can tap Accounts > Open new account > Smart Access or Goal Saver. It is instant and free.",
-      "At Up Bank, you can create up to 10 Savers in 5 seconds with custom emojis, or link a 2Up shared account with your partner.",
-      "At Macquarie Bank, you can open up to 10 transaction and savings accounts instantly with zero fees, while earning high interest across every balance.",
-      "At ING, Orange Everyday connects seamlessly to Savings Maximiser. By setting up a recurring payday transfer or PayID between your existing accounts, you unlock complete financial calm without leaving your existing bank."
-    ],
-    keyTakeaways: [
-      "You do not need to switch banks to achieve physical separation.",
-      "Major Australian banks offer instant, fee-free digital sub-accounts.",
-      "PayID and Osko make transfers between your accounts instant and automatic on payday."
+      "Shared Envelopes align couples, families, and housemates on common bills.",
+      "Private Envelopes keep personal spending and gifts 100% confidential.",
+      "Full CSV export is always free, and our Android app is in beta testing alongside the live Web app."
     ]
   }
 ];

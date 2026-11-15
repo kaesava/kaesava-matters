@@ -174,6 +174,9 @@ export function PricingSection({ onAuthClick }: PricingSectionProps) {
             </div>
 
             <PricingCta onAuthClick={onAuthClick} />
+            <p className="text-[11px] text-slate-500 font-medium text-center mt-3">
+              {t("landing.pricingCancelAnytime")}
+            </p>
           </div>
         </div>
       </div>

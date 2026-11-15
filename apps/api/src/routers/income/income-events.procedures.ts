@@ -7,7 +7,7 @@ import {
   markIncomeReceivedCommand,
   deleteIncomeEventCommand,
 } from "@money-matters/capability-budgeting";
-import { posthog } from '../../lib/posthog.js';
+import { captureIfConsented } from '../../lib/posthog.js';
 import { CreateIncomeEventCommand } from "@money-matters/types";
 import { z } from 'zod';
 
@@ -68,14 +68,9 @@ export const incomeEventsProcedures = {
     .mutation(async ({ input, ctx }) => {
       requiresWriteAccess(ctx);
       const result = await markIncomeReceivedCommand(input, ctx.tenantId!, ctx.appId!, ctx.userId!, ctx.db);
-      if (posthog && ctx.userId) {
-        posthog.capture({
-          distinctId: ctx.userId,
-          event: 'income_marked_received',
-          properties: { tenant_id: ctx.tenantId },
-        });
-        await posthog.flush();
-      }
+      await captureIfConsented(ctx.db, ctx.userId, 'income_marked_received', {
+        tenant_id: ctx.tenantId,
+      });
       return result;
     }),
 

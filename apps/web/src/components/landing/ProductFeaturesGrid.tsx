@@ -1,13 +1,13 @@
 "use client";
 
 import { t } from "@money-matters/i18n";
-import { CalendarRange, Users, Sparkles, CheckCircle2 } from "lucide-react";
+import { CalendarRange, Users, Sparkles, CheckCircle2, Smartphone } from "lucide-react";
 
 export function ProductFeaturesGrid() {
   return (
     <section
       id="features"
-      className="max-w-6xl mx-auto px-6 py-24 flex flex-col gap-14 scroll-mt-14"
+      className="max-w-6xl mx-auto px-6 py-20 flex flex-col gap-12 scroll-mt-14"
       aria-label="Flagship Capabilities"
     >
       {/* Section Header */}
@@ -23,8 +23,8 @@ export function ProductFeaturesGrid() {
         </p>
       </div>
 
-      {/* 3 Pillars Grid */}
-      <div className="grid md:grid-cols-3 gap-7">
+      {/* 4 Pillars 2x2 Grid */}
+      <div className="grid md:grid-cols-2 gap-7">
         {/* Pillar 1: Forward Planning & 12-Month Projections */}
         <div className="p-7 rounded-3xl bg-white border border-slate-200/90 shadow-sm hover:shadow-md transition-all flex flex-col justify-between gap-6 group">
           <div className="space-y-4">
@@ -125,18 +125,39 @@ export function ProductFeaturesGrid() {
             <div className="text-emerald-700 bg-emerald-50/80 px-2.5 py-1 rounded-lg border border-emerald-200/60">
               🟢 SAFE YES — bills stay 100% protected
             </div>
-            <div className="text-amber-700 bg-amber-50/80 px-2.5 py-1 rounded-lg border border-amber-200/60">
-              🟡 PACING WARNING — everyday buffer tight
-            </div>
-            <div className="text-orange-700 bg-orange-50/80 px-2.5 py-1 rounded-lg border border-orange-200/60">
-              🟠 IMPACTS GOAL — borrows savings pacing
-            </div>
             <div className="text-blue-700 bg-blue-50/80 px-2.5 py-1 rounded-lg border border-blue-200/60">
               🔵 WAIT FOR PAYDAY — pay covers in 6 days
             </div>
             <div className="text-[#ba1a1a] bg-rose-50/80 px-2.5 py-1 rounded-lg border border-rose-200/60">
               🔴 HARD NO — deficit risk detected
             </div>
+          </div>
+        </div>
+
+        {/* Pillar 4: Every Household, Full CSV Export & Android Beta */}
+        <div className="p-7 rounded-3xl bg-white border border-slate-200/90 shadow-sm hover:shadow-md transition-all flex flex-col justify-between gap-6 group">
+          <div className="space-y-4">
+            <div className="w-12 h-12 rounded-2xl bg-slate-100 text-[#1B2B4B] flex items-center justify-center border border-slate-200 group-hover:scale-105 transition-transform">
+              <Smartphone className="w-6 h-6" />
+            </div>
+            <div className="space-y-2">
+              <span className="text-[11px] font-extrabold font-mono text-[#1B2B4B] bg-slate-100 px-2.5 py-1 rounded-md border border-slate-200 uppercase">
+                {t("landing.pillar4Badge")}
+              </span>
+              <h3 className="text-lg font-black text-[#1B2B4B] leading-snug">
+                {t("landing.pillar4Title")}
+              </h3>
+              <p className="text-slate-600 text-xs leading-relaxed font-normal">
+                {t("landing.pillar4Body")}
+              </p>
+            </div>
+          </div>
+
+          <div className="p-3.5 bg-slate-50 rounded-2xl border border-slate-200/80 text-[11px] font-mono font-bold text-slate-600 flex items-center justify-between">
+            <span>{t("landing.pillar4WebBadge")}</span>
+            <span className="text-[#2563eb] bg-blue-50 px-2.5 py-1 rounded-lg border border-blue-200">
+              {t("landing.pillar4AndroidBadge")}
+            </span>
           </div>
         </div>
       </div>

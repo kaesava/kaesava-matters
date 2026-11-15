@@ -421,6 +421,13 @@
       "when": 1784358494251,
       "tag": "0060_drop_dead_columns",
       "breakpoints": true
+    },
+    {
+      "idx": 60,
+      "version": "7",
+      "when": 1784358500000,
+      "tag": "0061_add_telemetry_consent",
+      "breakpoints": true
     }
   ]
 }

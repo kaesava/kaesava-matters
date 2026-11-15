@@ -198,8 +198,6 @@ export const SyncBalanceModal: React.FC<SyncBalanceModalProps> = ({
 
       await onConfirm(splits, numericBalance.toFixed(2), reason.trim() || undefined);
       posthog.capture("bank_account_aligned", {
-        account_name: accountName,
-        diff_amount: variance,
         is_surplus: isSurplus,
         splits_count: splits.length,
       });

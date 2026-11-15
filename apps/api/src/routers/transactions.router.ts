@@ -1,5 +1,5 @@
 import { privateTenantProcedure, requiresWriteAccess } from '../trpc/trpc.js';
-import { posthog } from '../lib/posthog.js';
+import { captureIfConsented } from '../lib/posthog.js';
 import {
   recordExpenseCommand,
   listTransactionsQuery,
@@ -26,18 +26,11 @@ export const transactionsRouter = {
       requiresWriteAccess(ctx);
       const result = await recordExpenseCommand(input, ctx.tenantId!, ctx.appId!, ctx.userId!, ctx.db);
 
-      if (posthog && ctx.userId) {
-        posthog.capture({
-          distinctId: ctx.userId,
-          event: 'expense_recorded',
-          properties: {
-            tenant_id: ctx.tenantId,
-            envelope_id: input.envelopeId,
-            source: input.source,
-          },
-        });
-        await posthog.flush();
-      }
+      await captureIfConsented(ctx.db, ctx.userId, 'expense_recorded', {
+        tenant_id: ctx.tenantId,
+        envelope_id: input.envelopeId,
+        source: input.source,
+      });
       return result;
     }),
 

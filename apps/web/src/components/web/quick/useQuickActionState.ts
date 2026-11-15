@@ -243,7 +243,6 @@ export function useQuickActionState(
         });
       }
       posthog.capture("money_moved_between_categories", {
-        amount: amountNum,
         source_category_id: sourceCategoryId,
         destination_category_id: destinationCategoryId,
         is_future: isFutureDate,

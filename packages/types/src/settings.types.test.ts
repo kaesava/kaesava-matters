@@ -1,6 +1,7 @@
 import { describe, it, expect } from "vitest";
 import {
   UpdateProfileFormSchema,
+  UpdateUserPreferencesCommand,
   UpdateHouseholdFormSchema,
   BankAccountFormSchema,
   computeAccountAvailability,
@@ -132,6 +133,14 @@ describe("Settings Types & Schemas", () => {
       expect(COMMON_TIMEZONES.length).toBeGreaterThanOrEqual(10);
       expect(AU_STATES).toHaveLength(8);
       expect(AU_STATES.map((s) => s.code)).toContain("NSW");
+    });
+  });
+
+  describe("UpdateUserPreferencesCommand", () => {
+    it("accepts granted or denied telemetryConsent and rejects invalid values", () => {
+      expect(UpdateUserPreferencesCommand.parse({ telemetryConsent: "granted" }).telemetryConsent).toBe("granted");
+      expect(UpdateUserPreferencesCommand.parse({ telemetryConsent: "denied" }).telemetryConsent).toBe("denied");
+      expect(() => UpdateUserPreferencesCommand.parse({ telemetryConsent: "maybe" })).toThrow();
     });
   });
 });

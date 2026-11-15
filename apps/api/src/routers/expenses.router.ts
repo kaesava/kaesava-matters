@@ -4,7 +4,7 @@ import { and, eq, sql } from "drizzle-orm";
 import { markExpensePaidCommand } from "@money-matters/capability-transactions";
 import { CreateOneOffExpenseCommand, MarkExpensePaidCommand } from "@money-matters/types";
 import { z } from 'zod';
-import { posthog } from '../lib/posthog.js';
+import { captureIfConsented } from '../lib/posthog.js';
 
 export const expensesRouter = {
   listBillSchedules: privateTenantProcedure
@@ -111,17 +111,10 @@ export const expensesRouter = {
         })
         .returning();
 
-      if (posthog && ctx.userId) {
-        posthog.capture({
-          distinctId: ctx.userId,
-          event: 'one_off_expense_created',
-          properties: {
-            tenant_id: ctx.tenantId,
-            envelope_id: input.envelopeId,
-          },
-        });
-        await posthog.flush();
-      }
+      await captureIfConsented(ctx.db, ctx.userId, 'one_off_expense_created', {
+        tenant_id: ctx.tenantId,
+        envelope_id: input.envelopeId,
+      });
 
       return insertedEvent;
     }),

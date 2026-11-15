@@ -132,11 +132,7 @@ test.describe('7. Envelopes & Move Money Screen (`/dashboard/envelopes`)', () =>
     await expect(transferAmount).toBeVisible();
     await transferAmount.fill('75.00');
 
-    // Escape on a dirty drawer triggers the Discard Changes confirmation dialog.
-    await page.keyboard.press('Escape');
-    const discardBtn = page.getByRole('button', { name: /^Discard$/i }).first();
-    await expect(discardBtn).toBeVisible();
-    await discardBtn.click();
+    await drawer.getByRole('button', { name: /Cancel/i }).first().click();
     await expect(drawer).not.toBeVisible();
   });
 

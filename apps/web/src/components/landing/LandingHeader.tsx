@@ -71,6 +71,12 @@ function LandingNav({ activeSection }: { activeSection: string }) {
           </a>
         );
       })}
+      <Link
+        href="/blog"
+        className="px-2.5 py-1.5 lg:px-3 rounded-xl font-bold text-slate-600 hover:text-[#1B2B4B] hover:bg-slate-100/70 border border-transparent transition-all duration-200"
+      >
+        {t("landing.navBlog")}
+      </Link>
     </nav>
   );
 }

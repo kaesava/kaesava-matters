@@ -11,7 +11,7 @@ import {
   listInvoicesQuery,
   syncSubscriptionCommand,
 } from '@money-matters/capability-billing';
-import { posthog } from '../lib/posthog.js';
+import { captureIfConsented } from '../lib/posthog.js';
 
 export const billingRouter = {
   getSubscriptionStatus: tenantProcedure.query(async ({ ctx }) => {
@@ -24,17 +24,10 @@ export const billingRouter = {
       const tenantId = ctx.tenantId!;
       const userEmail = ctx.session?.email || 'info@moneymatters.kaesava.au';
       const result = await createCheckoutSessionCommand(ctx.db, tenantId, userEmail, input);
-      if (posthog && ctx.userId) {
-        posthog.capture({
-          distinctId: ctx.userId,
-          event: 'checkout_session_created',
-          properties: {
-            tenant_id: tenantId,
-            priceId: input.priceId,
-          },
-        });
-        await posthog.flush();
-      }
+      await captureIfConsented(ctx.db, ctx.userId, 'checkout_session_created', {
+        tenant_id: tenantId,
+        priceId: input.priceId,
+      });
       return result;
     }),
 
@@ -43,16 +36,11 @@ export const billingRouter = {
     .mutation(async ({ ctx, input }) => {
       const tenantId = ctx.tenantId!;
       const result = await verifyCheckoutSessionCommand(ctx.db, tenantId, input.sessionId);
-      if (posthog && ctx.userId && result.verified) {
-        posthog.capture({
-          distinctId: ctx.userId,
-          event: 'subscription_checkout_verified',
-          properties: {
-            tenant_id: tenantId,
-            status: result.subscriptionStatus,
-          },
+      if (result.verified) {
+        await captureIfConsented(ctx.db, ctx.userId, 'subscription_checkout_verified', {
+          tenant_id: tenantId,
+          status: result.subscriptionStatus,
         });
-        await posthog.flush();
       }
       return result;
     }),

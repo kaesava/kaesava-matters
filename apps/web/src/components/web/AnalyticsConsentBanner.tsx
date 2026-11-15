@@ -1,38 +1,73 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import posthog from 'posthog-js';
+import posthog from '../../lib/posthog-client';
 import { Button } from '@money-matters/ui/web';
 import { t } from '@money-matters/i18n';
+import { authClient } from '../../lib/auth';
+import { trpc } from '../../lib/trpc';
 
 export const ANALYTICS_CONSENT_KEY = 'mm_analytics_consent';
 
 export function AnalyticsConsentBanner() {
   const [visible, setVisible] = useState(false);
+  const { data: session } = authClient.useSession();
+  const isAuthenticated = Boolean((session?.user as { id?: unknown } | undefined)?.id);
+  const tenantStatusQuery = trpc.getTenantStatus.useQuery(undefined, {
+    enabled: isAuthenticated,
+    retry: false,
+    staleTime: 60_000,
+  });
+  const hasTenant = tenantStatusQuery.data?.hasTenant ?? false;
+  const userPrefQuery = trpc.getUserPreferences.useQuery(undefined, {
+    enabled: isAuthenticated && hasTenant,
+    retry: false,
+    staleTime: 60_000,
+  });
+  const updatePrefs = trpc.updateUserPreferences.useMutation();
 
   useEffect(() => {
     try {
-      const consent = localStorage.getItem(ANALYTICS_CONSENT_KEY);
-      if (consent === null) {
-        setVisible(true);
-      } else if (consent === 'denied') {
-        posthog.opt_out_capturing();
-      } else if (consent === 'granted') {
+      const localConsent = localStorage.getItem(ANALYTICS_CONSENT_KEY);
+      const dbConsent = userPrefQuery.data?.telemetryConsent ?? null;
+      const effectiveConsent = dbConsent ?? (localConsent === 'granted' || localConsent === 'denied' ? localConsent : null);
+
+      if (effectiveConsent === 'granted') {
+        localStorage.setItem(ANALYTICS_CONSENT_KEY, 'granted');
         posthog.opt_in_capturing();
+        setVisible(false);
+      } else if (effectiveConsent === 'denied') {
+        localStorage.setItem(ANALYTICS_CONSENT_KEY, 'denied');
+        posthog.opt_out_capturing();
+        setVisible(false);
+      } else {
+        posthog.opt_out_capturing();
+        if (!isAuthenticated || !hasTenant || userPrefQuery.isFetched) {
+          setVisible(true);
+        }
+      }
+
+      if (dbConsent === null && (localConsent === 'granted' || localConsent === 'denied') && isAuthenticated && hasTenant && userPrefQuery.isFetched && !updatePrefs.isPending) {
+        updatePrefs.mutate({ telemetryConsent: localConsent });
       }
     } catch {
       // In private browsing mode or local storage disabled
     }
-  }, []);
+  }, [isAuthenticated, hasTenant, userPrefQuery.data?.telemetryConsent, userPrefQuery.isFetched]);
 
   const handleConsent = (granted: boolean) => {
+    const value = granted ? 'granted' : 'denied';
     try {
-      localStorage.setItem(ANALYTICS_CONSENT_KEY, granted ? 'granted' : 'denied');
+      localStorage.setItem(ANALYTICS_CONSENT_KEY, value);
       if (granted) {
         posthog.opt_in_capturing();
       } else {
         posthog.opt_out_capturing();
       }
+      if (isAuthenticated && hasTenant) {
+        updatePrefs.mutate({ telemetryConsent: value });
+      }
+      window.dispatchEvent(new Event('mm-analytics-consent-changed'));
     } catch {
       // Ignore storage errors
     }

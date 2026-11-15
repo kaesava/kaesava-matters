@@ -27,7 +27,7 @@
 | Root Layout | `apps/web/src/app/layout.tsx` | 168 | Public / Root | `TRPCProvider`, `ThemeProvider`, `ToastContainer`, `PostHogProvider`, `CookieConsentBanner` |
 | Global Error | `apps/web/src/app/global-error.tsx` | 60 | Public | Next.js global error boundary (`<html><body>`) |
 | Global 404 | `apps/web/src/app/not-found.tsx` | 58 | Public | Top-level 404 screen with link to `/` and `/dashboard` |
-| `/` | `apps/web/src/app/page.tsx` | 109 | Public | `LandingHeader`, `HeroSection`, `InteractivePaydayEngine`, `ProblemSection`, `HowItWorksSection`, `AdvantagesSection`, `PricingSection`, `FaqSection`, `LandingFooter`, `AuthModal`, `EarlyAccessModal` |
+| `/` | `apps/web/src/app/page.tsx` | 104 | Public (SSR) | `LandingHeader`, `LandingHero`, `ProductFeaturesGrid`, `InteractivePaydayEngine`, `FeaturedBlogsSection`, `PricingSection`, `TrustSection`, `FaqSection`, `LandingFooter`, `AuthModal`, `EarlyAccessModal` |
 | `/sign-in` | `apps/web/src/app/sign-in/page.tsx` | 120 | Public (`<Suspense>`) | `SignInForm`, `SocialAuthButtons` |
 | `/sign-up` | `apps/web/src/app/sign-up/page.tsx` | 134 | Public (`<Suspense>`) | `SignUpForm`, `SocialAuthButtons` |
 | `/forgot-password` | `apps/web/src/app/forgot-password/page.tsx` | 330 | Public | Multi-step email/OTP/new-password reset flow (`OtpInput`, `PasswordStrengthIndicator`) |
@@ -38,8 +38,8 @@
 | `/invite/[token]` | `apps/web/src/app/invite/[token]/page.tsx` | 133 | Public / Auth | Household partner invitation acceptance (`trpc.tenant.getInviteDetails`, `trpc.tenant.acceptInvite`) |
 | `/privacy` | `apps/web/src/app/privacy/page.tsx` | 173 | Public | Privacy Policy page (`LandingHeader`, `LandingFooter`) |
 | `/terms` | `apps/web/src/app/terms/page.tsx` | 144 | Public | Terms of Service page (`LandingHeader`, `LandingFooter`) |
-| `/blog` | `apps/web/src/app/blog/page.tsx` | 124 | Public | Blog index (`BLOG_POSTS` from `apps/web/src/lib/blog-data.ts`) |
-| `/blog/[slug]` | `apps/web/src/app/blog/[slug]/page.tsx` | 215 | Public | Blog article detail (`BLOG_POSTS`) |
+| `/blog` | `apps/web/src/app/blog/page.tsx` | 139 | Public (SSR + `metadata`) | Blog index (`BLOG_POSTS` from `apps/web/src/lib/blog-data.ts`) |
+| `/blog/[slug]` | `apps/web/src/app/blog/[slug]/page.tsx` | 195 | Public (SSR + `generateMetadata`) | Blog article detail (`BLOG_POSTS`) |
 | `/setup` | `apps/web/src/app/setup/page.tsx` | 400 | Authenticated | 5-step setup wizard (`SetupHeaderBar`, `SetupBankAccountsStep`, `SetupIncomeStep`, `SetupLifestyleStep`, `SetupGoalsStep`, `SetupCategoriesStep`, `EnvelopeFormModal`, `SetupDiscardModal`, `PaydaySandboxModal`) |
 | `/subscription/upgrade` | `apps/web/src/app/subscription/upgrade/page.tsx` | 255 | Authenticated (`<Suspense>`) | Plan selection & Stripe Checkout redirect (`ActiveSubscriptionCard`, `trpc.billing.createCheckoutSession`) |
 | `/subscription/success` | `apps/web/src/app/subscription/success/page.tsx` | 130 | Authenticated (`<Suspense>`) | Checkout verification (`trpc.billing.verifyCheckoutSession`) |

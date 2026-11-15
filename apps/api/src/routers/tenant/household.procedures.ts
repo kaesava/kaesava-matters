@@ -17,7 +17,7 @@ import { UpdateHouseholdMemberRoleCommand, DEFAULT_APP_FEATURE_FLAGS } from "@mo
 import { clearEdgeContextCache } from '../../trpc/edge-context.js';
 import { TRPCError } from '@trpc/server';
 import { z } from 'zod';
-import { posthog } from '../../lib/posthog.js';
+import { captureIfConsented } from '../../lib/posthog.js';
 
 export const householdProcedures = {
   invitePartner: ownerProcedure
@@ -55,10 +55,7 @@ export const householdProcedures = {
       });
 
       logAuditEvent('partner_invited', ctx.tenantId!, ctx.userId!, { inviteEmail: input.email });
-      if (posthog && ctx.userId) {
-        posthog.capture({ distinctId: ctx.userId, event: 'partner_invited', properties: { tenant_id: ctx.tenantId } });
-        await posthog.flush();
-      }
+      await captureIfConsented(ctx.db, ctx.userId, 'partner_invited', { tenant_id: ctx.tenantId });
 
       return { success: true, email: input.email, inviteEmail: input.email, inviteToken: result.inviteToken, expiresAt: result.expiresAt };
     }),
@@ -68,10 +65,7 @@ export const householdProcedures = {
     .mutation(async ({ input, ctx }) => {
       const handler = acceptInviteHandler(ctx.db);
       const result = await handler(input, ctx.userId!, ctx.email ?? undefined);
-      if (posthog && ctx.userId) {
-        posthog.capture({ distinctId: ctx.userId, event: 'partner_invite_accepted', properties: {} });
-        await posthog.flush();
-      }
+      await captureIfConsented(ctx.db, ctx.userId, 'partner_invite_accepted', {});
       return result;
     }),
 
