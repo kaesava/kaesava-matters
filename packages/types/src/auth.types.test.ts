@@ -2,9 +2,13 @@ import { describe, it, expect } from "vitest";
 import {
   SignInInputSchema,
   SignUpInputSchema,
+  CompleteProfileInputSchema,
+  CheckEmailAuthProviderInputSchema,
   ResetPasswordInputSchema,
   evaluatePasswordStrength,
   isValidEmail,
+  mapOtpSendErrorKey,
+  mapOtpResetErrorKey,
 } from "./auth.types.js";
 
 describe("auth.types DTOs & Validation", () => {
@@ -155,6 +159,62 @@ describe("auth.types DTOs & Validation", () => {
       expect(isValidEmail("user@")).toBe(false);
       expect(isValidEmail("@domain.com")).toBe(false);
       expect(isValidEmail("user@domain")).toBe(false);
+    });
+  });
+
+  describe("mapOtpSendErrorKey", () => {
+    it("maps nullish to null, 429 to tooManyRequests, and other errors to forgotPasswordSendFailed", () => {
+      expect(mapOtpSendErrorKey(null)).toBeNull();
+      expect(mapOtpSendErrorKey(undefined)).toBeNull();
+      expect(mapOtpSendErrorKey({ status: 429 })).toBe("auth.tooManyRequests");
+      expect(mapOtpSendErrorKey({ status: 502 })).toBe("auth.forgotPasswordSendFailed");
+    });
+  });
+
+  describe("mapOtpResetErrorKey", () => {
+    it("maps 429, 403/TOO_MANY_ATTEMPTS, OTP_EXPIRED, and fallback invalidOtp", () => {
+      expect(mapOtpResetErrorKey({ status: 429 })).toBe("auth.tooManyRequests");
+      expect(mapOtpResetErrorKey({ status: 403 })).toBe("auth.tooManyOtpAttempts");
+      expect(mapOtpResetErrorKey({ code: "TOO_MANY_ATTEMPTS" })).toBe("auth.tooManyOtpAttempts");
+      expect(mapOtpResetErrorKey({ code: "OTP_EXPIRED" })).toBe("auth.otpExpired");
+      expect(mapOtpResetErrorKey({ code: "INVALID_OTP" })).toBe("auth.invalidOtp");
+      expect(mapOtpResetErrorKey(null)).toBe("auth.invalidOtp");
+    });
+  });
+
+  describe("CompleteProfileInputSchema", () => {
+    it("accepts valid name, country, and agreedToTerms", () => {
+      expect(
+        CompleteProfileInputSchema.safeParse({
+          name: "Jane Doe",
+          country: "AU",
+          agreedToTerms: true,
+        }).success
+      ).toBe(true);
+    });
+
+    it("rejects short name or unaccepted terms", () => {
+      expect(
+        CompleteProfileInputSchema.safeParse({
+          name: "J",
+          country: "AU",
+          agreedToTerms: true,
+        }).success
+      ).toBe(false);
+      expect(
+        CompleteProfileInputSchema.safeParse({
+          name: "Jane Doe",
+          country: "AU",
+          agreedToTerms: false,
+        }).success
+      ).toBe(false);
+    });
+  });
+
+  describe("CheckEmailAuthProviderInputSchema", () => {
+    it("accepts valid email and rejects invalid email", () => {
+      expect(CheckEmailAuthProviderInputSchema.safeParse({ email: "jane@example.com" }).success).toBe(true);
+      expect(CheckEmailAuthProviderInputSchema.safeParse({ email: "invalid" }).success).toBe(false);
     });
   });
 });

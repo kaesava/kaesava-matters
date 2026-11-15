@@ -68,7 +68,18 @@ export function useSignInForm() {
           return;
         }
 
-        setError(t("auth.signInFailed"));
+        let displayErr = t("auth.signInFailed");
+        try {
+          const providerInfo = await utils.checkEmailAuthProvider.fetch({
+            email: email.trim().toLowerCase(),
+          });
+          if (providerInfo.isGoogleOnly) {
+            displayErr = t("auth.googleOnlyAccountError");
+          }
+        } catch {
+          // Fallback to generic sign-in error
+        }
+        setError(displayErr);
         return;
       }
 
@@ -112,6 +123,9 @@ export function useSignInForm() {
             router.replace("/(setup)/income");
             return;
           }
+        } else {
+          router.replace("/(auth)/complete-profile");
+          return;
         }
       }
 

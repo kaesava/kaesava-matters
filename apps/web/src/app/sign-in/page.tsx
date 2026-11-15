@@ -23,9 +23,11 @@ function SignInContent() {
   const [socialError, setSocialError] = useState<string | null>(
     reason === "existing"
       ? t("auth.userAlreadyExists")
-      : urlError
-        ? t("auth.signInFailed")
-        : null
+      : urlError === "account_not_linked"
+        ? t("auth.oauthAccountNotLinked")
+        : urlError
+          ? t("auth.signInFailed")
+          : null
   );
   const [unverifiedEmail, setUnverifiedEmail] = useState<string | null>(null);
   const [passwordForOtp, setPasswordForOtp] = useState<string | undefined>(undefined);

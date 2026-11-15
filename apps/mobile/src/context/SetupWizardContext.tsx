@@ -21,12 +21,10 @@ const SetupWizardContext = createContext<SetupWizardContextValue | null>(null);
 
 export function SetupWizardProvider({ children: reactChildren }: { children: React.ReactNode }) {
   const router = useRouter();
-  const utils = trpc.useUtils();
   const { data: session } = authClient.useSession();
   const tenantStatusQuery = trpc.getTenantStatus.useQuery(undefined, {
     enabled: !!session?.user,
   });
-  const createTenantMut = trpc.createTenant.useMutation();
   const hasTenant = tenantStatusQuery.data?.hasTenant === true;
   const userPrefQuery = trpc.getUserPreferences.useQuery(undefined, {
     enabled: !!session?.user && hasTenant,
@@ -37,31 +35,12 @@ export function SetupWizardProvider({ children: reactChildren }: { children: Rea
 
   const tz = getMobileLocaleConfig().timezone;
 
-  // Auto-provision tenant for authenticated users without a household
-  const isCreatingTenantRef = useRef(false);
+  // Redirect authenticated users without a household to /(auth)/complete-profile
   useEffect(() => {
-    if (
-      tenantStatusQuery.data &&
-      !tenantStatusQuery.data.hasTenant &&
-      !isCreatingTenantRef.current
-    ) {
-      isCreatingTenantRef.current = true;
-      createTenantMut
-        .mutateAsync({
-          name: 'My Household',
-          country: 'AU',
-          currency: 'AUD',
-          timezone: tz,
-        })
-        .then(async () => {
-          await tenantStatusQuery.refetch();
-          await utils.invalidate();
-        })
-        .catch(() => {
-          isCreatingTenantRef.current = false;
-        });
+    if (tenantStatusQuery.data && !tenantStatusQuery.data.hasTenant) {
+      router.replace('/(auth)/complete-profile');
     }
-  }, [tenantStatusQuery.data, createTenantMut, tenantStatusQuery, utils, tz]);
+  }, [tenantStatusQuery.data, router]);
 
   const globalParams = useGlobalSearchParams<{ mode?: string }>();
   const isRerunParam = globalParams.mode === 'rerun';

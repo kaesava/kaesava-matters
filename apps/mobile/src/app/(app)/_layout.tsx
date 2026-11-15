@@ -117,18 +117,23 @@ export default function AppLayout() {
     }
   }, [subQuery.data?.isTrialExpired, currentScreen, segments, router]);
 
-  // Setup Guard: redirect to setup wizard if user has not completed setup (consistent with web app tenant setting)
+  // Setup Guard: redirect to complete-profile if no tenant, or setup wizard if setup incomplete
   React.useEffect(() => {
     if (
       session?.user &&
       !tenantStatusQuery.isLoading &&
       tenantStatusQuery.data &&
-      tenantStatusQuery.data.setupCompleted === false &&
       !(segments as string[]).includes('(setup)')
     ) {
-      router.replace('/(setup)/income' as Href);
+      if (!tenantStatusQuery.data.hasTenant) {
+        router.replace('/(auth)/complete-profile' as Href);
+        return;
+      }
+      if (tenantStatusQuery.data.setupCompleted === false) {
+        router.replace('/(setup)/income' as Href);
+      }
     }
-  }, [session?.user, tenantStatusQuery.isLoading, tenantStatusQuery.data?.setupCompleted, segments, router]);
+  }, [session?.user, tenantStatusQuery.isLoading, tenantStatusQuery.data, segments, router]);
 
   // Automatically register device push token upon authenticated layout mount & handle foreground notifications
   usePushNotifications(

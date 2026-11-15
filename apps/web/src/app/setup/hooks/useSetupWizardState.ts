@@ -36,31 +36,12 @@ export function useSetupWizardState() {
   });
   const cancelSetupMut = trpc.cancelSetup.useMutation();
 
-  // Auto-provision tenant for authenticated users without a household (e.g. Google OAuth sign-in)
-  const isCreatingTenantRef = useRef(false);
+  // Redirect authenticated users without a household to /complete-profile to confirm country & terms
   useEffect(() => {
-    if (
-      tenantStatusQuery.data &&
-      !tenantStatusQuery.data.hasTenant &&
-      !isCreatingTenantRef.current
-    ) {
-      isCreatingTenantRef.current = true;
-      createTenantMut
-        .mutateAsync({
-          name: "My Household",
-          country: "AU",
-          currency: "AUD",
-          timezone: DEFAULT_TIMEZONE,
-        })
-        .then(async () => {
-          await tenantStatusQuery.refetch();
-          await utils.invalidate();
-        })
-        .catch(() => {
-          isCreatingTenantRef.current = false;
-        });
+    if (tenantStatusQuery.data && !tenantStatusQuery.data.hasTenant) {
+      router.replace("/complete-profile");
     }
-  }, [tenantStatusQuery.data, createTenantMut, tenantStatusQuery, utils]);
+  }, [tenantStatusQuery.data, router]);
 
   const [step, setStep] = useState(1);
   const [showDiscardModal, setShowDiscardModal] = useState(false);

@@ -1,21 +1,51 @@
 "use client";
-import { useEffect, Suspense } from "react";
+
+import { useEffect, useState, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import { authClient } from "../../lib/auth";
 import { trpc } from "../../lib/trpc";
 import { t } from "@money-matters/i18n";
 
 function AuthCallbackContent() {
-  const { data: session, isPending } = authClient.useSession();
   const searchParams = useSearchParams();
+  const verifier = searchParams.get("neon_auth_session_verifier");
+  const oauthError = searchParams.get("error");
+  const [exchanged, setExchanged] = useState(!verifier);
+
+  useEffect(() => {
+    if (!verifier) return;
+    let cancelled = false;
+    fetch(`/api/auth/get-session?neon_auth_session_verifier=${encodeURIComponent(verifier)}`)
+      .catch(() => {})
+      .finally(() => {
+        if (!cancelled) {
+          setExchanged(true);
+        }
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [verifier]);
+
+  const { data: session, isPending, refetch: refetchSession } = authClient.useSession();
+
+  useEffect(() => {
+    if (exchanged && verifier) {
+      void refetchSession();
+    }
+  }, [exchanged, verifier, refetchSession]);
 
   const tenantStatusQuery = trpc.getTenantStatus.useQuery(undefined, {
-    enabled: !!session?.user,
+    enabled: exchanged && !!session?.user,
     retry: false,
   });
 
   useEffect(() => {
-    if (isPending || (session?.user && tenantStatusQuery.isLoading)) return;
+    if (oauthError) {
+      window.location.href = `/sign-in?error=${encodeURIComponent(oauthError)}`;
+      return;
+    }
+    if (!exchanged || isPending || (session?.user && tenantStatusQuery.isLoading)) return;
 
     const token = session?.session?.token;
     const isMobileClient =
@@ -24,26 +54,47 @@ function AuthCallbackContent() {
       searchParams.has("native");
 
     if (isMobileClient) {
-      if (token) {
-        window.location.href = `moneymatters://home?token=${token}`;
-      } else {
-        window.location.href = "moneymatters://home";
-      }
+      window.location.href = token
+        ? `moneymatters://auth-callback?token=${encodeURIComponent(token)}`
+        : "moneymatters://auth-callback";
       return;
     }
 
-    // If setup pending, redirect to /setup; otherwise redirect to requested target or dashboard
-    if (session?.user && tenantStatusQuery.data && !tenantStatusQuery.data.setupCompleted) {
+    if (!session?.user) {
+      window.location.href = "/sign-in?error=oauth_failed";
+      return;
+    }
+
+    const rawRedirect = searchParams.get("redirect") || searchParams.get("target") || "/dashboard";
+    const redirectUrl =
+      rawRedirect.startsWith("/") && !rawRedirect.startsWith("//") ? rawRedirect : "/dashboard";
+
+    // Invited partners must return to /invite/[token] to join the existing household
+    if (redirectUrl.startsWith("/invite/")) {
+      window.location.href = redirectUrl;
+      return;
+    }
+
+    if (tenantStatusQuery.data && !tenantStatusQuery.data.hasTenant) {
+      window.location.href = `/complete-profile?redirect=${encodeURIComponent(redirectUrl)}`;
+      return;
+    }
+
+    if (tenantStatusQuery.data && !tenantStatusQuery.data.setupCompleted) {
       window.location.href = "/setup";
       return;
     }
 
-    // Standard web browser flow: redirect to requested target or dashboard
-    const rawRedirect = searchParams.get("redirect") || searchParams.get("target") || "/dashboard";
-    const redirectUrl =
-      rawRedirect.startsWith("/") && !rawRedirect.startsWith("//") ? rawRedirect : "/dashboard";
     window.location.href = redirectUrl;
-  }, [session, isPending, tenantStatusQuery.isLoading, tenantStatusQuery.data, searchParams]);
+  }, [
+    oauthError,
+    exchanged,
+    session,
+    isPending,
+    tenantStatusQuery.isLoading,
+    tenantStatusQuery.data,
+    searchParams,
+  ]);
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-zinc-50 gap-4">
@@ -67,4 +118,3 @@ export default function AuthCallbackPage() {
     </Suspense>
   );
 }
-

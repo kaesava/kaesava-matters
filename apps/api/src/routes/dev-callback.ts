@@ -34,7 +34,10 @@ export function handleDevCallbackRequest(
     const hostAndPath = decodeURIComponent(segments.slice(1).join('/'));
     const hostOnly = hostAndPath.split('/')[0].split(':')[0];
     const isAllowedHost =
-      hostOnly === 'localhost' || hostOnly === '127.0.0.1' || hostOnly.endsWith('.kaesava.au');
+      hostOnly === 'localhost' ||
+      hostOnly === '127.0.0.1' ||
+      hostOnly.endsWith('.kaesava.au') ||
+      hostOnly.endsWith('.ts.net');
     if (!isAllowedHost) {
       return new Response(JSON.stringify({ error: 'Forbidden host.' }), {
         status: 403,

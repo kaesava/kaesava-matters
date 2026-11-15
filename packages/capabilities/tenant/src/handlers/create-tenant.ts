@@ -51,12 +51,15 @@ export function createTenantHandler(db: DbOrTx) {
     input: z.infer<typeof CreateTenantCommand>,
     appId: string,
     userId: string,
-    userEmail?: string
+    userEmail?: string,
+    displayName?: string
   ) => {
     const tenantId = crypto.randomUUID();
     const now = new Date();
     const trialStartedAt = now;
     const trialEndsAt = new Date(now.getTime() + 60 * 24 * 60 * 60 * 1000);
+    const derivedName = input.name.replace(/'s Household$/i, "").trim();
+    const resolvedDisplayName = displayName?.trim() || (derivedName && derivedName !== "My Household" ? derivedName : "User");
 
     // 0. Guard app and user mirror records
     await db
@@ -73,7 +76,7 @@ export function createTenantHandler(db: DbOrTx) {
       .values({
         id: userId,
         email: userEmail || `user-${userId.substring(0, 8)}@moneymatters.kaesava.au`,
-        displayName: "User",
+        displayName: resolvedDisplayName,
       })
       .onConflictDoNothing();
 

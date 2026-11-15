@@ -107,11 +107,15 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   }, [userLocale]);
 
 
-  // Setup Guard: redirect to /setup if setup is pending
+  // Setup Guard: redirect to /complete-profile if no tenant, or /setup if setup is pending
   useEffect(() => {
     if (isPending || !session?.user || tenantStatusQuery.isLoading) return;
 
     if (tenantStatusQuery.data) {
+      if (!tenantStatusQuery.data.hasTenant) {
+        router.replace("/complete-profile");
+        return;
+      }
       if (!tenantStatusQuery.data.setupCompleted && !pathname.startsWith("/setup")) {
         router.replace("/setup");
       }

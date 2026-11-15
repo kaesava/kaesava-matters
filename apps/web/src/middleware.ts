@@ -59,5 +59,5 @@ export function middleware(request: NextRequest) {
 
 export const config = {
   // Apply middleware strictly to protected routes; public pages (/sign-in, /sign-up, etc.) are served statically from edge cache
-  matcher: ["/dashboard/:path*", "/setup/:path*", "/subscription/:path*"],
+  matcher: ["/dashboard/:path*", "/setup/:path*", "/complete-profile/:path*", "/subscription/:path*"],
 };

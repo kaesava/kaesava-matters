@@ -355,6 +355,7 @@ export async function createEdgeContext(
     session: {
       userId: claims.userId,
       email: claims.email,
+      displayName: claims.displayName,
       tenantId,
       appId,
       role,

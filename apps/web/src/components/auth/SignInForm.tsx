@@ -6,6 +6,7 @@ import { t } from "@money-matters/i18n";
 import { Button, FormLabel, FormFieldError, FormErrorBanner } from "@money-matters/ui/web";
 import { SignInInputSchema, isValidEmail } from "@money-matters/types";
 import { authClient } from "../../lib/auth";
+import { trpc } from "../../lib/trpc";
 
 interface SignInFormProps {
   redirectUrl: string;
@@ -26,6 +27,7 @@ export function SignInForm({
   autoFocus = true,
   initialEmail = "",
 }: SignInFormProps) {
+  const utils = trpc.useUtils();
   const [email, setEmail] = useState(initialEmail);
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
@@ -90,7 +92,17 @@ export function SignInForm({
           }
           onNeedOtp(email.trim().toLowerCase(), password);
         } else {
-          const displayErr = t("auth.signInFailed");
+          let displayErr = t("auth.signInFailed");
+          try {
+            const providerInfo = await utils.checkEmailAuthProvider.fetch({
+              email: email.trim().toLowerCase(),
+            });
+            if (providerInfo.isGoogleOnly) {
+              displayErr = t("auth.googleOnlyAccountError");
+            }
+          } catch {
+            // Fallback to generic sign-in error
+          }
           setFormError(displayErr);
           onError?.(displayErr);
         }

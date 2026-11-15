@@ -32,7 +32,8 @@
 | `/sign-up` | `apps/web/src/app/sign-up/page.tsx` | 134 | Public (`<Suspense>`) | `SignUpForm`, `SocialAuthButtons` |
 | `/forgot-password` | `apps/web/src/app/forgot-password/page.tsx` | 330 | Public | Multi-step email/OTP/new-password reset flow (`OtpInput`, `PasswordStrengthIndicator`) |
 | `/reset-password` | `apps/web/src/app/reset-password/page.tsx` | 167 | Public (`<Suspense>`) | Token-based password reset form (`PasswordStrengthIndicator`) |
-| `/auth-callback` | `apps/web/src/app/auth-callback/page.tsx` | 70 | Public (`<Suspense>`) | OAuth/session callback redirect handler (`trpc.tenant.getMyTenants`) |
+| `/auth-callback` | `apps/web/src/app/auth-callback/page.tsx` | 120 | Public (`<Suspense>`) | Exchanges `neon_auth_session_verifier`, forwards OAuth errors, routes `/invite/*`, `/complete-profile`, `/setup`, or `moneymatters://auth-callback` |
+| `/complete-profile` | `apps/web/src/app/complete-profile/page.tsx` | 215 | Authenticated | Post-OAuth Name, Country/Currency/Timezone & Terms confirmation (`trpc.createTenant`) |
 | `/dev-callback/[...slug]` | `apps/web/src/app/dev-callback/[...slug]/page.tsx` | 76 | Dev-only | Local OAuth callback bridge |
 | `/invite/[token]` | `apps/web/src/app/invite/[token]/page.tsx` | 133 | Public / Auth | Household partner invitation acceptance (`trpc.tenant.getInviteDetails`, `trpc.tenant.acceptInvite`) |
 | `/privacy` | `apps/web/src/app/privacy/page.tsx` | 173 | Public | Privacy Policy page (`LandingHeader`, `LandingFooter`) |
@@ -75,6 +76,8 @@
 | `/(auth)/forgot-password` | `apps/mobile/src/app/(auth)/forgot-password.tsx` | 219 | Public | `ForgotPasswordEmailStep`, `ForgotPasswordOtpStep`, `ForgotPasswordSuccessStep` |
 | `/(auth)/reset-password` | `apps/mobile/src/app/(auth)/reset-password.tsx` | 240 | Public | Deep-link token password reset screen (`MobilePasswordStrength`) |
 | `/(auth)/invite/[token]` | `apps/mobile/src/app/(auth)/invite/[token].tsx` | 159 | Public / Auth | Partner invite acceptance screen (`trpc.tenant.getInviteDetails`, `trpc.tenant.acceptInvite`) |
+| `/(auth)/auth-callback` | `apps/mobile/src/app/(auth)/auth-callback.tsx` | 105 | Public / Deep Link | Handles `moneymatters://auth-callback?token=...`, stores session, routes to `complete-profile`, `setup`, or `home` |
+| `/(auth)/complete-profile` | `apps/mobile/src/app/(auth)/complete-profile.tsx` | 120 | Authenticated | Post-OAuth Name, Country/Currency/Timezone & Terms confirmation (`useCompleteProfile`, `trpc.createTenant`) |
 | `(setup)` Layout | `apps/mobile/src/app/(setup)/_layout.tsx` | 19 | Authenticated | Expo Router `Stack` for setup wizard |
 | `/(setup)/accounts` | `apps/mobile/src/app/(setup)/accounts.tsx` | 124 | Authenticated | Step 1: `SetupProgressBar`, `SetupBankAccountsHeader`, `SetupBankAccountCard` |
 | `/(setup)/income` | `apps/mobile/src/app/(setup)/income.tsx` | 343 | Authenticated | Step 2: `SetupProgressBar`, income schedule inputs, `RecurrenceBuilder` |

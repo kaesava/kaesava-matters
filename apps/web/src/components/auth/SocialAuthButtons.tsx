@@ -30,9 +30,10 @@ export function SocialAuthButtons({ mode, redirectUrl, onError }: SocialAuthButt
   const handleSocialSignIn = async () => {
     setLoadingProvider("google");
     try {
+      const callbackPath = `/auth-callback?redirect=${encodeURIComponent(redirectUrl)}`;
       const result = await authClient.signIn.social({
         provider: "google",
-        callbackURL: typeof window !== "undefined" ? window.location.origin + redirectUrl : redirectUrl,
+        callbackURL: typeof window !== "undefined" ? `${window.location.origin}${callbackPath}` : callbackPath,
       });
 
       if (result?.error) {

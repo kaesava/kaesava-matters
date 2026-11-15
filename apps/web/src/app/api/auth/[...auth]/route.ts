@@ -1,5 +1,7 @@
 import { NextRequest } from "next/server";
-import { logger, checkRateLimit } from "@money-matters/core";
+import { getCloudflareContext } from "@opennextjs/cloudflare";
+import { logger } from "@money-matters/core";
+import { enforceAuthProxyRateLimit, type RateLimitEnv } from "./rateLimitAuth";
 
 export async function GET(req: NextRequest) {
   return handleProxy(req);
@@ -53,14 +55,46 @@ function isValidOrigin(req: NextRequest): boolean {
   return true;
 }
 
+const SAFE_FORWARD_HEADERS = new Set([
+  "accept",
+  "accept-language",
+  "content-type",
+  "cookie",
+  "user-agent",
+  "x-correlation-id",
+]);
+
+interface AuthProxyEnv extends RateLimitEnv {
+  NEXT_PUBLIC_NEON_AUTH_URL?: string;
+  NEON_AUTH_BASE_URL?: string;
+  DEV_NEON_AUTH_ORIGIN?: string;
+}
+
+function jsonProxyError(message: string, status: number): Response {
+  return new Response(JSON.stringify({ error: message, message }), {
+    status,
+    headers: { "Content-Type": "application/json" },
+  });
+}
+
 async function handleProxy(req: NextRequest) {
   try {
     const isStateChanging = !["GET", "HEAD", "OPTIONS"].includes(req.method.toUpperCase());
     if (isStateChanging && !isValidOrigin(req)) {
-      return new Response(JSON.stringify({ error: "CSRF validation failed: Invalid Origin or Referer" }), {
-        status: 403,
-        headers: { "Content-Type": "application/json" },
-      });
+      return jsonProxyError("CSRF validation failed: Invalid Origin or Referer", 403);
+    }
+
+    const url = new URL(req.url);
+    const path = url.pathname.replace(/^\/api\/auth/, "");
+    const hasBody = req.method !== "GET" && req.method !== "HEAD" && req.method !== "OPTIONS";
+    let bodyText = hasBody ? await req.text() : "";
+
+    let cfEnv: AuthProxyEnv | undefined;
+    try {
+      const ctx = await getCloudflareContext({ async: true });
+      cfEnv = ctx.env as unknown as AuthProxyEnv;
+    } catch {
+      cfEnv = undefined;
     }
 
     if (isStateChanging) {
@@ -68,20 +102,18 @@ async function handleProxy(req: NextRequest) {
         req.headers.get("cf-connecting-ip") ||
         req.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ||
         "unknown";
-      const rateLimit = await checkRateLimit(`auth:${clientIp}`, 30, 60);
-      if (!rateLimit.allowed) {
-        return new Response(JSON.stringify({ error: "Too many authentication requests. Please try again shortly." }), {
-          status: 429,
-          headers: { "Content-Type": "application/json" },
-        });
+      const rateLimitResponse = await enforceAuthProxyRateLimit(path, clientIp, bodyText, cfEnv);
+      if (rateLimitResponse) {
+        return rateLimitResponse;
       }
     }
 
-    const url = new URL(req.url);
-    const path = url.pathname.replace(/^\/api\/auth/, "");
-    const authBase = process.env.NEXT_PUBLIC_NEON_AUTH_URL;
+    const authBase =
+      process.env.NEXT_PUBLIC_NEON_AUTH_URL ||
+      cfEnv?.NEXT_PUBLIC_NEON_AUTH_URL ||
+      cfEnv?.NEON_AUTH_BASE_URL;
     if (!authBase) {
-      return new Response(JSON.stringify({ error: "NEXT_PUBLIC_NEON_AUTH_URL is not set" }), { status: 500 });
+      return jsonProxyError("NEXT_PUBLIC_NEON_AUTH_URL is not set", 500);
     }
 
     const targetUrl = `${authBase}${path}${url.search}`;
@@ -89,13 +121,7 @@ async function handleProxy(req: NextRequest) {
 
     const headers = new Headers();
     req.headers.forEach((value, key) => {
-      // Exclude proxy forwarding headers that confuse the auth server hostname checks
-      const lowerKey = key.toLowerCase();
-      if (
-        !lowerKey.startsWith("x-forwarded-") && 
-        lowerKey !== "host" && 
-        lowerKey !== "forwarded"
-      ) {
+      if (SAFE_FORWARD_HEADERS.has(key.toLowerCase())) {
         headers.set(key, value);
       }
     });
@@ -122,10 +148,8 @@ async function handleProxy(req: NextRequest) {
       }
     }
 
-    // Align host, origin, and referer headers to match the target auth server domain to bypass CSRF checking
-    const targetHost = new URL(authBase).host;
+    // Align origin and referer headers to match the target auth server domain
     const targetOrigin = new URL(authBase).origin;
-    headers.set("host", targetHost);
     headers.set("origin", targetOrigin);
     headers.set("referer", authBase);
 
@@ -134,25 +158,18 @@ async function handleProxy(req: NextRequest) {
       headers,
     };
 
-    if (req.method !== "GET" && req.method !== "HEAD" && req.method !== "OPTIONS") {
-      let bodyText = await req.text();
-      if (process.env.NODE_ENV === "development" && bodyText) {
+    if (hasBody) {
+      const devAllowedOrigin = process.env.DEV_NEON_AUTH_ORIGIN || cfEnv?.DEV_NEON_AUTH_ORIGIN;
+      if (process.env.NODE_ENV === "development" && devAllowedOrigin && bodyText) {
         try {
           const bodyJson = JSON.parse(bodyText);
           if (bodyJson.callbackURL) {
             const originalUrl = bodyJson.callbackURL;
             const urlObj = new URL(originalUrl, req.url);
-            
-            // Extract the original origin of the request
             const reqHost = req.headers.get("x-forwarded-host") || req.headers.get("host") || urlObj.host;
             const reqProto = req.headers.get("x-forwarded-proto") || (req.url.startsWith("https") ? "https" : "http");
-            
-            // Neon Auth dev instance enforces origin whitelisting (https://kesh-imac.tail09ef18.ts.net)
-            const devAllowedOrigin = process.env.DEV_NEON_AUTH_ORIGIN || "https://kesh-imac.tail09ef18.ts.net";
-
-            // Rewrite callbackURL to go through the dev-callback redirection route
             const callbackUrlObj = new URL(`${devAllowedOrigin}/dev-callback/${reqProto}/${reqHost}`);
-            
+            callbackUrlObj.searchParams.set("target", urlObj.pathname + urlObj.search);
             bodyJson.callbackURL = callbackUrlObj.toString();
             bodyText = JSON.stringify(bodyJson);
             logger.debug('[Auth Proxy] Rewrote callbackURL', { from: originalUrl, to: bodyJson.callbackURL });
@@ -160,10 +177,8 @@ async function handleProxy(req: NextRequest) {
           if (bodyJson.redirectTo) {
             const originalRedirect = bodyJson.redirectTo;
             const redirectUrlObj = new URL(originalRedirect, req.url);
-            // Rewrite redirectTo for local development if needed to match allowed Neon Auth callback URLs
             const reqHost = req.headers.get("x-forwarded-host") || req.headers.get("host") || redirectUrlObj.host;
             const reqProto = req.headers.get("x-forwarded-proto") || (req.url.startsWith("https") ? "https" : "http");
-            const devAllowedOrigin = process.env.DEV_NEON_AUTH_ORIGIN || "https://kesh-imac.tail09ef18.ts.net";
             const proxyRedirectUrl = new URL(`${devAllowedOrigin}/dev-callback/${reqProto}/${reqHost}`);
             proxyRedirectUrl.searchParams.set("target", redirectUrlObj.pathname + redirectUrlObj.search);
             bodyJson.redirectTo = proxyRedirectUrl.toString();
@@ -183,7 +198,8 @@ async function handleProxy(req: NextRequest) {
 
     logger.debug('[Auth Proxy] Target response status', { status: response.status });
     if (response.status >= 400) {
-      logger.debug('[Auth Proxy] Target error response body', { status: response.status });
+      const errorSnippet = new TextDecoder().decode(buffer).slice(0, 300);
+      logger.warn('[Auth Proxy] Target error response', { path, status: response.status, errorSnippet });
     }
 
     const responseHeaders = new Headers();
@@ -240,9 +256,6 @@ async function handleProxy(req: NextRequest) {
     });
   } catch (err) {
     logger.error("[Auth Proxy] Upstream connection error", { err });
-    return new Response(JSON.stringify({ error: "Failed to connect to auth service" }), {
-      status: 502,
-      headers: { "Content-Type": "application/json" },
-    });
+    return jsonProxyError("Failed to connect to auth service", 502);
   }
 }

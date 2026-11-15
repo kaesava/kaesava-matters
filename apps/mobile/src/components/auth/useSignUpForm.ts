@@ -100,7 +100,22 @@ export function useSignUpForm() {
       });
 
       if (signUpResult.error) {
-        setError(signUpResult.error.message || t("auth.signUpErrorGeneric"));
+        const msg = signUpResult.error.message || "";
+        const errCode = (signUpResult.error as { code?: string }).code || "";
+        const isExistingUser =
+          errCode === "USER_ALREADY_EXISTS" ||
+          msg.toLowerCase().includes("already") ||
+          msg.toLowerCase().includes("exist");
+        if (isExistingUser) {
+          setError(t("auth.userAlreadyExists"));
+          setLoading(false);
+          router.replace({
+            pathname: "/(auth)/sign-in",
+            params: { email: normalizedEmail, reason: "existing" },
+          });
+          return;
+        }
+        setError(msg || t("auth.signUpErrorGeneric"));
         setLoading(false);
         return;
       }

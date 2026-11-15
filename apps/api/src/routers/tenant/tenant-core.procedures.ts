@@ -9,9 +9,12 @@ import {
   getTenantHandler,
   exportDataHandler,
   deleteMyAccountHandler,
+  checkEmailAuthProviderHandler,
 } from "@money-matters/capability-tenant";
 import { deleteFileFromBucket, getPresignedDownloadUrl } from "@money-matters/capability-file-notes";
-import { CreateTenantCommand, DEFAULT_APP_FEATURE_FLAGS } from "@money-matters/types";
+import { CreateTenantCommand, CheckEmailAuthProviderInputSchema, DEFAULT_APP_FEATURE_FLAGS } from "@money-matters/types";
+import { checkRateLimit } from "@money-matters/core";
+import { TRPCError } from '@trpc/server';
 import { z } from 'zod';
 import { posthog } from '../../lib/posthog.js';
 
@@ -21,8 +24,21 @@ export const tenantCoreProcedures = {
     .mutation(async ({ input, ctx }) => {
       const appId = ctx.appId || ctx.session?.appId || MONEY_MATTERS_APP_ID;
       const handler = createTenantHandler(ctx.db || db);
-      const result = await handler(input, appId, ctx.userId, ctx.email);
+      const result = await handler(input, appId, ctx.userId, ctx.email, ctx.session?.displayName);
       clearEdgeContextCache();
+
+      if (ctx.email) {
+        const derivedName = input.name.replace(/'s Household$/i, "").trim();
+        inngest.send({
+          name: 'auth/user.signup',
+          data: {
+            userId: ctx.userId!,
+            tenantId: result.tenantId,
+            email: ctx.email,
+            displayName: ctx.session?.displayName || (derivedName && derivedName !== "My Household" ? derivedName : undefined),
+          },
+        }).catch(() => {});
+      }
 
       if (posthog && ctx.userId) {
         posthog.identify({
@@ -199,6 +215,24 @@ export const tenantCoreProcedures = {
         });
 
       return { success: true };
+    }),
+
+  checkEmailAuthProvider: publicProcedure
+    .input(CheckEmailAuthProviderInputSchema)
+    .query(async ({ input, ctx }) => {
+      const clientIp =
+        ctx.req?.headers.get('cf-connecting-ip') ||
+        ctx.req?.headers.get('x-forwarded-for')?.split(',')[0]?.trim() ||
+        'unknown-ip';
+      const { allowed } = await checkRateLimit(`auth:provider:${clientIp}`, 15, 60);
+      if (!allowed) {
+        throw new TRPCError({
+          code: 'TOO_MANY_REQUESTS',
+          message: 'Too many requests. Please try again shortly.',
+        });
+      }
+      const handler = checkEmailAuthProviderHandler(ctx.db || db);
+      return await handler(input.email);
     }),
 
 };

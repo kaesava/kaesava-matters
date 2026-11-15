@@ -37,4 +37,26 @@ describe("tenant router", () => {
 
     await expect(caller.getTenantStatus()).rejects.toMatchObject({ code: "UNAUTHORIZED" });
   });
+
+  it("checkEmailAuthProvider returns isGoogleOnly=true for Google-only accounts", async () => {
+    const dbWithExecute = {
+      ...createMockDb(),
+      execute: async () => [{ providerId: "google" }],
+    };
+    const caller = appRouter.createCaller({
+      req: new Request("http://localhost/trpc"),
+      resHeaders: new Headers(),
+      db: dbWithExecute as unknown as Awaited<ReturnType<typeof createEdgeContext>>["db"],
+      userId: null,
+      session: null,
+      email: null,
+      tenantId: null,
+      appId: null,
+      correlationId: "corr-2",
+    });
+
+    await expect(caller.checkEmailAuthProvider({ email: "g@example.com" })).resolves.toEqual({
+      isGoogleOnly: true,
+    });
+  });
 });

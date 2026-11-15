@@ -388,6 +388,7 @@ tenants (id PK, appId FK→apps.id, name, subscriptionTier, stripeCustomerId, st
 | `tenant.getMyTenants` | `tenant-core.procedures.ts:137` | `authenticatedProcedure` | None | None | None | `tenantUsers`, `tenants` |
 | `tenant.switchTenant` | `tenant-core.procedures.ts:165` | `authenticatedProcedure` | None | `z.object({ tenantId: z.string().uuid() }).strict()` | None | `tenantUsers` |
 | `tenant.subscribeEarlyAccess` | `tenant-core.procedures.ts:187` | `publicProcedure` | None | `z.object({ email: z.string().email() }).strict()` | None | `earlyAccessSubscribers` |
+| `tenant.checkEmailAuthProvider` | `tenant-core.procedures.ts:220` | `publicProcedure` | IP rate limit (15/60s) | `CheckEmailAuthProviderInputSchema` (`.strict()`) | `{ isGoogleOnly: boolean }` | `checkEmailAuthProviderHandler` (`neon_auth.user`, `neon_auth.account`) |
 | `tenant.getUserPreferences` | `profile.procedures.ts:9` | `privateTenantProcedure` | None | None | None | `userPreferences`, `tenantUserPreferences`, `tenants` |
 | `tenant.updateUserPreferences` | `profile.procedures.ts:70` | `privateTenantProcedure` | `requiresWriteAccess` | Inline `z.object({...}).strict()` | None | `userPreferences`, `tenantUserPreferences` |
 | `tenant.getUserProfile` | `profile.procedures.ts:146` | `authenticatedProcedure` | None | None | None | `users`, `userPreferences`, `tenants` |
@@ -528,7 +529,7 @@ tenants (id PK, appId FK→apps.id, name, subscriptionTier, stripeCustomerId, st
 | `/api/auth/mobile-done` | `GET` | `apps/api/src/worker.ts:170` (`apps/api/src/routes/mobile-auth.ts:127`) | OAuth callback cookie/verifier exchange | Redirects to `return_to` deep link (`moneymatters://` or `exp://`) |
 | `/api/auth/*` (Worker) | `GET`, `POST` | `apps/api/src/worker.ts:174` (`apps/api/src/routes/auth-proxy.ts:152`) | Proxies to `NEON_AUTH_BASE_URL` | Passes through `enforceApiRateLimit` (`auth` bucket: 10 req / 60s) |
 | `/trpc/*` (Worker) | `GET`, `POST` | `apps/api/src/worker.ts:185` | JWT/Cookie session via `createEdgeContext` | Passes through `enforceApiRateLimit` (`mutation`: 100/60s, `query`: 300/60s) |
-| `/api/auth/[...auth]` (Web) | `GET`, `POST` | `apps/web/src/app/api/auth/[...auth]/route.ts:159` | CSRF origin check + proxies to `NEON_AUTH_BASE_URL` | Next.js auth proxy (`SEC-06` adds Upstash rate limiting) |
+| `/api/auth/[...auth]` (Web) | `GET`, `POST` | `apps/web/src/app/api/auth/[...auth]/route.ts` | CSRF origin check + safe header allowlist + proxies to `NEON_AUTH_BASE_URL` | Next.js auth proxy (`SEC-06` Upstash rate limiting; opt-in `DEV_NEON_AUTH_ORIGIN` rewrite preserving `target`) |
 | `/api/trpc/[trpc]` (Web) | `GET`, `POST` | `apps/web/src/app/api/trpc/[trpc]/route.ts:116` | Extracts session token from cookies and forwards to `NEXT_PUBLIC_API_URL/trpc` | Forwards `x-forwarded-for` to Worker API |
 
 ### 10.2 Active Inngest Workflows (`apps/api/src/inngest/index.ts` — 9 Functions)

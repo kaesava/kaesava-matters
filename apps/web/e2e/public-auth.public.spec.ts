@@ -198,6 +198,7 @@ test.describe('3. Unauthenticated Auth-Guard Redirect Enforcement', () => {
     const protectedRoutes = [
       '/dashboard',
       '/setup',
+      '/complete-profile',
       '/dashboard/plan',
       '/dashboard/envelopes',
       '/dashboard/bank-accounts',
@@ -213,5 +214,11 @@ test.describe('3. Unauthenticated Auth-Guard Redirect Enforcement', () => {
       await page.goto(route);
       await expect(page).toHaveURL(/\/sign-in/);
     }
+  });
+
+  test('3.2 OAuth Callback Error Forwards Cleanly to `/sign-in`', async ({ page }) => {
+    await page.goto('/auth-callback?error=account_not_linked');
+    await expect(page).toHaveURL(/\/sign-in\?error=account_not_linked/);
+    await expect(page.getByText(/already exists/i).first()).toBeVisible();
   });
 });

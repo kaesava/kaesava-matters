@@ -7,6 +7,7 @@ import {
   updateBankAccountHandler,
   archiveBankAccountHandler,
   getTenantHandler,
+  checkEmailAuthProviderHandler,
 } from './index.js';
 
 describe('Capability Tenant Handlers', () => {
@@ -307,5 +308,24 @@ describe('Capability Tenant Handlers', () => {
 
     expect(result.success).toBe(true);
     expect(deleteMock).toHaveBeenCalled();
+  });
+
+  it('checkEmailAuthProviderHandler identifies Google-only vs linked/credential accounts', async () => {
+    const googleOnlyDb = { execute: vi.fn().mockResolvedValue([{ providerId: 'google' }]) };
+    expect(await checkEmailAuthProviderHandler(googleOnlyDb as unknown as DbOrTx)('g@example.com')).toEqual({
+      isGoogleOnly: true,
+    });
+
+    const linkedDb = {
+      execute: vi.fn().mockResolvedValue([{ providerId: 'google' }, { providerId: 'credential' }]),
+    };
+    expect(await checkEmailAuthProviderHandler(linkedDb as unknown as DbOrTx)('both@example.com')).toEqual({
+      isGoogleOnly: false,
+    });
+
+    const unknownDb = { execute: vi.fn().mockResolvedValue([]) };
+    expect(await checkEmailAuthProviderHandler(unknownDb as unknown as DbOrTx)('none@example.com')).toEqual({
+      isGoogleOnly: false,
+    });
   });
 });
