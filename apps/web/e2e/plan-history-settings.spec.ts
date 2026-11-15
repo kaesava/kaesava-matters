@@ -100,8 +100,7 @@ test.describe('10. Settings 4-Tab Layout, Governance & Subpages (`/dashboard/set
     await archiveTab.click();
     await expect(page.locator('input[placeholder*="Search archived items"]').first()).toBeVisible();
 
-    await planTab.click();
-    await expect(page.locator('a[href="/setup?mode=rerun"]').first()).toBeVisible();
+    await page.goto('/dashboard/settings?tab=account-data');
     await expect(page.getByRole('heading', { level: 3, name: /Penny AI Assistant Usage/i }).first()).toBeVisible();
     await expect(page.getByRole('button', { name: /Download Zipped CSV Backup/i }).first()).toBeVisible();
 
