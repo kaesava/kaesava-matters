@@ -220,5 +220,9 @@ test.describe('3. Unauthenticated Auth-Guard Redirect Enforcement', () => {
     await page.goto('/auth-callback?error=account_not_linked');
     await expect(page).toHaveURL(/\/sign-in\?error=account_not_linked/);
     await expect(page.getByText(/already exists/i).first()).toBeVisible();
+
+    await page.goto('/auth-callback?error=oauth_failed');
+    await expect(page).toHaveURL(/\/sign-in\?error=oauth_failed/);
+    await expect(page.getByText(/Google sign-in could not be completed/i).first()).toBeVisible();
   });
 });

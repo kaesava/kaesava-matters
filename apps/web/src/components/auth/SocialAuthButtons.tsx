@@ -30,10 +30,13 @@ export function SocialAuthButtons({ mode, redirectUrl, onError }: SocialAuthButt
   const handleSocialSignIn = async () => {
     setLoadingProvider("google");
     try {
+      const origin = typeof window !== "undefined" ? window.location.origin : "";
       const callbackPath = `/auth-callback?redirect=${encodeURIComponent(redirectUrl)}`;
       const result = await authClient.signIn.social({
         provider: "google",
-        callbackURL: typeof window !== "undefined" ? `${window.location.origin}${callbackPath}` : callbackPath,
+        callbackURL: origin ? `${origin}${callbackPath}` : callbackPath,
+        errorCallbackURL: origin ? `${origin}/sign-in?error=oauth_failed` : "/sign-in?error=oauth_failed",
+        disableRedirect: true,
       });
 
       if (result?.error) {
@@ -41,6 +44,17 @@ export function SocialAuthButtons({ mode, redirectUrl, onError }: SocialAuthButt
         onError(result.error.message || t("auth.unexpectedError"));
         return;
       }
+
+      const targetUrl = result?.data && "url" in result.data ? result.data.url : undefined;
+      if (targetUrl) {
+        const authUrl = new URL(targetUrl);
+        if (authUrl.hostname.endsWith("google.com")) {
+          authUrl.searchParams.set("prompt", "select_account");
+        }
+        window.location.assign(authUrl.toString());
+        return;
+      }
+      setLoadingProvider(null);
     } catch (err) {
       setLoadingProvider(null);
       const errMsg = err instanceof Error ? err.message : "";

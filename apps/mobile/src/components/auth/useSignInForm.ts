@@ -11,14 +11,22 @@ import { registerPushNotificationsAsync } from "../../lib/push";
 export function useSignInForm() {
   const router = useRouter();
   const posthog = usePostHog();
-  const searchParams = useLocalSearchParams<{ email?: string; reason?: string }>();
+  const searchParams = useLocalSearchParams<{ email?: string; reason?: string; error?: string }>();
   const utils = trpc.useUtils();
 
   const [email, setEmail] = useState(searchParams.email ? String(searchParams.email).trim().toLowerCase() : "");
   const [password, setPassword] = useState("");
   const [fieldErrors, setFieldErrors] = useState<{ email?: string; password?: string }>({});
   const [error, setError] = useState<string | null>(
-    searchParams.reason === "existing" ? t("auth.userAlreadyExists") : null
+    searchParams.reason === "existing"
+      ? t("auth.userAlreadyExists")
+      : searchParams.error === "account_not_linked"
+        ? t("auth.oauthAccountNotLinked")
+        : searchParams.error === "oauth_failed" || searchParams.error === "access_denied"
+          ? t("auth.oauthSignInFailed")
+          : searchParams.error
+            ? t("auth.signInFailed")
+            : null
   );
   const [loading, setLoading] = useState(false);
   const [unverifiedEmail, setUnverifiedEmail] = useState<string | null>(null);

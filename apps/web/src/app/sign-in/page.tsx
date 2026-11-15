@@ -25,9 +25,11 @@ function SignInContent() {
       ? t("auth.userAlreadyExists")
       : urlError === "account_not_linked"
         ? t("auth.oauthAccountNotLinked")
-        : urlError
-          ? t("auth.signInFailed")
-          : null
+        : urlError === "oauth_failed" || urlError === "access_denied"
+          ? t("auth.oauthSignInFailed")
+          : urlError
+            ? t("auth.signInFailed")
+            : null
   );
   const [unverifiedEmail, setUnverifiedEmail] = useState<string | null>(null);
   const [passwordForOtp, setPasswordForOtp] = useState<string | undefined>(undefined);

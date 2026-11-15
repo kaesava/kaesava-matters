@@ -44,6 +44,7 @@ export const auth = {
     "signInFailed": "Sign in failed. Please check your email and password.",
     "googleOnlyAccountError": "This email uses Google Sign-In. Continue with Google or reset your password to add one.",
     "oauthAccountNotLinked": "An account with this email already exists. Please sign in with your password first.",
+    "oauthSignInFailed": "Google sign-in could not be completed. Please try again.",
     "completeProfileTitle": "Complete your profile",
     "completeProfileSubtitle": "Confirm your household details before setting up your budget.",
     "completeProfileCta": "Continue to Setup",

@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { View, Text, StyleSheet, TouchableOpacity, AppState } from "react-native";
+import { useRouter, type Href } from "expo-router";
+import * as WebBrowser from "expo-web-browser";
 import Svg, { Path } from "react-native-svg";
 import { t } from "@money-matters/i18n";
 import { DESIGN_TOKENS, MobileSpinner } from "@money-matters/ui/mobile";
@@ -16,6 +18,7 @@ export function MobileSocialAuthButtons({
   mode,
   onError,
 }: MobileSocialAuthButtonsProps) {
+  const router = useRouter();
   const [loadingProvider, setLoadingProvider] = useState<"google" | null>(null);
 
   // Automatically clear loading state when returning to the app
@@ -37,10 +40,15 @@ export function MobileSocialAuthButtons({
       const callbackURL = __DEV__
         ? `${devOrigin}/dev-callback/moneymatters/auth-callback`
         : "https://moneymatters.kaesava.au/auth-callback?platform=mobile";
+      const errorCallbackURL = __DEV__
+        ? `${devOrigin}/dev-callback/moneymatters/sign-in?error=oauth_failed`
+        : "https://moneymatters.kaesava.au/auth-callback?platform=mobile&error=oauth_failed";
 
       const result = await authClient.signIn.social({
         provider: "google",
         callbackURL,
+        errorCallbackURL,
+        disableRedirect: true,
       });
 
       if (result?.error) {
@@ -48,6 +56,32 @@ export function MobileSocialAuthButtons({
         onError(result.error.message || t("auth.unexpectedError"));
         return;
       }
+
+      const targetUrl = result?.data && "url" in result.data ? result.data.url : undefined;
+      if (targetUrl) {
+        const authUrl = new URL(targetUrl);
+        if (authUrl.hostname.endsWith("google.com")) {
+          authUrl.searchParams.set("prompt", "select_account");
+        }
+        const browserResult = await WebBrowser.openAuthSessionAsync(
+          authUrl.toString(),
+          "moneymatters://auth-callback"
+        );
+        setLoadingProvider(null);
+        if (browserResult.type === "success" && browserResult.url) {
+          const returnedUrl = new URL(browserResult.url);
+          const tokenParam = returnedUrl.searchParams.get("token");
+          const errorParam = returnedUrl.searchParams.get("error");
+          const query = errorParam
+            ? `?error=${encodeURIComponent(errorParam)}`
+            : tokenParam
+              ? `?token=${encodeURIComponent(tokenParam)}`
+              : "";
+          router.replace(`/(auth)/auth-callback${query}` as Href);
+        }
+        return;
+      }
+      setLoadingProvider(null);
     } catch (err) {
       setLoadingProvider(null);
       const errMsg = err instanceof Error ? err.message : "";

@@ -6,37 +6,62 @@ import { authClient } from "../../lib/auth";
 import { trpc } from "../../lib/trpc";
 import { t } from "@money-matters/i18n";
 
+interface ExchangedSessionPayload {
+  user?: { id?: string } | null;
+  session?: { token?: string } | null;
+}
+
 function AuthCallbackContent() {
   const searchParams = useSearchParams();
   const verifier = searchParams.get("neon_auth_session_verifier");
   const oauthError = searchParams.get("error");
-  const [exchanged, setExchanged] = useState(!verifier);
+
+  const { data: session, isPending, refetch: refetchSession } = authClient.useSession();
+  const [exchangeDone, setExchangeDone] = useState(!verifier);
+  const [exchangedPayload, setExchangedPayload] = useState<ExchangedSessionPayload | null>(null);
 
   useEffect(() => {
     if (!verifier) return;
     let cancelled = false;
-    fetch(`/api/auth/get-session?neon_auth_session_verifier=${encodeURIComponent(verifier)}`)
-      .catch(() => {})
-      .finally(() => {
-        if (!cancelled) {
-          setExchanged(true);
+
+    async function exchangeVerifier() {
+      try {
+        const res = await fetch(
+          `/api/auth/get-session?neon_auth_session_verifier=${encodeURIComponent(verifier!)}`,
+          { credentials: "include" }
+        );
+        if (res.ok) {
+          const payload = (await res.json()) as ExchangedSessionPayload;
+          if (!cancelled && payload) {
+            setExchangedPayload(payload);
+          }
         }
-      });
+      } catch {
+        // Fallback to refetchSession below
+      }
+
+      try {
+        await refetchSession();
+      } catch {
+        // Non-blocking; exchangedPayload still holds the verified session
+      }
+
+      if (!cancelled) {
+        setExchangeDone(true);
+      }
+    }
+
+    void exchangeVerifier();
     return () => {
       cancelled = true;
     };
-  }, [verifier]);
+  }, [verifier, refetchSession]);
 
-  const { data: session, isPending, refetch: refetchSession } = authClient.useSession();
-
-  useEffect(() => {
-    if (exchanged && verifier) {
-      void refetchSession();
-    }
-  }, [exchanged, verifier, refetchSession]);
+  const activeUser = exchangedPayload?.user ?? session?.user ?? null;
+  const activeToken = exchangedPayload?.session?.token ?? session?.session?.token ?? null;
 
   const tenantStatusQuery = trpc.getTenantStatus.useQuery(undefined, {
-    enabled: exchanged && !!session?.user,
+    enabled: exchangeDone && !!activeUser,
     retry: false,
   });
 
@@ -45,22 +70,23 @@ function AuthCallbackContent() {
       window.location.href = `/sign-in?error=${encodeURIComponent(oauthError)}`;
       return;
     }
-    if (!exchanged || isPending || (session?.user && tenantStatusQuery.isLoading)) return;
+    if (!exchangeDone || (!exchangedPayload && isPending) || (activeUser && tenantStatusQuery.isLoading)) {
+      return;
+    }
 
-    const token = session?.session?.token;
     const isMobileClient =
       searchParams.get("platform") === "mobile" ||
       searchParams.get("source") === "mobile" ||
       searchParams.has("native");
 
     if (isMobileClient) {
-      window.location.href = token
-        ? `moneymatters://auth-callback?token=${encodeURIComponent(token)}`
+      window.location.href = activeToken
+        ? `moneymatters://auth-callback?token=${encodeURIComponent(activeToken)}`
         : "moneymatters://auth-callback";
       return;
     }
 
-    if (!session?.user) {
+    if (!activeUser) {
       window.location.href = "/sign-in?error=oauth_failed";
       return;
     }
@@ -88,8 +114,10 @@ function AuthCallbackContent() {
     window.location.href = redirectUrl;
   }, [
     oauthError,
-    exchanged,
-    session,
+    exchangeDone,
+    exchangedPayload,
+    activeUser,
+    activeToken,
     isPending,
     tenantStatusQuery.isLoading,
     tenantStatusQuery.data,
