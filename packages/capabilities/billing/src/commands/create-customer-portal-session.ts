@@ -6,10 +6,44 @@ import { eq } from "drizzle-orm";
 import { tenants, type DbOrTx } from "@money-matters/db";
 import { validateEnv } from "@money-matters/config";
 
+async function resolveOrCreateStripeCustomerId(
+  db: DbOrTx,
+  stripe: Stripe,
+  tenant: { id: string; name: string; stripeCustomerId: string | null },
+  userEmail?: string
+): Promise<string> {
+  if (tenant.stripeCustomerId) {
+    return tenant.stripeCustomerId;
+  }
+
+  let customerId: string | null = null;
+  if (userEmail) {
+    const existing = await stripe.customers.list({ email: userEmail, limit: 1 });
+    customerId = existing.data[0]?.id ?? null;
+  }
+
+  if (!customerId) {
+    const customer = await stripe.customers.create({
+      email: userEmail || "info@moneymatters.kaesava.au",
+      name: tenant.name,
+      metadata: { tenantId: tenant.id },
+    });
+    customerId = customer.id;
+  }
+
+  await db
+    .update(tenants)
+    .set({ stripeCustomerId: customerId, updatedAt: new Date() })
+    .where(eq(tenants.id, tenant.id));
+
+  return customerId;
+}
+
 export async function createCustomerPortalSessionCommand(
   db: DbOrTx,
   tenantId: string,
-  input: { returnUrl: string }
+  input: { returnUrl: string },
+  userEmail?: string
 ): Promise<{ url: string }> {
   const env = validateEnv();
   const stripeSecretKey = env.STRIPE_SECRET_KEY || process.env.STRIPE_SECRET_KEY;
@@ -23,18 +57,21 @@ export async function createCustomerPortalSessionCommand(
 
   const [tenant] = await db
     .select({
+      id: tenants.id,
+      name: tenants.name,
       stripeCustomerId: tenants.stripeCustomerId,
     })
     .from(tenants)
     .where(eq(tenants.id, tenantId))
     .limit(1);
 
-  if (!tenant || !tenant.stripeCustomerId) {
-    throw new Error("No billing customer profile found for this household.");
+  if (!tenant) {
+    throw new Error(`Tenant not found: ${tenantId}`);
   }
 
+  const customerId = await resolveOrCreateStripeCustomerId(db, stripe, tenant, userEmail);
   const session = await stripe.billingPortal.sessions.create({
-    customer: tenant.stripeCustomerId,
+    customer: customerId,
     return_url: input.returnUrl,
   });
 

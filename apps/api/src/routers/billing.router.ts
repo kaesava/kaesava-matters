@@ -49,7 +49,8 @@ export const billingRouter = {
     .input(CreateCustomerPortalCommand)
     .mutation(async ({ ctx, input }) => {
       const tenantId = ctx.tenantId!;
-      return createCustomerPortalSessionCommand(ctx.db, tenantId, input);
+      const userEmail = ctx.session?.email || undefined;
+      return createCustomerPortalSessionCommand(ctx.db, tenantId, input, userEmail);
     }),
 
   listInvoices: tenantProcedure.query(async ({ ctx }) => {
