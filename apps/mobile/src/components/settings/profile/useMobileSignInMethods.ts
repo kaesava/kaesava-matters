@@ -8,7 +8,10 @@ import { authClient, DEFAULT_AUTH_ORIGIN } from "../../../lib/auth";
 export function useMobileSignInMethods() {
   const toast = useMobileToast();
   const utils = trpc.useUtils();
-  const { data: authMethods, isLoading } = trpc.getAuthMethods.useQuery();
+  const { data: authMethods, isLoading } = trpc.getAuthMethods.useQuery(undefined, {
+    staleTime: 0,
+    refetchOnMount: "always",
+  });
   const [isPasswordModalOpen, setIsPasswordModalOpen] = useState(false);
   const [isLinkingGoogle, setIsLinkingGoogle] = useState(false);
   const [isDisconnectingGoogle, setIsDisconnectingGoogle] = useState(false);

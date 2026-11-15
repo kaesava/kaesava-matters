@@ -9,7 +9,10 @@ import { authClient } from "../../../../lib/auth";
 export function useSignInMethods() {
   const toast = useToast();
   const utils = trpc.useUtils();
-  const { data: authMethods, isLoading } = trpc.getAuthMethods.useQuery();
+  const { data: authMethods, isLoading } = trpc.getAuthMethods.useQuery(undefined, {
+    staleTime: 0,
+    refetchOnMount: "always",
+  });
   const [isPasswordModalOpen, setIsPasswordModalOpen] = useState(false);
   const [isDisconnectConfirmOpen, setIsDisconnectConfirmOpen] = useState(false);
   const [isLinkingGoogle, setIsLinkingGoogle] = useState(false);

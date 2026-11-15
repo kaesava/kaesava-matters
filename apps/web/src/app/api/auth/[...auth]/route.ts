@@ -163,27 +163,22 @@ async function handleProxy(req: NextRequest) {
       if (process.env.NODE_ENV === "development" && devAllowedOrigin && bodyText) {
         try {
           const bodyJson = JSON.parse(bodyText);
-          if (bodyJson.callbackURL) {
-            const originalUrl = bodyJson.callbackURL;
-            const urlObj = new URL(originalUrl, req.url);
-            const reqHost = req.headers.get("x-forwarded-host") || req.headers.get("host") || urlObj.host;
-            const reqProto = req.headers.get("x-forwarded-proto") || (req.url.startsWith("https") ? "https" : "http");
-            const callbackUrlObj = new URL(`${devAllowedOrigin}/dev-callback/${reqProto}/${reqHost}`);
-            callbackUrlObj.searchParams.set("target", urlObj.pathname + urlObj.search);
-            bodyJson.callbackURL = callbackUrlObj.toString();
-            bodyText = JSON.stringify(bodyJson);
-            logger.debug('[Auth Proxy] Rewrote callbackURL', { from: originalUrl, to: bodyJson.callbackURL });
+          const reqHost = req.headers.get("x-forwarded-host") || req.headers.get("host") || new URL(req.url).host;
+          const reqProto = req.headers.get("x-forwarded-proto") || (req.url.startsWith("https") ? "https" : "http");
+          let mutated = false;
+          for (const field of ["callbackURL", "errorCallbackURL", "redirectTo"] as const) {
+            const originalUrl = bodyJson[field];
+            if (typeof originalUrl === "string" && originalUrl) {
+              const urlObj = new URL(originalUrl, req.url);
+              const rewritten = new URL(`${devAllowedOrigin}/dev-callback/${reqProto}/${reqHost}`);
+              rewritten.searchParams.set("target", urlObj.pathname + urlObj.search);
+              bodyJson[field] = rewritten.toString();
+              mutated = true;
+              logger.debug(`[Auth Proxy] Rewrote ${field}`, { from: originalUrl, to: bodyJson[field] });
+            }
           }
-          if (bodyJson.redirectTo) {
-            const originalRedirect = bodyJson.redirectTo;
-            const redirectUrlObj = new URL(originalRedirect, req.url);
-            const reqHost = req.headers.get("x-forwarded-host") || req.headers.get("host") || redirectUrlObj.host;
-            const reqProto = req.headers.get("x-forwarded-proto") || (req.url.startsWith("https") ? "https" : "http");
-            const proxyRedirectUrl = new URL(`${devAllowedOrigin}/dev-callback/${reqProto}/${reqHost}`);
-            proxyRedirectUrl.searchParams.set("target", redirectUrlObj.pathname + redirectUrlObj.search);
-            bodyJson.redirectTo = proxyRedirectUrl.toString();
+          if (mutated) {
             bodyText = JSON.stringify(bodyJson);
-            logger.debug('[Auth Proxy] Rewrote redirectTo', { from: originalRedirect, to: bodyJson.redirectTo });
           }
         } catch (_e) {
           // Ignore JSON parse errors
