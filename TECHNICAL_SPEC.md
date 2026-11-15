@@ -389,6 +389,8 @@ tenants (id PK, appId FK→apps.id, name, subscriptionTier, stripeCustomerId, st
 | `tenant.switchTenant` | `tenant-core.procedures.ts:165` | `authenticatedProcedure` | None | `z.object({ tenantId: z.string().uuid() }).strict()` | None | `tenantUsers` |
 | `tenant.subscribeEarlyAccess` | `tenant-core.procedures.ts:187` | `publicProcedure` | None | `z.object({ email: z.string().email() }).strict()` | None | `earlyAccessSubscribers` |
 | `tenant.checkEmailAuthProvider` | `tenant-core.procedures.ts:220` | `publicProcedure` | IP rate limit (15/60s) | `CheckEmailAuthProviderInputSchema` (`.strict()`) | `{ isGoogleOnly: boolean }` | `checkEmailAuthProviderHandler` (`neon_auth.user`, `neon_auth.account`) |
+| `tenant.getAuthMethods` | `tenant-core.procedures.ts:241` | `authenticatedProcedure` | None | None | `{ hasPassword: boolean; hasGoogle: boolean }` | `getAuthMethodsHandler` (`neon_auth.account`) |
+| `tenant.setAccountPassword` | `tenant-core.procedures.ts:246` | `authenticatedProcedure` | None | `SetAccountPasswordInputSchema` (`.strict()`) | `{ success: true }` | `setAccountPasswordHandler` (`neon_auth.account`) |
 | `tenant.getUserPreferences` | `profile.procedures.ts:9` | `privateTenantProcedure` | None | None | None | `userPreferences`, `tenantUserPreferences`, `tenants` |
 | `tenant.updateUserPreferences` | `profile.procedures.ts:70` | `privateTenantProcedure` | `requiresWriteAccess` | Inline `z.object({...}).strict()` | None | `userPreferences`, `tenantUserPreferences` |
 | `tenant.getUserProfile` | `profile.procedures.ts:146` | `authenticatedProcedure` | None | None | None | `users`, `userPreferences`, `tenants` |

@@ -59,4 +59,66 @@ describe("tenant router", () => {
       isGoogleOnly: true,
     });
   });
+
+  it("getAuthMethods returns active login methods for authenticated user", async () => {
+    const dbWithExecute = {
+      ...createMockDb(),
+      execute: async () => [
+        { providerId: "google", password: null },
+        { providerId: "credential", password: "salt:hash" },
+      ],
+    };
+    const caller = appRouter.createCaller({
+      req: new Request("http://localhost/trpc"),
+      resHeaders: new Headers(),
+      db: dbWithExecute as unknown as Awaited<ReturnType<typeof createEdgeContext>>["db"],
+      userId: "user-1",
+      session: {
+        userId: "user-1",
+        email: "user@example.com",
+        displayName: "Test User",
+        tenantId: null,
+        appId: "00000000-0000-0000-0000-000000000000",
+        role: null,
+      },
+      email: "user@example.com",
+      tenantId: null,
+      appId: "00000000-0000-0000-0000-000000000000",
+      correlationId: "corr-3",
+    });
+
+    await expect(caller.getAuthMethods()).resolves.toEqual({
+      hasPassword: true,
+      hasGoogle: true,
+    });
+  });
+
+  it("setAccountPassword throws CONFLICT when password is already set", async () => {
+    const dbWithExecute = {
+      ...createMockDb(),
+      execute: async () => [{ id: "acc-1", password: "existing:hash" }],
+    };
+    const caller = appRouter.createCaller({
+      req: new Request("http://localhost/trpc"),
+      resHeaders: new Headers(),
+      db: dbWithExecute as unknown as Awaited<ReturnType<typeof createEdgeContext>>["db"],
+      userId: "user-1",
+      session: {
+        userId: "user-1",
+        email: "user@example.com",
+        displayName: "Test User",
+        tenantId: null,
+        appId: "00000000-0000-0000-0000-000000000000",
+        role: null,
+      },
+      email: "user@example.com",
+      tenantId: null,
+      appId: "00000000-0000-0000-0000-000000000000",
+      correlationId: "corr-4",
+    });
+
+    await expect(caller.setAccountPassword({ newPassword: "NewPassword123!" })).rejects.toMatchObject({
+      code: "CONFLICT",
+    });
+  });
 });

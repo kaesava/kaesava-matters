@@ -4,6 +4,9 @@ import {
   SignUpInputSchema,
   CompleteProfileInputSchema,
   CheckEmailAuthProviderInputSchema,
+  SetAccountPasswordInputSchema,
+  SetAccountPasswordFormSchema,
+  ChangeAccountPasswordFormSchema,
   ResetPasswordInputSchema,
   evaluatePasswordStrength,
   isValidEmail,
@@ -215,6 +218,45 @@ describe("auth.types DTOs & Validation", () => {
     it("accepts valid email and rejects invalid email", () => {
       expect(CheckEmailAuthProviderInputSchema.safeParse({ email: "jane@example.com" }).success).toBe(true);
       expect(CheckEmailAuthProviderInputSchema.safeParse({ email: "invalid" }).success).toBe(false);
+    });
+  });
+
+  describe("Account Password Schemas", () => {
+    it("validates SetAccountPasswordInputSchema length bounds", () => {
+      expect(SetAccountPasswordInputSchema.safeParse({ newPassword: "Password123!" }).success).toBe(true);
+      expect(SetAccountPasswordInputSchema.safeParse({ newPassword: "short" }).success).toBe(false);
+    });
+
+    it("validates SetAccountPasswordFormSchema matching passwords", () => {
+      expect(
+        SetAccountPasswordFormSchema.safeParse({
+          password: "Password123!",
+          confirmPassword: "Password123!",
+        }).success
+      ).toBe(true);
+      expect(
+        SetAccountPasswordFormSchema.safeParse({
+          password: "Password123!",
+          confirmPassword: "OtherPassword123!",
+        }).success
+      ).toBe(false);
+    });
+
+    it("validates ChangeAccountPasswordFormSchema requires current password and matching new passwords", () => {
+      expect(
+        ChangeAccountPasswordFormSchema.safeParse({
+          currentPassword: "OldPassword1!",
+          password: "NewPassword123!",
+          confirmPassword: "NewPassword123!",
+        }).success
+      ).toBe(true);
+      expect(
+        ChangeAccountPasswordFormSchema.safeParse({
+          currentPassword: "",
+          password: "NewPassword123!",
+          confirmPassword: "NewPassword123!",
+        }).success
+      ).toBe(false);
     });
   });
 });

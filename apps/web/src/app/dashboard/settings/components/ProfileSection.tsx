@@ -6,6 +6,7 @@ import { ConfirmDialog } from "@money-matters/ui/web";
 import { AvatarCropModal } from "../../../../components/web/AvatarCropModal";
 import { ProfileReadOnlyView } from "./ProfileReadOnlyView";
 import { ProfileEditForm } from "./ProfileEditForm";
+import { ProfileSignInMethodsCard } from "./ProfileSignInMethodsCard";
 import { useProfileForm } from "./useProfileForm";
 
 interface ProfileSectionProps {
@@ -88,6 +89,12 @@ export function ProfileSection({
           initials={form.initials}
           onEdit={() => form.setIsEditing(true)}
         />
+      )}
+
+      {!form.isEditing && (
+        <div className="mt-6">
+          <ProfileSignInMethodsCard />
+        </div>
       )}
 
       {form.showDiscardDialog && (

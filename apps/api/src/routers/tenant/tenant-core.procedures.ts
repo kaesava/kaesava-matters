@@ -10,9 +10,17 @@ import {
   exportDataHandler,
   deleteMyAccountHandler,
   checkEmailAuthProviderHandler,
+  getAuthMethodsHandler,
+  setAccountPasswordHandler,
 } from "@money-matters/capability-tenant";
 import { deleteFileFromBucket, getPresignedDownloadUrl } from "@money-matters/capability-file-notes";
-import { CreateTenantCommand, CheckEmailAuthProviderInputSchema, DEFAULT_APP_FEATURE_FLAGS } from "@money-matters/types";
+import {
+  CreateTenantCommand,
+  CheckEmailAuthProviderInputSchema,
+  SetAccountPasswordInputSchema,
+  DEFAULT_APP_FEATURE_FLAGS,
+} from "@money-matters/types";
+import { hashPassword } from "better-auth/crypto";
 import { checkRateLimit } from "@money-matters/core";
 import { TRPCError } from '@trpc/server';
 import { z } from 'zod';
@@ -233,6 +241,28 @@ export const tenantCoreProcedures = {
       }
       const handler = checkEmailAuthProviderHandler(ctx.db || db);
       return await handler(input.email);
+    }),
+
+  getAuthMethods: authenticatedProcedure.query(async ({ ctx }) => {
+    const handler = getAuthMethodsHandler(ctx.db || db);
+    return await handler(ctx.userId);
+  }),
+
+  setAccountPassword: authenticatedProcedure
+    .input(SetAccountPasswordInputSchema)
+    .mutation(async ({ input, ctx }) => {
+      const handler = setAccountPasswordHandler(ctx.db || db, hashPassword);
+      try {
+        return await handler(ctx.userId, input.newPassword);
+      } catch (err) {
+        if (err instanceof Error && err.message === "PASSWORD_ALREADY_SET") {
+          throw new TRPCError({
+            code: "CONFLICT",
+            message: "Password is already set for this account.",
+          });
+        }
+        throw err;
+      }
     }),
 
 };

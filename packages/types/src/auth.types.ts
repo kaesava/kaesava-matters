@@ -115,3 +115,39 @@ export function mapOtpResetErrorKey(error: AuthErrorLike | null | undefined): st
   if (error.code === "OTP_EXPIRED") return "auth.otpExpired";
   return "auth.invalidOtp";
 }
+
+export interface AccountAuthMethods {
+  hasPassword: boolean;
+  hasGoogle: boolean;
+}
+
+export const SetAccountPasswordInputSchema = z
+  .object({
+    newPassword: z.string().min(8, "passwordTooShort").max(128, "passwordTooLong"),
+  })
+  .strict();
+
+export type SetAccountPasswordInput = z.infer<typeof SetAccountPasswordInputSchema>;
+
+export const SetAccountPasswordFormSchema = z
+  .object({
+    password: z.string().min(8, "passwordTooShort").max(128, "passwordTooLong"),
+    confirmPassword: z.string().min(8, "passwordTooShort").max(128, "passwordTooLong"),
+  })
+  .strict()
+  .refine((data) => data.password === data.confirmPassword, {
+    message: "passwordsMustMatch",
+    path: ["confirmPassword"],
+  });
+
+export const ChangeAccountPasswordFormSchema = z
+  .object({
+    currentPassword: z.string().min(1, "fillAllFields"),
+    password: z.string().min(8, "passwordTooShort").max(128, "passwordTooLong"),
+    confirmPassword: z.string().min(8, "passwordTooShort").max(128, "passwordTooLong"),
+  })
+  .strict()
+  .refine((data) => data.password === data.confirmPassword, {
+    message: "passwordsMustMatch",
+    path: ["confirmPassword"],
+  });

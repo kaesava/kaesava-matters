@@ -145,6 +145,7 @@
 | `HouseholdDangerZoneSection` (Leave/Delete) | `apps/web/src/app/dashboard/settings/components/HouseholdDangerZoneSection.tsx` | 170 | `TypedConfirmDialog` (x2) | Leave household & delete household typed confirmations |
 | `TimelineModals` | `apps/web/src/app/dashboard/income-and-bills/components/timeline/TimelineModals.tsx` | 210 | `ConfirmDialog`, `MarkPaidModal`, `TransferModal`, `EditUpcomingEventModal`, `EnvelopeDetailDrawer`, `FileNotesDrawer` | Orchestrates modals for `UpcomingTimelineTab` |
 | `IncomeSplitModals` | `apps/web/src/app/dashboard/income-split/components/IncomeSplitModals.tsx` | 165 | `ConfirmDialog` (x3), `PaydayTransferModal`, `EnvelopeDetailDrawer`, `EnvelopeFormModal` | Orchestrates modals for `IncomeSplitScreen` |
+| `AccountPasswordModal` | `apps/web/src/app/dashboard/settings/components/AccountPasswordModal.tsx` | 64 | `ModalDialog` | Set initial password (OAuth-only) or change existing password |
 
 ### 4.2 Mobile Modals, Bottom Sheets & Confirm Dialogs (26 Components)
 
@@ -163,6 +164,7 @@
 | `CrossBankTransferModal` | `apps/mobile/src/components/CrossBankTransferModal.tsx` | 188 | `MobileModalDialog` | Cross-bank transfer reminder modal |
 | `EventOverrideModal` | `apps/mobile/src/components/EventOverrideModal.tsx` | 252 | `MobileModalDialog`, `showMobileConfirm` | Edit upcoming income/expense event occurrence |
 | `MobileBurstModal` | `apps/mobile/src/components/paychecks/MobileBurstModal.tsx` | 243 | `MobileModalDialog`, `showMobileConfirm` | Schedule occurrence list & inline edit sheet |
+| `MobileAccountPasswordModal` | `apps/mobile/src/components/settings/MobileAccountPasswordModal.tsx` | 73 | `MobileModalDialog` | Set initial password (OAuth-only) or change existing password |
 | `MobilePaydayTransferModal` | `apps/mobile/src/components/paychecks/MobilePaydayTransferModal.tsx` | 168 | `MobileModalDialog` | Post-payday transfer checklist sheet |
 | `MobilePaydayAllocationDetailModal` | `apps/mobile/src/components/paychecks/MobilePaydayAllocationDetailModal.tsx` | 114 | `MobileModalDialog` | Historical payday split breakdown sheet |
 | `TransactionDetailSheet` | `apps/mobile/src/components/transactions/TransactionDetailSheet.tsx` | 194 | `MobileModalDialog` | Ledger transaction detail & inline note edit sheet |

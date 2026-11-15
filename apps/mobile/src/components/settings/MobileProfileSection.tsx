@@ -1,6 +1,8 @@
 import React from 'react';
+import { View } from 'react-native';
 import { MobileProfileReadOnlyView } from './MobileProfileReadOnlyView';
 import { MobileProfileEditView } from './MobileProfileEditView';
+import { MobileSignInMethodsCard } from './MobileSignInMethodsCard';
 import { useMobileProfileData } from './profile/useMobileProfileData';
 
 interface MobileProfileSectionProps {
@@ -46,21 +48,24 @@ export function MobileProfileSection({
   }
 
   return (
-    <MobileProfileReadOnlyView
-      name={data.name}
-      email={data.storedEmail}
-      notificationEmail={data.notificationEmail}
-      phoneCountryCode={data.phoneCountryCode}
-      phoneNumber={data.phoneNumber}
-      avatarUri={data.avatarUri}
-      timezone={data.timezone}
-      language={data.language}
-      showIcons={data.showIcons}
-      biometricsAvailable={data.biometricsAvailable}
-      biometricsEnabled={data.biometricsEnabled}
-      biometricLabel={data.biometricLabel}
-      onToggleBiometrics={data.handleToggleBiometrics}
-      onEdit={() => data.setIsEditing(true)}
-    />
+    <View style={{ gap: 16 }}>
+      <MobileProfileReadOnlyView
+        name={data.name}
+        email={data.storedEmail}
+        notificationEmail={data.notificationEmail}
+        phoneCountryCode={data.phoneCountryCode}
+        phoneNumber={data.phoneNumber}
+        avatarUri={data.avatarUri}
+        timezone={data.timezone}
+        language={data.language}
+        showIcons={data.showIcons}
+        biometricsAvailable={data.biometricsAvailable}
+        biometricsEnabled={data.biometricsEnabled}
+        biometricLabel={data.biometricLabel}
+        onToggleBiometrics={data.handleToggleBiometrics}
+        onEdit={() => data.setIsEditing(true)}
+      />
+      <MobileSignInMethodsCard />
+    </View>
   );
 }
