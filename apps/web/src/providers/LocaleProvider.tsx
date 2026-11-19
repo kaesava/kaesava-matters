@@ -2,7 +2,7 @@
 import { DEFAULT_TIMEZONE, DEFAULT_LOCALE } from "@money-matters/types";
 
 
-import React, { createContext, useContext, useEffect, useMemo } from "react";
+import React, { createContext, useContext, useEffect, useMemo, useState } from "react";
 import { setLanguage, SupportedLanguage } from "@money-matters/i18n";
 import {
   formatCurrency,
@@ -69,18 +69,23 @@ export function LocaleProvider({ children }: { children: React.ReactNode }) {
 
   const pref = userPrefQuery.data;
 
+  const [isMounted, setIsMounted] = useState(false);
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
+
   const language = (pref?.language as SupportedLanguage) || "en";
   const rawLocale = pref?.locale || "auto";
 
   const resolvedLocale = useMemo(() => {
     if (rawLocale === "auto") {
-      if (typeof navigator !== "undefined" && navigator.language) {
+      if (isMounted && typeof navigator !== "undefined" && navigator.language) {
         return navigator.language;
       }
       return DEFAULT_LOCALE;
     }
     return rawLocale;
-  }, [rawLocale]);
+  }, [rawLocale, isMounted]);
 
   const currency = pref?.currency || "AUD";
   const country = pref?.country || "AU";
