@@ -1,7 +1,6 @@
 import { privateTenantProcedure, requiresWriteAccess } from '../../trpc/trpc.js';
 import {
   overrideEventCommand,
-  bulkDeleteEventsCommand,
   deleteUpcomingEventCommand,
   saveBulkAllocationsCommand,
   saveAutoAllocationCommand,
@@ -10,7 +9,6 @@ import {
 import {
   OverrideEventCommand,
   DeleteUpcomingEventCommand,
-  BulkDeleteEventsCommand,
 } from "@money-matters/types";
 import { z } from 'zod';
 
@@ -27,13 +25,6 @@ export const paydayHorizonProcedures = {
     .mutation(async ({ input, ctx }) => {
       requiresWriteAccess(ctx);
       return await deleteUpcomingEventCommand(input, ctx.tenantId!, ctx.appId!, ctx.userId!, ctx.db);
-    }),
-
-  bulkDeleteEvents: privateTenantProcedure
-    .input(BulkDeleteEventsCommand)
-    .mutation(async ({ input, ctx }) => {
-      requiresWriteAccess(ctx);
-      return await bulkDeleteEventsCommand(input, ctx.tenantId!, ctx.appId!, ctx.userId!, ctx.db);
     }),
 
   saveBulkAllocations: privateTenantProcedure

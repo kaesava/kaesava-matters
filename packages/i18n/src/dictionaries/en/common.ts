@@ -77,6 +77,8 @@ export const common = {
     "deleteIncomeTitle": "Delete Income",
     "deleteIncomePrompt": "Are you sure you want to delete this income schedule?",
     "deleteExpenseTitle": "Delete Expense",
+    "deleteExpensePrompt": "Are you sure you want to delete this expense event? This cannot be undone.",
+    "transferPastDateError": "Transfers cannot be scheduled in the past.",
     "deleteConfirmNamed": "Are you sure you want to delete \"{name}\"?",
     "max": "Max",
     "showMore": "Show More →",

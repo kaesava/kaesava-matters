@@ -2,7 +2,6 @@ import { privateTenantProcedure, requiresWriteAccess } from '../../trpc/trpc.js'
 import {
   createIncomeEventCommand,
   listIncomeEventsQuery,
-  createUpcomingIncomeCommand,
   updateUpcomingIncomeCommand,
   markIncomeReceivedCommand,
   deleteIncomeEventCommand,
@@ -22,23 +21,6 @@ export const incomeEventsProcedures = {
   listIncomeEvents: privateTenantProcedure
     .query(async ({ ctx }) => {
       return await listIncomeEventsQuery(ctx.tenantId!, ctx.appId!, ctx.userId!, ctx.db);
-    }),
-
-  createUpcomingIncome: privateTenantProcedure
-    .input(
-      z.object({
-        name: z.string().min(1),
-        amount: z.string().regex(/^\d+(\.\d{1,2})?$/),
-        expectedDate: z.string(),
-        receivingAccountId: z.string().uuid().optional(),
-        contributionMode: z.enum(["FULL", "PERCENTAGE", "FIXED_AMOUNT"]).optional(),
-        contributionValue: z.string().regex(/^\d+(\.\d{1,2})?$/).nullable().optional(),
-        note: z.string().optional(),
-      }).strict()
-    )
-    .mutation(async ({ input, ctx }) => {
-      requiresWriteAccess(ctx);
-      return await createUpcomingIncomeCommand(input, ctx.tenantId!, ctx.appId!, ctx.userId!, ctx.db);
     }),
 
   updateUpcomingIncome: privateTenantProcedure

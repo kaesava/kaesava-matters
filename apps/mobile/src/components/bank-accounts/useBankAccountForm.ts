@@ -139,10 +139,10 @@ export function useBankAccountForm(
     if (!accountToEdit) return;
     const confirmMessage = isLastPrivateAccount
       ? t('settings.bankAccountForm.archiveConfirmLastPrivateBody', { name: accountToEdit.name })
-      : t('settings.bankAccounts.deleteConfirmBody', { name: accountToEdit.name });
+      : t('settings.bankAccountForm.archiveConfirmBody', { name: accountToEdit.name });
 
     showMobileConfirm({
-      title: t('settings.bankAccounts.deleteConfirmTitle'),
+      title: t('settings.bankAccountForm.archiveConfirmTitle'),
       message: confirmMessage,
       confirmText: t('common.archive'),
       isDestructive: true,

@@ -54,6 +54,7 @@ export function QuickActionDrawer({ onClose, initialTab = "DEBIT", initialData }
     isTransfer,
     isFutureDate,
     categories,
+    allEnvelopes,
     bankAccounts,
     quickExpensePresets,
     quickIncomePresets,
@@ -377,7 +378,7 @@ export function QuickActionDrawer({ onClose, initialTab = "DEBIT", initialData }
           poolId={shortfallModalData.poolId}
           poolName={shortfallModalData.poolName}
           poolType={shortfallModalData.poolType}
-          availableCategories={categories.map((c) => ({
+          availableCategories={allEnvelopes.map((c) => ({
             id: c.id,
             name: c.name,
             poolType: c.envelopeType,

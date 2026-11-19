@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, ScrollView } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import { useRouter } from 'expo-router';
 import { MobileScreenWrapper } from '@money-matters/ui/mobile';
 import { t } from '@money-matters/i18n';
@@ -21,9 +21,9 @@ export default function MobileArchivedItemsScreen() {
         content: t('tooltips.archived.content'),
       }}
     >
-      <ScrollView contentContainerStyle={styles.container}>
+      <View style={styles.container}>
         <MobileArchivedSection />
-      </ScrollView>
+      </View>
     </MobileScreenWrapper>
   );
 }

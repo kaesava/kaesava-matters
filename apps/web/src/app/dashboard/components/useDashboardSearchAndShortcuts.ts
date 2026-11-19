@@ -23,7 +23,7 @@ function buildWebSearchPages(hasSimulation: boolean, hasReports: boolean): Searc
     { id: "envelopes", title: t("commandPalette.pages.envelopes"), subtitle: t("commandPalette.pages.envelopesSub"), route: "/dashboard/envelopes", keywords: ["categories", "bills", "goals", "everyday"] },
     { id: "plan", title: t("commandPalette.pages.plan"), subtitle: t("commandPalette.pages.planSub"), route: "/dashboard/plan", keywords: ["timeline", "upcoming", "events", "bills", "income"] },
     { id: "schedules", title: t("commandPalette.pages.schedules"), subtitle: t("commandPalette.pages.schedulesSub"), route: "/dashboard/plan?tab=streams", keywords: ["recurring", "payday", "income schedule"] },
-    { id: "projection", title: t("commandPalette.pages.projection"), subtitle: t("commandPalette.pages.projectionSub"), route: "/dashboard/projection", keywords: ["forecast", "12 month", "future"] },
+    { id: "projection", title: t("commandPalette.pages.projection"), subtitle: t("commandPalette.pages.projectionSub"), route: "/dashboard/envelopes?mode=projection", keywords: ["forecast", "12 month", "future"] },
     { id: "history", title: t("commandPalette.pages.history"), subtitle: t("commandPalette.pages.historySub"), route: "/dashboard/history", keywords: ["transactions", "allocations", "spent"] },
     { id: "bank-accounts", title: t("commandPalette.pages.bankAccounts"), subtitle: t("commandPalette.pages.bankAccountsSub"), route: "/dashboard/bank-accounts", keywords: ["accounts", "balance", "match balance", "bank"] },
     { id: "settings", title: t("commandPalette.pages.settings"), subtitle: t("commandPalette.pages.settingsSub"), route: "/dashboard/settings", keywords: ["profile", "household", "subscription", "preferences"] },

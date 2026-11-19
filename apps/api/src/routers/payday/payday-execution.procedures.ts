@@ -7,7 +7,6 @@ import {
   previewPaydayQuery,
   resetAllocationPlanCommand,
   getPaydayPlanAnalyticsQuery,
-  listAllocationPlanQuery,
   listAllAllocationPlansQuery,
 } from "@money-matters/capability-budgeting";
 import {
@@ -67,12 +66,6 @@ export const paydayExecutionProcedures = {
       });
       return result;
     }),
-
-  listAllocationPlan: privateTenantProcedure
-    .input(z.object({ incomeEventId: z.string().uuid() }).strict())
-    .query(({ input, ctx }) =>
-      listAllocationPlanQuery(input.incomeEventId, ctx.tenantId!, ctx.appId!, ctx.userId!, ctx.db)
-    ),
 
   listAllAllocationPlans: privateTenantProcedure
     .query(({ ctx }) => listAllAllocationPlansQuery(ctx.tenantId!, ctx.appId!, ctx.userId!, ctx.db)),

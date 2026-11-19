@@ -36,7 +36,7 @@ export function BankAccountsSection() {
   const list = useBankAccountsList();
 
   return (
-    <div className="flex flex-col gap-6 w-full animate-in fade-in duration-200">
+    <div data-tour="bank-accounts" className="flex flex-col gap-6 w-full animate-in fade-in duration-200">
       {/* Top Header inside tab */}
       <div className="flex flex-wrap items-center justify-between gap-4">
         <div>
@@ -118,7 +118,11 @@ export function BankAccountsSection() {
       {list.accountIdParam && (
         <div className="flex items-center gap-3 flex-wrap">
           <RecordFilterBadge
-            label={list.matchedAccount ? `Filtered to Account: ${list.matchedAccount.name}` : "Filter: Item unavailable"}
+            label={
+              list.matchedAccount
+                ? t("history.filteredToAccount", { name: list.matchedAccount.name })
+                : t("history.filterItemUnavailable")
+            }
             onClear={() => {
               const url = new URL(window.location.href);
               url.searchParams.delete("id");

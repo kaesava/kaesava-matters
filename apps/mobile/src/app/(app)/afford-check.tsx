@@ -1,12 +1,13 @@
 import React, { useState, useDeferredValue, useEffect } from 'react';
 import {
   View,
+  Text,
   ScrollView,
   StyleSheet,
   ActivityIndicator,
 } from 'react-native';
 import { useRouter, useLocalSearchParams, type Href } from 'expo-router';
-import { DESIGN_TOKENS, MobileScreenWrapper, GoalDelayCard } from '@money-matters/ui/mobile';
+import { DESIGN_TOKENS, MobileScreenWrapper, FormErrorBanner } from '@money-matters/ui/mobile';
 import { t } from '@money-matters/i18n';
 import { trpc } from '../../lib/trpc';
 import { useAppFeatures } from '../../context/useAppFeatures';
@@ -40,7 +41,7 @@ export default function AffordCheckScreen() {
   const parsedAmount = parseFloat(deferredAmount);
   const isValidAmount = !isNaN(parsedAmount) && parsedAmount > 0;
 
-  const { data, isLoading } = trpc.canAfford.useQuery(
+  const { data, isLoading, isError, error } = trpc.canAfford.useQuery(
     {
       amount: deferredAmount,
       mode,
@@ -102,19 +103,15 @@ export default function AffordCheckScreen() {
           setIncludePersonal={setIncludePersonal}
         />
 
-        {isLoading && isValidAmount ? (
+        {isError && isValidAmount ? (
+          <FormErrorBanner message={error?.message || t('common.errorTryAgain')} />
+        ) : isLoading && isValidAmount ? (
           <ActivityIndicator color={DESIGN_TOKENS.colors.sereneBlue} style={styles.loadingIndicator} />
         ) : data ? (
           <View style={styles.resultSection}>
-            <AffordCheckVerdictCard
-              verdict={data.verdict}
-              rationaleSteps={data.rationaleSteps}
-              canAffordAt={'canAffordAt' in data ? (data.canAffordAt as string) : null}
-            />
+            <AffordCheckVerdictCard data={data} />
             <AffordCheckBreakdownCard data={data} />
-            {data.verdict === 'GOAL_DELAYED' && data.goalDelays && data.goalDelays.length > 0 && (
-              <GoalDelayCard goalDelays={data.goalDelays} />
-            )}
+            <Text style={styles.horizonNote}>{t('canIAfford.horizonNote')}</Text>
           </View>
         ) : null}
       </ScrollView>
@@ -134,5 +131,11 @@ const styles = StyleSheet.create({
   resultSection: {
     gap: 14,
     marginTop: 8,
+  },
+  horizonNote: {
+    fontSize: 11,
+    color: DESIGN_TOKENS.colors.slate[500],
+    textAlign: 'center',
+    marginTop: 4,
   },
 });

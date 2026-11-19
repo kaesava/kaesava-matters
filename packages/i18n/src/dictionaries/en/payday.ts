@@ -91,10 +91,5 @@ export const payday = {
     "recalculateUnlockedConfirmTitle": "Reset to Recommended?",
     "recalculateUnlockedConfirmDescription": "Resetting will discard your custom adjustments and restore the algorithm's suggested payday plan. Continue?",
     "activeStrategyBadge": "Strategy: {name}"
-  },
-  "paychecks": {
-    "transfer": {
-      "allDone": "All done! 🙌"
-    }
   }
 } as const;

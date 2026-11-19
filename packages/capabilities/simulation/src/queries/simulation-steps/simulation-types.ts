@@ -39,6 +39,14 @@ export interface SimulationSortedIncome {
   actualAmount: string | null;
   status: string;
   rrule: string | null;
+  incomeCreatedBy?: string | null;
+  sourceCreatedBy?: string | null;
+  incomeContributionMode?: "FULL" | "PERCENTAGE" | "FIXED_AMOUNT" | null;
+  incomeContributionValue?: string | null;
+  sourceContributionMode?: "FULL" | "PERCENTAGE" | "FIXED_AMOUNT" | null;
+  sourceContributionValue?: string | null;
+  bankAccountIsPrivate?: boolean | null;
+  bankAccountUserId?: string | null;
 }
 
 export interface RecurringSimulationParams {
@@ -61,6 +69,8 @@ export interface RecurringSimulationParams {
   projectionEngine: ProjectionEngineFn;
   today: Date;
   timezone: string;
+  currency: string;
+  userId: string;
 }
 
 export interface OneOffSimulationParams {
@@ -84,4 +94,6 @@ export interface OneOffSimulationParams {
   dailyAllowance: number;
   projectionEngine: ProjectionEngineFn;
   timezone: string;
+  currency: string;
+  userId: string;
 }

@@ -116,7 +116,7 @@ export function AffordCheckVerdict({ data }: AffordCheckVerdictProps) {
             {data.verdict === 'GOAL_DELAYED' && (
               <div>
                 <p className="text-sm opacity-90 mt-0.5">
-                  {t('canIAfford.recurringMonthlyImpactLabel', { amount: fmt(data.recurringMonthlyImpact) })} • {data.goalDelays.length} goal(s) pushed back
+                  {t('canIAfford.recurringMonthlyImpactLabel', { amount: fmt(data.recurringMonthlyImpact) })} • {t('canIAfford.goalDelayCount', { count: data.goalDelays.length })}
                 </p>
                 <p className="text-xs opacity-75 mt-0.5">
                   {t('canIAfford.billsProtectedNotice')}
@@ -130,7 +130,7 @@ export function AffordCheckVerdict({ data }: AffordCheckVerdictProps) {
             )}
             {data.verdict === 'HARD_NO' && (
               <p className="text-sm opacity-90 mt-0.5">
-                {t('canIAfford.shortfallLabel', { amount: fmt(data.shortfall) })}
+                {t('canIAfford.shortfallLabel', { amount: fmt(data.shortfall) })} • {t('canIAfford.horizon12Months')}
               </p>
             )}
           </div>

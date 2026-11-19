@@ -239,7 +239,7 @@ export function EnvelopeDetailDrawer({
                 <div className="mt-1">
                   {targetPool?.bankAccountName ? (
                     <Link
-                      href={targetPool.bankAccountId ? `/dashboard/envelopes?id=${targetPool.bankAccountId}` : `/dashboard/envelopes`}
+                      href={targetPool.bankAccountId ? `/dashboard/bank-accounts?id=${targetPool.bankAccountId}` : `/dashboard/bank-accounts`}
                       onClick={onClose}
                       className="text-sm font-bold text-[#2563eb] hover:underline inline-flex items-center gap-1 truncate max-w-full"
                     >

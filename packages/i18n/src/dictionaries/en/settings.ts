@@ -5,7 +5,6 @@ export const settings = {
     "tabs": {
       "profile": "Profile",
       "household": "Household",
-      "bankAccounts": "Bank",
       "archived": "Archive",
       "accountData": "Plan"
     },
@@ -179,9 +178,7 @@ export const settings = {
     "bankAccounts": {
       "title": "Bank accounts",
       "searchPlaceholder": "Search bank accounts...",
-      "addAccount": "Add Bank Account",
-      "deleteConfirmTitle": "Delete Bank Account",
-      "deleteConfirmBody": "Are you sure you want to delete {name}?"
+      "addAccount": "Add Bank Account"
     },
     "householdProfileAndLocation": "Household Profile & Location",
     "householdProfileTooltip": "Update your household name, base currency, and location details. Shared across household members.",

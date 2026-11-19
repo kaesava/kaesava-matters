@@ -122,7 +122,6 @@ export function useMobileQuickAction(
 
   const recordExpenseMutation = trpc.recordExpense.useMutation();
   const createOneOffExpenseMut = trpc.createOneOffExpense.useMutation();
-  const createUpcomingIncomeMutation = trpc.createUpcomingIncome.useMutation();
   const createIncomeSourceMut = trpc.createIncomeSource.useMutation();
   const moveMoneyMutation = trpc.moveMoney.useMutation();
   const createTransferSourceMut = trpc.createTransferSource.useMutation();
@@ -282,7 +281,6 @@ export function useMobileQuickAction(
     utils,
     recordExpenseMutation,
     createOneOffExpenseMut,
-    createUpcomingIncomeMutation,
     createIncomeSourceMut,
     moveMoneyMutation,
     createTransferSourceMut,

@@ -13,17 +13,19 @@ export function useTransactionsExport() {
       t('tables.date'),
       t('common.amount'),
       t('common.type'),
-      t('categories.typeLabel'),
-      t('categories.typeLabel'),
+      t('history.csvEnvelope'),
       t('history.exportHeaders.account'),
       t('history.exportHeaders.note'),
     ];
     const rows = transactions.map((tx) => [
       formatDate(tx.recordedAt),
       tx.amount,
-      tx.effectiveType,
-      tx.poolName || '',
-      tx.categoryName || '',
+      tx.effectiveType === 'DEBIT'
+        ? t('common.expense')
+        : tx.effectiveType === 'CREDIT'
+          ? t('common.income')
+          : t('common.transfer'),
+      tx.poolName || tx.categoryName || '',
       tx.bankAccountName || '',
       tx.note || '',
     ]);
@@ -47,19 +49,36 @@ export function useTransactionsExport() {
   const exportPlansCsv = async (plans: MobilePaydayAllocationRecord[]) => {
     if (plans.length === 0) return;
     const headers = [
-      t('history.exportHeaders.paydayPlanDate'),
-      t('history.exportHeaders.incomeDate'),
-      t('history.exportHeaders.incomeSource'),
-      t('history.exportHeaders.bankAccount'),
-      t('history.exportHeaders.totalAmount'),
+      t('history.csvPaydayPlanDate'),
+      t('history.csvIncomeDate'),
+      t('history.csvIncomeSource'),
+      t('history.csvBankAccount'),
+      t('history.csvTotalIncome'),
+      t('history.csvEnvelope'),
+      t('history.csvPlannedAmount'),
+      t('history.csvReasoning'),
     ];
-    const rows = plans.map((p) => [
-      formatDate(p.createdAt),
-      formatDate(p.expectedDate || p.createdAt),
-      p.incomeName || '',
-      p.receivingAccountName || '',
-      p.totalIncomeAmount,
-    ]);
+    const rows: unknown[][] = [];
+    for (const p of plans) {
+      const splitDate = formatDate(p.createdAt);
+      const incDate = formatDate(p.expectedDate || p.createdAt);
+      if (p.lines && p.lines.length > 0) {
+        for (const line of p.lines) {
+          rows.push([
+            splitDate,
+            incDate,
+            p.incomeName || '',
+            p.receivingAccountName || '',
+            p.totalIncomeAmount,
+            line.poolName || '',
+            line.confirmedAmount || line.proposedAmount,
+            line.reasoning || '',
+          ]);
+        }
+      } else {
+        rows.push([splitDate, incDate, p.incomeName || '', p.receivingAccountName || '', p.totalIncomeAmount, '', '', '']);
+      }
+    }
     const csv = serializeCsvRows(headers, rows);
     try {
       const fileUri = `${FileSystem.cacheDirectory || FileSystem.documentDirectory}payday_plans_${formatIsoDate(new Date())}.csv`;

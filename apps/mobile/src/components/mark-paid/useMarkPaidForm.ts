@@ -97,7 +97,7 @@ export function useMarkPaidForm(
       const prefill = Math.min(shortfallAmount, b);
       if (prefill > 0) initAmounts[surplusPool.id] = prefill.toFixed(2);
     }
-    setTransferAmounts((prev) => Object.keys(prev).length === Object.keys(initAmounts).length ? prev : initAmounts);
+    setTransferAmounts(initAmounts);
     const initExp: Record<string, boolean> = {};
     Object.keys(groupedPools).forEach((k) => { initExp[k] = true; });
     setExpandedGroups((prev) => Object.keys(prev).length === Object.keys(initExp).length ? prev : initExp);
@@ -118,7 +118,7 @@ export function useMarkPaidForm(
       setTransferAmounts((prev) => ({ ...prev, [pId]: '0.00' }));
       return;
     }
-    setTransferAmounts((prev) => ({ ...prev, [pId]: Math.min(parsed, maxBal).toFixed(2) }));
+    setTransferAmounts((prev) => ({ ...prev, [pId]: Math.min(parsed, maxBal).toString() }));
   }, []);
 
   const totalAllocated = useMemo(() => {

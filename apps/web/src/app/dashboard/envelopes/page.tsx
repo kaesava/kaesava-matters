@@ -29,6 +29,7 @@ function PoolsPageContent() {
   const categoryIdParam = searchParams.get("categoryId") || "";
   const createParam = searchParams.get("create");
   const editIdParam = searchParams.get("editId");
+  const modeParam = searchParams.get("mode");
 
   const poolsQuery = trpc.listEnvelopes.useQuery();
   const archivedQuery = trpc.listArchivedItems.useQuery();
@@ -93,6 +94,13 @@ function PoolsPageContent() {
     paramType,
     poolIdParam,
   });
+
+  useEffect(() => {
+    if (modeParam === "projection") {
+      setShowProjectionMatrix(true);
+      if (projectionMonths === 0) setProjectionMonths(1);
+    }
+  }, [modeParam, projectionMonths, setProjectionMonths, setShowProjectionMatrix]);
 
   const handledDeepLinkRef = React.useRef<string>("");
   useEffect(() => {

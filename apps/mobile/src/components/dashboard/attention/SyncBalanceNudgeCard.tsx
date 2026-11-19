@@ -11,7 +11,7 @@ export const SyncBalanceNudgeCard: React.FC = () => {
   return (
     <TouchableOpacity
       activeOpacity={0.8}
-      onPress={() => router.push('/(app)/settings/bank-accounts' as Href)}
+      onPress={() => router.push('/(app)/bank-accounts' as Href)}
       style={styles.card}
     >
       <Feather name="refresh-cw" size={16} color={DESIGN_TOKENS.colors.warningDark} />

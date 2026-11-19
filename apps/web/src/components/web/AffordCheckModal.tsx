@@ -2,12 +2,13 @@
 
 import React, { useState, useDeferredValue } from "react";
 import { ShoppingBag, Repeat } from "lucide-react";
-import { ModalDialog, AmountField } from "@money-matters/ui/web";
+import { ModalDialog, AmountField, FormLabel } from "@money-matters/ui/web";
 import { t } from "@money-matters/i18n";
 import { trpc } from "../../lib/trpc";
 import { AffordCheckVerdict } from "../../app/dashboard/afford-check/components/AffordCheckVerdict";
 import { AffordCheckBreakdown } from "../../app/dashboard/afford-check/components/AffordCheckBreakdown";
 import { AffordCheckSkeleton } from "../../app/dashboard/afford-check/components/AffordCheckSkeleton";
+import { GoalDelayCard } from "../../app/dashboard/afford-check/components/GoalDelayCard";
 
 interface AffordCheckModalProps {
   isOpen: boolean;
@@ -17,6 +18,8 @@ interface AffordCheckModalProps {
 
 export function AffordCheckModal({ isOpen, onClose, initialAmount = "" }: AffordCheckModalProps) {
   const [rawAmount, setRawAmount] = useState(initialAmount);
+  const [itemName, setItemName] = useState("");
+  const [includePersonal, setIncludePersonal] = useState(false);
 
   React.useEffect(() => {
     if (initialAmount) setRawAmount(initialAmount);
@@ -33,7 +36,8 @@ export function AffordCheckModal({ isOpen, onClose, initialAmount = "" }: Afford
       amount: deferredAmount,
       mode,
       frequency,
-      includePersonal: false,
+      includePersonal,
+      itemName: itemName.trim() || undefined,
     },
     {
       enabled: isValidAmount,
@@ -87,6 +91,34 @@ export function AffordCheckModal({ isOpen, onClose, initialAmount = "" }: Afford
             autoFocus
           />
 
+          <div className="space-y-1.5">
+            <FormLabel>{t("canIAfford.itemNameLabel")}</FormLabel>
+            <input
+              type="text"
+              value={itemName}
+              onChange={(e) => setItemName(e.target.value)}
+              placeholder={t("canIAfford.itemNamePlaceholder")}
+              className="w-full h-10 px-3 text-sm bg-white dark:bg-zinc-900 border border-slate-200 dark:border-zinc-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#2563eb]"
+            />
+          </div>
+
+          <label className="flex items-center justify-between gap-3 pt-1 cursor-pointer">
+            <div>
+              <span className="text-xs font-bold text-[#1B2B4B] dark:text-slate-200 block">
+                {t("canIAfford.includePersonal")}
+              </span>
+              <span className="text-[11px] text-slate-500 dark:text-zinc-400">
+                {t("canIAfford.includePersonalSubtext")}
+              </span>
+            </div>
+            <input
+              type="checkbox"
+              checked={includePersonal}
+              onChange={(e) => setIncludePersonal(e.target.checked)}
+              className="w-4 h-4 rounded border-slate-300 text-[#2563eb] focus:ring-[#2563eb]"
+            />
+          </label>
+
           {mode === "RECURRING" && (
             <div className="space-y-1.5">
               <span className="text-xs font-medium text-slate-600 dark:text-zinc-400">
@@ -126,6 +158,9 @@ export function AffordCheckModal({ isOpen, onClose, initialAmount = "" }: Afford
             {data && (
               <div className="space-y-3 animate-in fade-in duration-200">
                 <AffordCheckVerdict data={data} />
+                {data.verdict === "GOAL_DELAYED" && data.goalDelays.length > 0 && (
+                  <GoalDelayCard goalDelays={data.goalDelays} />
+                )}
                 <AffordCheckBreakdown data={data} />
               </div>
             )}

@@ -67,6 +67,7 @@ export default function MobileNotificationSettingsScreen() {
         {status && (
           <View style={styles.statusBanner}>
             <Text style={styles.descText}>{t("notifications.settings.emailChannelNote", { email: status.emailRecipient })}</Text>
+            <Text style={styles.descText}>{t("notifications.settings.mobilePushNote")}</Text>
             <Text style={styles.statusBold}>
               {status.mobilePushDeviceCount > 0
                 ? t("notifications.settings.pushDeviceStatusCount", { count: String(status.mobilePushDeviceCount) })

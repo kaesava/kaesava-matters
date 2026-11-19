@@ -4,12 +4,12 @@ import { t } from '@money-matters/i18n';
 import { SegmentTabItem, showMobileConfirm } from '@money-matters/ui/mobile';
 import { trpc } from '../../../lib/trpc';
 
-export type SettingsTab = 'profile' | 'household' | 'bank-accounts' | 'archived' | 'account-data';
+export type SettingsTab = 'profile' | 'household' | 'archived' | 'account-data';
 
 export function useSettingsTabManagement() {
   const searchParams = useLocalSearchParams<{ tab?: string; returnTo?: string }>();
   const subStatusQuery = trpc.getSubscriptionStatus.useQuery();
-  const isTrialExpired = subStatusQuery.data?.status === 'TRIAL_EXPIRED';
+  const isTrialExpired = Boolean(subStatusQuery.data?.isTrialExpired);
 
   const resolvedTab = (searchParams.tab as SettingsTab) || (isTrialExpired ? 'account-data' : 'profile');
   const [activeTab, setActiveTab] = useState<SettingsTab>(resolvedTab);
@@ -26,7 +26,7 @@ export function useSettingsTabManagement() {
       }
     } else if (
       searchParams.tab &&
-      ['profile', 'household', 'bank-accounts', 'archived', 'account-data'].includes(searchParams.tab)
+      ['profile', 'household', 'archived', 'account-data'].includes(searchParams.tab)
     ) {
       setActiveTab(searchParams.tab as SettingsTab);
     }
@@ -75,7 +75,6 @@ export function useSettingsTabManagement() {
     () => [
       { key: 'profile', label: t('settings.tabs.profile') },
       { key: 'household', label: t('settings.tabs.household') },
-      { key: 'bank-accounts', label: t('settings.tabs.bankAccounts') },
       { key: 'archived', label: t('settings.tabs.archived') },
       { key: 'account-data', label: t('settings.tabs.accountData') },
     ],

@@ -14,6 +14,7 @@ import {
   SkeletonCard,
 } from '@money-matters/ui/mobile';
 import { t } from '@money-matters/i18n';
+import { formatIsoDate } from '../../../lib/format';
 import { trpc } from '../../../lib/trpc';
 import { authClient } from '../../../lib/auth';
 import { ProjectionScrubber } from '../../../components/envelopes/projection/ProjectionScrubber';
@@ -57,7 +58,7 @@ export default function PoolProjectionScreen() {
         const sortedCols = [...cols].sort((a, b) => a.date.localeCompare(b.date));
         const targetDate = new Date();
         targetDate.setDate(targetDate.getDate() + Math.round(selectedHorizon * 30.4375));
-        const targetDateISO = targetDate.toISOString().slice(0, 10);
+        const targetDateISO = formatIsoDate(targetDate);
 
         let matchingCol = sortedCols[0];
         for (const col of sortedCols) {

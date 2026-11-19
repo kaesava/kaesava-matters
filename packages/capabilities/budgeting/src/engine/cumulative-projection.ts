@@ -19,6 +19,7 @@ export interface CumulativeProjectionIncomeEvent {
 export interface CumulativeProjectionExpenseEvent {
   categoryId?: string | null;
   poolId?: string | null;
+  envelopeId?: string | null;
   amount: number;
   dueDate: string; // YYYY-MM-DD
   status: "PENDING" | "CONFIRMED";
@@ -120,7 +121,7 @@ export function runCumulativeProjection(input: CumulativeProjectionInput): Cumul
     }
 
     const relevantExpenses = upcomingExpenses.filter((e) => {
-      const matchCat = e.categoryId || e.poolId;
+      const matchCat = e.categoryId || e.poolId || e.envelopeId;
       if (!matchCat) return false;
       return i === 0 ? e.dueDate < nextCutoffDate : e.dueDate >= evt.expectedDate && e.dueDate < nextCutoffDate;
     });
@@ -161,7 +162,7 @@ export function runCumulativeProjection(input: CumulativeProjectionInput): Cumul
         nextPaycheckDate: nextDateObj,
         timezone: input.timezone,
         upcomingExpenses: relevantExpenses.map((e) => ({
-          poolId: e.poolId || e.categoryId,
+          poolId: e.poolId || e.envelopeId || e.categoryId,
           categoryId: e.categoryId,
           amount: e.amount,
           dueDate: e.dueDate,
@@ -196,7 +197,7 @@ export function runCumulativeProjection(input: CumulativeProjectionInput): Cumul
 
     const deductedExpenses: Array<{ bucketId: string; amount: number; dueDate: string }> = [];
     for (const exp of relevantExpenses) {
-      const targetId = exp.categoryId || exp.poolId;
+      const targetId = exp.categoryId || exp.poolId || exp.envelopeId;
       if (!targetId) continue;
       deductedExpenses.push({ bucketId: targetId, amount: exp.amount, dueDate: exp.dueDate });
       const curBal = runningBalances.get(targetId) ?? 0;

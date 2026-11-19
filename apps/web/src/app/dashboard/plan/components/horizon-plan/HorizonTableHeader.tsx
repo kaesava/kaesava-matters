@@ -9,6 +9,7 @@ export interface MatrixColumnItem {
   sourceName: string;
   totalIncome: number;
   dateLabel?: string;
+  hiddenAllocationsTotal?: number;
 }
 
 export interface HorizonTableHeaderProps {
@@ -108,6 +109,11 @@ export function HorizonTableHeader({
                 <div className="text-sm font-extrabold text-emerald-600 dark:text-emerald-400 font-mono mt-0.5">
                   +{fmt(col.totalIncome)}
                 </div>
+                {col.hiddenAllocationsTotal !== undefined && col.hiddenAllocationsTotal > 0 && (
+                  <div className="text-[10px] font-semibold text-slate-500 dark:text-zinc-400 font-mono tabular-nums">
+                    ({fmt(col.hiddenAllocationsTotal)} {t("common.private")})
+                  </div>
+                )}
 
                 {/* Row 5: Actions */}
                 {isConfirmed ? (

@@ -223,6 +223,7 @@ export function useQuickActionState(
         return;
       }
       if (date < todayStr) {
+        setError(t("common.transferPastDateError"));
         return;
       }
 
@@ -397,6 +398,7 @@ export function useQuickActionState(
     error,
     success,
     categories,
+    allEnvelopes: rawPools ?? [],
     bankAccounts,
     quickExpensePresets,
     quickIncomePresets,

@@ -111,7 +111,7 @@ export const AttentionItemsList: React.FC<AttentionItemsListProps> = ({
 
             {items.length > 3 && (
               <TouchableOpacity
-                onPress={() => router.push('/(app)/upcoming' as Href)}
+                onPress={() => router.push('/(app)/plan' as Href)}
                 style={styles.showMoreBtn}
                 activeOpacity={0.7}
               >

@@ -39,7 +39,7 @@ export function HistoryDetailSheet({
 
   const isDebit = transaction.rawFlowType === 'DEBIT' || transaction.flowType === 'DEBIT';
   const amountStr = `${isDebit ? '-' : '+'}${formatMobileCurrency(transaction.amount)}`;
-  const displayPool = transaction.poolName || transaction.categoryName || 'Everyday Pool';
+  const displayPool = transaction.poolName || transaction.categoryName || t('categories.mainEnvelope');
 
   return (
     <MobileModalDialog

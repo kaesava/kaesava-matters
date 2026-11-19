@@ -18,7 +18,6 @@ import { PrivacyGovernanceSection } from '../../components/settings/PrivacyGover
 import { HouseholdDangerZoneSection } from '../../components/settings/HouseholdDangerZoneSection';
 import { FeedbackFormModal } from '../../components/FeedbackFormModal';
 import { MobileHouseholdSwitcherModal } from '../../components/settings/MobileHouseholdSwitcherModal';
-import { MobileBankAccountsSection } from '../../components/settings/MobileBankAccountsSection';
 import { MobileArchivedSection } from '../../components/settings/MobileArchivedSection';
 import { MobileAllocationStrategySection } from '../../components/settings/MobileAllocationStrategySection';
 import { getMobileVersionInfo } from '../../lib/version';
@@ -157,29 +156,6 @@ export default function SettingsScreen() {
 
               <HouseholdMemberInviteSection />
 
-              <HouseholdDangerZoneSection />
-            </View>
-          )}
-
-          {/* TAB 3: BANK ACCOUNTS */}
-          {activeTab === 'bank-accounts' && (
-            <View style={styles.tabSection}>
-              <MobileBankAccountsSection />
-            </View>
-          )}
-
-          {/* TAB 4: ARCHIVED DATA */}
-          {activeTab === 'archived' && (
-            <View style={styles.tabSection}>
-              <MobileArchivedSection />
-            </View>
-          )}
-
-          {/* TAB 5: DATA & SUBSCRIPTION */}
-          {activeTab === 'account-data' && (
-            <View style={styles.tabSection}>
-              <MobileSubscriptionSection />
-
               <View style={styles.recalibrateCard}>
                 <View style={styles.recalibrateHeader}>
                   <Feather name="sliders" size={16} color={DESIGN_TOKENS.colors.sereneBlue} />
@@ -194,6 +170,22 @@ export default function SettingsScreen() {
                   <Text style={styles.recalibrateBtnText}>{t('setup.recalibrateTitle')}</Text>
                 </TouchableOpacity>
               </View>
+
+              <HouseholdDangerZoneSection />
+            </View>
+          )}
+
+          {/* TAB 3: ARCHIVED DATA */}
+          {activeTab === 'archived' && (
+            <View style={styles.tabSection}>
+              <MobileArchivedSection />
+            </View>
+          )}
+
+          {/* TAB 4: DATA & SUBSCRIPTION */}
+          {activeTab === 'account-data' && (
+            <View style={styles.tabSection}>
+              <MobileSubscriptionSection />
 
               <PrivacyGovernanceSection />
             </View>

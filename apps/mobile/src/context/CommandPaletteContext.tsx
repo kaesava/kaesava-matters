@@ -30,7 +30,7 @@ const MOBILE_SCREEN_ROUTES: Record<string, string> = {
   'income-and-bills': '/(app)/plan',
   envelopes: '/(app)/envelopes',
   history: '/(app)/history',
-  'bank-accounts': '/(app)/settings?tab=bank-accounts',
+  'bank-accounts': '/(app)/bank-accounts',
   'afford-check': '/(app)/afford-check',
   reports: '/(app)/reports',
   settings: '/(app)/settings',
@@ -45,7 +45,7 @@ function buildMobilePages(hasSimulation: boolean, hasReports: boolean): SearchRe
     { id: 'schedules', title: t('commandPalette.pages.schedules'), subtitle: t('commandPalette.pages.schedulesSub'), route: '/(app)/plan/schedules', keywords: ['recurring', 'payday', 'bills', 'income schedule'] },
     { id: 'projection', title: t('commandPalette.pages.projection'), subtitle: t('commandPalette.pages.projectionSub'), route: '/(app)/envelopes/projection', keywords: ['forecast', '12 month'] },
     { id: 'history', title: t('commandPalette.pages.history'), subtitle: t('commandPalette.pages.historySub'), route: '/(app)/history', keywords: ['transactions', 'spent'] },
-    { id: 'bank-accounts', title: t('commandPalette.pages.bankAccounts'), subtitle: t('commandPalette.pages.bankAccountsSub'), route: '/(app)/settings?tab=bank-accounts', keywords: ['accounts', 'balance', 'match balance'] },
+    { id: 'bank-accounts', title: t('commandPalette.pages.bankAccounts'), subtitle: t('commandPalette.pages.bankAccountsSub'), route: '/(app)/bank-accounts', keywords: ['accounts', 'balance', 'match balance'] },
     { id: 'settings', title: t('commandPalette.pages.settings'), subtitle: t('commandPalette.pages.settingsSub'), route: '/(app)/settings', keywords: ['profile', 'household', 'subscription'] },
     { id: 'quick-expense', title: t('commandPalette.pages.quickExpense'), subtitle: t('commandPalette.pages.quickExpenseSub'), route: '#quick-expense', keywords: ['expense', 'income', 'transfer', 'log'], isAction: true },
   ];
@@ -132,19 +132,27 @@ export function CommandPaletteProvider({ children }: { children: React.ReactNode
         const qs = p.amount ? `?amount=${encodeURIComponent(String(p.amount))}` : '';
         router.push(`/(app)/afford-check${qs}` as Href);
       } else if (prefill.target === 'create-envelope') {
-        const qs = p.name ? `&name=${encodeURIComponent(String(p.name))}` : '';
-        router.push(`/(app)/envelopes?create=1${qs}` as Href);
+        const qs = new URLSearchParams({ create: '1' });
+        if (p.name) qs.set('name', String(p.name));
+        if (p.amount && Number(p.amount) > 0) qs.set('amount', String(p.amount));
+        if (p.date) qs.set('date', String(p.date));
+        router.push(`/(app)/envelopes?${qs.toString()}` as Href);
       } else if (prefill.target === 'edit-envelope' && p.id) {
         router.push(`/(app)/envelopes/${encodeURIComponent(String(p.id))}` as Href);
       } else if (prefill.target === 'create-bill') {
         const qs = new URLSearchParams({ createBill: '1' });
         if (p.name) qs.set('name', String(p.name));
         if (p.amount && Number(p.amount) > 0) qs.set('amount', String(p.amount));
+        if (p.date) qs.set('date', String(p.date));
         router.push(`/(app)/plan/schedules?${qs.toString()}` as Href);
       } else if (prefill.target === 'edit-bill' && p.id) {
         router.push(`/(app)/plan/schedules?editBillId=${encodeURIComponent(String(p.id))}` as Href);
       } else if (prefill.target === 'create-income') {
-        router.push('/(app)/plan/schedules?createIncome=1' as Href);
+        const qs = new URLSearchParams({ createIncome: '1' });
+        if (p.name) qs.set('name', String(p.name));
+        if (p.amount && Number(p.amount) > 0) qs.set('amount', String(p.amount));
+        if (p.date) qs.set('date', String(p.date));
+        router.push(`/(app)/plan/schedules?${qs.toString()}` as Href);
       } else if (prefill.target === 'edit-income' && p.id) {
         router.push(`/(app)/plan/schedules?editIncomeId=${encodeURIComponent(String(p.id))}` as Href);
       } else if (prefill.target === 'history-filter') {

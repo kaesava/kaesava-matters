@@ -30,12 +30,7 @@ export const history = {
     "exportHeaders": {
       "amountWithCurrency": "Amount ({currency})",
       "account": "Account",
-      "note": "Note",
-      "paydayPlanDate": "Payday Plan Date",
-      "incomeDate": "Income Date",
-      "incomeSource": "Income Schedule",
-      "bankAccount": "Bank Account",
-      "totalAmount": "Total Amount"
+      "note": "Note"
     },
     "title": "History",
     "viewReports": "View Reports",
@@ -104,7 +99,19 @@ export const history = {
     "emptySubtitle": "Your spending and income will show up here once you start recording.",
     "statusConfirmed": "Confirmed ✓",
     "statusDraft": "Draft Saved 💾",
-    "csvExport": "CSV"
+    "csvExport": "CSV",
+    "csvPaydayPlanDate": "Payday Plan Date",
+    "csvIncomeDate": "Income Date",
+    "csvIncomeSource": "Income Source",
+    "csvBankAccount": "Bank Account",
+    "csvTotalIncome": "Total Income",
+    "csvEnvelope": "Envelope",
+    "csvPlannedAmount": "Planned Amount",
+    "csvReasoning": "Reasoning",
+    "filteredToEnvelope": "Filtered to Envelope: {name}",
+    "filteredToAccount": "Filtered to Account: {name}",
+    "filterItemUnavailable": "Filter: Item unavailable",
+    "transferAmountTitle": "Transfer Amount"
   },
   "canIAfford": {
     "title": "Can I Afford It?",
@@ -173,6 +180,8 @@ export const history = {
     "paycyclesAwayLabel": "{n} paycycle(s) away",
     "shortfallLabel": "Shortfall: -{amount}",
     "projectedEverydayLabel": "Projected Everyday: {amount}",
-    "recurringMonthlyImpactLabel": "{amount}/month"
+    "recurringMonthlyImpactLabel": "{amount}/month",
+    "goalDelayCount": "{count} goal(s) pushed back",
+    "horizon12Months": "12-month horizon"
   }
 } as const;

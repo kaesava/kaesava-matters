@@ -74,7 +74,7 @@ export async function canAffordSimulationQuery(
   const [tenantRecord, dbEnvelopes, envelopeBalancesMap, pendingIncomesRaw, pendingExpensesRaw] =
     await Promise.all([
       dbClient
-        .select({ timezone: tenants.timezone })
+        .select({ timezone: tenants.timezone, currency: tenants.currency })
         .from(tenants)
         .where(eq(tenants.id, tenantId))
         .limit(1),
@@ -165,6 +165,7 @@ export async function canAffordSimulationQuery(
     ]);
 
   const timezone = tenantRecord[0]?.timezone ?? "UTC";
+  const currency = tenantRecord[0]?.currency ?? "AUD";
   const todayStr = getTenantDateString(new Date(), { timezone });
   const today = new Date(todayStr + "T00:00:00Z");
 
@@ -305,6 +306,8 @@ export async function canAffordSimulationQuery(
       projectionEngine: deps.projectionEngine,
       today,
       timezone,
+      currency,
+      userId,
     });
   }
 
@@ -330,5 +333,7 @@ export async function canAffordSimulationQuery(
     dailyAllowance,
     projectionEngine: deps.projectionEngine,
     timezone,
+    currency,
+    userId,
   });
 }

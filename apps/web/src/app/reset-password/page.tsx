@@ -10,7 +10,9 @@ import {
   FormFieldError,
   FormErrorBanner,
 } from "@money-matters/ui/web";
+import { evaluatePasswordStrength } from "@money-matters/types";
 import { authClient } from "../../lib/auth";
+import { PasswordStrengthIndicator } from "../../components/auth/PasswordStrengthIndicator";
 
 function ResetPasswordForm() {
   const router = useRouter();
@@ -32,7 +34,7 @@ function ResetPasswordForm() {
       return;
     }
 
-    if (password.length < 8) {
+    if (evaluatePasswordStrength(password).score < 4) {
       setError(t("auth.passwordTooShort"));
       return;
     }
@@ -66,8 +68,7 @@ function ResetPasswordForm() {
 
   const isFormValid =
     token.length > 0 &&
-    password.length >= 8 &&
-    confirmPassword.length >= 8 &&
+    evaluatePasswordStrength(password).score === 4 &&
     password === confirmPassword;
 
   if (isSuccess) {
@@ -104,9 +105,7 @@ function ResetPasswordForm() {
           disabled={!token || isSubmitting}
           className="w-full px-3 py-2 border rounded-lg text-sm bg-white dark:bg-slate-900 border-slate-300 dark:border-slate-700 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
         />
-        {password.length > 0 && password.length < 8 && (
-          <FormFieldError error={t("auth.passwordTooShort")} />
-        )}
+        {password.length > 0 && <PasswordStrengthIndicator password={password} />}
       </div>
 
       <div>

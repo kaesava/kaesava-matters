@@ -164,11 +164,11 @@ export function HistoryTab({
             label={
               poolIdParam || categoryIdParam
                 ? matchedPool
-                  ? `Filtered to Envelope: ${matchedPool.name}`
-                  : "Filter: Item unavailable"
+                  ? t("history.filteredToEnvelope", { name: matchedPool.name })
+                  : t("history.filterItemUnavailable")
                 : matchedBankAccount
-                ? `Filtered to Account: ${matchedBankAccount.name}`
-                : "Filter: Item unavailable"
+                ? t("history.filteredToAccount", { name: matchedBankAccount.name })
+                : t("history.filterItemUnavailable")
             }
             onClear={() => {
               const url = new URL(window.location.href);

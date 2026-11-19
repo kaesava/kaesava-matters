@@ -1,5 +1,8 @@
 import { describe, it, expect } from "vitest";
 import { toMonthlyAmount } from "./can-afford-simulation.query.js";
+import { simulateOneOffPurchase } from "./simulation-steps/one-off-simulation.js";
+import { simulateRecurringCommitment } from "./simulation-steps/recurring-simulation.js";
+import type { ProjectionEngineFn } from "@money-matters/types";
 
 /**
  * Unit tests for canAffordSimulationQuery verdict logic.
@@ -171,6 +174,103 @@ describe("canAffordSimulationQuery — verdict logic", () => {
   it("toMonthlyAmount: ANNUALLY $1200 = $100/mo", () => {
     const monthly = toMonthlyAmount(1200, "ANNUALLY");
     expect(monthly).toBe(100);
+  });
+
+  // ── DIRECT SIMULATION STEP INVOCATION TESTS ─────────────────────────
+  it("simulateOneOffPurchase formats rationale with tenant currency (GBP) and returns SAFE_YES", () => {
+    const noopEngine: ProjectionEngineFn = () => ({
+      steps: [],
+      finalBalances: new Map(),
+      getStepForEvent: () => undefined,
+    });
+    const res = simulateOneOffPurchase({
+      amount: 100,
+      includePersonal: false,
+      effectiveSpendable: 500,
+      everydayBalance: 500,
+      safeCushion: "100.00",
+      safeCushionVal: 100,
+      daysUntilPayday: 10,
+      nextPaycheckDateStr: "2026-12-01",
+      totalBillsBeforePayday: 0,
+      billsDueBeforePayday: [],
+      goalEnvelopes: [],
+      everydayEnvelopes: [],
+      visibleEnvelopes: [],
+      engineBuckets: [],
+      envelopeBalancesMap: {},
+      pendingExpensesRaw: [],
+      sortedIncomes: [],
+      dailyAllowance: 40,
+      projectionEngine: noopEngine,
+      timezone: "Europe/London",
+      currency: "GBP",
+      userId: "user-1",
+    });
+    expect(res.verdict).toBe("SAFE_YES");
+    expect(res.rationaleSteps.join(" ")).toContain("£");
+    expect(res.rationaleSteps.join(" ")).not.toContain("$");
+  });
+
+  it("simulateRecurringCommitment emits poolId on phantom expenses and catches interim deficits", () => {
+    let capturedPhantomHasPoolId = false;
+    const mockEngine: ProjectionEngineFn = (input) => {
+      const phantomExp = input.expenseEvents?.find((e) => e.poolId === "__phantom_recurring__");
+      if (phantomExp) capturedPhantomHasPoolId = true;
+      const isWithPhantom = Boolean(phantomExp);
+      const stepMin = new Map<string, number>([["__phantom_recurring__", isWithPhantom ? -250 : 0]]);
+      const finalBalances = new Map<string, number>([["__phantom_recurring__", 0]]);
+      return {
+        steps: [
+          {
+            incomeEvent: input.incomeEvents[0] ?? {
+              id: "inc-1",
+              expectedDate: "2026-12-01",
+              expectedAmount: 1000,
+              status: "PENDING",
+            },
+            date: "2026-12-01",
+            totalIncome: 1000,
+            balancesBeforeAlloc: new Map(),
+            allocations: new Map(),
+            balancesAfterAlloc: new Map(),
+            deductedExpenses: [],
+            balancesAfterExpenses: stepMin,
+            minProjectedBalances: stepMin,
+          },
+        ],
+        finalBalances,
+        getStepForEvent: () => undefined,
+      };
+    };
+
+    const res = simulateRecurringCommitment({
+      amount: 500,
+      frequency: "MONTHLY",
+      itemName: "Gym",
+      effectiveSpendable: 600,
+      everydayBalance: 600,
+      safeCushion: "100.00",
+      daysUntilPayday: 10,
+      nextPaycheckDateStr: "2026-12-01",
+      totalBillsBeforePayday: 0,
+      visibleEnvelopes: [],
+      goalEnvelopes: [],
+      everydayEnvelopes: [],
+      engineBuckets: [],
+      envelopeBalancesMap: {},
+      pendingExpensesRaw: [],
+      sortedIncomes: [],
+      projectionEngine: mockEngine,
+      today: new Date("2026-11-20T00:00:00Z"),
+      timezone: "Australia/Sydney",
+      currency: "EUR",
+      userId: "user-1",
+    });
+
+    expect(capturedPhantomHasPoolId).toBe(true);
+    expect(res.verdict).toBe("HARD_NO");
+    expect(res.rationaleSteps.join(" ")).toContain("€");
   });
 });
 

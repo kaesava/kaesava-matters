@@ -231,6 +231,7 @@ export function MobileBankAccountsSection() {
                   setAccountToEdit({
                     id: acc.id,
                     name: acc.name,
+                    accountType: acc.accountType,
                     bankProvider: acc.bankProvider,
                     lastKnownBalance: acc.lastKnownBalance,
                     unbudgetedBuffer: acc.unbudgetedBuffer,
