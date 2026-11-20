@@ -1,6 +1,71 @@
 import { tenantUsers, bankAccounts, envelopes, tenants, DbOrTx } from "@money-matters/db";
-import { eq, and, sql } from "drizzle-orm";
+import { eq, and, sql, isNull } from "drizzle-orm";
 import { ensurePremiumAccess } from "@money-matters/core";
+import { GetInviteDetailsResult, InviteAccountStatus } from "@money-matters/types";
+
+function extractRows<T>(result: unknown): T[] {
+  return Array.isArray(result)
+    ? (result as T[])
+    : ((result as { rows?: T[] }).rows ?? []);
+}
+
+async function resolveInviteAccountStatus(db: DbOrTx, email: string): Promise<InviteAccountStatus> {
+  const normalized = email.trim().toLowerCase();
+  try {
+    const result = await db.execute<{ providerId: string }>(
+      sql`SELECT a."providerId" as "providerId"
+          FROM neon_auth.user u
+          JOIN neon_auth.account a ON a."userId" = u.id
+          WHERE lower(u.email) = ${normalized}`
+    );
+    const rows = extractRows<{ providerId: string }>(result);
+    if (rows.length === 0) return "NEW";
+    const providers = new Set(rows.map((r) => r.providerId));
+    return providers.has("google") && !providers.has("credential") ? "GOOGLE_ONLY" : "CREDENTIAL";
+  } catch {
+    return "NEW";
+  }
+}
+
+/**
+ * Returns public metadata for an invite token, redacting email/household when a different user is signed in.
+ */
+export function getInviteDetailsHandler(db: DbOrTx) {
+  return async (
+    input: { inviteToken: string },
+    activeUserEmail?: string
+  ): Promise<GetInviteDetailsResult> => {
+    const [row] = await db
+      .select({
+        inviteEmail: tenantUsers.inviteEmail,
+        inviteStatus: tenantUsers.inviteStatus,
+        expiresAt: tenantUsers.expiresAt,
+        householdName: tenants.name,
+      })
+      .from(tenantUsers)
+      .innerJoin(tenants, eq(tenantUsers.tenantId, tenants.id))
+      .where(and(eq(tenantUsers.inviteToken, input.inviteToken), isNull(tenantUsers.archivedAt)))
+      .limit(1);
+
+    if (!row) return { status: "INVALID" };
+    if (row.inviteStatus === "ACCEPTED") return { status: "ALREADY_ACCEPTED" };
+    if (row.expiresAt && new Date() > new Date(row.expiresAt)) return { status: "EXPIRED" };
+
+    const inviteEmail = row.inviteEmail?.trim().toLowerCase() ?? "";
+    if (activeUserEmail && inviteEmail && activeUserEmail.trim().toLowerCase() !== inviteEmail) {
+      return { status: "VALID", emailMismatch: true };
+    }
+
+    const accountStatus = inviteEmail ? await resolveInviteAccountStatus(db, inviteEmail) : "NEW";
+    return {
+      status: "VALID",
+      emailMismatch: false,
+      inviteEmail,
+      householdName: row.householdName,
+      accountStatus,
+    };
+  };
+}
 
 /**
  * Invites a partner to join the household tenant.
@@ -70,6 +135,27 @@ export function acceptInviteHandler(db: DbOrTx) {
           `Invitation email (${invite.inviteEmail}) does not match your active logged-in email (${userEmail || "unauthenticated"}). Please switch accounts or log out to accept this invitation.`
         );
       }
+    }
+
+    const [existingMember] = await db
+      .select({ id: tenantUsers.id, role: tenantUsers.role })
+      .from(tenantUsers)
+      .where(
+        and(
+          eq(tenantUsers.tenantId, invite.tenantId),
+          eq(tenantUsers.userId, userId),
+          eq(tenantUsers.inviteStatus, "ACCEPTED"),
+          isNull(tenantUsers.archivedAt)
+        )
+      )
+      .limit(1);
+
+    if (existingMember) {
+      await db
+        .update(tenantUsers)
+        .set({ archivedAt: new Date(), updatedAt: new Date(), updatedBy: userId })
+        .where(eq(tenantUsers.id, invite.id));
+      return { success: true, tenantId: invite.tenantId, role: existingMember.role };
     }
 
     const [updated] = await db

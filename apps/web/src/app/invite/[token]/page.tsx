@@ -4,21 +4,32 @@ import { useEffect, useState, useRef } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { trpc } from "../../../lib/trpc";
 import { authClient } from "../../../lib/auth";
-import { Spinner } from "@money-matters/ui/web";
-import { t } from "@money-matters/i18n";
 import { PublicHeader } from "../../../components/public/PublicHeader";
 import { PublicFooter } from "../../../components/public/PublicFooter";
+import { InviteAuthCard } from "./components/InviteAuthCard";
+import { InviteStatusCard } from "./components/InviteStatusCard";
 
 export default function AcceptInvitePage() {
   const params = useParams();
   const router = useRouter();
-  const token = params?.token as string;
+  const token = (params?.token as string) || "";
   const [status, setStatus] = useState<"loading" | "success" | "error">("loading");
   const [errorMsg, setErrorMsg] = useState("");
+  const hasTriggeredRef = useRef(false);
 
-  const { data: session, isPending } = authClient.useSession();
+  const { data: session, isPending, refetch: refetchSession } = authClient.useSession();
+  const inviteQuery = trpc.getInviteDetails.useQuery(
+    { inviteToken: token },
+    { enabled: Boolean(token) && !isPending && !session?.user, retry: false }
+  );
+
   const acceptInviteMutation = trpc.acceptInvite.useMutation({
-    onSuccess: () => {
+    onSuccess: (data) => {
+      if (data?.tenantId) {
+        localStorage.setItem("money_matters_active_tenant_id", data.tenantId);
+        const isSecure = window.location.protocol === "https:";
+        document.cookie = `active_tenant_id=${data.tenantId}; path=/; max-age=31536000; SameSite=Lax${isSecure ? "; Secure" : ""}`;
+      }
       setStatus("success");
       setTimeout(() => router.push("/dashboard"), 2000);
     },
@@ -28,105 +39,71 @@ export default function AcceptInvitePage() {
     },
   });
 
-  const hasTriggeredRef = useRef(false);
-
   useEffect(() => {
-    if (isPending) return;
-    if (!session?.user) {
-      setStatus("loading");
-      return;
-    }
-    if (token && !hasTriggeredRef.current) {
-      hasTriggeredRef.current = true;
-      acceptInviteMutation.mutate({ inviteToken: token });
-    }
+    if (isPending || !session?.user || !token || hasTriggeredRef.current) return;
+    hasTriggeredRef.current = true;
+    acceptInviteMutation.mutate({ inviteToken: token });
   }, [token, acceptInviteMutation, session, isPending]);
+
+  const handleAuthenticated = async () => {
+    await refetchSession();
+    hasTriggeredRef.current = true;
+    setStatus("loading");
+    acceptInviteMutation.mutate({ inviteToken: token });
+  };
+
+  const handleSignedOut = async () => {
+    hasTriggeredRef.current = false;
+    setStatus("loading");
+    setErrorMsg("");
+    await refetchSession();
+    await inviteQuery.refetch();
+  };
+
+  const renderCardContent = () => {
+    if (isPending) return <InviteStatusCard variant="loading" token={token} />;
+    if (session?.user) {
+      if (status === "success") return <InviteStatusCard variant="success" token={token} />;
+      if (status === "error") {
+        return (
+          <InviteStatusCard
+            variant="error"
+            token={token}
+            errorMsg={errorMsg}
+            activeEmail={session.user.email}
+            onSignedOut={handleSignedOut}
+          />
+        );
+      }
+      return <InviteStatusCard variant="loading" token={token} />;
+    }
+    if (inviteQuery.isLoading || !inviteQuery.data) return <InviteStatusCard variant="loading" token={token} />;
+    const details = inviteQuery.data;
+    if (details.status === "EXPIRED") return <InviteStatusCard variant="expired" token={token} />;
+    if (details.status === "ALREADY_ACCEPTED") return <InviteStatusCard variant="already_accepted" token={token} />;
+    if (details.status !== "VALID" || details.emailMismatch || !details.inviteEmail) {
+      return <InviteStatusCard variant="invalid" token={token} />;
+    }
+
+    return (
+      <InviteAuthCard
+        token={token}
+        inviteEmail={details.inviteEmail}
+        householdName={details.householdName ?? ""}
+        accountStatus={details.accountStatus ?? "NEW"}
+        onAuthenticated={handleAuthenticated}
+      />
+    );
+  };
 
   return (
     <div className="min-h-screen bg-[#F7F8FA] flex flex-col font-sans justify-between">
       <PublicHeader showSignIn={!session?.user} />
-
       <main className="flex-1 flex items-center justify-center p-6 my-8">
         <div className="bg-white rounded-3xl p-8 sm:p-10 max-w-md w-full shadow-xl border border-slate-200/80 text-center flex flex-col gap-5">
-          {status === "loading" && isPending && (
-            <div className="space-y-4">
-              <Spinner size="lg" className="text-[#2563eb] mx-auto" />
-              <h1 className="text-xl font-extrabold text-[#1B2B4B]">{t("memberInvite.acceptTitle")}</h1>
-              <p className="text-xs text-slate-500">{t("memberInvite.acceptSubtitle")}</p>
-            </div>
-          )}
-
-          {status === "loading" && !isPending && !session?.user && (
-            <div className="space-y-4">
-              <h1 className="text-2xl font-extrabold text-[#1B2B4B]">
-                {t("memberInvite.joinHouseholdTitle")}
-              </h1>
-              <p className="text-xs text-slate-500">
-                {t("memberInvite.joinHouseholdSubtitle")}
-              </p>
-              <div className="flex flex-col gap-3 mt-4">
-                <button
-                  type="button"
-                  onClick={() => router.push(`/sign-up?redirect=/invite/${token}`)}
-                  className="bg-[#2563eb] text-white text-xs font-bold px-4 py-3 rounded-xl hover:bg-blue-700 transition-colors w-full cursor-pointer shadow-xs"
-                >
-                  {t("auth.signUp")}
-                </button>
-                <p className="text-xs text-slate-500">
-                  {t("memberInvite.alreadyHaveAccountPrompt")}{" "}
-                  <button
-                    type="button"
-                    onClick={() => router.push(`/sign-in?redirect=/invite/${token}`)}
-                    className="font-bold text-[#2563eb] hover:underline cursor-pointer"
-                  >
-                    {t("auth.signIn")}
-                  </button>
-                </p>
-              </div>
-            </div>
-          )}
-
-          {status === "success" && (
-            <div className="space-y-4">
-              <div className="w-12 h-12 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center text-2xl mx-auto font-bold">
-                ✓
-              </div>
-              <h1 className="text-xl font-extrabold text-[#1B2B4B]">{t("memberInvite.acceptSuccessTitle")}</h1>
-              <p className="text-xs text-slate-500">{t("memberInvite.acceptSuccessMessage")}</p>
-            </div>
-          )}
-
-          {status === "error" && (
-            <div className="space-y-4">
-              <div className="w-12 h-12 bg-rose-100 text-rose-600 rounded-full flex items-center justify-center text-2xl mx-auto font-bold">
-                ⚠️
-              </div>
-              <h1 className="text-xl font-extrabold text-[#1B2B4B]">{t("memberInvite.acceptErrorTitle")}</h1>
-              <p className="text-xs text-slate-500">{errorMsg || t("memberInvite.invalidToken")}</p>
-              <div className="flex flex-col gap-2 pt-2">
-                <button
-                  type="button"
-                  onClick={async () => {
-                    await authClient.signOut();
-                    router.push(`/sign-in?redirect=/invite/${token}`);
-                  }}
-                  className="bg-[#2563eb] text-white text-xs font-extrabold px-4 py-2.5 rounded-xl hover:bg-blue-700 transition-colors w-full cursor-pointer"
-                >
-                  {t("memberInvite.signOutSwitchAccount")}
-                </button>
-                <button
-                  type="button"
-                  onClick={() => router.push("/dashboard")}
-                  className="text-xs font-bold text-slate-600 hover:text-slate-900 px-4 py-2 rounded-xl transition-colors cursor-pointer"
-                >
-                  {t("memberInvite.goToDashboard")}
-                </button>
-              </div>
-            </div>
-          )}
+          {renderCardContent()}
         </div>
       </main>
-
       <PublicFooter />
     </div>
   );

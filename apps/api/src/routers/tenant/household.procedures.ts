@@ -1,19 +1,20 @@
-import { tenantProcedure, authenticatedProcedure, ownerProcedure, privateOwnerProcedure, privateTenantProcedure, requiresWriteAccess } from '../../trpc/trpc.js';
+import { tenantProcedure, authenticatedProcedure, ownerProcedure, privateOwnerProcedure, privateTenantProcedure, publicProcedure, requiresWriteAccess } from '../../trpc/trpc.js';
 import { apps } from "@money-matters/db";
 import { eq } from "drizzle-orm";
 import { inngest } from '../../inngest/client.js';
-import { logAuditEvent, sendEmail, buildBrandEmailHeader } from '@money-matters/core';
+import { logAuditEvent, sendEmail, buildBrandEmailHeader, checkRateLimit } from '@money-matters/core';
 import { t } from '@money-matters/i18n';
 import {
   invitePartnerHandler,
   acceptInviteHandler,
+  getInviteDetailsHandler,
   leaveTenantHandler,
   updateHouseholdMemberRoleHandler,
   getHouseholdGovernanceInfoHandler,
   removeHouseholdMemberHandler,
   updateHouseholdHandler,
 } from "@money-matters/capability-tenant";
-import { UpdateHouseholdMemberRoleCommand, DEFAULT_APP_FEATURE_FLAGS } from "@money-matters/types";
+import { UpdateHouseholdMemberRoleCommand, GetInviteDetailsInputSchema, DEFAULT_APP_FEATURE_FLAGS } from "@money-matters/types";
 import { clearEdgeContextCache } from '../../trpc/edge-context.js';
 import { TRPCError } from '@trpc/server';
 import { z } from 'zod';
@@ -59,6 +60,21 @@ export const householdProcedures = {
       await captureIfConsented(ctx.db, ctx.userId, 'partner_invited', { tenant_id: ctx.tenantId });
 
       return { success: true, email: input.email, inviteEmail: input.email, inviteToken: result.inviteToken, expiresAt: result.expiresAt };
+    }),
+
+  getInviteDetails: publicProcedure
+    .input(GetInviteDetailsInputSchema)
+    .query(async ({ input, ctx }) => {
+      const clientIp =
+        ctx.req?.headers.get('cf-connecting-ip') ||
+        ctx.req?.headers.get('x-forwarded-for')?.split(',')[0]?.trim() ||
+        'unknown-ip';
+      const { allowed } = await checkRateLimit(`invite:details:${clientIp}`, 20, 60);
+      if (!allowed) {
+        throw new TRPCError({ code: "TOO_MANY_REQUESTS", message: "Too many requests. Please try again later." });
+      }
+      const handler = getInviteDetailsHandler(ctx.db);
+      return handler(input, ctx.email ?? undefined);
     }),
 
   acceptInvite: authenticatedProcedure

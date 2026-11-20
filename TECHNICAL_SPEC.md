@@ -77,7 +77,7 @@ money-matters/
   - Upstash Redis sliding-window rate limiting on endpoints.
   - Zero PII logging automatically enforced in `@money-matters/core` logger.
   - Credential security: All secrets managed via environment variables (Cloudflare Secrets & GitHub Secrets); `.env` ignored.
-- **Partner Invitation Security**: Owner creates invite token with 48-hour lifetime (`expiresAt`) -> partner accepts at `/invite/[token]` -> system verifies recipient email identity matching `inviteEmail` -> linked to `tenantId` with full read/write permissions. Expired or mismatched invites are rejected and require re-invitation.
+- **Partner Invitation Security**: Owner creates invite token with 48-hour lifetime (`expiresAt`) -> unauthenticated partner views `/invite/[token]` (`getInviteDetails` returns read-only `inviteEmail`, `householdName`, and `accountStatus` without leaking email if a different user is signed in) -> partner authenticates inline via Google or password -> `acceptInvite` verifies recipient email identity matching `inviteEmail` (idempotent if already a member), links to `tenantId`, and switches active household. Expired or mismatched invites are rejected; wrong-account sessions show a privacy-preserving Sign Out flow that returns to the signed-out invite view.
 - **6-Digit Email OTP Password Reset**: Password resets use direct 6-digit numeric OTPs (`/email-otp/request-password-reset` and `/email-otp/reset-password`), eliminating fragile redirect origins, deep link interception, and open redirect vulnerabilities across web and mobile.
 - **Async Inngest Workflows & Resend Email Integration**:
   - `sendWelcomeEmail`: Listens to `auth/user.signup`, sending a welcome transactional email via Resend (`sendEmail` abstraction).
@@ -404,8 +404,8 @@ tenants (id PK, appId FK→apps.id, name, subscriptionTier, stripeCustomerId, st
 | `tenant.getLeaveHouseholdStatus` | `household.procedures.ts:69` | `privateTenantProcedure` | None | None | None | `tenantUsers`, `users`, `tenants`, `bankAccounts`, `envelopes` |
 | `tenant.invitePartner` | `household.procedures.ts:137` | `ownerProcedure` | `requiresWriteAccess` | `z.object({ email: z.string().email() }).strict()` | None | `invitePartnerHandler` (`tenants`, `tenantUsers`, `users`), `sendEmail`, `inngest.send('household/partner.invited')` |
 | `tenant.revokeInvite` | `household.procedures.ts:212` | `ownerProcedure` | `requiresWriteAccess` | `z.object({ inviteId: uuid }).strict()` | None | `tenantUsers` |
-| `tenant.getInviteDetails` | `household.procedures.ts:231` | `publicProcedure` | None | `z.object({ token: z.string() }).strict()` | None | `tenantUsers`, `tenants`, `users`, `apps` |
-| `tenant.acceptInvite` | `household.procedures.ts:276` | `authenticatedProcedure` | None | `z.object({ token: z.string() }).strict()` | None | `acceptInviteHandler` (`tenantUsers`, `users`) |
+| `tenant.getInviteDetails` | `household.procedures.ts:65` | `publicProcedure` | IP rate limit (20/60s) | `GetInviteDetailsInputSchema` (`.strict()`) | `GetInviteDetailsResult` | `getInviteDetailsHandler` (`tenantUsers`, `tenants`, `neon_auth`) |
+| `tenant.acceptInvite` | `household.procedures.ts:79` | `authenticatedProcedure` | None | `z.object({ inviteToken: z.string().min(1) }).strict()` | None | `acceptInviteHandler` (`tenantUsers`, `tenants`, `bankAccounts`, `envelopes`) |
 | `tenant.leaveHousehold` | `household.procedures.ts:292` | `privateTenantProcedure` | None | `z.object({ confirmText: z.string(), newOwnerUserId: uuid.optional() }).strict()` | None | `leaveTenantHandler` (`tenantUsers`, `users`, `envelopes`, `bankAccounts`, `incomeSources`, `allocationStrategies`, `fileNotes`) |
 | `tenant.getHouseholdMembers` | `household.procedures.ts:303` | `tenantProcedure` | None | None | None | `tenantUsers`, `users` |
 | `tenant.updateHouseholdSettings` | `household.procedures.ts:320` | `ownerProcedure` | None | Inline `z.object({...}).strict()` | None | `tenantUsers`, `tenants` |

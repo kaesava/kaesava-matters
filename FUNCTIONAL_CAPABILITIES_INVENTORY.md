@@ -35,7 +35,7 @@
 | `/auth-callback` | `apps/web/src/app/auth-callback/page.tsx` | 120 | Public (`<Suspense>`) | Exchanges `neon_auth_session_verifier`, forwards OAuth errors, routes `/invite/*`, `/complete-profile`, `/setup`, or `moneymatters://auth-callback` |
 | `/complete-profile` | `apps/web/src/app/complete-profile/page.tsx` | 215 | Authenticated | Post-OAuth Name, Country/Currency/Timezone & Terms confirmation (`trpc.createTenant`) |
 | `/dev-callback/[...slug]` | `apps/web/src/app/dev-callback/[...slug]/page.tsx` | 76 | Dev-only | Local OAuth callback bridge |
-| `/invite/[token]` | `apps/web/src/app/invite/[token]/page.tsx` | 133 | Public / Auth | Household partner invitation acceptance (`trpc.tenant.getInviteDetails`, `trpc.tenant.acceptInvite`) |
+| `/invite/[token]` | `apps/web/src/app/invite/[token]/page.tsx` | 96 | Public / Auth | Inline household partner invitation onboarding & acceptance (`InviteAuthCard`, `InviteNewUserForm`, `InviteExistingUserForm`, `InviteStatusCard`, `trpc.getInviteDetails`, `trpc.acceptInvite`) |
 | `/privacy` | `apps/web/src/app/privacy/page.tsx` | 179 | Public (SSR + `metadata`) | Privacy Policy page (`PublicHeader`, `PublicFooter`) |
 | `/terms` | `apps/web/src/app/terms/page.tsx` | 149 | Public (SSR + `metadata`) | Terms of Service page (`PublicHeader`, `PublicFooter`) |
 | `/blog` | `apps/web/src/app/blog/page.tsx` | 139 | Public (SSR + `metadata`) | Blog index (`BLOG_POSTS` from `apps/web/src/lib/blog-data.ts`) |
@@ -76,7 +76,7 @@
 | `/(auth)/sign-up` | `apps/mobile/src/app/(auth)/sign-up.tsx` | 191 | Public | `SignUpFormFields`, `SignUpTermsCheckbox`, `MobileOtpVerificationView`, `MobileSocialAuthButtons` |
 | `/(auth)/forgot-password` | `apps/mobile/src/app/(auth)/forgot-password.tsx` | 219 | Public | `ForgotPasswordEmailStep`, `ForgotPasswordOtpStep`, `ForgotPasswordSuccessStep` |
 | `/(auth)/reset-password` | `apps/mobile/src/app/(auth)/reset-password.tsx` | 240 | Public | Deep-link token password reset screen (`MobilePasswordStrength`) |
-| `/(auth)/invite/[token]` | `apps/mobile/src/app/(auth)/invite/[token].tsx` | 159 | Public / Auth | Partner invite acceptance screen (`trpc.tenant.getInviteDetails`, `trpc.tenant.acceptInvite`) |
+| `/(auth)/invite/[token]` | `apps/mobile/src/app/(auth)/invite/[token].tsx` | 115 | Public / Auth | Inline partner invite onboarding & acceptance (`MobileInviteAuthCard`, `MobileInviteStatusCard`, `trpc.getInviteDetails`, `trpc.acceptInvite`) |
 | `/(auth)/auth-callback` | `apps/mobile/src/app/(auth)/auth-callback.tsx` | 105 | Public / Deep Link | Handles `moneymatters://auth-callback?token=...`, stores session, routes to `complete-profile`, `setup`, or `home` |
 | `/(auth)/complete-profile` | `apps/mobile/src/app/(auth)/complete-profile.tsx` | 120 | Authenticated | Post-OAuth Name, Country/Currency/Timezone & Terms confirmation (`useCompleteProfile`, `trpc.createTenant`) |
 | `(setup)` Layout | `apps/mobile/src/app/(setup)/_layout.tsx` | 19 | Authenticated | Expo Router `Stack` for setup wizard |

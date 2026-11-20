@@ -1,7 +1,7 @@
 import { DEFAULT_TIMEZONE } from "@money-matters/types";
 import { useState, useMemo } from "react";
 import { Platform } from "react-native";
-import { useRouter } from "expo-router";
+import { useRouter, useLocalSearchParams, type Href } from "expo-router";
 import { usePostHog } from "posthog-react-native";
 import { t } from "@money-matters/i18n";
 import { SignUpInputSchema, isValidEmail, getCountryDefaults, detectBestGuessCountry } from "@money-matters/types";
@@ -12,6 +12,8 @@ import { registerPushNotificationsAsync } from "../../lib/push";
 
 export function useSignUpForm() {
   const router = useRouter();
+  const { redirect } = useLocalSearchParams<{ redirect?: string }>();
+  const isInviteFlow = typeof redirect === "string" && redirect.startsWith("/invite/");
   const posthog = usePostHog();
 
   const detectedTimezone = useMemo(() => {
@@ -143,15 +145,17 @@ export function useSignUpForm() {
       if (session?.data?.user) {
         const userId = session.data.user.id;
         posthog?.identify(userId);
-        try {
-          await createTenant.mutateAsync({
-            name: `${name.trim()}'s Household`,
-            country: country || "AU",
-            currency,
-            timezone,
-          });
-        } catch {
-          // Household provisioning fallback
+        if (!isInviteFlow) {
+          try {
+            await createTenant.mutateAsync({
+              name: `${name.trim()}'s Household`,
+              country: country || "AU",
+              currency,
+              timezone,
+            });
+          } catch {
+            // Household provisioning fallback
+          }
         }
         try {
           const pushToken = await registerPushNotificationsAsync();
@@ -160,6 +164,11 @@ export function useSignUpForm() {
         } catch {
           // Push registration fallback
         }
+      }
+      if (isInviteFlow && redirect) {
+        const token = redirect.replace("/invite/", "");
+        router.replace(`/(auth)/invite/${token}` as Href);
+        return;
       }
       router.replace("/(setup)/income");
     } catch {
@@ -207,5 +216,6 @@ export function useSignUpForm() {
     handleSignUp,
     handleOtpSuccess,
     isFormValid,
+    isInviteFlow,
   };
 }

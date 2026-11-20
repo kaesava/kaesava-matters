@@ -19,7 +19,7 @@ export function Logo({ size = "md", className = "", showText = false }: LogoProp
     <div className={`inline-flex items-center gap-3 ${className}`}>
       {/* Brand Icon Image */}
       <img
-        src="/icon-512x512.png"
+        src="/icon-512x512.png?v=2"
         alt="Money Matters Logo"
         className={`${imageSizeClass} rounded-xl object-contain shadow-sm border border-white/10 shrink-0 transition-transform duration-300 hover:scale-105`}
       />

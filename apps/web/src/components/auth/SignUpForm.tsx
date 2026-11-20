@@ -166,19 +166,24 @@ export function SignUpForm({
         return;
       }
 
-      const pendingTenant: PendingTenantData = {
-        name: `${name.trim()}'s Household`,
-        country,
-        currency,
-        timezone,
-      };
+      const isInviteFlow = redirectUrl.startsWith("/invite/");
+      const pendingTenant: PendingTenantData | undefined = isInviteFlow
+        ? undefined
+        : {
+            name: `${name.trim()}'s Household`,
+            country,
+            currency,
+            timezone,
+          };
 
       const sessionData = await authClient.getSession();
       if (sessionData.data?.session) {
-        try {
-          await createTenant.mutateAsync(pendingTenant);
-        } catch (_tErr) {
-          // Non-blocking on initial tenant creation
+        if (pendingTenant) {
+          try {
+            await createTenant.mutateAsync(pendingTenant);
+          } catch (_tErr) {
+            // Non-blocking on initial tenant creation
+          }
         }
         onSuccess();
         window.location.href = redirectUrl === "/dashboard" ? "/setup" : redirectUrl;
@@ -188,12 +193,19 @@ export function SignUpForm({
     } catch (err) {
       const errMsg = err instanceof Error ? err.message : "";
       if (errMsg.includes("Authentication required") || errMsg.includes("UNAUTHORIZED")) {
-        onNeedOtp(email.trim().toLowerCase(), password, {
-          name: `${name.trim()}'s Household`,
-          country,
-          currency,
-          timezone,
-        });
+        const isInviteFlow = redirectUrl.startsWith("/invite/");
+        onNeedOtp(
+          email.trim().toLowerCase(),
+          password,
+          isInviteFlow
+            ? undefined
+            : {
+                name: `${name.trim()}'s Household`,
+                country,
+                currency,
+                timezone,
+              }
+        );
       } else {
         const displayErr = errMsg || t("auth.unexpectedError");
         setFormError(displayErr);
@@ -362,7 +374,7 @@ export function SignUpForm({
         disabled={!isFormValid || loading}
         className="w-full mt-1 bg-[#2563eb] hover:bg-blue-700 text-white font-bold py-3 rounded-xl shadow-xs transition-all cursor-pointer"
       >
-        {t("landing.createAccount")}
+        {redirectUrl.startsWith("/invite/") ? t("memberInvite.continueWithPassword") : t("landing.createAccount")}
       </Button>
     </form>
   );

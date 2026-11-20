@@ -12,7 +12,7 @@ export interface LandingHeroProps {
 export function LandingHero({ onAuthClick }: LandingHeroProps) {
   return (
     <section className="max-w-6xl mx-auto px-6 pt-12 pb-16 text-center flex flex-col items-center gap-6" aria-label="Hero">
-      {/* Aussie Badge */}
+      {/* Hero Badge */}
       <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-blue-50 border border-blue-200 text-xs font-bold text-[#2563eb] tracking-wider uppercase shadow-2xs">
         {t("landing.badge")}
       </div>

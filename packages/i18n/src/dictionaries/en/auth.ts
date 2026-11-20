@@ -95,11 +95,22 @@ export const auth = {
     "acceptSuccessMessage": "Your account is linked up. Heading to the dashboard...",
     "acceptErrorTitle": "Invite problem",
     "invalidToken": "That invite link is invalid or expired. Ask the household owner to send a new one.",
+    "inviteExpiredError": "This invitation has expired. Ask the household owner to send a new one.",
+    "inviteAlreadyAccepted": "This invitation has already been accepted.",
     "goToDashboard": "Take me to my dashboard",
     "pendingAcceptance": "Pending Acceptance",
-    "signOutSwitchAccount": "Sign Out & Switch Account",
+    "signOutAndContinue": "Sign Out",
     "joinHouseholdTitle": "Join Household",
-    "joinHouseholdSubtitle": "Create an account or sign in to accept your household invite.",
-    "alreadyHaveAccountPrompt": "Already have an account?"
+    "joinHouseholdNamedSubtitle": "You've been invited to join {householdName}.",
+    "joinHouseholdSubtitle": "Sign in with Google or set a password using your invited email address.",
+    "invitedEmailLabel": "Invited Email",
+    "continueWithPassword": "Set Password & Join",
+    "signInAndJoin": "Sign In & Join",
+    "googleOnlyInviteNote": "This email uses Google Sign-In. Continue with Google to join.",
+    "inviteSignUpTitle": "Set Up Your Login",
+    "inviteSignUpSubtitle": "Choose a password for your invited email to join this household.",
+    "wrongAccountTitle": "Wrong Account Signed In",
+    "signedInAsNote": "You are currently signed in as {email}.",
+    "wrongAccountPrivacyHint": "This invitation was sent to a different email address. Sign out to continue with the invited email, or return to your dashboard."
   }
 } as const;

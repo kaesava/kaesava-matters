@@ -1,27 +1,33 @@
 import React, { useEffect, useState, useRef } from 'react';
-import { View, Text, StyleSheet, ActivityIndicator, TouchableOpacity } from 'react-native';
-import { useLocalSearchParams, useRouter, Href } from 'expo-router';
+import { View, ScrollView, StyleSheet } from 'react-native';
+import { useLocalSearchParams, useRouter, type Href } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { Feather } from '@expo/vector-icons';
-import { DESIGN_TOKENS } from '@money-matters/ui/mobile';
-import { t } from '@money-matters/i18n';
-import { trpc } from '../../../lib/trpc';
+import { DESIGN_TOKENS, MobileLogo } from '@money-matters/ui/mobile';
+import { trpc, setActiveSessionToken } from '../../../lib/trpc';
+import { setActiveTenantId } from '../../../lib/trpc-session';
 import { authClient } from '../../../lib/auth';
+import { MobileInviteStatusCard } from '../../../components/auth/MobileInviteStatusCard';
+import { MobileInviteAuthCard } from '../../../components/auth/MobileInviteAuthCard';
 
 export default function AcceptInviteMobileScreen() {
   const insets = useSafeAreaInsets();
   const { token } = useLocalSearchParams<{ token?: string }>();
   const router = useRouter();
-  const { data: session, isPending: isSessionPending } = authClient.useSession();
-  const [status, setStatus] = useState<'loading' | 'unauthenticated' | 'success' | 'error'>('loading');
+  const { data: session, isPending: isSessionPending, refetch: refetchSession } = authClient.useSession();
+  const [status, setStatus] = useState<'loading' | 'success' | 'error'>('loading');
   const [errorMsg, setErrorMsg] = useState('');
+  const hasTriggeredRef = useRef(false);
+
+  const inviteQuery = trpc.getInviteDetails.useQuery(
+    { inviteToken: token || '' },
+    { enabled: Boolean(token) && !isSessionPending && !session?.user, retry: false }
+  );
 
   const acceptInviteMutation = trpc.acceptInvite.useMutation({
-    onSuccess: () => {
+    onSuccess: async (data) => {
+      if (data?.tenantId) await setActiveTenantId(data.tenantId);
       setStatus('success');
-      setTimeout(() => {
-        router.replace('/(app)/home' as Href);
-      }, 2000);
+      setTimeout(() => router.replace('/(app)/home' as Href), 2000);
     },
     onError: (err) => {
       setStatus('error');
@@ -29,105 +35,92 @@ export default function AcceptInviteMobileScreen() {
     },
   });
 
-  const hasTriggeredRef = useRef(false);
-
   useEffect(() => {
-    if (isSessionPending) return;
-    if (!token) {
-      setStatus('error');
-      setErrorMsg(t("memberInvite.invalidToken"));
-      return;
-    }
-    if (!session?.user) {
-      setStatus('unauthenticated');
-      return;
-    }
-    if (!hasTriggeredRef.current) {
+    if (isSessionPending || !token || !session?.user || hasTriggeredRef.current) return;
+    hasTriggeredRef.current = true;
+    setStatus('loading');
+    acceptInviteMutation.mutate({ inviteToken: token });
+  }, [token, isSessionPending, session?.user, acceptInviteMutation]);
+
+  const handleAuthenticated = async () => {
+    const res = await authClient.getSession();
+    if (res.data?.session?.token) setActiveSessionToken(res.data.session.token);
+    await refetchSession();
+    if (token) {
       hasTriggeredRef.current = true;
       setStatus('loading');
       acceptInviteMutation.mutate({ inviteToken: token });
     }
-  }, [token, isSessionPending, session?.user, acceptInviteMutation]);
+  };
+
+  const handleSignedOut = async () => {
+    hasTriggeredRef.current = false;
+    setStatus('loading');
+    setErrorMsg('');
+    await refetchSession();
+    await inviteQuery.refetch();
+  };
+
+  const renderCardContent = () => {
+    if (!token) return <MobileInviteStatusCard variant="invalid" />;
+    if (isSessionPending) return <MobileInviteStatusCard variant="loading" />;
+    if (session?.user) {
+      if (status === 'success') return <MobileInviteStatusCard variant="success" />;
+      if (status === 'error') {
+        return (
+          <MobileInviteStatusCard
+            variant="error"
+            errorMsg={errorMsg}
+            activeEmail={session.user.email}
+            onSignedOut={handleSignedOut}
+          />
+        );
+      }
+      return <MobileInviteStatusCard variant="loading" />;
+    }
+    if (inviteQuery.isLoading || !inviteQuery.data) return <MobileInviteStatusCard variant="loading" />;
+    const details = inviteQuery.data;
+    if (details.status === 'EXPIRED') return <MobileInviteStatusCard variant="expired" />;
+    if (details.status === 'ALREADY_ACCEPTED') return <MobileInviteStatusCard variant="already_accepted" />;
+    if (details.status !== 'VALID' || details.emailMismatch || !details.inviteEmail) {
+      return <MobileInviteStatusCard variant="invalid" />;
+    }
+
+    return (
+      <MobileInviteAuthCard
+        token={token}
+        inviteEmail={details.inviteEmail}
+        householdName={details.householdName ?? ''}
+        accountStatus={details.accountStatus ?? 'NEW'}
+        onAuthenticated={handleAuthenticated}
+      />
+    );
+  };
 
   return (
-    <View
-      style={[
+    <ScrollView
+      contentContainerStyle={[
         styles.container,
-        {
-          paddingTop: insets.top + 20,
-          paddingBottom: insets.bottom + 20,
-        },
+        { paddingTop: insets.top + 24, paddingBottom: insets.bottom + 24 },
       ]}
+      keyboardShouldPersistTaps="handled"
     >
-      <View style={styles.card}>
-        {status === 'loading' && (
-          <View style={styles.stateWrapper}>
-            <ActivityIndicator size="large" color={DESIGN_TOKENS.colors.primary} />
-            <Text style={styles.title}>{t("memberInvite.acceptTitle")}</Text>
-            <Text style={styles.subtitle}>{t("memberInvite.acceptSubtitle")}</Text>
-          </View>
-        )}
-
-        {status === 'success' && (
-          <View style={styles.stateWrapper}>
-            <View style={styles.successIconBadge}>
-              <Feather name="check" size={28} color={DESIGN_TOKENS.colors.onPrimary} />
-            </View>
-            <Text style={styles.title}>{t("memberInvite.acceptSuccessTitle")}</Text>
-            <Text style={styles.subtitle}>{t("memberInvite.acceptSuccessMessage")}</Text>
-          </View>
-        )}
-
-        {status === 'unauthenticated' && token && (
-          <View style={styles.stateWrapper}>
-            <Text style={styles.title}>{t("memberInvite.acceptTitle")}</Text>
-            <Text style={styles.subtitle}>{t("memberInvite.acceptSubtitle")}</Text>
-            <TouchableOpacity
-              style={styles.actionBtn}
-              onPress={() => router.replace(`/(auth)/sign-in?redirect=${encodeURIComponent(`/invite/${token}`)}` as Href)}
-              activeOpacity={0.8}
-            >
-              <Text style={styles.actionBtnText}>{t("auth.signIn")}</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={styles.actionBtn}
-              onPress={() => router.replace(`/(auth)/sign-up?redirect=${encodeURIComponent(`/invite/${token}`)}` as Href)}
-              activeOpacity={0.8}
-            >
-              <Text style={styles.actionBtnText}>{t("auth.signUp")}</Text>
-            </TouchableOpacity>
-          </View>
-        )}
-
-        {status === 'error' && (
-          <View style={styles.stateWrapper}>
-            <View style={styles.errorIconBadge}>
-              <Feather name="alert-triangle" size={28} color={DESIGN_TOKENS.colors.onPrimary} />
-            </View>
-            <Text style={styles.title}>{t("memberInvite.acceptErrorTitle")}</Text>
-            <Text style={styles.subtitle}>{errorMsg || t("memberInvite.invalidToken")}</Text>
-
-            <TouchableOpacity
-              style={styles.actionBtn}
-              onPress={() => router.replace('/(auth)/sign-in' as Href)}
-              activeOpacity={0.8}
-            >
-              <Text style={styles.actionBtnText}>{t("memberInvite.goToDashboard")}</Text>
-            </TouchableOpacity>
-          </View>
-        )}
+      <View style={styles.logoWrap}>
+        <MobileLogo size={48} source={require('../../../../assets/icon.png')} />
       </View>
-    </View>
+      <View style={styles.card}>{renderCardContent()}</View>
+    </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
+    flexGrow: 1,
     backgroundColor: DESIGN_TOKENS.colors.background,
     justifyContent: 'center',
     padding: DESIGN_TOKENS.spacing.containerMargin,
   },
+  logoWrap: { alignItems: 'center', marginBottom: 16 },
   card: {
     backgroundColor: DESIGN_TOKENS.colors.surface,
     borderRadius: DESIGN_TOKENS.radius.lg,
@@ -138,53 +131,5 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.05,
     shadowRadius: 8,
     elevation: 2,
-  },
-  stateWrapper: {
-    alignItems: 'center',
-    gap: 12,
-  },
-  successIconBadge: {
-    width: 56,
-    height: 56,
-    borderRadius: 28,
-    backgroundColor: DESIGN_TOKENS.colors.success,
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginBottom: 4,
-  },
-  errorIconBadge: {
-    width: 56,
-    height: 56,
-    borderRadius: 28,
-    backgroundColor: DESIGN_TOKENS.colors.critical,
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginBottom: 4,
-  },
-  title: {
-    fontSize: 18,
-    fontWeight: '700',
-    color: DESIGN_TOKENS.colors.textPrimary,
-    textAlign: 'center',
-  },
-  subtitle: {
-    fontSize: 13,
-    color: DESIGN_TOKENS.colors.textMuted,
-    textAlign: 'center',
-    lineHeight: 18,
-  },
-  actionBtn: {
-    backgroundColor: DESIGN_TOKENS.colors.primary,
-    paddingHorizontal: 24,
-    height: 44,
-    borderRadius: DESIGN_TOKENS.radius.default,
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginTop: 8,
-  },
-  actionBtnText: {
-    color: DESIGN_TOKENS.colors.onPrimary,
-    fontSize: 14,
-    fontWeight: '600',
   },
 });

@@ -144,10 +144,13 @@ describe('Capability Tenant Handlers', () => {
             // First call: find invite in tenantUsers
             return { limit: vi.fn().mockResolvedValue([{ id: 'invite-1', tenantId, role: 'MEMBER', inviteEmail: 'partner@example.com', expiresAt: futureDate }]) };
           } else if (selectCallCount === 2) {
-            // Second call: find parent tenant to derive appId
+            // Second call: check existing accepted membership
+            return { limit: vi.fn().mockResolvedValue([]) };
+          } else if (selectCallCount === 3) {
+            // Third call: find parent tenant to derive appId
             return { limit: vi.fn().mockResolvedValue([{ appId }]) };
           } else {
-            // Third call: check existing personal category
+            // Fourth call: check existing personal category
             return { limit: vi.fn().mockResolvedValue([]) };
           }
         }),
@@ -205,6 +208,33 @@ describe('Capability Tenant Handlers', () => {
     const handler = acceptInviteHandler(mockDb as unknown as DbOrTx);
 
     await expect(handler({ inviteToken: 'valid-token' }, userId, 'attacker@example.com')).rejects.toThrow(/Invitation email .* does not match/);
+  });
+
+  it('getInviteDetailsHandler returns emailMismatch=true without leaking inviteEmail for wrong user', async () => {
+    const futureDate = new Date(Date.now() + 86400 * 1000);
+    const limitMock = vi.fn().mockResolvedValue([
+      { inviteEmail: 'partner@example.com', inviteStatus: 'PENDING', expiresAt: futureDate, householdName: 'Smith Family' },
+    ]);
+    const whereMock = vi.fn().mockReturnValue({ limit: limitMock });
+    const innerJoinMock = vi.fn().mockReturnValue({ where: whereMock });
+    const fromMock = vi.fn().mockReturnValue({ innerJoin: innerJoinMock });
+    const selectMock = vi.fn().mockReturnValue({ from: fromMock });
+    const mockDb = { select: selectMock, execute: vi.fn().mockResolvedValue([]) };
+
+    const { getInviteDetailsHandler } = await import('./index.js');
+    const handler = getInviteDetailsHandler(mockDb as unknown as DbOrTx);
+
+    await expect(handler({ inviteToken: 'tok-1' }, 'other@example.com')).resolves.toEqual({
+      status: 'VALID',
+      emailMismatch: true,
+    });
+    await expect(handler({ inviteToken: 'tok-1' })).resolves.toEqual({
+      status: 'VALID',
+      emailMismatch: false,
+      inviteEmail: 'partner@example.com',
+      householdName: 'Smith Family',
+      accountStatus: 'NEW',
+    });
   });
 
   it('cancelSetupHandler marks PENDING setup as CANCELLED and ensures only 1 bank account + 1 shared Everyday envelope', async () => {

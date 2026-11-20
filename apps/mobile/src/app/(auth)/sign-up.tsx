@@ -49,16 +49,26 @@ export default function SignUpScreen() {
           </TouchableOpacity>
           <View style={styles.brandBlock}>
             <MobileLogo size={64} source={require("../../../assets/icon.png")} />
-            <View style={styles.trialBadge}>
-              <Text style={styles.trialBadgeText}>{t("landing.pricingTrialBadge")}</Text>
-            </View>
+            {!form.isInviteFlow && (
+              <View style={styles.trialBadge}>
+                <Text style={styles.trialBadgeText}>{t("landing.pricingTrialBadge")}</Text>
+              </View>
+            )}
             <Text style={styles.title}>
-              {form.unverifiedEmail ? t("auth.checkYourEmailTitle") : t("landing.createAccount")}
+              {form.unverifiedEmail
+                ? t("auth.checkYourEmailTitle")
+                : form.isInviteFlow
+                  ? t("memberInvite.inviteSignUpTitle")
+                  : t("landing.createAccount")}
             </Text>
             <Text style={styles.subtitle}>
-              {form.unverifiedEmail ? t("auth.otpLabel") : t("app.tagline")}
+              {form.unverifiedEmail
+                ? t("auth.otpLabel")
+                : form.isInviteFlow
+                  ? t("memberInvite.inviteSignUpSubtitle")
+                  : t("app.tagline")}
             </Text>
-            {!form.unverifiedEmail && (
+            {!form.unverifiedEmail && !form.isInviteFlow && (
               <Text style={styles.noCardNote}>
                 {t("landing.authModalSubtitleSignUp")}
               </Text>
@@ -115,7 +125,7 @@ export default function SignUpScreen() {
               disabled={!form.isFormValid || form.loading}
               variant="primary"
             >
-              {t("landing.createAccount")}
+              {form.isInviteFlow ? t("memberInvite.continueWithPassword") : t("landing.createAccount")}
             </MobileButton>
           </View>
         )}

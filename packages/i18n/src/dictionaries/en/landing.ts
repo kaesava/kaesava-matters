@@ -6,7 +6,7 @@ export const landing = {
       "notifyLabel": "Get notified when we launch:",
       "notifyBtn": "Notify Me"
     },
-    "badge": "🇦🇺 Built for Aussie Households & Everyday Earners",
+    "badge": "Built for Modern Households & Everyday Earners",
     "heroTitlePart1": "Guilt-free spending.",
     "heroTitleSpan": "Zero bill shock.",
     "heroSubtitle1": "Automated payday plans for households who hate spreadsheets.",

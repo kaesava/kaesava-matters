@@ -19,6 +19,8 @@ function SignUpContent() {
   const redirectUrl =
     rawRedirect.startsWith("/") && !rawRedirect.startsWith("//") ? rawRedirect : "/dashboard";
 
+  const isInviteFlow = redirectUrl.startsWith("/invite/");
+
   const [socialError, setSocialError] = useState<string | null>(null);
   const [unverifiedEmail, setUnverifiedEmail] = useState<string | null>(null);
   const [passwordForOtp, setPasswordForOtp] = useState<string | undefined>(undefined);
@@ -34,16 +36,26 @@ function SignUpContent() {
         <div className="w-full max-w-md bg-white rounded-3xl shadow-xl border border-slate-200/80 p-8 sm:p-10 flex flex-col gap-6">
           <div className="text-center flex flex-col items-center gap-2">
             <Logo size="lg" />
-            <div className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-blue-50 text-[#2563eb] text-[11px] font-extrabold border border-blue-100 uppercase tracking-wider">
-              {t("landing.pricingTrialBadge")}
-            </div>
+            {!isInviteFlow && (
+              <div className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-blue-50 text-[#2563eb] text-[11px] font-extrabold border border-blue-100 uppercase tracking-wider">
+                {t("landing.pricingTrialBadge")}
+              </div>
+            )}
             <h1 className="text-2xl font-extrabold tracking-tight text-[#1B2B4B]">
-              {unverifiedEmail ? t("auth.checkYourEmailTitle") : t("landing.createAccount")}
+              {unverifiedEmail
+                ? t("auth.checkYourEmailTitle")
+                : isInviteFlow
+                  ? t("memberInvite.inviteSignUpTitle")
+                  : t("landing.createAccount")}
             </h1>
             <p className="text-xs text-slate-500 max-w-xs leading-relaxed">
-              {unverifiedEmail ? t("auth.otpLabel") : t("app.tagline")}
+              {unverifiedEmail
+                ? t("auth.otpLabel")
+                : isInviteFlow
+                  ? t("memberInvite.inviteSignUpSubtitle")
+                  : t("app.tagline")}
             </p>
-            {!unverifiedEmail && (
+            {!unverifiedEmail && !isInviteFlow && (
               <p className="text-[11px] font-medium text-slate-400">
                 {t("landing.authModalSubtitleSignUp")}
               </p>
@@ -57,7 +69,7 @@ function SignUpContent() {
               email={unverifiedEmail}
               password={passwordForOtp}
               onSuccess={async () => {
-                if (pendingTenant) {
+                if (pendingTenant && !isInviteFlow) {
                   try {
                     await createTenant.mutateAsync(pendingTenant);
                   } catch (_e) {

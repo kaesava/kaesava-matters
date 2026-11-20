@@ -122,4 +122,22 @@ describe("tenant router", () => {
       code: "CONFLICT",
     });
   });
+
+  it("getInviteDetails returns INVALID when token is not found", async () => {
+    const caller = appRouter.createCaller({
+      req: new Request("http://localhost/trpc"),
+      resHeaders: new Headers(),
+      db: createMockDb() as unknown as Awaited<ReturnType<typeof createEdgeContext>>["db"],
+      userId: null,
+      session: null,
+      email: null,
+      tenantId: null,
+      appId: null,
+      correlationId: "corr-5",
+    });
+
+    await expect(caller.getInviteDetails({ inviteToken: "missing-token" })).resolves.toEqual({
+      status: "INVALID",
+    });
+  });
 });

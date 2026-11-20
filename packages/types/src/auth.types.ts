@@ -34,6 +34,40 @@ export interface CheckEmailAuthProviderResult {
   isGoogleOnly: boolean;
 }
 
+export const GetInviteDetailsInputSchema = z
+  .object({
+    inviteToken: z.string().trim().min(1, "invalidToken"),
+  })
+  .strict();
+
+export type InviteAccountStatus = "NEW" | "GOOGLE_ONLY" | "CREDENTIAL";
+
+export type GetInviteDetailsResult =
+  | { status: "EXPIRED" | "INVALID" | "ALREADY_ACCEPTED" }
+  | { status: "VALID"; emailMismatch: true }
+  | {
+      status: "VALID";
+      emailMismatch: false;
+      inviteEmail: string;
+      householdName: string;
+      accountStatus: InviteAccountStatus;
+    };
+
+export const InviteSignUpInputSchema = z
+  .object({
+    name: z.string().trim().min(2, "fillAllFields"),
+    password: z.string().min(8, "passwordTooShort"),
+    confirmPassword: z.string().min(8, "passwordTooShort"),
+    agreedToTerms: z.literal(true, {
+      errorMap: () => ({ message: "mustAgreeToTerms" }),
+    }),
+  })
+  .strict()
+  .refine((data) => data.password === data.confirmPassword, {
+    message: "passwordsMustMatch",
+    path: ["confirmPassword"],
+  });
+
 export const ResetPasswordInputSchema = z
   .object({
     email: z.string().trim().min(1, "fillAllFields").email("invalidEmail"),
