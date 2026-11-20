@@ -10,7 +10,7 @@ function IncomeSplitPageContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const id = searchParams.get("id");
-  const returnTo = searchParams.get("returnTo") || "/dashboard";
+  const returnTo = searchParams.get("returnTo") || "";
 
   useEffect(() => {
     if (!id) {

@@ -57,7 +57,6 @@ export function IncomeFormModal({ isOpen, onClose, sourceToEdit, initialPrefill 
   const bankAccounts = useMemo(() => bankAccountsQuery.data ?? [], [bankAccountsQuery.data]);
 
   const poolsQuery = trpc.listEnvelopes.useQuery(undefined, { enabled: isOpen });
-  const hasPrivateEnvelopes = useMemo(() => (poolsQuery.data || []).some((e) => e.isPrivate), [poolsQuery.data]);
 
   const createIncomeMut = trpc.createIncomeSource.useMutation();
   const updateIncomeMut = trpc.updateIncomeSource.useMutation();
@@ -67,6 +66,14 @@ export function IncomeFormModal({ isOpen, onClose, sourceToEdit, initialPrefill 
   const [name, setName] = useState("");
   const [amount, setAmount] = useState("");
   const [receivingAccountId, setReceivingAccountId] = useState("");
+  const isPrivateAccount = useMemo(
+    () => Boolean(bankAccounts.find((a) => a.id === receivingAccountId)?.isPrivate),
+    [bankAccounts, receivingAccountId]
+  );
+  const hasPrivateEnvelopes = useMemo(
+    () => isPrivateAccount && (poolsQuery.data || []).some((e) => e.isPrivate),
+    [poolsQuery.data, isPrivateAccount]
+  );
   const [contributionMode, setContributionMode] = useState<ContributionMode>("FULL");
   const [contributionValue, setContributionValue] = useState("");
 

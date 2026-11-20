@@ -49,7 +49,9 @@ export function useEnvelopeFormModalState({
       setBankAccountId(categoryToEdit.bankAccountId || "");
       setSafetyBufferFloor(categoryToEdit.safetyBufferFloor || "");
       setTargetAmount(
-        categoryToEdit.enteredAmount || categoryToEdit.targetAmount || categoryToEdit.monthlyAmount || ""
+        resolvedFundingMode === "TARGET_BALANCE"
+          ? categoryToEdit.targetAmount || categoryToEdit.enteredAmount || categoryToEdit.monthlyAmount || ""
+          : categoryToEdit.enteredAmount || categoryToEdit.targetAmount || categoryToEdit.monthlyAmount || ""
       );
       const rawDate = categoryToEdit.endDate || categoryToEdit.targetDate || "";
       setTargetDate(rawDate ? rawDate.split("T")[0] : "");
@@ -111,6 +113,7 @@ export function useEnvelopeFormModalState({
     if (type === "GOAL") {
       if (!targetAmount || parseFloat(targetAmount) <= 0) return false;
       if (fundingMode === "TARGET_BALANCE" && !targetDate) return false;
+      if (fundingMode === "RECURRING" && !goalStartDate) return false;
     }
     if (type === "BILL") {
       if (!targetAmount || parseFloat(targetAmount) <= 0) return false;
@@ -144,12 +147,10 @@ export function useEnvelopeFormModalState({
     const initialFundingMode: "RECURRING" | "TARGET_BALANCE" =
       categoryToEdit.fundingMode ?? (initialType === "GOAL" ? "TARGET_BALANCE" : "RECURRING");
     const initialFloor = (categoryToEdit.safetyBufferFloor || "").trim();
-    const initialTarget = (
-      categoryToEdit.enteredAmount ||
-      categoryToEdit.targetAmount ||
-      categoryToEdit.monthlyAmount ||
-      ""
-    ).trim();
+    const initialTarget =
+      initialFundingMode === "TARGET_BALANCE"
+        ? (categoryToEdit.targetAmount || categoryToEdit.enteredAmount || categoryToEdit.monthlyAmount || "").trim()
+        : (categoryToEdit.enteredAmount || categoryToEdit.targetAmount || categoryToEdit.monthlyAmount || "").trim();
     const rawDate = categoryToEdit.endDate || categoryToEdit.targetDate || "";
     const initialDate = rawDate ? rawDate.split("T")[0] : "";
     const parsedInitialRecurrence = parseRecurrenceRule(categoryToEdit.rrule, categoryToEdit.budgetFrequency);
@@ -237,8 +238,11 @@ export function useEnvelopeFormModalState({
     if (type === "GOAL") {
       if (!targetAmount || parseFloat(targetAmount) <= 0) return t("categories.goalAmountRequired");
       if (fundingMode === "TARGET_BALANCE" && !targetDate) return t("categories.goalDateRequired");
-      if (fundingMode === "RECURRING" && goalStartDate && targetDate && targetDate < goalStartDate) {
-        return t("categories.endDateBeforeStartDate");
+      if (fundingMode === "RECURRING") {
+        if (!goalStartDate) return t("categories.billStartDateRequired");
+        if (targetDate && targetDate < goalStartDate) {
+          return t("categories.endDateBeforeStartDate");
+        }
       }
     }
     if (type === "BILL") {

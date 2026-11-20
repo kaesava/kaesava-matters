@@ -1,5 +1,5 @@
 import { envelopes, bankAccounts, incomeSources, incomeEvents, DbOrTx } from "@money-matters/db";
-import { eq, and, sql, or } from "drizzle-orm";
+import { eq, and, sql, or, inArray } from "drizzle-orm";
 
 export async function resetContributionsIfNoPrivateEnvelopes(
   tenantId: string,
@@ -25,8 +25,22 @@ export async function resetContributionsIfNoPrivateEnvelopes(
     );
 
   if (activePrivateEnvelopes.length === 0) {
-    // 1. Reset active income schedules to 100% household contribution
-    await dbClient
+    const userPrivateAccounts = await dbClient
+      .select({ id: bankAccounts.id })
+      .from(bankAccounts)
+      .where(
+        and(
+          eq(bankAccounts.tenantId, tenantId),
+          eq(bankAccounts.appId, appId),
+          eq(bankAccounts.isPrivate, true),
+          eq(bankAccounts.userId, userId),
+          sql`${bankAccounts.archivedAt} IS NULL`
+        )
+      );
+    const privateAccountIds = userPrivateAccounts.map((a) => a.id);
+    if (privateAccountIds.length === 0) return;
+
+    const affectedSources = await dbClient
       .update(incomeSources)
       .set({
         contributionMode: "FULL",
@@ -38,26 +52,31 @@ export async function resetContributionsIfNoPrivateEnvelopes(
         and(
           eq(incomeSources.tenantId, tenantId),
           eq(incomeSources.appId, appId),
+          inArray(incomeSources.receivingAccountId, privateAccountIds),
           sql`${incomeSources.archivedAt} IS NULL`
         )
-      );
+      )
+      .returning({ id: incomeSources.id });
 
-    // 2. Reset unconfirmed upcoming/burst income events to 100% household contribution
-    await dbClient
-      .update(incomeEvents)
-      .set({
-        contributionMode: "FULL",
-        contributionValue: null,
-        updatedAt: new Date(),
-        updatedBy: userId,
-      })
-      .where(
-        and(
-          eq(incomeEvents.tenantId, tenantId),
-          eq(incomeEvents.appId, appId),
-          sql`${incomeEvents.status} != 'CONFIRMED'`,
-          sql`${incomeEvents.archivedAt} IS NULL`
-        )
-      );
+    const sourceIds = affectedSources.map((s) => s.id);
+    if (sourceIds.length > 0) {
+      await dbClient
+        .update(incomeEvents)
+        .set({
+          contributionMode: "FULL",
+          contributionValue: null,
+          updatedAt: new Date(),
+          updatedBy: userId,
+        })
+        .where(
+          and(
+            eq(incomeEvents.tenantId, tenantId),
+            eq(incomeEvents.appId, appId),
+            inArray(incomeEvents.incomeSourceId, sourceIds),
+            sql`${incomeEvents.status} != 'CONFIRMED'`,
+            sql`${incomeEvents.archivedAt} IS NULL`
+          )
+        );
+    }
   }
 }

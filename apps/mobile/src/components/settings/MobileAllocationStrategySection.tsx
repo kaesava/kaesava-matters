@@ -1,6 +1,6 @@
-import React, { useState, useMemo, useEffect } from 'react';
+import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
-import { useRouter, useLocalSearchParams, Href } from 'expo-router';
+import { useRouter, Href } from 'expo-router';
 import { Feather } from '@expo/vector-icons';
 import { t } from '@money-matters/i18n';
 import { DESIGN_TOKENS, InfoTooltip, showMobileConfirm, useMobileToast } from '@money-matters/ui/mobile';
@@ -9,41 +9,17 @@ import { useAppFeatures } from '../../context/useAppFeatures';
 
 export function MobileAllocationStrategySection() {
   const router = useRouter();
-  const params = useLocalSearchParams<{ strategyScope?: string }>();
   const toast = useMobileToast();
   const utils = trpc.useUtils();
-  const { hasPrivateMode, hasCustomAllocationRules } = useAppFeatures();
-
-  const [activeTab, setActiveTab] = useState<'household' | 'personal'>(
-    params.strategyScope === 'personal' ? 'personal' : 'household'
-  );
+  const { hasCustomAllocationRules } = useAppFeatures();
 
   const govQuery = trpc.getHouseholdGovernanceInfo.useQuery();
-  const envelopesQuery = trpc.listEnvelopes.useQuery();
   const isOwner = govQuery.data?.isOwner ?? true;
-
-  const hasPrivateEnvelopes = useMemo(
-    () => hasPrivateMode && (envelopesQuery.data || []).some((e) => e.isPrivate),
-    [envelopesQuery.data, hasPrivateMode]
-  );
-
-  useEffect(() => {
-    if (params.strategyScope === 'personal' && hasPrivateEnvelopes) {
-      setActiveTab('personal');
-    }
-  }, [params.strategyScope, hasPrivateEnvelopes]);
-
-  useEffect(() => {
-    if (!envelopesQuery.isLoading && !hasPrivateEnvelopes && activeTab === 'personal') {
-      setActiveTab('household');
-    }
-  }, [envelopesQuery.isLoading, hasPrivateEnvelopes, activeTab]);
-
-  const isPersonalScope = activeTab === 'personal';
-  const canEdit = isPersonalScope || isOwner;
+  const isPersonalScope = false;
+  const canEdit = isOwner;
 
   const strategyQuery = trpc.getActiveAllocationStrategy.useQuery({
-    isPrivate: isPersonalScope,
+    isPrivate: false,
   });
   const applyPresetMut = trpc.applyAllocationPreset.useMutation();
 
@@ -112,36 +88,13 @@ export function MobileAllocationStrategySection() {
 
   return (
     <View style={styles.card}>
-      {/* Sub-tabs if user has private envelopes */}
-      {hasPrivateEnvelopes && (
-        <View style={styles.tabsRow}>
-          <TouchableOpacity
-            style={[styles.tabBtn, activeTab === 'household' && styles.tabBtnActive]}
-            onPress={() => setActiveTab('household')}
-          >
-            <Text style={[styles.tabBtnText, activeTab === 'household' && styles.tabBtnTextActive]}>
-              {t('settings.paydayRules.tabs.household')}
-            </Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={[styles.tabBtn, activeTab === 'personal' && styles.tabBtnActive]}
-            onPress={() => setActiveTab('personal')}
-          >
-            <Text style={[styles.tabBtnText, activeTab === 'personal' && styles.tabBtnTextActive]}>
-              {t('settings.paydayRules.tabs.personal')}
-            </Text>
-          </TouchableOpacity>
-        </View>
-      )}
 
       {/* Header (Pill tag removed) */}
       <View style={styles.headerRow}>
         <View style={styles.titleContainer}>
           <View style={{ flexDirection: 'row', alignItems: 'center' }}>
             <Text style={styles.title}>
-              {isPersonalScope
-                ? t('settings.paydayRules.tabs.personal')
-                : t('settings.paydayRules.title')}
+              {t('settings.paydayRules.title')}
             </Text>
             <InfoTooltip content={t('settings.paydayRules.infoTooltip')} />
           </View>
@@ -152,7 +105,7 @@ export function MobileAllocationStrategySection() {
           canEdit ? (
             <TouchableOpacity
               style={styles.customizeBtn}
-              onPress={() => router.push(`/(app)/settings/allocation-rules?scope=${activeTab}` as Href)}
+              onPress={() => router.push('/(app)/settings/allocation-rules' as Href)}
               activeOpacity={0.7}
             >
               <Feather name="sliders" size={14} color={DESIGN_TOKENS.colors.sereneBlue} />
@@ -217,7 +170,7 @@ export function MobileAllocationStrategySection() {
             ]}
             onPress={() => {
               if (canEdit) {
-                router.push(`/(app)/settings/allocation-rules?scope=${activeTab}` as Href);
+                router.push('/(app)/settings/allocation-rules' as Href);
               }
             }}
             activeOpacity={canEdit ? 0.7 : 1}

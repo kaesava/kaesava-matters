@@ -261,6 +261,7 @@ export function EnvelopeFormModal({
           bankAccountDisabled={isAccountSelectionDisabled}
           isTargetDateInPast={isTargetDateInPast}
           isPastStartDate={isPastStartDate}
+          isScheduleRuleChanged={isScheduleRuleChanged}
           bankAccountOptions={[
             ...(!isEdit && !isAccountSelectionDisabled ? [{ value: "", label: t("categories.selectBankAccount") }] : []),
             ...eligibleAccounts.map((acc) => ({

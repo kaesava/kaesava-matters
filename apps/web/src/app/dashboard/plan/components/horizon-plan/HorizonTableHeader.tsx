@@ -50,9 +50,9 @@ export function HorizonTableHeader({
   const router = useRouter();
 
   return (
-    <thead>
-      <tr className="bg-zinc-50 dark:bg-zinc-800/80 border-b border-zinc-200 dark:border-zinc-800">
-        <th className="sticky left-0 z-20 bg-zinc-50 dark:bg-zinc-800/90 p-4 font-bold text-[#1B2B4B] dark:text-zinc-200 min-w-[260px] border-r border-zinc-200 dark:border-zinc-700">
+    <thead className="sticky top-0 z-20">
+      <tr className="bg-zinc-50 dark:bg-zinc-800 border-b border-zinc-200 dark:border-zinc-800">
+        <th className="sticky left-0 z-30 bg-zinc-50 dark:bg-zinc-800 p-4 font-bold text-[#1B2B4B] dark:text-zinc-200 min-w-[260px] border-r border-zinc-200 dark:border-zinc-700">
           {t("planTabs.scheduleEnvelopesHeader")}
         </th>
         {visibleColumns.map((col) => {

@@ -72,7 +72,7 @@ export function usePaydayPlanState({ incomeEventId, returnTo = "/dashboard" }: {
     const initReasoning: Record<string, string> = {};
     pData.lines.forEach((l) => {
       const val = l.savedAmount ?? l.proposedAmount;
-      initMap[l.envelopeId] = val.toFixed(2);
+      initMap[l.envelopeId] = val > 0 ? val.toFixed(2) : "";
       if (l.reasoning && val > 0) initReasoning[l.envelopeId] = l.reasoning;
     });
     setLinesMap(initMap);
@@ -155,7 +155,11 @@ export function usePaydayPlanState({ incomeEventId, returnTo = "/dashboard" }: {
 
   const attemptExit = useCallback(() => {
     if (isDirty && !isReadOnly) { setShowExitDialog(true); return; }
-    router.push(returnTo);
+    if (returnTo) {
+      router.push(returnTo);
+    } else {
+      router.back();
+    }
   }, [isDirty, isReadOnly, router, returnTo]);
 
   useEffect(() => {

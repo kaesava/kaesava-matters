@@ -10,6 +10,7 @@ export interface EventItem {
   note?: string | null;
   contributionMode?: string | null;
   contributionValue?: string | null;
+  bankAccountIsPrivate?: boolean | null;
 }
 
 export interface TimelineEventItem extends EventItem {

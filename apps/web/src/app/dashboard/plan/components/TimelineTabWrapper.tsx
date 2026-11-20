@@ -84,7 +84,7 @@ export function TimelineTabWrapper({
           }
         }}
         onAllocateIncome={(eventId) => {
-          router.push(`/dashboard/payday-plan?id=${eventId}&returnTo=/dashboard/plan`);
+          router.push(`/dashboard/payday-plan?id=${eventId}&returnTo=${encodeURIComponent("/dashboard/plan?tab=upcoming")}`);
         }}
         onSkipExpense={async (eventId) => {
           try {

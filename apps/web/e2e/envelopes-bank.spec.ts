@@ -167,6 +167,6 @@ test.describe('7. Envelopes & Move Money Screen (`/dashboard/envelopes`)', () =>
     const manageBtn = page.locator('tbody tr').first().getByRole('button', { name: /Manage/i }).first();
     await expect(manageBtn).toBeVisible();
     await manageBtn.click();
-    await expect(page.getByRole('button', { name: /Mark as Target Envelope for Shortfall\/Surplus/i })).toBeVisible();
+    await expect(page.getByRole('button', { name: /Set as Shortfall\/Surplus Target/i })).toBeVisible();
   });
 });

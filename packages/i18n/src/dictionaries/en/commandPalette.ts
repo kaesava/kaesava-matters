@@ -53,7 +53,6 @@ export const commandPalette = {
     footer: {
       navigate: "Navigate",
       select: "Select",
-      askAi: "Ask AI",
       callsLeft: "{remaining} left",
     },
   },

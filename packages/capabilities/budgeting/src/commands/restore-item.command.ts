@@ -319,6 +319,15 @@ export async function restoreItemCommand(
         );
 
       const hasPrivate = activePrivate.length > 0;
+      let isPrivateAccount = false;
+      if (inc.incomeSource.receivingAccountId) {
+        const [acc] = await tx
+          .select({ isPrivate: bankAccounts.isPrivate, userId: bankAccounts.userId })
+          .from(bankAccounts)
+          .where(eq(bankAccounts.id, inc.incomeSource.receivingAccountId))
+          .limit(1);
+        isPrivateAccount = Boolean(acc?.isPrivate && acc.userId === userId);
+      }
       const archivedTimeMs = new Date(inc.incomeSource.archivedAt).getTime();
       const windowStart = new Date(archivedTimeMs - CASCADE_WINDOW_MS);
       const windowEnd = new Date(archivedTimeMs + CASCADE_WINDOW_MS);
@@ -328,7 +337,7 @@ export async function restoreItemCommand(
         .set({
           archivedAt: null,
           archivedBy: null,
-          ...(!hasPrivate ? { contributionMode: "FULL", contributionValue: null } : {}),
+          ...(!(hasPrivate && isPrivateAccount) ? { contributionMode: "FULL", contributionValue: null } : {}),
           updatedBy: userId,
           updatedAt: now,
         })

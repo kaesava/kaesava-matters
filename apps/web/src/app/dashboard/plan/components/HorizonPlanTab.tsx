@@ -177,7 +177,7 @@ export function HorizonPlanTab({
         </div>
       </div>
 
-      <div className="w-full overflow-x-auto border border-zinc-200 dark:border-zinc-800 rounded-2xl bg-white dark:bg-zinc-900 shadow-sm">
+      <div className="w-full max-h-[70vh] overflow-auto border border-zinc-200 dark:border-zinc-800 rounded-2xl bg-white dark:bg-zinc-900 shadow-sm">
         <table className="w-full border-collapse text-left text-xs">
           <HorizonTableHeader
             visibleColumns={visibleColumns}

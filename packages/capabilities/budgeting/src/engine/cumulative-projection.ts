@@ -42,7 +42,6 @@ export interface CumulativeProjectionInput {
   timezone?: string;
   currencySymbol?: string;
   strategySteps?: AllocationStrategyStepItem[];
-  personalStrategySteps?: AllocationStrategyStepItem[];
 }
 
 export interface CumulativeAllocationDetail {
@@ -165,10 +164,9 @@ export function runCumulativeProjection(input: CumulativeProjectionInput): Cumul
         incomeAmount: totalIncome,
         incomeType: evt.incomeType || "SALARIED",
         incomeUserId: evt.userId || input.currentUserId,
-        contributionMode: evt.contributionMode,
-        contributionValue: evt.contributionValue,
+        contributionMode: evt.isPrivate ? evt.contributionMode : "FULL",
+        contributionValue: evt.isPrivate ? evt.contributionValue : null,
         strategySteps: input.strategySteps,
-        personalStrategySteps: input.personalStrategySteps,
         buckets: currentBuckets,
         paycheckDate: new Date(evt.expectedDate + "T00:00:00Z"),
         paycheckFrequencyDays: freqDays,

@@ -73,6 +73,6 @@ export async function searchTransactionsQuery(
     .leftJoin(envelopes, eq(transactionLedger.envelopeId, envelopes.id))
     .leftJoin(bankAccounts, eq(transactionLedger.bankAccountId, bankAccounts.id))
     .where(and(...conditions))
-    .orderBy(desc(transactionLedger.recordedAt))
+    .orderBy(desc(transactionLedger.recordedAt), desc(transactionLedger.createdAt))
     .limit(limit);
 }

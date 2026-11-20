@@ -8,6 +8,23 @@ export interface EnvelopeEventsToggleSectionProps {
   hasExistingScheduledEvents?: boolean;
   isEdit?: boolean;
   isPastStartDate?: boolean;
+  isScheduleRuleChanged?: boolean;
+}
+
+export function shouldShowPastStartDateWarning({
+  generateEvents,
+  isPastStartDate = false,
+  isEdit = false,
+  isModified = false,
+  isScheduleRuleChanged = false,
+}: {
+  generateEvents: boolean;
+  isPastStartDate?: boolean;
+  isEdit?: boolean;
+  isModified?: boolean;
+  isScheduleRuleChanged?: boolean;
+}): boolean {
+  return Boolean(generateEvents && isPastStartDate && (!isEdit || isModified || isScheduleRuleChanged));
 }
 
 export function EnvelopeEventsToggleSection({
@@ -17,8 +34,16 @@ export function EnvelopeEventsToggleSection({
   hasExistingScheduledEvents = false,
   isEdit = false,
   isPastStartDate = false,
+  isScheduleRuleChanged = false,
 }: EnvelopeEventsToggleSectionProps) {
   const isModified = generateEvents !== initialGenerateEvents;
+  const showPastStartDateWarning = shouldShowPastStartDateWarning({
+    generateEvents,
+    isPastStartDate,
+    isEdit,
+    isModified,
+    isScheduleRuleChanged,
+  });
 
   return (
     <div className="pt-1">
@@ -51,7 +76,7 @@ export function EnvelopeEventsToggleSection({
         </div>
       )}
 
-      {generateEvents && isPastStartDate && (isEdit || isModified) && (
+      {showPastStartDateWarning && (
         <div className="mt-2.5">
           <AlertBanner variant="warning" className="py-2.5 px-3">
             {t('categories.generateEventsPastStartDateWarning')}

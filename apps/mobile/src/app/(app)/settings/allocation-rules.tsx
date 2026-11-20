@@ -217,9 +217,7 @@ export default function MobileAllocationRulesScreen() {
     );
   }
 
-  const pageTitle = isPersonal
-    ? t('settings.paydayRules.tabs.personal')
-    : t('settings.paydayRules.pageTitle');
+  const pageTitle = t('settings.paydayRules.pageTitle');
 
   return (
     <AppScreenWrapper

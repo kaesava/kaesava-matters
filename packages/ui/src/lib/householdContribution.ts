@@ -17,11 +17,12 @@ export function cleanContributionAmount(val: string): string {
  */
 export function validateHouseholdContribution(params: {
   hasPrivateEnvelopes: boolean;
+  isPrivateAccount?: boolean;
   contributionMode: ContributionMode;
   contributionValue: string;
   expectedAmount: string;
 }): string | null {
-  if (!params.hasPrivateEnvelopes || params.contributionMode === 'FULL') {
+  if (!params.hasPrivateEnvelopes || params.isPrivateAccount === false || params.contributionMode === 'FULL') {
     return null;
   }
 
@@ -50,10 +51,11 @@ export function validateHouseholdContribution(params: {
  */
 export function resolveHouseholdContributionPayload(params: {
   hasPrivateEnvelopes: boolean;
+  isPrivateAccount?: boolean;
   contributionMode: ContributionMode;
   contributionValue: string;
 }): { contributionMode: ContributionMode; contributionValue: string | null } {
-  if (!params.hasPrivateEnvelopes || params.contributionMode === 'FULL') {
+  if (!params.hasPrivateEnvelopes || params.isPrivateAccount === false || params.contributionMode === 'FULL') {
     return { contributionMode: 'FULL', contributionValue: null };
   }
   return {

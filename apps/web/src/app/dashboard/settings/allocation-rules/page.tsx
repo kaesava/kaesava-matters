@@ -210,9 +210,7 @@ function AllocationRulesContent() {
           </button>
           <div className="flex items-center gap-2">
             <h1 className="text-xl font-bold text-[#1B2B4B] dark:text-white">
-              {isPersonal
-                ? t("settings.paydayRules.tabs.personal")
-                : t("settings.paydayRules.pageTitle")}
+              {t("settings.paydayRules.pageTitle")}
             </h1>
             <InfoTooltip content={t("settings.paydayRules.pageSubtitle")} />
           </div>

@@ -93,7 +93,15 @@ export function usePaydayPlanActions({
 
   const handleDiscardAndExit = () => {
     setShowExitDialog(false);
-    router.push(returnTo);
+    if (returnTo) {
+      if (returnTo) {
+        router.push(returnTo);
+      } else {
+        router.back();
+      }
+    } else {
+      router.back();
+    }
   };
 
   const handleDiscardEdits = () => {
@@ -154,7 +162,11 @@ export function usePaydayPlanActions({
         utils.listAllAllocationPlans.invalidate(),
         utils.getHorizonProjectionData.invalidate(),
       ]);
-      router.push(returnTo);
+      if (returnTo) {
+        router.push(returnTo);
+      } else {
+        router.back();
+      }
     } catch (err: unknown) {
       toast.error(err instanceof Error ? err.message : t("paydayDrawer.deleteFailed"));
     } finally {

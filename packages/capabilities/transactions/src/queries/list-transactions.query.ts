@@ -61,7 +61,7 @@ export async function listTransactionsQuery(
     .leftJoin(envelopes, eq(transactionLedger.envelopeId, envelopes.id))
     .leftJoin(bankAccounts, eq(transactionLedger.bankAccountId, bankAccounts.id))
     .where(and(...conditions))
-    .orderBy(desc(transactionLedger.recordedAt))
+    .orderBy(desc(transactionLedger.recordedAt), desc(transactionLedger.createdAt))
     .limit(limit)
     .offset(offset);
 }
@@ -118,7 +118,7 @@ export async function listEnvelopeTransactionsQuery(
     .leftJoin(envelopes, eq(transactionLedger.envelopeId, envelopes.id))
     .leftJoin(bankAccounts, eq(transactionLedger.bankAccountId, bankAccounts.id))
     .where(and(...conditions))
-    .orderBy(desc(transactionLedger.recordedAt))
+    .orderBy(desc(transactionLedger.recordedAt), desc(transactionLedger.createdAt))
     .limit(limit)
     .offset(offset);
 }

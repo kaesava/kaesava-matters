@@ -52,7 +52,11 @@ export function useMobileEnvelopeFormState({
       setFundingMode(resolvedFundingMode);
       setBankAccountId(categoryToEdit.bankAccountId ?? "");
       setSafetyBufferFloor(categoryToEdit.safetyBufferFloor ?? "");
-      setTargetAmount((categoryToEdit.enteredAmount || categoryToEdit.targetAmount || categoryToEdit.monthlyAmount) ?? "");
+      setTargetAmount(
+        resolvedFundingMode === "TARGET_BALANCE"
+          ? (categoryToEdit.targetAmount || categoryToEdit.enteredAmount || categoryToEdit.monthlyAmount) ?? ""
+          : (categoryToEdit.enteredAmount || categoryToEdit.targetAmount || categoryToEdit.monthlyAmount) ?? ""
+      );
       const rawDate = categoryToEdit.endDate || categoryToEdit.targetDate || "";
       setTargetDate(rawDate ? formatIsoDate(rawDate) : "");
       const parsedRecurrence = parseRecurrenceRule(categoryToEdit.rrule, categoryToEdit.budgetFrequency);
@@ -115,7 +119,10 @@ export function useMobileEnvelopeFormState({
     if (type === "GOAL") {
       if (!targetAmount || parseFloat(targetAmount) <= 0) return false;
       if (fundingMode === "TARGET_BALANCE" && !targetDate) return false;
-      if (fundingMode === "RECURRING" && goalStartDate && targetDate && targetDate < goalStartDate) return false;
+      if (fundingMode === "RECURRING") {
+        if (!goalStartDate) return false;
+        if (targetDate && targetDate < goalStartDate) return false;
+      }
     }
     if (type === "BILL") {
       if (!targetAmount || parseFloat(targetAmount) <= 0) return false;
@@ -150,7 +157,11 @@ export function useMobileEnvelopeFormState({
       rawType === "EVERYDAY" ? "EVERYDAY" : rawType === "GOAL" || rawType.includes("GOAL") ? "GOAL" : "BILL";
     const initialFundingMode: "RECURRING" | "TARGET_BALANCE" =
       categoryToEdit.fundingMode ?? (initialType === "GOAL" ? "TARGET_BALANCE" : "RECURRING");
-    const initialTarget = ((categoryToEdit.enteredAmount || categoryToEdit.targetAmount) ?? "").trim();
+    const initialTarget = (
+      initialFundingMode === "TARGET_BALANCE"
+        ? (categoryToEdit.targetAmount || categoryToEdit.enteredAmount || categoryToEdit.monthlyAmount) ?? ""
+        : (categoryToEdit.enteredAmount || categoryToEdit.targetAmount || categoryToEdit.monthlyAmount) ?? ""
+    ).trim();
     const initialFloor = (categoryToEdit.safetyBufferFloor ?? "").trim();
     const rawDate = categoryToEdit.endDate || categoryToEdit.targetDate || "";
     const initialDate = rawDate ? formatIsoDate(rawDate) : "";

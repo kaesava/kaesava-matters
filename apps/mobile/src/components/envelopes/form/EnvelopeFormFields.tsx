@@ -42,6 +42,7 @@ export interface EnvelopeFormFieldsProps {
   bankOptions: Array<{ key: string; label: string }>;
   isTargetDateInPast?: boolean;
   isPastStartDate?: boolean;
+  isScheduleRuleChanged?: boolean;
 }
 
 export const EnvelopeFormFields: React.FC<EnvelopeFormFieldsProps> = ({
@@ -84,6 +85,7 @@ export const EnvelopeFormFields: React.FC<EnvelopeFormFieldsProps> = ({
   bankOptions,
   isTargetDateInPast = false,
   isPastStartDate = false,
+  isScheduleRuleChanged = false,
 }) => {
   return (
     <View style={styles.content}>
@@ -186,6 +188,7 @@ export const EnvelopeFormFields: React.FC<EnvelopeFormFieldsProps> = ({
               hasExistingScheduledEvents={hasExistingScheduledEvents}
               isEdit={isEdit}
               isPastStartDate={isPastStartDate}
+              isScheduleRuleChanged={isScheduleRuleChanged}
             />
           )}
         </View>

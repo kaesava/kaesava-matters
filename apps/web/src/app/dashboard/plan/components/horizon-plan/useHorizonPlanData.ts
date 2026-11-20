@@ -102,7 +102,7 @@ export function useHorizonPlanData({
   const returnTo = useMemo(() => {
     return pathname?.startsWith("/dashboard/payday-plan")
       ? "/dashboard/payday-plan"
-      : "/dashboard/plan";
+      : "/dashboard/plan?tab=matrix";
   }, [pathname]);
 
   const [showFullHorizon, setShowFullHorizon] = useState(false);

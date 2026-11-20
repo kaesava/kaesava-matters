@@ -2,6 +2,7 @@ import { incomeEvents, expenseEvents, incomeSources, envelopes, DbOrTx } from "@
 import { eq, and, gte, sql } from "drizzle-orm";
 import { z } from "zod";
 import { OverrideEventCommand } from "@money-matters/types";
+import { resolveValidatedIncomeContribution } from "./income-contribution.helper.js";
 
 export async function overrideEventCommand(
   input: z.infer<typeof OverrideEventCommand>,
@@ -17,8 +18,16 @@ export async function overrideEventCommand(
   return await dbClient.transaction(async (tx) => {
     if (input.eventType === "INCOME") {
       const [existingEvt] = await tx
-        .select({ status: incomeEvents.status })
+        .select({
+          status: incomeEvents.status,
+          expectedAmount: incomeEvents.expectedAmount,
+          actualAmount: incomeEvents.actualAmount,
+          contributionMode: incomeEvents.contributionMode,
+          contributionValue: incomeEvents.contributionValue,
+          receivingAccountId: incomeSources.receivingAccountId,
+        })
         .from(incomeEvents)
+        .leftJoin(incomeSources, eq(incomeEvents.incomeSourceId, incomeSources.id))
         .where(and(eq(incomeEvents.id, input.eventId), eq(incomeEvents.tenantId, tenantId), eq(incomeEvents.appId, appId)));
       if (existingEvt?.status === "CONFIRMED") {
         throw new Error("Confirmed events are locked and cannot be edited or deleted.");
@@ -47,8 +56,21 @@ export async function overrideEventCommand(
       if (input.status) setPayload.status = input.status;
       if (input.name) setPayload.name = input.name;
       if (input.note !== undefined) setPayload.note = input.note;
-      if (input.contributionMode !== undefined) setPayload.contributionMode = input.contributionMode;
-      if (input.contributionValue !== undefined) setPayload.contributionValue = input.contributionValue;
+      if (input.contributionMode !== undefined || input.contributionValue !== undefined || newAmount) {
+        const effectiveAmount = String(newAmount || existingEvt?.actualAmount || existingEvt?.expectedAmount || "0");
+        const resolved = await resolveValidatedIncomeContribution({
+          mode: (input.contributionMode ?? existingEvt?.contributionMode ?? "FULL") as "FULL" | "PERCENTAGE" | "FIXED_AMOUNT",
+          value: input.contributionValue !== undefined ? input.contributionValue : existingEvt?.contributionValue,
+          totalAmount: effectiveAmount,
+          receivingAccountId: existingEvt?.receivingAccountId,
+          tenantId,
+          appId,
+          userId,
+          db: tx,
+        });
+        setPayload.contributionMode = resolved.contributionMode;
+        setPayload.contributionValue = resolved.contributionValue;
+      }
 
       const [updatedEvent] = await tx
         .update(incomeEvents)

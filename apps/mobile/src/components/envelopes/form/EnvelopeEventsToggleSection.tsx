@@ -10,6 +10,23 @@ export interface EnvelopeEventsToggleSectionProps {
   hasExistingScheduledEvents?: boolean;
   isEdit?: boolean;
   isPastStartDate?: boolean;
+  isScheduleRuleChanged?: boolean;
+}
+
+export function shouldShowPastStartDateWarning({
+  generateEvents,
+  isPastStartDate = false,
+  isEdit = false,
+  isModified = false,
+  isScheduleRuleChanged = false,
+}: {
+  generateEvents: boolean;
+  isPastStartDate?: boolean;
+  isEdit?: boolean;
+  isModified?: boolean;
+  isScheduleRuleChanged?: boolean;
+}): boolean {
+  return Boolean(generateEvents && isPastStartDate && (!isEdit || isModified || isScheduleRuleChanged));
 }
 
 export const EnvelopeEventsToggleSection: React.FC<EnvelopeEventsToggleSectionProps> = ({
@@ -19,8 +36,16 @@ export const EnvelopeEventsToggleSection: React.FC<EnvelopeEventsToggleSectionPr
   hasExistingScheduledEvents = false,
   isEdit = false,
   isPastStartDate = false,
+  isScheduleRuleChanged = false,
 }) => {
   const isModified = generateEvents !== initialGenerateEvents;
+  const showPastStartDateWarning = shouldShowPastStartDateWarning({
+    generateEvents,
+    isPastStartDate,
+    isEdit,
+    isModified,
+    isScheduleRuleChanged,
+  });
 
   return (
     <View style={styles.container}>
@@ -44,7 +69,7 @@ export const EnvelopeEventsToggleSection: React.FC<EnvelopeEventsToggleSectionPr
           )}
         </View>
       )}
-      {generateEvents && isPastStartDate && (isEdit || isModified) && (
+      {showPastStartDateWarning && (
         <View style={styles.bannerWrapper}>
           <MobileAlertBanner variant="warning">
             {t('categories.generateEventsPastStartDateWarning')}

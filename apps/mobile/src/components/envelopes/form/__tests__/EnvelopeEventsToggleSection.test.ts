@@ -1,5 +1,17 @@
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, vi } from 'vitest';
 import { t } from '@money-matters/i18n';
+
+vi.mock('react-native', () => ({
+  View: 'View',
+  StyleSheet: { create: (styles: Record<string, unknown>) => styles },
+}));
+
+vi.mock('@money-matters/ui/mobile', () => ({
+  MobileCheckbox: 'MobileCheckbox',
+  MobileAlertBanner: 'MobileAlertBanner',
+}));
+
+import { shouldShowPastStartDateWarning } from '../EnvelopeEventsToggleSection';
 
 describe('EnvelopeEventsToggleSection (Mobile Parity)', () => {
   it('uses shared i18n keys for web and mobile parity', () => {
@@ -12,5 +24,34 @@ describe('EnvelopeEventsToggleSection (Mobile Parity)', () => {
     expect(t('categories.generateEventsUncheckedNewImplication')).toBe(
       'Saving will not create any upcoming expense events on your calendar.'
     );
+  });
+
+  it('matches web past-start-date warning visibility across create and edit states', () => {
+    expect(shouldShowPastStartDateWarning({ generateEvents: true, isPastStartDate: true, isEdit: false })).toBe(true);
+    expect(shouldShowPastStartDateWarning({ generateEvents: true, isPastStartDate: true, isEdit: true })).toBe(false);
+    expect(
+      shouldShowPastStartDateWarning({
+        generateEvents: true,
+        isPastStartDate: true,
+        isEdit: true,
+        isModified: true,
+      })
+    ).toBe(true);
+    expect(
+      shouldShowPastStartDateWarning({
+        generateEvents: true,
+        isPastStartDate: true,
+        isEdit: true,
+        isScheduleRuleChanged: true,
+      })
+    ).toBe(true);
+    expect(
+      shouldShowPastStartDateWarning({
+        generateEvents: false,
+        isPastStartDate: true,
+        isEdit: true,
+        isModified: true,
+      })
+    ).toBe(false);
   });
 });

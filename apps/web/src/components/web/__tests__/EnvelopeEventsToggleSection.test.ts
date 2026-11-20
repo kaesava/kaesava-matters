@@ -1,5 +1,8 @@
 import { describe, it, expect } from 'vitest';
-import { EnvelopeEventsToggleSection } from '../EnvelopeEventsToggleSection';
+import {
+  EnvelopeEventsToggleSection,
+  shouldShowPastStartDateWarning,
+} from '../EnvelopeEventsToggleSection';
 import { t } from '@money-matters/i18n';
 
 describe('EnvelopeEventsToggleSection (Web)', () => {
@@ -83,6 +86,82 @@ describe('EnvelopeEventsToggleSection (Web)', () => {
         variant: 'warning',
         key: 'categories.generateEventsUncheckedNewImplication',
       });
+    });
+  });
+
+  describe('shouldShowPastStartDateWarning', () => {
+    it('shows in create mode when generateEvents is true and start date is in the past', () => {
+      expect(
+        shouldShowPastStartDateWarning({ generateEvents: true, isPastStartDate: true, isEdit: false })
+      ).toBe(true);
+    });
+
+    it('hides in create mode when start date is not in the past or generateEvents is false', () => {
+      expect(
+        shouldShowPastStartDateWarning({ generateEvents: true, isPastStartDate: false, isEdit: false })
+      ).toBe(false);
+      expect(
+        shouldShowPastStartDateWarning({ generateEvents: false, isPastStartDate: true, isEdit: false, isModified: true })
+      ).toBe(false);
+    });
+
+    it('hides in edit mode when already enabled and nothing changed', () => {
+      expect(
+        shouldShowPastStartDateWarning({
+          generateEvents: true,
+          isPastStartDate: true,
+          isEdit: true,
+          isModified: false,
+          isScheduleRuleChanged: false,
+        })
+      ).toBe(false);
+    });
+
+    it('hides in edit mode when unset and nothing changed', () => {
+      expect(
+        shouldShowPastStartDateWarning({
+          generateEvents: false,
+          isPastStartDate: true,
+          isEdit: true,
+          isModified: false,
+          isScheduleRuleChanged: false,
+        })
+      ).toBe(false);
+    });
+
+    it('shows in edit mode when toggled from false to true with past start date', () => {
+      expect(
+        shouldShowPastStartDateWarning({
+          generateEvents: true,
+          isPastStartDate: true,
+          isEdit: true,
+          isModified: true,
+        })
+      ).toBe(true);
+    });
+
+    it('shows in edit mode when enabled and schedule/start date was changed with past start date', () => {
+      expect(
+        shouldShowPastStartDateWarning({
+          generateEvents: true,
+          isPastStartDate: true,
+          isEdit: true,
+          isModified: false,
+          isScheduleRuleChanged: true,
+        })
+      ).toBe(true);
+    });
+
+    it('hides in edit mode when toggled from true to false even with past start date', () => {
+      expect(
+        shouldShowPastStartDateWarning({
+          generateEvents: false,
+          isPastStartDate: true,
+          isEdit: true,
+          isModified: true,
+          isScheduleRuleChanged: true,
+        })
+      ).toBe(false);
     });
   });
 });

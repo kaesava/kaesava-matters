@@ -1,8 +1,7 @@
 "use client";
 
-import { useState, useMemo, useEffect } from "react";
+import { useState } from "react";
 import Link from "next/link";
-import { useSearchParams } from "next/navigation";
 import { t } from "@money-matters/i18n";
 import { useToast, ConfirmDialog, InfoTooltip } from "@money-matters/ui/web";
 import { trpc } from "../../../../lib/trpc";
@@ -11,31 +10,14 @@ import { useAppFeatures } from "../../../../hooks/useAppFeatures";
 export function AllocationStrategySection() {
   const toast = useToast();
   const utils = trpc.useUtils();
-  const { hasPrivateMode, hasCustomAllocationRules } = useAppFeatures();
-
-  const searchParams = useSearchParams();
-  const initialScope = searchParams.get("strategyScope") === "personal" ? "personal" : "household";
-  const [activeTab, setActiveTab] = useState<"household" | "personal">(initialScope);
+  const { hasCustomAllocationRules } = useAppFeatures();
 
   const govQuery = trpc.getHouseholdGovernanceInfo.useQuery();
-  const envelopesQuery = trpc.listEnvelopes.useQuery();
   const isOwner = govQuery.data?.isOwner ?? true;
-
-  const hasPrivateEnvelopes = useMemo(
-    () => hasPrivateMode && (envelopesQuery.data || []).some((e) => e.isPrivate),
-    [envelopesQuery.data, hasPrivateMode]
-  );
-
-  useEffect(() => {
-    if (activeTab === "personal" && envelopesQuery.data && !hasPrivateEnvelopes) {
-      setActiveTab("household");
-    }
-  }, [activeTab, envelopesQuery.data, hasPrivateEnvelopes]);
-
-  const isPersonalScope = activeTab === "personal";
+  const isPersonalScope = false;
 
   const strategyQuery = trpc.getActiveAllocationStrategy.useQuery({
-    isPrivate: isPersonalScope,
+    isPrivate: false,
   });
   const applyPresetMut = trpc.applyAllocationPreset.useMutation();
 
@@ -104,42 +86,13 @@ export function AllocationStrategySection() {
 
   return (
     <div className="bg-white/80 dark:bg-zinc-900/80 backdrop-blur-md rounded-2xl border border-zinc-200 dark:border-zinc-800 shadow-sm p-6 space-y-5">
-      {/* Scope Sub-Tabs when user has Private Envelopes */}
-      {hasPrivateEnvelopes && (
-        <div className="flex items-center gap-2 border-b border-zinc-200 dark:border-zinc-800 pb-3">
-          <button
-            type="button"
-            onClick={() => setActiveTab("household")}
-            className={`px-3 py-1.5 text-xs font-bold rounded-lg transition-colors cursor-pointer ${
-              activeTab === "household"
-                ? "bg-[#1B2B4B] text-white"
-                : "text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-zinc-800"
-            }`}
-          >
-            {t("settings.paydayRules.tabs.household")}
-          </button>
-          <button
-            type="button"
-            onClick={() => setActiveTab("personal")}
-            className={`px-3 py-1.5 text-xs font-bold rounded-lg transition-colors cursor-pointer ${
-              activeTab === "personal"
-                ? "bg-[#1B2B4B] text-white"
-                : "text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-zinc-800"
-            }`}
-          >
-            {t("settings.paydayRules.tabs.personal")}
-          </button>
-        </div>
-      )}
 
       {/* Header (Pill tag removed) */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <div>
           <div className="flex items-center gap-2.5">
             <h3 className="font-bold text-[#1B2B4B] dark:text-white text-base">
-              {isPersonalScope
-                ? t("settings.paydayRules.tabs.personal")
-                : t("settings.paydayRules.title")}
+              {t("settings.paydayRules.title")}
             </h3>
             <InfoTooltip content={t("settings.paydayRules.infoTooltip")} />
             {!canEdit && (
@@ -154,7 +107,7 @@ export function AllocationStrategySection() {
         {hasCustomAllocationRules && (
           canEdit ? (
             <Link
-              href={`/dashboard/settings/allocation-rules?scope=${activeTab}`}
+              href="/dashboard/settings/allocation-rules"
               className="inline-flex items-center justify-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-bold text-[#2563eb] bg-blue-50 hover:bg-blue-100 dark:bg-blue-950/40 dark:hover:bg-blue-900/60 dark:text-blue-400 transition-colors shrink-0 cursor-pointer"
             >
               <span>⚙️</span>
@@ -217,7 +170,7 @@ export function AllocationStrategySection() {
         {hasCustomAllocationRules && (
           canEdit ? (
             <Link
-              href={`/dashboard/settings/allocation-rules?scope=${activeTab}`}
+              href="/dashboard/settings/allocation-rules"
               className={`text-left p-4 rounded-xl border transition-all flex flex-col justify-between gap-2 cursor-pointer ${
                 activePreset === "CUSTOM"
                   ? "border-[#2563eb] bg-blue-50/50 dark:bg-blue-950/20 shadow-xs ring-1 ring-[#2563eb]"

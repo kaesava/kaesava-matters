@@ -152,20 +152,12 @@ export async function getHorizonProjectionDataQuery(
   }
 
   const { getActiveAllocationStrategyQuery } = await import("./get-active-allocation-strategy.query.js");
-  const [activeStrategy, personalStrategy] = await Promise.all([
-    getActiveAllocationStrategyQuery(tenantId, appId, userId, db, false),
-    getActiveAllocationStrategyQuery(tenantId, appId, userId, db, true),
-  ]);
+  const activeStrategy = await getActiveAllocationStrategyQuery(tenantId, appId, userId, db);
 
   const projection = computeMatrixProjection({
     currentUserId: userId,
     categories: engineBuckets,
     strategySteps: activeStrategy?.steps?.map((s) => ({
-      stepType: s.stepType,
-      targetEnvelopeId: s.targetEnvelopeId,
-      config: s.config as Record<string, unknown> | null,
-    })),
-    personalStrategySteps: personalStrategy?.steps?.map((s) => ({
       stepType: s.stepType,
       targetEnvelopeId: s.targetEnvelopeId,
       config: s.config as Record<string, unknown> | null,
@@ -187,8 +179,8 @@ export async function getHorizonProjectionDataQuery(
         incomeType: evt.incomeType,
         userId: incomeUserId,
         isPrivate: Boolean(evt.bankAccountIsPrivate),
-        contributionMode: evt.contributionMode || "FULL",
-        contributionValue: evt.contributionValue ? parseFloat(evt.contributionValue) : null,
+        contributionMode: evt.bankAccountIsPrivate ? (evt.contributionMode || "FULL") : "FULL",
+        contributionValue: evt.bankAccountIsPrivate && evt.contributionValue ? parseFloat(evt.contributionValue) : null,
       };
     }),
     expenseEvents: dbExpenseEvents

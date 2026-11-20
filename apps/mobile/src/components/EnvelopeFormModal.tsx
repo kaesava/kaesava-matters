@@ -354,6 +354,7 @@ export function EnvelopeFormModal({
         bankDisabled={isBankDisabled}
         isTargetDateInPast={isTargetDateInPast}
         isPastStartDate={isPastStartDate}
+        isScheduleRuleChanged={isScheduleRuleChanged}
         isPriority={isPriority}
         setIsPriority={setIsPriority}
         isEdit={isEdit}

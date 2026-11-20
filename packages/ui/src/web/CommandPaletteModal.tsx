@@ -276,9 +276,6 @@ export const CommandPaletteModal: React.FC<CommandPaletteModalProps> = ({
           <div className="flex items-center gap-4">
             <span className="flex items-center gap-1"><kbd className="font-mono bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 px-1 py-0.5 rounded text-[10px]">↑↓</kbd> {t("commandPalette.footer.navigate")}</span>
             <span className="flex items-center gap-1"><kbd className="font-mono bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 px-1 py-0.5 rounded text-[10px]">↵</kbd> {t("commandPalette.footer.select")}</span>
-            {hasAiAssistant && (
-              <span className="flex items-center gap-1"><kbd className="font-mono bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 px-1 py-0.5 rounded text-[10px]">Tab</kbd> {t("commandPalette.footer.askAi")}</span>
-            )}
           </div>
           {hasAiAssistant && typeof remainingCalls === "number" && (
             <span className="font-mono text-slate-400">{t("commandPalette.footer.callsLeft", { remaining: remainingCalls })}</span>

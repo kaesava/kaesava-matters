@@ -201,22 +201,14 @@ export async function getProjectedPoolBalancesQuery(
     }
   }
 
-  // 5. Compute matrix projection using active household and personal strategies
+  // 5. Compute matrix projection using active household strategy
   const { getActiveAllocationStrategyQuery } = await import("./get-active-allocation-strategy.query.js");
-  const [activeStrategy, personalStrategy] = await Promise.all([
-    getActiveAllocationStrategyQuery(tenantId, appId, userId, dbClient, false),
-    getActiveAllocationStrategyQuery(tenantId, appId, userId, dbClient, true),
-  ]);
+  const activeStrategy = await getActiveAllocationStrategyQuery(tenantId, appId, userId, dbClient);
 
   const projection = computeMatrixProjection({
     currentUserId: userId,
     categories: engineBuckets,
     strategySteps: activeStrategy?.steps?.map((s) => ({
-      stepType: s.stepType,
-      targetEnvelopeId: s.targetEnvelopeId,
-      config: s.config as Record<string, unknown> | null,
-    })),
-    personalStrategySteps: personalStrategy?.steps?.map((s) => ({
       stepType: s.stepType,
       targetEnvelopeId: s.targetEnvelopeId,
       config: s.config as Record<string, unknown> | null,

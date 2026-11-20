@@ -2,9 +2,9 @@ import { incomeSources, incomeEvents, bankAccounts, type DbOrTx } from "@money-m
 import { and, eq, sql, asc } from "drizzle-orm";
 import {
   verifyReceivingAccountAccess,
-  validateContributionCap,
   type ContributionMode,
 } from "./income-sources.command.js";
+import { resolveValidatedIncomeContribution } from "./income-contribution.helper.js";
 
 async function loadVisibleIncomeEvent(eventId: string, tenantId: string, appId: string, userId: string, db: DbOrTx) {
   const [evt] = await db
@@ -127,10 +127,19 @@ export async function createUpcomingIncomeCommand(
   userId: string,
   db: DbOrTx
 ) {
-  validateContributionCap(input.contributionMode, input.contributionValue, input.amount);
   if (input.receivingAccountId) {
     await verifyReceivingAccountAccess(input.receivingAccountId, tenantId, appId, userId, db);
   }
+  const resolvedContribution = await resolveValidatedIncomeContribution({
+    mode: input.contributionMode,
+    value: input.contributionValue,
+    totalAmount: input.amount,
+    receivingAccountId: input.receivingAccountId,
+    tenantId,
+    appId,
+    userId,
+    db,
+  });
 
   const [source] = await db
     .insert(incomeSources)
@@ -140,8 +149,8 @@ export async function createUpcomingIncomeCommand(
       receivingAccountId: input.receivingAccountId || null,
       rrule: null,
       startDate: input.expectedDate,
-      contributionMode: input.contributionMode || "FULL",
-      contributionValue: input.contributionValue || null,
+      contributionMode: resolvedContribution.contributionMode,
+      contributionValue: resolvedContribution.contributionValue,
       tenantId,
       appId,
       createdBy: userId,
@@ -158,8 +167,8 @@ export async function createUpcomingIncomeCommand(
       actualDate: input.expectedDate,
       expectedAmount: input.amount,
       actualAmount: input.amount,
-      contributionMode: input.contributionMode || "FULL",
-      contributionValue: input.contributionValue || null,
+      contributionMode: resolvedContribution.contributionMode,
+      contributionValue: resolvedContribution.contributionValue,
       note: input.note || null,
       status: "PENDING",
       tenantId,

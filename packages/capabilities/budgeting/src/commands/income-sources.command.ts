@@ -3,6 +3,7 @@ import { incomeSources, incomeEvents, bankAccounts, tenants, type DbOrTx } from 
 import { getTenantDateString } from "@money-matters/core";
 import { and, eq, sql, inArray } from "drizzle-orm";
 import { burstIncomeEvents } from "./income-schedule.js";
+import { resolveValidatedIncomeContribution } from "./income-contribution.helper.js";
 
 export type IncomeFrequency = "WEEKLY" | "FORTNIGHTLY" | "MONTHLY" | "QUARTERLY" | "ANNUALLY";
 export type ContributionMode = "FULL" | "PERCENTAGE" | "FIXED_AMOUNT";
@@ -67,7 +68,16 @@ export async function createIncomeSourceCommand(
   if (input.receivingAccountId) {
     await verifyReceivingAccountAccess(input.receivingAccountId, tenantId, appId, userId, db);
   }
-  validateContributionCap(input.contributionMode, input.contributionValue, input.amount);
+  const resolvedContribution = await resolveValidatedIncomeContribution({
+    mode: input.contributionMode,
+    value: input.contributionValue,
+    totalAmount: input.amount,
+    receivingAccountId: input.receivingAccountId,
+    tenantId,
+    appId,
+    userId,
+    db,
+  });
 
   if (!input.isRecurring) {
     const eventDate = input.startDate || (await getTenantLocalDateString(db, tenantId));
@@ -80,8 +90,8 @@ export async function createIncomeSourceCommand(
         rrule: null,
         startDate: eventDate,
         endDate: null,
-        contributionMode: input.contributionMode || "FULL",
-        contributionValue: input.contributionValue || null,
+        contributionMode: resolvedContribution.contributionMode,
+        contributionValue: resolvedContribution.contributionValue,
         tenantId,
         appId,
         createdBy: userId,
@@ -98,8 +108,8 @@ export async function createIncomeSourceCommand(
         actualDate: eventDate,
         expectedAmount: input.amount,
         actualAmount: input.amount,
-        contributionMode: input.contributionMode || "FULL",
-        contributionValue: input.contributionValue || null,
+        contributionMode: resolvedContribution.contributionMode,
+        contributionValue: resolvedContribution.contributionValue,
         status: "PENDING" as const,
         tenantId,
         appId,

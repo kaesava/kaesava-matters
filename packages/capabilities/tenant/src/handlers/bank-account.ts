@@ -437,12 +437,12 @@ export function archiveBankAccountHandler(db: DbOrTx) {
         await db
           .update(incomeSources)
           .set({ contributionMode: "FULL", contributionValue: null, updatedAt: new Date(), updatedBy: userId })
-          .where(and(eq(incomeSources.tenantId, tenantId), eq(incomeSources.appId, appId), sql`${incomeSources.archivedAt} IS NULL`));
+          .where(and(eq(incomeSources.tenantId, tenantId), eq(incomeSources.appId, appId), eq(incomeSources.receivingAccountId, existing.id), sql`${incomeSources.archivedAt} IS NULL`));
 
         await db
           .update(incomeEvents)
           .set({ contributionMode: "FULL", contributionValue: null, updatedAt: new Date(), updatedBy: userId })
-          .where(and(eq(incomeEvents.tenantId, tenantId), eq(incomeEvents.appId, appId), sql`${incomeEvents.status} != 'CONFIRMED'`, sql`${incomeEvents.archivedAt} IS NULL`));
+          .where(and(eq(incomeEvents.tenantId, tenantId), eq(incomeEvents.appId, appId), eq(incomeEvents.createdBy, userId), sql`${incomeEvents.status} != 'CONFIRMED'`, sql`${incomeEvents.archivedAt} IS NULL`));
       }
     }
 

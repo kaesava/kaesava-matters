@@ -207,6 +207,7 @@ describe("cumulative-projection engine", () => {
           expectedDate: "2026-09-01",
           expectedAmount: 1000,
           status: "PENDING",
+          isPrivate: true,
           contributionMode: "PERCENTAGE",
           contributionValue: 50,
         },
@@ -216,15 +217,10 @@ describe("cumulative-projection engine", () => {
         { stepType: "STANDARD_BILLS" },
         { stepType: "SURPLUS_SWEEP" },
       ],
-      personalStrategySteps: [
-        { stepType: "PRIORITY_GOALS" },
-        { stepType: "EVERYDAY_ALLOWANCE" },
-        { stepType: "SURPLUS_SWEEP" },
-      ],
     });
 
     const step = result.steps[0];
-    expect(step.allocations.get("priv-goal")?.proposedAmount).toBeGreaterThan(0);
+    expect(step.allocations.get("priv-everyday")?.proposedAmount).toBe(500);
     expect(step.allocations.get("pool-everyday")?.proposedAmount).toBeGreaterThan(0);
   });
 });

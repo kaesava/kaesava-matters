@@ -199,7 +199,6 @@ export function TimelineEventsTable({
                             className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] font-extrabold bg-indigo-50 dark:bg-indigo-950/60 text-indigo-700 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-800"
                             title={t("paydayDrawer.lockedBadgeTooltip")}
                           >
-                            <span className="text-[9px]">🔒</span>
                             {t("paydayDrawer.lockedBadge")}
                           </span>
                         )}

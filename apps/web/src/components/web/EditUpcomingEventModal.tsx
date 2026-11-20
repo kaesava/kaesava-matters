@@ -57,10 +57,11 @@ export function EditUpcomingEventModal({
   };
 
   const isIncomeEvent = event?.eventKind === "INCOME";
+  const isPrivateAccount = Boolean(event?.bankAccountIsPrivate);
   const poolsQuery = trpc.listEnvelopes.useQuery(undefined, { enabled: isOpen && isIncomeEvent });
   const hasPrivateEnvelopes = useMemo(
-    () => (poolsQuery.data || []).some((e) => e.isPrivate),
-    [poolsQuery.data]
+    () => isPrivateAccount && (poolsQuery.data || []).some((e) => e.isPrivate),
+    [poolsQuery.data, isPrivateAccount]
   );
 
   const overrideEventMut = trpc.overrideEvent.useMutation();

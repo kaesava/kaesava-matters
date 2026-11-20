@@ -150,27 +150,20 @@ export async function runAllocationCommand(
 
   const { mapEnvelopeToEngineBucket } = await import("../engine/envelope-engine-mapper.js");
   const { getActiveAllocationStrategyQuery } = await import("../queries/get-active-allocation-strategy.query.js");
-  const activeStrategy = await getActiveAllocationStrategyQuery(tenantId, appId, userId, dbClient, false);
-  const personalStrategy = incomeUserId
-    ? await getActiveAllocationStrategyQuery(tenantId, appId, incomeUserId, dbClient, true)
-    : null;
+  const activeStrategy = await getActiveAllocationStrategyQuery(tenantId, appId, userId, dbClient);
 
-  const engineBuckets: EngineBucket[] = dbEnvelopes.map((env) =>
-    mapEnvelopeToEngineBucket(env, balancesMap[env.id] || 0)
-  );
+  const isPrivateAccount = Boolean(eventWithSource?.bankAccountIsPrivate);
+  const engineBuckets: EngineBucket[] = dbEnvelopes
+    .filter((env) => isPrivateAccount || !env.isPrivate)
+    .map((env) => mapEnvelopeToEngineBucket(env, balancesMap[env.id] || 0));
 
   const engineOutput = runAllocationEngine({
     incomeAmount,
     incomeType: eventWithSource?.incomeType || "SALARIED",
     incomeUserId,
-    contributionMode: eventWithSource?.contributionMode || "FULL",
-    contributionValue: eventWithSource?.contributionValue ? parseFloat(eventWithSource.contributionValue) : null,
+    contributionMode: isPrivateAccount ? (eventWithSource?.contributionMode || "FULL") : "FULL",
+    contributionValue: isPrivateAccount && eventWithSource?.contributionValue ? parseFloat(eventWithSource.contributionValue) : null,
     strategySteps: activeStrategy?.steps?.map((s) => ({
-      stepType: s.stepType,
-      targetEnvelopeId: s.targetEnvelopeId,
-      config: s.config as Record<string, unknown> | null,
-    })),
-    personalStrategySteps: personalStrategy?.steps?.map((s) => ({
       stepType: s.stepType,
       targetEnvelopeId: s.targetEnvelopeId,
       config: s.config as Record<string, unknown> | null,

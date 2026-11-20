@@ -34,7 +34,9 @@ describe("overrideEventCommand", () => {
     const mockTx = {
       select: vi.fn().mockReturnValue({
         from: vi.fn().mockReturnValue({
-          where: vi.fn().mockResolvedValue([{ status: "PENDING" }]),
+          leftJoin: vi.fn().mockReturnValue({
+            where: vi.fn().mockResolvedValue([{ status: "PENDING" }]),
+          }),
         }),
       }),
       update: vi.fn().mockReturnValue({
@@ -72,7 +74,9 @@ describe("overrideEventCommand", () => {
     const mockTx = {
       select: vi.fn().mockReturnValue({
         from: vi.fn().mockReturnValue({
-          where: vi.fn().mockResolvedValue([]),
+          leftJoin: vi.fn().mockReturnValue({
+            where: vi.fn().mockResolvedValue([]),
+          }),
         }),
       }),
       update: vi.fn().mockReturnValue({

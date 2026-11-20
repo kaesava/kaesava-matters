@@ -61,7 +61,6 @@ export interface MatrixProjectionInput {
   timezone?: string;
   locale?: string;
   strategySteps?: AllocationStrategyStepItem[];
-  personalStrategySteps?: AllocationStrategyStepItem[];
 }
 
 export interface MatrixProjectionOutput {
@@ -91,7 +90,6 @@ export function computeMatrixProjection(input: MatrixProjectionInput): MatrixPro
     currentUserId: input.currentUserId,
     timezone: input.timezone,
     strategySteps: input.strategySteps,
-    personalStrategySteps: input.personalStrategySteps,
   });
 
   const columns: MatrixColumn[] = [];

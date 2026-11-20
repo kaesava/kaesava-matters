@@ -61,7 +61,6 @@ export function useQuickActionState(
   const transactionsQuery = trpc.listTransactions.useQuery({ limit: 100 });
 
   const rawPools = poolsQuery.data;
-  const hasPrivateEnvelopes = useMemo(() => (rawPools || []).some((p) => p.isPrivate), [rawPools]);
 
   const categories = useMemo(() => {
     const poolsList = rawPools ?? [];
@@ -80,6 +79,14 @@ export function useQuickActionState(
 
   const rawBankAccounts = bankAccountsQuery.data;
   const bankAccounts = useMemo(() => rawBankAccounts ?? [], [rawBankAccounts]);
+  const isPrivateAccount = useMemo(
+    () => Boolean(bankAccounts.find((a) => a.id === receivingAccountId)?.isPrivate),
+    [bankAccounts, receivingAccountId]
+  );
+  const hasPrivateEnvelopes = useMemo(
+    () => isPrivateAccount && (rawPools || []).some((p) => p.isPrivate),
+    [rawPools, isPrivateAccount]
+  );
   const rawTxList = transactionsQuery.data;
   const txList = useMemo(() => rawTxList ?? [], [rawTxList]);
 

@@ -98,7 +98,7 @@ export const PaycheckEventCard: React.FC<PaycheckEventCardProps> = ({
             </Text>
             {isIncome && item.isLocked && (
               <View style={styles.lockedBadge}>
-                <Text style={styles.lockedBadgeText}>🔒 {t('paydayDrawer.lockedBadge')}</Text>
+                <Text style={styles.lockedBadgeText}>{t('paydayDrawer.lockedBadge')}</Text>
               </View>
             )}
           </View>

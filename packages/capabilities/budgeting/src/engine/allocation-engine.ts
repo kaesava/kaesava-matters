@@ -72,7 +72,6 @@ export interface AllocationEngineInput {
   contributionMode?: "FULL" | "PERCENTAGE" | "FIXED_AMOUNT";
   contributionValue?: number | string | null;
   strategySteps?: AllocationStrategyStepItem[];
-  personalStrategySteps?: AllocationStrategyStepItem[];
   runwayDays?: number;
   buckets: EngineBucket[];
   paycheckDate: Date;
@@ -155,9 +154,6 @@ export function runAllocationEngine(input: AllocationEngineInput): AllocationEng
   ];
 
   const sharedSteps = input.strategySteps && input.strategySteps.length > 0 ? input.strategySteps : defaultSteps;
-  const personalSteps = input.personalStrategySteps && input.personalStrategySteps.length > 0
-    ? input.personalStrategySteps
-    : sharedSteps;
 
   const executePipeline = (
     availableCents: number,
@@ -259,16 +255,15 @@ export function runAllocationEngine(input: AllocationEngineInput): AllocationEng
     ? executePipeline(sharedCents, sharedBuckets, false, sharedSteps)
     : 0;
 
-  // 2. Run Private Allocation (if private funds exist and earner owns private envelopes)
-  let leftoverPrivateCents = 0;
+  // 2. Rule 0: Route 100% of privateCents to the earner's Private Everyday envelope (fallback: first private envelope)
   if (privateCents > 0 && hasPrivateEnvelopes) {
     const earnerPrivateBuckets = input.buckets.filter(
       (b) => b.isPrivate && (!input.incomeUserId || b.userId === input.incomeUserId)
     );
+    const privateTarget =
+      earnerPrivateBuckets.find((b) => isEverydayBucket(b)) ?? earnerPrivateBuckets[0];
 
-    if (earnerPrivateBuckets.length === 1) {
-      // Exactly 1 private envelope: 100% of private income flows directly to this envelope
-      const privateTarget = earnerPrivateBuckets[0];
+    if (privateTarget) {
       const sym = input.currencySymbol || "$";
       const line = linesMap.get(privateTarget.id)!;
       line.amountCents += privateCents;
@@ -280,11 +275,6 @@ export function runAllocationEngine(input: AllocationEngineInput): AllocationEng
       );
       const curBal = runningBalances.get(privateTarget.id) ?? 0;
       runningBalances.set(privateTarget.id, curBal + privateCents);
-    } else if (earnerPrivateBuckets.length > 1) {
-      // Multiple private envelopes: run the personal recipe across the earner's private envelopes
-      leftoverPrivateCents = executePipeline(privateCents, earnerPrivateBuckets, true, personalSteps);
-    } else {
-      leftoverPrivateCents = privateCents;
     }
   }
 
@@ -317,6 +307,6 @@ export function runAllocationEngine(input: AllocationEngineInput): AllocationEng
   return {
     status: isInsufficient ? "INSUFFICIENT" : "OK",
     lines,
-    unallocatedAmount: toDollars(leftoverSharedCents + leftoverPrivateCents),
+    unallocatedAmount: toDollars(leftoverSharedCents),
   };
 }

@@ -76,6 +76,7 @@ export function useBankAccountsList() {
       name: string;
       poolType: string;
       currentBalance: number;
+      isSurplusTarget?: boolean;
     }>;
   } | null>(null);
 
@@ -235,6 +236,7 @@ export function useBankAccountsList() {
         name: p.name,
         poolType: p.envelopeType,
         currentBalance: p.currentBalance || 0,
+        isSurplusTarget: p.isSurplusTarget ?? false,
       }));
 
     setReconcileState({

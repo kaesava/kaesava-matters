@@ -51,7 +51,7 @@ export function PaydayPlanEnvelopeTable({
   sweepPoolId,
   sweepPoolRemainder,
   linesMap,
-  initialLinesMap: _initialLinesMap,
+  initialLinesMap,
   reasoningMap,
   numericActual: _numericActual,
   isReadOnly,
@@ -72,6 +72,23 @@ export function PaydayPlanEnvelopeTable({
   const toggleReasoning = (poolId: string) => {
     setOpenReasoningPools((prev) => ({ ...prev, [poolId]: !prev[poolId] }));
   };
+
+  const displayGroups = React.useMemo(() => {
+    if (!sweepPoolId) return groups;
+    let sweepItem: AllocationLineItem | undefined;
+    const rest = groups
+      .map((g) => {
+        const found = g.items.find((l) => l.bucketId === sweepPoolId);
+        if (found) sweepItem = found;
+        return { ...g, items: g.items.filter((l) => l.bucketId !== sweepPoolId) };
+      })
+      .filter((g) => g.items.length > 0);
+    if (!sweepItem) return groups;
+    return [
+      { type: "SURPLUS", label: t("paydayDrawer.autoSurplusBadge"), items: [sweepItem] },
+      ...rest,
+    ];
+  }, [groups, sweepPoolId]);
 
   return (
     <div className="flex-1 min-w-0 space-y-4">
@@ -98,7 +115,7 @@ export function PaydayPlanEnvelopeTable({
 
             {/* Table Body Divided by Groups */}
             <tbody className="divide-y divide-zinc-100 dark:divide-zinc-800 text-xs">
-              {groups.map((group) => {
+              {displayGroups.map((group) => {
                 const isCollapsed = Boolean(collapsedGroups[group.type]);
                 const groupSum = group.items.reduce((acc, l) => {
                   if (l.bucketId === sweepPoolId) {
@@ -119,7 +136,7 @@ export function PaydayPlanEnvelopeTable({
                           <span className="text-zinc-400 dark:text-zinc-500 text-[10px] w-3 text-center">
                             {isCollapsed ? "▶" : "▼"}
                           </span>
-                          <span className="font-medium text-xs text-zinc-600 dark:text-zinc-300">
+                          <span className="font-bold text-sm text-[#1B2B4B] dark:text-white">
                             {group.label}
                           </span>
                         </div>
@@ -142,7 +159,7 @@ export function PaydayPlanEnvelopeTable({
 
                         const currentValStr = isSweep
                           ? sweepPoolRemainder.toFixed(2)
-                          : (linesMap[l.bucketId] ?? l.proposedAmount.toFixed(2));
+                          : (linesMap[l.bucketId] ?? (l.proposedAmount > 0 ? l.proposedAmount.toFixed(2) : ""));
                         const isZeroAllocation = (parseFloat(currentValStr) || 0) <= 0;
 
                         // Sweep Pool Row (Auto Surplus)
@@ -158,12 +175,12 @@ export function PaydayPlanEnvelopeTable({
                                       <button
                                         type="button"
                                         onClick={() => onOpenPoolDrawer(l.bucketId, l.bucketName)}
-                                        className="font-bold text-sm text-[#1B2B4B] dark:text-white hover:text-[#2563eb] hover:underline cursor-pointer text-left"
+                                        className="font-medium text-xs text-[#1B2B4B] dark:text-white hover:text-[#2563eb] hover:underline cursor-pointer text-left"
                                       >
                                         {l.bucketName}
                                       </button>
                                     ) : (
-                                      <span className="font-bold text-sm text-[#1B2B4B] dark:text-white">
+                                      <span className="font-medium text-xs text-[#1B2B4B] dark:text-white">
                                         {l.bucketName}
                                       </span>
                                     )}
@@ -179,6 +196,11 @@ export function PaydayPlanEnvelopeTable({
                                   <div className="text-[11px] text-zinc-400 mt-0.5">
                                     {t("paydayDrawer.sweepExplanation")}
                                   </div>
+                                  {Math.abs(sweepPoolRemainder - (parseFloat(initialLinesMap?.[l.bucketId] ?? "0") || 0)) >= 0.01 && (
+                                    <div className="text-[11px] text-emerald-700 dark:text-emerald-300 mt-1 italic">
+                                      {t("paydayDrawer.autoSurplusAdjustedNote")}
+                                    </div>
+                                  )}
                                 </td>
                                 <td className="py-3 px-3 text-center text-zinc-400 font-mono text-[11px]">
                                   —
@@ -208,7 +230,7 @@ export function PaydayPlanEnvelopeTable({
                                   </div>
                                 </td>
                               </tr>
-                              {openReasoningPools[l.bucketId] && (
+                              {(openReasoningPools[l.bucketId] || (!isZeroAllocation && (parseFloat(currentValStr) || 0) !== (parseFloat(initialLinesMap?.[l.bucketId] ?? "0") || 0))) && (
                                 <tr className="bg-slate-50/50 dark:bg-zinc-800/30 border-b border-zinc-200/40 dark:border-zinc-800">
                                   <td colSpan={4} className="py-2.5 px-4 md:px-6">
                                     <div className="flex items-center gap-3">
@@ -255,7 +277,7 @@ export function PaydayPlanEnvelopeTable({
                                     <button
                                       type="button"
                                       onClick={() => onOpenPoolDrawer(l.bucketId, l.bucketName)}
-                                      className="font-semibold text-sm text-[#1B2B4B] dark:text-white hover:text-[#2563eb] hover:underline cursor-pointer text-left"
+                                      className="font-medium text-xs text-[#1B2B4B] dark:text-white hover:text-[#2563eb] hover:underline cursor-pointer text-left"
                                     >
                                       {l.bucketName}
                                     </button>
@@ -308,6 +330,7 @@ export function PaydayPlanEnvelopeTable({
                                     inputMode="decimal"
                                     disabled={isReadOnly}
                                     value={currentValStr}
+                                    placeholder="0.00"
                                     onChange={(e) => onLineAmountChange(l.bucketId, e.target.value)}
                                     className="w-44 px-3 py-1.5 border border-zinc-300 dark:border-zinc-700 rounded-xl text-right font-mono font-bold text-xs focus:ring-2 focus:ring-[#2563eb] bg-white dark:bg-zinc-900 text-zinc-900 dark:text-white tabular-nums disabled:opacity-60"
                                   />
@@ -326,7 +349,7 @@ export function PaydayPlanEnvelopeTable({
                                 </div>
                               </td>
                             </tr>
-                            {openReasoningPools[l.bucketId] && (
+                            {(openReasoningPools[l.bucketId] || (!isZeroAllocation && (parseFloat(currentValStr) || 0) !== (parseFloat(initialLinesMap?.[l.bucketId] ?? "0") || 0))) && (
                               <tr className="bg-slate-50/50 dark:bg-zinc-800/30 border-b border-zinc-200/40 dark:border-zinc-800">
                                 <td colSpan={4} className="py-2.5 px-4 md:px-6">
                                   <div className="flex items-center gap-3">

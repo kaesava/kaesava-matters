@@ -63,6 +63,48 @@ export function computePaydayAllocationSummary(
   };
 }
 
+export interface TwoLevelPaydaySummary {
+  sharedAllocated: number;
+  sharedRemainder: number;
+  isSharedDeficit: boolean;
+  privateAllocated: number;
+  privateRemainder: number;
+  isPrivateDeficit: boolean;
+  isDeficit: boolean;
+}
+
+export function computeTwoLevelPaydaySummary(
+  sharedAmount: number,
+  privateAmount: number,
+  sharedSweepId: string | undefined,
+  privateEverydayId: string | undefined,
+  lines: ReadonlyArray<{ bucketId: string; proposedAmount: number; isPrivate?: boolean }>,
+  linesMap: Record<string, string>
+): TwoLevelPaydaySummary {
+  const sumNonSweep = (isPrivateScope: boolean, sweepId: string | undefined) =>
+    lines
+      .filter((l) => Boolean(l.isPrivate) === isPrivateScope && l.bucketId !== sweepId)
+      .reduce((acc, l) => acc + (parseFloat(linesMap[l.bucketId] ?? l.proposedAmount.toString()) || 0), 0);
+
+  const sharedNonSweep = sumNonSweep(false, sharedSweepId);
+  const sharedRemRaw = Math.round((sharedAmount - sharedNonSweep) * 100) / 100;
+  const sharedRemainder = Object.is(sharedRemRaw, -0) || Math.abs(sharedRemRaw) < 0.005 ? 0 : sharedRemRaw;
+
+  const privateNonSweep = sumNonSweep(true, privateEverydayId);
+  const privateRemRaw = Math.round((privateAmount - privateNonSweep) * 100) / 100;
+  const privateRemainder = Object.is(privateRemRaw, -0) || Math.abs(privateRemRaw) < 0.005 ? 0 : privateRemRaw;
+
+  return {
+    sharedAllocated: sharedNonSweep + (sharedSweepId ? Math.max(0, sharedRemainder) : 0),
+    sharedRemainder,
+    isSharedDeficit: sharedRemainder < -0.01,
+    privateAllocated: privateNonSweep + (privateEverydayId ? Math.max(0, privateRemainder) : 0),
+    privateRemainder,
+    isPrivateDeficit: privateRemainder < -0.01,
+    isDeficit: sharedRemainder < -0.01 || privateRemainder < -0.01,
+  };
+}
+
 export interface DestinationTransferGroup {
   destAccountId: string;
   destAccountName: string;

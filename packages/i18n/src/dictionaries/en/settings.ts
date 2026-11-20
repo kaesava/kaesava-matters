@@ -209,10 +209,6 @@ export const settings = {
       "switchPresetConfirmMessage": "Are you sure you want to switch to {presetName}? Any active custom rules will be replaced.",
       "switchPresetAction": "Switch to {presetName}",
       "onlyOwnerCanChange": "Only household owners can change household rules.",
-      "tabs": {
-        "household": "Household Rules",
-        "personal": "Private Rules"
-      },
       "customiseToActivate": "Customise an existing rule",
       "presets": {
         "balanced": {

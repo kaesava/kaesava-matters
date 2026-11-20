@@ -24,21 +24,13 @@ export const simulationRouter = {
         });
       }
 
-      const [activeStrategy, personalStrategy] = await Promise.all([
-        getActiveAllocationStrategyQuery(ctx.tenantId!, ctx.appId!, ctx.userId!, ctx.db, false),
-        getActiveAllocationStrategyQuery(ctx.tenantId!, ctx.appId!, ctx.userId!, ctx.db, true),
-      ]);
+      const activeStrategy = await getActiveAllocationStrategyQuery(ctx.tenantId!, ctx.appId!, ctx.userId!, ctx.db);
 
       const projectionEngine = ((projInput: Parameters<typeof runCumulativeProjection>[0]) =>
         runCumulativeProjection({
           ...projInput,
           currentUserId: projInput.currentUserId ?? ctx.userId!,
           strategySteps: activeStrategy?.steps?.map((s) => ({
-            stepType: s.stepType,
-            targetEnvelopeId: s.targetEnvelopeId,
-            config: s.config as Record<string, unknown> | null,
-          })),
-          personalStrategySteps: personalStrategy?.steps?.map((s) => ({
             stepType: s.stepType,
             targetEnvelopeId: s.targetEnvelopeId,
             config: s.config as Record<string, unknown> | null,
