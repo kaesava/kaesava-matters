@@ -3,6 +3,7 @@
 import React, { useRef, useState, useEffect } from 'react';
 import { Plus, ChevronDown, ArrowUpRight, ArrowDownLeft, ArrowLeftRight, Sparkles } from 'lucide-react';
 import { t } from '@money-matters/i18n';
+import { Logo } from '@money-matters/ui/web';
 import { useAppFeatures } from '../../../hooks/useAppFeatures';
 
 export interface DashboardActionStripProps {
@@ -44,16 +45,17 @@ export const DashboardActionStrip: React.FC<DashboardActionStripProps> = ({
   }, [isOpen]);
 
   return (
-    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-1 border-b border-slate-200/60 dark:border-zinc-800/80">
-      <div className="flex flex-col gap-1">
-        <div className="flex items-center gap-2.5">
+    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-3 border-b border-slate-200/60 dark:border-zinc-800/80">
+      <div className="flex items-center gap-3.5">
+        <Logo size="xl" />
+        <div className="flex flex-col gap-1">
           <h1 className="font-heading text-2xl sm:text-3xl font-black text-[#1B2B4B] dark:text-zinc-50 tracking-tight">
             {t('nav.dashboard')}
           </h1>
+          <p className="text-xs font-medium text-slate-500 dark:text-zinc-400">
+            {t('app.tagline')}
+          </p>
         </div>
-        <p className="text-xs font-medium text-slate-500 dark:text-zinc-400">
-          {t('app.tagline')}
-        </p>
       </div>
 
       <div className="flex flex-wrap sm:flex-nowrap items-center gap-3 shrink-0">

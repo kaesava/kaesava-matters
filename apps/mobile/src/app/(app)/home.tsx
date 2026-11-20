@@ -1,8 +1,8 @@
 import React from 'react';
-import { ScrollView, RefreshControl, StyleSheet, View } from 'react-native';
+import { ScrollView, RefreshControl, StyleSheet, Text, View } from 'react-native';
 import { useRouter, useLocalSearchParams, type Href } from 'expo-router';
 import { usePostHog } from 'posthog-react-native';
-import { DESIGN_TOKENS, showMobileConfirm } from '@money-matters/ui/mobile';
+import { DESIGN_TOKENS, MobileLogo, showMobileConfirm } from '@money-matters/ui/mobile';
 import { t } from '@money-matters/i18n';
 import { AppScreenWrapper } from '../../components/AppScreenWrapper';
 import { DashboardHeroCard } from '../../components/DashboardHeroCard';
@@ -95,6 +95,15 @@ export default function HomeScreen() {
           />
         }
       >
+        <View style={styles.homeHeader}>
+          <MobileLogo size={52} style={{ marginBottom: 0 }} />
+          <View style={styles.homeHeaderText}>
+            <Text style={styles.homeHeaderTitle}>{t('dashboard.title')}</Text>
+            <Text style={styles.homeHeaderTagline} numberOfLines={2}>
+              {t('app.tagline')}
+            </Text>
+          </View>
+        </View>
 
         <View
           ref={heroRef}
@@ -276,5 +285,26 @@ const styles = StyleSheet.create({
     padding: 20,
     gap: 16,
     paddingBottom: 40,
+  },
+  homeHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12,
+    paddingBottom: 4,
+  },
+  homeHeaderText: {
+    flex: 1,
+    gap: 2,
+  },
+  homeHeaderTitle: {
+    fontSize: 24,
+    fontWeight: '800',
+    color: DESIGN_TOKENS.colors.textPrimary,
+    letterSpacing: -0.4,
+  },
+  homeHeaderTagline: {
+    fontSize: 12,
+    fontWeight: '500',
+    color: DESIGN_TOKENS.colors.textMuted,
   },
 });
