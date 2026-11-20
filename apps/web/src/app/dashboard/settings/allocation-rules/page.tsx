@@ -181,7 +181,7 @@ function AllocationRulesContent() {
     }
   };
 
-  const backHref = `/dashboard/settings?tab=household${isPersonal ? "&strategyScope=personal" : ""}`;
+  const backHref = "/dashboard/settings?tab=household";
 
   const handleBack = () => {
     if (isDirty) {

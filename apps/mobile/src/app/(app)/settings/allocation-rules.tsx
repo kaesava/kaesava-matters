@@ -177,11 +177,7 @@ export default function MobileAllocationRulesScreen() {
   };
 
   const navigateBack = () => {
-    if (isPersonal) {
-      router.replace('/(app)/settings?tab=household&strategyScope=personal' as Href);
-    } else {
-      router.back();
-    }
+    router.back();
   };
 
   const handleBackPress = () => {

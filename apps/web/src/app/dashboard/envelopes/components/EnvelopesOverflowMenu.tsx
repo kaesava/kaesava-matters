@@ -2,7 +2,7 @@
 
 import { useRef, useEffect } from "react";
 import Link from "next/link";
-import { MoreVertical, ArrowDownCircle, ArrowUpCircle, ArrowRightLeft, TrendingUp, SlidersHorizontal } from "lucide-react";
+import { MoreVertical, ArrowDownCircle, ArrowUpCircle, ArrowRightLeft, TrendingUp, SlidersHorizontal, Archive } from "lucide-react";
 import { t } from "@money-matters/i18n";
 
 interface EnvelopesOverflowMenuProps {
@@ -10,6 +10,7 @@ interface EnvelopesOverflowMenuProps {
   setOverflowMenuOpen: (open: boolean) => void;
   showProjectionMatrix: boolean;
   setShowProjectionMatrix: (val: boolean) => void;
+  hasArchivedEnvelopes?: boolean;
   onQuickAction: (tab: "DEBIT" | "CREDIT" | "TRANSFER") => void;
 }
 
@@ -21,6 +22,7 @@ export function EnvelopesOverflowMenu({
   setOverflowMenuOpen,
   showProjectionMatrix,
   setShowProjectionMatrix,
+  hasArchivedEnvelopes = false,
   onQuickAction,
 }: EnvelopesOverflowMenuProps) {
   const dropdownRef = useRef<HTMLDivElement>(null);
@@ -107,6 +109,19 @@ export function EnvelopesOverflowMenu({
                 : t("categories.actions.futureProjection")}
             </span>
           </button>
+          {hasArchivedEnvelopes && (
+            <>
+              <div className="h-px bg-zinc-100 dark:bg-zinc-800 my-1" />
+              <Link
+                href="/dashboard/settings?tab=archived"
+                onClick={() => setOverflowMenuOpen(false)}
+                className="w-full px-3.5 py-2 text-left text-xs font-semibold text-zinc-700 dark:text-zinc-200 hover:bg-zinc-100 dark:hover:bg-zinc-800 flex items-center gap-2.5 transition-colors cursor-pointer"
+              >
+                <Archive className="w-4 h-4 text-zinc-500" />
+                <span>{t("categories.viewArchived")}</span>
+              </Link>
+            </>
+          )}
         </div>
       )}
     </div>

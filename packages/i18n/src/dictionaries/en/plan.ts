@@ -84,6 +84,7 @@ export const plan = {
     "num12": "twelve"
   },
   "paydaySchedule": {
+    "plan": "Plan",
     "review": "Review",
     "savedBadge": "SAVED",
     "autoBadge": "AUTO",

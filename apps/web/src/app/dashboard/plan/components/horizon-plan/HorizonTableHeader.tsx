@@ -32,6 +32,7 @@ export interface HorizonTableHeaderProps {
   onSaveAutoSplit: (colId: string) => void;
   onResetPlan: (colId: string) => void;
   onRequestDeleteIncome: (colId: string) => void;
+  onEditIncomeEvent?: (colId: string) => void;
 }
 
 export function HorizonTableHeader({
@@ -46,6 +47,7 @@ export function HorizonTableHeader({
   onSaveAutoSplit,
   onResetPlan,
   onRequestDeleteIncome,
+  onEditIncomeEvent,
 }: HorizonTableHeaderProps) {
   const router = useRouter();
 
@@ -96,9 +98,20 @@ export function HorizonTableHeader({
                 )}
 
                 {/* Row 2: Source Name */}
-                <div className="text-sm font-bold text-[#1B2B4B] dark:text-white truncate max-w-[160px] mt-0.5">
-                  {col.sourceName}
-                </div>
+                {!isConfirmed && onEditIncomeEvent ? (
+                  <button
+                    type="button"
+                    onClick={() => onEditIncomeEvent(col.id)}
+                    className="text-sm font-bold text-[#2563eb] hover:underline truncate max-w-[160px] mt-0.5 cursor-pointer"
+                    title={col.sourceName}
+                  >
+                    {col.sourceName}
+                  </button>
+                ) : (
+                  <div className="text-sm font-bold text-[#1B2B4B] dark:text-white truncate max-w-[160px] mt-0.5">
+                    {col.sourceName}
+                  </div>
+                )}
 
                 {/* Row 3: Date */}
                 <div className="text-xs text-zinc-500 font-medium flex items-center justify-center gap-1 flex-wrap">
@@ -157,9 +170,9 @@ export function HorizonTableHeader({
                         )
                       }
                       className="font-bold text-[#2563eb] hover:underline cursor-pointer transition-colors"
-                      title={t("common.edit")}
+                      title={t("paydaySchedule.plan")}
                     >
-                      {t("common.edit")}
+                      {t("paydaySchedule.plan")}
                     </button>
                     <button
                       type="button"
@@ -189,9 +202,9 @@ export function HorizonTableHeader({
                         )
                       }
                       className="font-bold text-[#2563eb] hover:underline cursor-pointer transition-colors"
-                      title={t("common.edit")}
+                      title={t("paydaySchedule.plan")}
                     >
-                      {t("common.edit")}
+                      {t("paydaySchedule.plan")}
                     </button>
                     <button
                       type="button"

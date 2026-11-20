@@ -19,6 +19,7 @@ interface MobileHorizonScrollableGridProps {
   readonly onSave: (colId: string, totalIncome: number) => void;
   readonly onReset?: (colId: string) => void;
   readonly onDelete: (colId: string) => void;
+  readonly onEditIncome?: (colId: string) => void;
 }
 
 export const MobileHorizonScrollableGrid: React.FC<MobileHorizonScrollableGridProps> = ({
@@ -32,6 +33,7 @@ export const MobileHorizonScrollableGrid: React.FC<MobileHorizonScrollableGridPr
   onSave,
   onReset,
   onDelete,
+  onEditIncome,
 }) => {
   return (
     <ScrollView
@@ -57,6 +59,7 @@ export const MobileHorizonScrollableGrid: React.FC<MobileHorizonScrollableGridPr
               onSave={onSave}
               onReset={onReset}
               onDelete={onDelete}
+              onEditIncome={onEditIncome}
             />
 
             {/* Column Body Cells by Group */}

@@ -15,7 +15,6 @@ export function MobileAllocationStrategySection() {
 
   const govQuery = trpc.getHouseholdGovernanceInfo.useQuery();
   const isOwner = govQuery.data?.isOwner ?? true;
-  const isPersonalScope = false;
   const canEdit = isOwner;
 
   const strategyQuery = trpc.getActiveAllocationStrategy.useQuery({
@@ -69,7 +68,7 @@ export function MobileAllocationStrategySection() {
         try {
           await applyPresetMut.mutateAsync({
             presetKey,
-            isPrivate: isPersonalScope,
+            isPrivate: false,
           });
           await Promise.all([
             utils.getActiveAllocationStrategy.invalidate(),

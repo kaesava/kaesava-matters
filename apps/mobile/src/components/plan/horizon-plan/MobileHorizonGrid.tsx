@@ -18,6 +18,7 @@ export interface MobileHorizonGridProps {
   readonly onReset?: (colId: string) => void;
   readonly onDelete: (colId: string) => void;
   readonly onOpenCategoryDrawer: (poolId: string, poolName: string) => void;
+  readonly onEditIncome?: (colId: string) => void;
 }
 
 export const MobileHorizonGrid: React.FC<MobileHorizonGridProps> = ({
@@ -32,6 +33,7 @@ export const MobileHorizonGrid: React.FC<MobileHorizonGridProps> = ({
   onReset,
   onDelete,
   onOpenCategoryDrawer,
+  onEditIncome,
 }) => {
   const { hasPrivateMode } = useAppFeatures();
   const [showFull12, setShowFull12] = useState(false);
@@ -124,6 +126,7 @@ export const MobileHorizonGrid: React.FC<MobileHorizonGridProps> = ({
               onSave={onSave}
               onReset={onReset}
               onDelete={onDelete}
+              onEditIncome={onEditIncome}
             />
           </View>
         </ScrollView>

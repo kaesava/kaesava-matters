@@ -1,7 +1,10 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import { EnvelopeDetailDrawer } from "./EnvelopeDetailDrawer";
+import { EditUpcomingEventModal } from "../../../../components/web/EditUpcomingEventModal";
+import type { TimelineEventItem } from "./timeline/types";
+import { trpc } from "../../../../lib/trpc";
 import { t } from "@money-matters/i18n";
 import { InfoTooltip, ConfirmDialog } from "@money-matters/ui/web";
 import { useLocale } from "../../../../providers/LocaleProvider";
@@ -30,6 +33,8 @@ export function HorizonPlanTab({
   onMarkPaid,
 }: HorizonPlanTabProps) {
   const { locale, userTimezone, fmt } = useLocale();
+  const utils = trpc.useUtils();
+  const [editIncomeEvent, setEditIncomeEvent] = useState<TimelineEventItem | null>(null);
 
   const {
     categories,
@@ -191,6 +196,20 @@ export function HorizonPlanTab({
             onSaveAutoSplit={handleSaveAutoSplit}
             onResetPlan={(id) => setColToReset(id)}
             onRequestDeleteIncome={(id) => setIncomeToDelete(id)}
+            onEditIncomeEvent={(colId) => {
+              const evt = incomeEvents.find((e) => e.id === colId);
+              if (!evt) return;
+              setEditIncomeEvent({
+                id: evt.id,
+                eventKind: "INCOME",
+                name: evt.sourceName,
+                expectedDate: evt.expectedDate,
+                expectedAmount: String(evt.expectedAmount),
+                actualAmount: evt.actualAmount != null ? String(evt.actualAmount) : null,
+                status: evt.status,
+                isPrivate: evt.isPrivate,
+              });
+            }}
           />
 
           <tbody>
@@ -334,6 +353,18 @@ export function HorizonPlanTab({
         confirmLabel={t("common.delete")}
         variant="danger"
       />
+
+      {editIncomeEvent && (
+        <EditUpcomingEventModal
+          isOpen={Boolean(editIncomeEvent)}
+          onClose={() => setEditIncomeEvent(null)}
+          event={editIncomeEvent}
+          onSuccess={() => {
+            utils.getHorizonProjectionData.invalidate();
+            utils.listIncomeEvents.invalidate();
+          }}
+        />
+      )}
     </div>
   );
 }

@@ -200,7 +200,7 @@ export const settings = {
       "activeCustomisedBadge": "Active (Customised)",
       "customizeButton": "Customise Rules",
       "loadPresetLabel": "Rule Preset",
-      "infoTooltip": "Payday Rules decide the order your income fills envelopes. Shared Rules apply to your household's shared contribution; Private Rules apply only to your private carve-out and are never visible to other household members.",
+      "infoTooltip": "Payday Rules decide the order your income fills shared household envelopes.",
       "customBadge": "Custom",
       "discardOrderConfirmTitle": "Replace Unsaved Order?",
       "discardOrderConfirmMessage": "You have unsaved changes to the step order. Loading {presetName} will replace your current edits.",

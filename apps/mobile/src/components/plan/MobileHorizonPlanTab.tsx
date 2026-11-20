@@ -6,6 +6,7 @@ import { DESIGN_TOKENS, showMobileConfirm, useMobileToast } from '@money-matters
 import { t } from '@money-matters/i18n';
 import { trpc } from '../../lib/trpc';
 import { MobileHorizonGrid } from './horizon-plan/MobileHorizonGrid';
+import { EventOverrideModal, EventToOverride } from '../EventOverrideModal';
 import type { MobileMatrixCategoryItem, MobileMatrixGroupData } from './horizon-plan/MobileHorizonFrozenColumn';
 import type { MobileMatrixColumnData } from './horizon-plan/MobileHorizonPaydayColumnHeader';
 
@@ -26,6 +27,7 @@ export function MobileHorizonPlanTab({ onOpenCategoryModal }: MobileHorizonPlanT
   const utils = trpc.useUtils();
   const [savingColId, setSavingColId] = useState<string | null>(null);
   const [showFullHorizon, setShowFullHorizon] = useState(false);
+  const [eventToOverride, setEventToOverride] = useState<EventToOverride | null>(null);
 
   const { data, isLoading: projectionLoading } = trpc.getHorizonProjectionData.useQuery({ monthsAhead: 12 });
   const { data: plansData, isLoading: plansLoading } = trpc.listAllAllocationPlans.useQuery();
@@ -221,6 +223,26 @@ export function MobileHorizonPlanTab({ onOpenCategoryModal }: MobileHorizonPlanT
         onReset={handleReset}
         onDelete={handleDelete}
         onOpenCategoryDrawer={handleOpenCategoryDrawer}
+        onEditIncome={(colId) => {
+          const col = visibleColumns.find((c) => c.id === colId);
+          if (!col) return;
+          setEventToOverride({
+            id: col.id,
+            eventType: 'INCOME',
+            name: col.sourceName || t('common.income'),
+            expectedDate: col.date || '',
+            expectedAmount: String(col.totalIncome),
+          });
+        }}
+      />
+      <EventOverrideModal
+        visible={Boolean(eventToOverride)}
+        event={eventToOverride}
+        onClose={() => setEventToOverride(null)}
+        onSuccess={() => {
+          utils.getHorizonProjectionData.invalidate();
+          utils.listIncomeEvents.invalidate();
+        }}
       />
     </View>
   );

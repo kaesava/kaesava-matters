@@ -1,7 +1,6 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { X } from "lucide-react";
 import { useToast, RecordFilterBadge } from "@money-matters/ui/web";
@@ -231,6 +230,7 @@ function PoolsPageContent() {
             setOverflowMenuOpen={setOverflowMenuOpen}
             showProjectionMatrix={showProjectionMatrix}
             setShowProjectionMatrix={setShowProjectionMatrix}
+            hasArchivedEnvelopes={hasArchivedCategories}
             onQuickAction={(tab) => {
               setQuickDrawerInitialData(undefined);
               setQuickDrawerTab(tab);
@@ -390,17 +390,6 @@ function PoolsPageContent() {
           typeFilter={typeFilter}
         />
       </div>
-
-      {hasArchivedCategories && (
-        <div className="flex justify-center pt-2">
-          <Link
-            href="/dashboard/settings/archived"
-            className="text-xs font-semibold text-zinc-500 hover:text-zinc-800 transition-colors"
-          >
-            {t("categories.viewArchived")}
-          </Link>
-        </div>
-      )}
 
       <EnvelopesPageModals
         isQuickDrawerOpen={isQuickDrawerOpen}

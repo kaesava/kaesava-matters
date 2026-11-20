@@ -22,6 +22,7 @@ interface MobileHorizonPaydayColumnHeaderProps {
   readonly onSave: (colId: string, totalIncome: number) => void;
   readonly onReset?: (colId: string) => void;
   readonly onDelete: (colId: string) => void;
+  readonly onEditIncome?: (colId: string) => void;
 }
 
 export const MobileHorizonPaydayColumnHeader: React.FC<MobileHorizonPaydayColumnHeaderProps> = ({
@@ -33,6 +34,7 @@ export const MobileHorizonPaydayColumnHeader: React.FC<MobileHorizonPaydayColumn
   onSave,
   onReset,
   onDelete,
+  onEditIncome,
 }) => {
   const dateStr = col.date ? formatDate(col.date) : col.dateLabel || '';
 
@@ -60,9 +62,17 @@ export const MobileHorizonPaydayColumnHeader: React.FC<MobileHorizonPaydayColumn
       )}
 
       {/* Row 2: Source Name */}
-      <Text style={styles.sourceName} numberOfLines={1}>
-        {col.sourceName || t('common.income')}
-      </Text>
+      {!isConfirmed && onEditIncome ? (
+        <TouchableOpacity onPress={() => onEditIncome(col.id)} activeOpacity={0.7}>
+          <Text style={styles.sourceNameLink} numberOfLines={1}>
+            {col.sourceName || t('common.income')}
+          </Text>
+        </TouchableOpacity>
+      ) : (
+        <Text style={styles.sourceName} numberOfLines={1}>
+          {col.sourceName || t('common.income')}
+        </Text>
+      )}
 
       {/* Row 3: Date */}
       <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 4, flexWrap: 'wrap' }}>
@@ -113,7 +123,7 @@ export const MobileHorizonPaydayColumnHeader: React.FC<MobileHorizonPaydayColumn
           )}
 
           <TouchableOpacity onPress={() => onReview(col.id)} style={styles.reviewBtn}>
-            <Text style={styles.reviewText}>{t('common.edit')}</Text>
+            <Text style={styles.reviewText}>{t('paydaySchedule.plan')}</Text>
           </TouchableOpacity>
 
           <Text style={styles.separator}>|</Text>
@@ -155,6 +165,13 @@ const styles = StyleSheet.create({
     fontSize: 12,
     fontWeight: '800',
     color: DESIGN_TOKENS.colors.primary,
+    textAlign: 'center',
+  },
+  sourceNameLink: {
+    fontSize: 12,
+    fontWeight: '800',
+    color: DESIGN_TOKENS.colors.sereneBlue,
+    textDecorationLine: 'underline',
     textAlign: 'center',
   },
   dateText: {

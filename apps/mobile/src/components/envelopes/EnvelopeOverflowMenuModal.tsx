@@ -101,6 +101,19 @@ export function EnvelopeOverflowMenuModal({
               <Feather name="settings" size={16} color={DESIGN_TOKENS.colors.slate[600]} />
               <Text style={styles.menuItemText}>{t('categories.recalibrateBudget')}</Text>
             </TouchableOpacity>
+
+            <View style={styles.menuItemDivider} />
+
+            <TouchableOpacity
+              style={styles.menuItem}
+              onPress={() => {
+                onClose();
+                router.push('/(app)/settings/archived' as Href);
+              }}
+            >
+              <Feather name="archive" size={16} color={DESIGN_TOKENS.colors.slate[600]} />
+              <Text style={styles.menuItemText}>{t('categories.viewArchived')}</Text>
+            </TouchableOpacity>
           </>
         )}
       </View>
