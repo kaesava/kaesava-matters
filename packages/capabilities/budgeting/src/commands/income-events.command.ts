@@ -5,6 +5,7 @@ import {
   type ContributionMode,
 } from "./income-sources.command.js";
 import { resolveValidatedIncomeContribution } from "./income-contribution.helper.js";
+import { archivePendingPlansForIncomeEvent } from "./archive-pending-plans.helper.js";
 
 async function loadVisibleIncomeEvent(eventId: string, tenantId: string, appId: string, userId: string, db: DbOrTx) {
   const [evt] = await db
@@ -12,6 +13,9 @@ async function loadVisibleIncomeEvent(eventId: string, tenantId: string, appId: 
       id: incomeEvents.id,
       incomeSourceId: incomeEvents.incomeSourceId,
       expectedAmount: incomeEvents.expectedAmount,
+      actualAmount: incomeEvents.actualAmount,
+      contributionMode: incomeEvents.contributionMode,
+      contributionValue: incomeEvents.contributionValue,
       status: incomeEvents.status,
       bankAccountIsPrivate: bankAccounts.isPrivate,
       bankAccountUserId: bankAccounts.userId,
@@ -216,12 +220,25 @@ export async function updateUpcomingIncomeCommand(
     setPayload.contributionValue = input.contributionValue;
   }
 
-  const [updated] = await db
-    .update(incomeEvents)
-    .set(setPayload)
-    .where(and(eq(incomeEvents.id, input.eventId), eq(incomeEvents.tenantId, tenantId), eq(incomeEvents.appId, appId)))
-    .returning();
-  return updated;
+  const prevAmt = Number(existing.actualAmount ?? existing.expectedAmount ?? 0);
+  const nextAmt = input.expectedAmount !== undefined ? Number(input.expectedAmount) : prevAmt;
+  const amountChanged = input.expectedAmount !== undefined && Number.isFinite(nextAmt) && Math.abs(nextAmt - prevAmt) > 0.005;
+  const contributionChanged =
+    (input.contributionMode !== undefined && input.contributionMode !== existing.contributionMode) ||
+    (input.contributionValue !== undefined && input.contributionValue !== existing.contributionValue);
+
+  return await db.transaction(async (tx) => {
+    const [updated] = await tx
+      .update(incomeEvents)
+      .set(setPayload)
+      .where(and(eq(incomeEvents.id, input.eventId), eq(incomeEvents.tenantId, tenantId), eq(incomeEvents.appId, appId)))
+      .returning();
+
+    if (amountChanged || contributionChanged) {
+      await archivePendingPlansForIncomeEvent(input.eventId, tenantId, appId, userId, tx);
+    }
+    return updated;
+  });
 }
 
 export async function deleteIncomeEventCommand(eventId: string, tenantId: string, appId: string, userId: string, db: DbOrTx) {
@@ -229,9 +246,12 @@ export async function deleteIncomeEventCommand(eventId: string, tenantId: string
   if (existing.status === "CONFIRMED") {
     throw new Error("Confirmed events are locked and cannot be edited or deleted.");
   }
-  await db
-    .update(incomeEvents)
-    .set({ archivedAt: new Date(), archivedBy: userId, updatedAt: new Date(), updatedBy: userId })
-    .where(and(eq(incomeEvents.id, eventId), eq(incomeEvents.tenantId, tenantId), eq(incomeEvents.appId, appId)));
+  await db.transaction(async (tx) => {
+    await tx
+      .update(incomeEvents)
+      .set({ archivedAt: new Date(), archivedBy: userId, updatedAt: new Date(), updatedBy: userId })
+      .where(and(eq(incomeEvents.id, eventId), eq(incomeEvents.tenantId, tenantId), eq(incomeEvents.appId, appId)));
+    await archivePendingPlansForIncomeEvent(eventId, tenantId, appId, userId, tx);
+  });
   return { success: true };
 }

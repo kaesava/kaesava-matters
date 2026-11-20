@@ -95,7 +95,12 @@ export function usePaycheckStudioMutations({
           setSubmitting(true);
           await deleteIncomeMut.mutateAsync({ eventId: id! });
           toast.success(t('paydayDrawer.incomeDeleted'));
-          await utils.listIncomeEvents.invalidate();
+          await Promise.all([
+            utils.listIncomeEvents.invalidate(),
+            utils.listAllAllocationPlans.invalidate(),
+            utils.getHorizonProjectionData.invalidate(),
+            utils.getHomeSummary.invalidate(),
+          ]);
           router.back();
         } catch (err) {
           toast.error(err instanceof Error ? err.message : t('paydayDrawer.deleteFailed'));

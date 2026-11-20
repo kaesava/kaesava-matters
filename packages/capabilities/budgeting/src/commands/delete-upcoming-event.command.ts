@@ -2,6 +2,7 @@ import { incomeEvents, expenseEvents, DbOrTx } from "@money-matters/db";
 import { and, eq } from "drizzle-orm";
 import { z } from "zod";
 import { DeleteUpcomingEventCommand } from "@money-matters/types";
+import { archivePendingPlansForIncomeEvent } from "./archive-pending-plans.helper.js";
 
 export async function deleteUpcomingEventCommand(
   input: z.infer<typeof DeleteUpcomingEventCommand>,
@@ -36,6 +37,7 @@ export async function deleteUpcomingEventCommand(
         )
         .returning();
       if (!deleted) throw new Error("Income event not found or unauthorized.");
+      await archivePendingPlansForIncomeEvent(input.eventId, tenantId, appId, userId, tx);
       return { success: true, id: deleted.id };
     } else {
       const [existingEvt] = await tx

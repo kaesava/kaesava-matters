@@ -90,15 +90,6 @@ export function AllocationRuleStepCard({
         <View style={styles.configContainer}>
           <FormLabel>{t('settings.paydayRules.targetEnvelopeLabel')}</FormLabel>
           <View style={styles.envelopePillsRow}>
-            <TouchableOpacity
-              style={[styles.envelopePill, !step.targetEnvelopeId && styles.envelopePillSelected]}
-              disabled={!canEdit}
-              onPress={() => onUpdateSurplusTarget(index, null)}
-            >
-              <Text style={[styles.envelopePillText, !step.targetEnvelopeId && styles.envelopePillTextSelected]}>
-                {t('categories.mainEnvelope')}
-              </Text>
-            </TouchableOpacity>
             {eligibleEnvelopes.map((env) => {
               const isEnvSelected = step.targetEnvelopeId === env.id;
               return (

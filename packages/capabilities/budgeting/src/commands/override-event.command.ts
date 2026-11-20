@@ -3,6 +3,7 @@ import { eq, and, gte, sql } from "drizzle-orm";
 import { z } from "zod";
 import { OverrideEventCommand } from "@money-matters/types";
 import { resolveValidatedIncomeContribution } from "./income-contribution.helper.js";
+import { archivePendingPlansForIncomeEvent } from "./archive-pending-plans.helper.js";
 
 export async function overrideEventCommand(
   input: z.infer<typeof OverrideEventCommand>,
@@ -85,6 +86,17 @@ export async function overrideEventCommand(
         .returning();
 
       if (!updatedEvent) throw new Error("Income event not found.");
+
+      const prevAmt = Number(existingEvt?.actualAmount ?? existingEvt?.expectedAmount ?? 0);
+      const nextAmt = newAmount !== undefined ? Number(newAmount) : prevAmt;
+      const amountChanged = newAmount !== undefined && Number.isFinite(nextAmt) && Math.abs(nextAmt - prevAmt) > 0.005;
+      const contributionChanged =
+        (input.contributionMode !== undefined && input.contributionMode !== existingEvt?.contributionMode) ||
+        (input.contributionValue !== undefined && input.contributionValue !== existingEvt?.contributionValue);
+
+      if (input.status !== "CONFIRMED" && (amountChanged || contributionChanged)) {
+        await archivePendingPlansForIncomeEvent(input.eventId, tenantId, appId, userId, tx);
+      }
 
       if (input.updateSeries && updatedEvent.incomeSourceId) {
         const sourcePayload: Record<string, unknown> = {

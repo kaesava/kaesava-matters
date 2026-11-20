@@ -69,13 +69,21 @@ function AllocationRulesContent() {
     return isPersonal ? list.filter((e) => e.isPrivate) : list.filter((e) => !e.isPrivate);
   }, [envelopesQuery.data, isPersonal]);
 
+  const defaultSurplusTarget = useMemo(
+    () => (envelopesQuery.data || []).find((e) => !e.isPrivate && e.isSurplusTarget) ?? null,
+    [envelopesQuery.data]
+  );
+
   useEffect(() => {
     if (strategyQuery.data?.steps) {
       const mapped: EditableStep[] = strategyQuery.data.steps.map((s, idx) => ({
         id: s.id,
         orderIndex: idx,
         stepType: s.stepType as AllocationStepType,
-        targetEnvelopeId: s.targetEnvelopeId,
+        targetEnvelopeId:
+          s.stepType === "SURPLUS_SWEEP"
+            ? (s.targetEnvelopeId || defaultSurplusTarget?.id || null)
+            : s.targetEnvelopeId,
         config: s.config as Record<string, unknown> | null,
       }));
       setSteps(mapped);
@@ -83,7 +91,7 @@ function AllocationRulesContent() {
       setIsDirty(false);
       setHasManualOrderEdit(false);
     }
-  }, [strategyQuery.data]);
+  }, [strategyQuery.data, defaultSurplusTarget?.id]);
 
   const checkIfDirty = (newSteps: EditableStep[]) => {
     if (newSteps.length !== initialSteps.length) return true;
@@ -132,7 +140,10 @@ function AllocationRulesContent() {
     const nextSteps: EditableStep[] = CANONICAL_ALLOCATION_PRESETS[presetKey].steps.map((s, idx) => ({
       orderIndex: idx,
       stepType: s.stepType,
-      targetEnvelopeId: s.stepType === "SURPLUS_SWEEP" ? (currentSweep?.targetEnvelopeId ?? null) : null,
+      targetEnvelopeId:
+        s.stepType === "SURPLUS_SWEEP"
+          ? (currentSweep?.targetEnvelopeId ?? defaultSurplusTarget?.id ?? null)
+          : null,
       config: s.config ?? null,
     }));
     setSteps(nextSteps);
@@ -170,10 +181,13 @@ function AllocationRulesContent() {
         utils.getHorizonProjectionData.invalidate(),
         utils.listAllAllocationPlans.invalidate(),
         utils.getHomeSummary.invalidate(),
+        utils.getProjectedEnvelopeBalances.invalidate(),
+        utils.getPaydayPlanAnalytics.invalidate(),
       ]);
       toast.success(t("settings.paydayRules.saveSuccess"));
       setIsDirty(false);
       setHasManualOrderEdit(false);
+      router.push(backHref);
     } catch (err: unknown) {
       toast.error(err instanceof Error ? err.message : t("common.errorTryAgain"));
     } finally {
@@ -306,14 +320,11 @@ function AllocationRulesContent() {
                     <div className="pt-2 w-64">
                       <GenericSelectField
                         label={t("settings.paydayRules.targetEnvelopeLabel")}
-                        value={step.targetEnvelopeId || ""}
-                        options={[
-                          { value: "", label: t("categories.mainEnvelope") },
-                          ...eligibleEnvelopes.map((env) => ({
-                            value: env.id,
-                            label: env.name,
-                          })),
-                        ]}
+                        value={step.targetEnvelopeId || defaultSurplusTarget?.id || ""}
+                        options={eligibleEnvelopes.map((env) => ({
+                          value: env.id,
+                          label: env.name,
+                        }))}
                         disabled={!canEdit}
                         onChange={(val) => handleUpdateSurplusTarget(index, val || null)}
                       />

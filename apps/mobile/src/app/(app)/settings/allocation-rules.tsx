@@ -58,13 +58,21 @@ export default function MobileAllocationRulesScreen() {
     return isPersonal ? list.filter((e) => e.isPrivate) : list.filter((e) => !e.isPrivate);
   }, [envelopesQuery.data, isPersonal]);
 
+  const defaultSurplusTarget = useMemo(
+    () => (envelopesQuery.data || []).find((e) => !e.isPrivate && e.isSurplusTarget) ?? null,
+    [envelopesQuery.data]
+  );
+
   useEffect(() => {
     if (strategyQuery.data?.steps) {
       const mapped: EditableStep[] = strategyQuery.data.steps.map((s, idx) => ({
         id: s.id,
         orderIndex: idx,
         stepType: s.stepType as AllocationStepType,
-        targetEnvelopeId: s.targetEnvelopeId,
+        targetEnvelopeId:
+          s.stepType === 'SURPLUS_SWEEP'
+            ? (s.targetEnvelopeId || defaultSurplusTarget?.id || null)
+            : s.targetEnvelopeId,
         config: s.config as Record<string, unknown> | null,
       }));
       setSteps(mapped);
@@ -72,7 +80,7 @@ export default function MobileAllocationRulesScreen() {
       setIsDirty(false);
       setHasManualOrderEdit(false);
     }
-  }, [strategyQuery.data]);
+  }, [strategyQuery.data, defaultSurplusTarget?.id]);
 
   const checkIfDirty = (newSteps: EditableStep[]) => {
     if (newSteps.length !== initialSteps.length) return true;
@@ -121,7 +129,10 @@ export default function MobileAllocationRulesScreen() {
     const nextSteps: EditableStep[] = CANONICAL_ALLOCATION_PRESETS[presetKey].steps.map((s, idx) => ({
       orderIndex: idx,
       stepType: s.stepType,
-      targetEnvelopeId: s.stepType === 'SURPLUS_SWEEP' ? (currentSweep?.targetEnvelopeId ?? null) : null,
+      targetEnvelopeId:
+        s.stepType === 'SURPLUS_SWEEP'
+          ? (currentSweep?.targetEnvelopeId ?? defaultSurplusTarget?.id ?? null)
+          : null,
       config: s.config ?? null,
     }));
     setSteps(nextSteps);
@@ -165,10 +176,13 @@ export default function MobileAllocationRulesScreen() {
         utils.getHorizonProjectionData.invalidate(),
         utils.listAllAllocationPlans.invalidate(),
         utils.getHomeSummary.invalidate(),
+        utils.getProjectedEnvelopeBalances.invalidate(),
+        utils.getPaydayPlanAnalytics.invalidate(),
       ]);
       setIsDirty(false);
       setHasManualOrderEdit(false);
       toast.success(t('settings.paydayRules.saveSuccess'));
+      navigateBack();
     } catch (err) {
       toast.error(err instanceof Error ? err.message : t('common.errorTryAgain'));
     } finally {
