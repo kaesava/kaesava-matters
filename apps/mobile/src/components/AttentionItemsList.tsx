@@ -86,6 +86,15 @@ export const AttentionItemsList: React.FC<AttentionItemsListProps> = ({
                 {t('dashboard.upcomingExpensesTransfers.title')}
               </Text>
             </View>
+            <TouchableOpacity
+              onPress={() =>
+                router.push(`/(app)/plan/schedules?returnTo=${encodeURIComponent('/(app)/home')}` as Href)
+              }
+              style={styles.showMoreBtn}
+              activeOpacity={0.7}
+            >
+              <Text style={styles.showMoreText}>{t('planTabs.schedules')}</Text>
+            </TouchableOpacity>
           </View>
           <Text style={styles.emptyText}>
             {t('dashboard.upcomingExpensesTransfers.empty')}
@@ -111,16 +120,30 @@ export const AttentionItemsList: React.FC<AttentionItemsListProps> = ({
               </Text>
             </View>
 
-            {items.length > 3 && (
+            <View style={styles.headerLinksWrap}>
               <TouchableOpacity
-                onPress={() => router.push('/(app)/plan' as Href)}
+                onPress={() =>
+                  router.push(`/(app)/plan/schedules?returnTo=${encodeURIComponent('/(app)/home')}` as Href)
+                }
                 style={styles.showMoreBtn}
                 activeOpacity={0.7}
               >
-                <Text style={styles.showMoreText}>{t('common.showMore')}</Text>
-                <Feather name="chevron-right" size={14} color={DESIGN_TOKENS.colors.accent} />
+                <Text style={styles.showMoreText}>{t('planTabs.schedules')}</Text>
               </TouchableOpacity>
-            )}
+              {items.length > 3 && (
+                <>
+                  <Text style={styles.linkSeparator}>·</Text>
+                  <TouchableOpacity
+                    onPress={() => router.push('/(app)/plan' as Href)}
+                    style={styles.showMoreBtn}
+                    activeOpacity={0.7}
+                  >
+                    <Text style={styles.showMoreText}>{t('common.showMore')}</Text>
+                    <Feather name="chevron-right" size={14} color={DESIGN_TOKENS.colors.accent} />
+                  </TouchableOpacity>
+                </>
+              )}
+            </View>
           </View>
 
           <View style={styles.listWrap}>
@@ -191,6 +214,16 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontWeight: '800',
     color: DESIGN_TOKENS.colors.primary,
+  },
+  headerLinksWrap: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+  },
+  linkSeparator: {
+    fontSize: 12,
+    fontWeight: '600',
+    color: DESIGN_TOKENS.colors.slate[400],
   },
   showMoreBtn: {
     flexDirection: 'row',

@@ -259,6 +259,13 @@ export default function HomeScreen() {
           setMarkPaidEvent(null);
           refetchAll();
         }}
+        onOpenTransferModal={({ destinationPoolId, shortfallAmount }) => {
+          openQuickModal('TRANSFER', {
+            type: 'TRANSFER',
+            destinationPoolId,
+            amount: shortfallAmount > 0 ? shortfallAmount.toFixed(2) : undefined,
+          });
+        }}
       />
     </AppScreenWrapper>
   );

@@ -8,6 +8,7 @@ import { Spinner, SearchInput, Tabs, InfoTooltip, useToast } from "@money-matter
 import { MoreVertical, ArrowDownCircle, ArrowUpCircle, ArrowRightLeft } from "lucide-react";
 import { IncomeFormModal, IncomeSourceToEdit } from "../../../components/web/IncomeFormModal";
 import { QuickExpenseDrawer } from "../../../components/web/QuickExpenseDrawer";
+import type { QuickActionInitialData } from "@money-matters/types";
 import { EnvelopeFormModal } from "../../../components/web/EnvelopeFormModal";
 import { IncomeSchedulesCard } from "./components/IncomeSchedulesCard";
 import { BillSchedulesCard } from "./components/BillSchedulesCard";
@@ -28,6 +29,7 @@ function IncomeAndBillsContent() {
   const router = useRouter();
   const [activeTab, setActiveTab] = useState<PlanTab>(initialTab);
   const [quickActionTab, setQuickActionTab] = useState<"DEBIT" | "CREDIT" | "TRANSFER" | null>(null);
+  const [quickActionInitialData, setQuickActionInitialData] = useState<QuickActionInitialData | undefined>(undefined);
   const [isIncomeModalOpen, setIsIncomeModalOpen] = useState(false);
   const [incomeToEdit, setIncomeToEdit] = useState<IncomeSourceToEdit | undefined>(undefined);
   const [incomeInitialPrefill, setIncomeInitialPrefill] = useState<{ name?: string; amount?: string; date?: string } | undefined>(undefined);
@@ -341,6 +343,20 @@ function IncomeAndBillsContent() {
             ]);
             setMatrixMarkPaidTarget(null);
           }}
+          onOpenTransferModal={() => {
+            const target = matrixMarkPaidTarget;
+            setMatrixMarkPaidTarget(null);
+            if (!target) return;
+            const matchedPool = pools.find((p) => p.id === target.poolId);
+            const poolBal = parseFloat(String(matchedPool?.currentBalance || "0")) || 0;
+            const shortfall = Math.max(0, (parseFloat(String(target.amount || "0")) || 0) - poolBal);
+            setQuickActionInitialData({
+              type: "TRANSFER",
+              destinationPoolId: target.poolId,
+              amount: shortfall > 0 ? shortfall.toFixed(2) : undefined,
+            });
+            setQuickActionTab("TRANSFER");
+          }}
         />
       )}
 
@@ -370,7 +386,11 @@ function IncomeAndBillsContent() {
       {quickActionTab && (
         <QuickExpenseDrawer
           initialTab={quickActionTab}
-          onClose={() => setQuickActionTab(null)}
+          initialData={quickActionInitialData}
+          onClose={() => {
+            setQuickActionTab(null);
+            setQuickActionInitialData(undefined);
+          }}
         />
       )}
     </div>

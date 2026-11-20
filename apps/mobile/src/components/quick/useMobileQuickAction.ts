@@ -108,7 +108,9 @@ export function useMobileQuickAction(
         if (matched) setSelectedPoolId(matched.id);
       }
 
-      if (initialData?.destinationPoolName && pools.length > 0) {
+      if (initialData?.destinationPoolId) {
+        setDestPoolId(initialData.destinationPoolId);
+      } else if (initialData?.destinationPoolName && pools.length > 0) {
         const search = initialData.destinationPoolName.toLowerCase().trim();
         const matched = pools.find(
           (p) => p.name.toLowerCase().includes(search) || search.includes(p.name.toLowerCase())

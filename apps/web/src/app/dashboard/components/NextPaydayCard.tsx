@@ -54,6 +54,12 @@ export const NextPaydayCard: React.FC<NextPaydayCardProps> = ({
           <div className="flex items-center gap-2">
             <h2 className="text-sm font-extrabold text-[#1B2B4B]">{t('dashboard.nextPay.upcomingIncome')}</h2>
           </div>
+          <Link
+            href="/dashboard/plan?tab=STREAMS"
+            className="text-xs font-bold text-blue-600 hover:text-blue-700 transition-colors"
+          >
+            {t('planTabs.schedules')}
+          </Link>
         </div>
         <p className="text-xs text-gray-400 py-4 text-center">{t('dashboard.nextPay.noUpcoming')}</p>
       </div>
@@ -72,10 +78,10 @@ export const NextPaydayCard: React.FC<NextPaydayCardProps> = ({
         </div>
         <div className="flex items-center gap-2.5">
           <Link
-            href="/dashboard/plan?tab=events&kind=INCOME"
+            href="/dashboard/plan?tab=STREAMS"
             className="text-xs font-bold text-blue-600 hover:text-blue-700 transition-colors"
           >
-            {t('common.showMore')}
+            {t('planTabs.schedules')}
           </Link>
           <span className="text-gray-300 text-xs">·</span>
           <Link
@@ -83,6 +89,13 @@ export const NextPaydayCard: React.FC<NextPaydayCardProps> = ({
             className="text-xs font-bold text-blue-600 hover:text-blue-700 transition-colors"
           >
             {t('dashboard.nextPay.twelveMonthPlanLink')}
+          </Link>
+          <span className="text-gray-300 text-xs">·</span>
+          <Link
+            href="/dashboard/plan?tab=events&kind=INCOME"
+            className="text-xs font-bold text-blue-600 hover:text-blue-700 transition-colors"
+          >
+            {t('common.showMore')}
           </Link>
         </div>
       </div>

@@ -1,7 +1,9 @@
 "use client";
 
+import { useState } from "react";
 import { RecordFilterBadge } from "@money-matters/ui/web";
-import { getTenantDateString } from "@money-matters/types";
+import type { QuickActionInitialData } from "@money-matters/types";
+import { QuickActionDrawer } from "../../../../components/web/QuickExpenseDrawer";
 import { TimelineEventItem } from "./timeline/types";
 import { useUpcomingTimelineData } from "./timeline/useUpcomingTimelineData";
 import { TimelineFiltersBar } from "./timeline/TimelineFiltersBar";
@@ -129,14 +131,22 @@ export function UpcomingTimelineTab({
     filterCategoryId,
   });
 
+  const [quickTransferData, setQuickTransferData] = useState<QuickActionInitialData | null>(null);
+
   const handleOpenTransferFromMarkPaid = (resolvedPoolId: string) => {
-    setTransferModalEvent({
-      id: `transfer_${Date.now()}`,
-      name: "Transfer between Pools",
-      expectedAmount: "0.00",
-      expectedDate: getTenantDateString(new Date()),
+    const evt = markPaidModalEvent;
+    setMarkPaidModalEvent(null);
+    const matchedPool = pools.find((p) => p.id === resolvedPoolId);
+    const poolBal =
+      typeof matchedPool?.currentBalance === "string"
+        ? parseFloat(matchedPool.currentBalance || "0")
+        : (matchedPool?.currentBalance ?? 0);
+    const expectedAmt = parseFloat(String(evt?.expectedAmount || "0")) || 0;
+    const shortfall = Math.max(0, expectedAmt - poolBal);
+    setQuickTransferData({
+      type: "TRANSFER",
       destinationPoolId: resolvedPoolId,
-      status: "PENDING",
+      amount: shortfall > 0 ? shortfall.toFixed(2) : undefined,
     });
   };
 
@@ -224,6 +234,14 @@ export function UpcomingTimelineTab({
         editEvent={editEvent}
         onCloseEdit={() => setEditEvent(null)}
       />
+
+      {quickTransferData && (
+        <QuickActionDrawer
+          onClose={() => setQuickTransferData(null)}
+          initialTab="TRANSFER"
+          initialData={quickTransferData}
+        />
+      )}
     </div>
   );
 }

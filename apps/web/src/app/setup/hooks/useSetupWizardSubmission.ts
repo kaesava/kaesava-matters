@@ -10,6 +10,7 @@ import {
   IncomeItem,
   EstimatedCategoryItem,
   AccountType,
+  resolveDefaultSetupBankAccountId,
 } from "@money-matters/types";
 import { UserGoalItem } from "../components/SetupGoalsStep";
 import { BankAccountRowItem } from "../components/SetupBankAccountRow";
@@ -113,7 +114,13 @@ export function useSetupWizardSubmission({
           (!primary.isPrivate && effectiveSurplusGoalIndex === -1 && !hasExplicitCategorySurplus);
         return [{
           id: primaryId || existingEveryday?.id,
-          bankAccountId: primary.bankAccountId || existingEveryday?.bankAccountId || primaryBankAccountId,
+          bankAccountId: resolveDefaultSetupBankAccountId({
+            existingBankAccountId: primary.bankAccountId || existingEveryday?.bankAccountId,
+            envelopeType: "EVERYDAY",
+            isPrivate: Boolean(primary.isPrivate ?? existingEveryday?.isPrivate),
+            bankAccounts,
+            fallbackAccountId: primaryBankAccountId,
+          }),
           isPrivate: primary.isPrivate ?? existingEveryday?.isPrivate ?? false,
           isSurplusTarget: Boolean(isSurplus),
           safetyBufferFloor: primary.safetyBufferFloor !== undefined && primary.safetyBufferFloor !== null
@@ -163,7 +170,13 @@ export function useSetupWizardSubmission({
 
           return {
             id: resolvedEnvId,
-            bankAccountId: c.bankAccountId || matchedPool?.bankAccountId || primaryBankAccountId,
+            bankAccountId: resolveDefaultSetupBankAccountId({
+              existingBankAccountId: c.bankAccountId || matchedPool?.bankAccountId,
+              envelopeType: "BILL",
+              isPrivate: Boolean(c.isPrivate ?? matchedPool?.isPrivate),
+              bankAccounts,
+              fallbackAccountId: primaryBankAccountId,
+            }),
             isPrivate: c.isPrivate ?? matchedPool?.isPrivate ?? false,
             isSurplusTarget: Boolean(c.isSurplusTarget),
             safetyBufferFloor: c.safetyBufferFloor !== undefined && c.safetyBufferFloor !== null
@@ -210,7 +223,13 @@ export function useSetupWizardSubmission({
 
           return {
             id: resolvedGoalId,
-            bankAccountId: g.bankAccountId || matchedPool?.bankAccountId || primaryBankAccountId,
+            bankAccountId: resolveDefaultSetupBankAccountId({
+              existingBankAccountId: g.bankAccountId || matchedPool?.bankAccountId,
+              envelopeType: "GOAL",
+              isPrivate: Boolean(matchedPool?.isPrivate ?? g.isPrivate),
+              bankAccounts,
+              fallbackAccountId: primaryBankAccountId,
+            }),
             name: g.name,
             envelopeType: "GOAL" as const,
             fundingMode,

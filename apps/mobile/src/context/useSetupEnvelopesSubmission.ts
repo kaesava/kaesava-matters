@@ -3,6 +3,7 @@ import { useRouter } from 'expo-router';
 import { usePostHog } from 'posthog-react-native';
 import { t } from '@money-matters/i18n';
 import { useMobileToast, buildRecurrenceRule } from '@money-matters/ui/mobile';
+import { resolveDefaultSetupBankAccountId } from '@money-matters/types';
 import { trpc } from '../lib/trpc';
 import { formatMobileCurrency } from '../lib/format';
 import { useSetupWizard } from './SetupWizardContext';
@@ -76,7 +77,13 @@ export function useSetupEnvelopesSubmission() {
 
       const everydayPayload = {
         id: existingEverydayEnv?.id || (customEverydayItem?.id && !customEverydayItem.id.startsWith('temp-') ? customEverydayItem.id : undefined),
-        bankAccountId: customEverydayItem?.bankAccountId || existingEverydayEnv?.bankAccountId || primaryBankAccountId,
+        bankAccountId: resolveDefaultSetupBankAccountId({
+          existingBankAccountId: customEverydayItem?.bankAccountId || existingEverydayEnv?.bankAccountId,
+          envelopeType: 'EVERYDAY',
+          isPrivate: false,
+          bankAccounts,
+          fallbackAccountId: primaryBankAccountId,
+        }),
         isPrivate: false,
         name: customEverydayItem?.name || existingEverydayEnv?.name || 'Everyday',
         envelopeType: 'EVERYDAY' as const,
@@ -118,7 +125,13 @@ export function useSetupEnvelopesSubmission() {
 
           return {
             id: resolvedEnvId,
-            bankAccountId: c.bankAccountId || matchedPool?.bankAccountId || primaryBankAccountId,
+            bankAccountId: resolveDefaultSetupBankAccountId({
+              existingBankAccountId: c.bankAccountId || matchedPool?.bankAccountId,
+              envelopeType: 'BILL',
+              isPrivate: Boolean(c.isPrivate ?? matchedPool?.isPrivate),
+              bankAccounts,
+              fallbackAccountId: primaryBankAccountId,
+            }),
             isPrivate: c.isPrivate ?? matchedPool?.isPrivate ?? false,
             name: c.name,
             envelopeType: 'BILL' as const,
@@ -173,7 +186,13 @@ export function useSetupEnvelopesSubmission() {
 
           return {
             id: resolvedGoalId,
-            bankAccountId: g.bankAccountId || matchedPool?.bankAccountId || primaryBankAccountId,
+            bankAccountId: resolveDefaultSetupBankAccountId({
+              existingBankAccountId: g.bankAccountId || matchedPool?.bankAccountId,
+              envelopeType: 'GOAL',
+              isPrivate: Boolean(matchedPool?.isPrivate ?? g.isPrivate),
+              bankAccounts,
+              fallbackAccountId: primaryBankAccountId,
+            }),
             name: g.name,
             envelopeType: 'GOAL' as const,
             fundingMode,

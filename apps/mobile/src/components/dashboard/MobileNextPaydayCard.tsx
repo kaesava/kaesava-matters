@@ -96,11 +96,13 @@ export function MobileNextPaydayCard({
 
         <View style={styles.headerLinksWrap}>
           <TouchableOpacity
-            onPress={() => router.push('/(app)/plan?tab=events&kind=INCOME' as Href)}
+            onPress={() =>
+              router.push(`/(app)/plan/schedules?returnTo=${encodeURIComponent('/(app)/home')}` as Href)
+            }
             style={styles.showMoreBtn}
             activeOpacity={0.7}
           >
-            <Text style={styles.showMoreText}>{t('common.showMore')}</Text>
+            <Text style={styles.showMoreText}>{t('planTabs.schedules')}</Text>
           </TouchableOpacity>
           <Text style={styles.linkSeparator}>·</Text>
           <TouchableOpacity
@@ -109,6 +111,14 @@ export function MobileNextPaydayCard({
             activeOpacity={0.7}
           >
             <Text style={styles.showMoreText}>{t('dashboard.nextPay.twelveMonthPlanLink')}</Text>
+          </TouchableOpacity>
+          <Text style={styles.linkSeparator}>·</Text>
+          <TouchableOpacity
+            onPress={() => router.push('/(app)/plan?tab=events&kind=INCOME' as Href)}
+            style={styles.showMoreBtn}
+            activeOpacity={0.7}
+          >
+            <Text style={styles.showMoreText}>{t('common.showMore')}</Text>
           </TouchableOpacity>
         </View>
       </View>

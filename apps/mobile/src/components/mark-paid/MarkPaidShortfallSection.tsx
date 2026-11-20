@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import { Feather } from '@expo/vector-icons';
 import { DESIGN_TOKENS } from '@money-matters/ui/mobile';
 import { t } from '@money-matters/i18n';
@@ -24,6 +24,7 @@ interface MarkPaidShortfallSectionProps {
   onToggleGroup: (typeKey: string) => void;
   onAmountChange: (poolId: string, maxBal: number, rawVal: string) => void;
   onCoverFromSurplus?: () => void;
+  onOpenTransferModal?: () => void;
   surplusPoolName?: string;
   surplusCoverableAmount?: number;
 }
@@ -38,6 +39,7 @@ export function MarkPaidShortfallSection({
   shortfallValidation,
   onToggleGroup,
   onAmountChange,
+  onOpenTransferModal,
 }: MarkPaidShortfallSectionProps) {
   return (
     <View style={styles.shortfallSection}>
@@ -148,6 +150,18 @@ export function MarkPaidShortfallSection({
           </Text>
         </View>
       )}
+
+      {onOpenTransferModal && (
+        <TouchableOpacity
+          onPress={onOpenTransferModal}
+          activeOpacity={0.7}
+          style={styles.transferLinkBtn}
+        >
+          <Text style={styles.transferLinkText}>
+            {t('planTabs.openCustomTransferModalLink')}
+          </Text>
+        </TouchableOpacity>
+      )}
     </View>
   );
 }
@@ -205,6 +219,15 @@ const styles = StyleSheet.create({
     color: DESIGN_TOKENS.colors.slate[400],
     fontStyle: 'italic',
     paddingVertical: 8,
+  },
+  transferLinkBtn: {
+    alignSelf: 'flex-end',
+    paddingVertical: 4,
+  },
+  transferLinkText: {
+    fontSize: 12,
+    fontWeight: '700',
+    color: DESIGN_TOKENS.colors.accent,
   },
   progressCard: {
     flexDirection: 'row',

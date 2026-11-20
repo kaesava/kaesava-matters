@@ -27,6 +27,7 @@ describe("saveSetupBudgetHandler", () => {
     envelopes?: Record<string, unknown>[];
     incomes?: Record<string, unknown>[];
     expenseSources?: Record<string, unknown>[];
+    ledgerRows?: Record<string, unknown>[];
     prefs?: Record<string, unknown>[];
     tenants?: Record<string, unknown>[];
   }) => {
@@ -41,6 +42,7 @@ describe("saveSetupBudgetHandler", () => {
             if (table === envelopes) return existingData?.envelopes || [];
             if (table === incomeSources) return existingData?.incomes || [];
             if (table === expenseEvents) return existingData?.expenseSources || [];
+            if (table === transactionLedger) return existingData?.ledgerRows || [];
             if (table === tenants) return existingData?.tenants || [{ timezone: "Australia/Sydney" }];
             return existingData?.prefs || [];
           };
@@ -168,7 +170,7 @@ describe("saveSetupBudgetHandler", () => {
       handler(
         {
           incomes: [{ name: "Salary", type: "SALARY", amount: "3000.00", frequency: "MONTHLY", incomeType: "SALARIED" }],
-          bankAccounts: [{ name: "Account", bankProvider: "CBA", lastKnownBalance: "500.00", unbudgetedBuffer: "0.00", isPrivate: false }],
+          bankAccounts: [{ name: "Account", bankProvider: "CBA", lastKnownBalance: "0.00", unbudgetedBuffer: "0.00", isPrivate: false }],
           envelopes: [{ id: "env-everyday", name: "Everyday Spending", envelopeType: "EVERYDAY", isSurplusTarget: false, isPriority: false, isPrivate: false, orderIndex: 0 }],
           archivedEnvelopeIds: ["env-everyday"],
         },
@@ -192,7 +194,7 @@ describe("saveSetupBudgetHandler", () => {
     const result = await handler(
       {
         incomes: [{ name: "Salary", type: "SALARY", amount: "3000.00", frequency: "MONTHLY", incomeType: "SALARIED" }],
-        bankAccounts: [{ name: "Account", bankProvider: "CBA", lastKnownBalance: "500.00", unbudgetedBuffer: "0.00", isPrivate: false }],
+        bankAccounts: [{ name: "Account", bankProvider: "CBA", lastKnownBalance: "0.00", unbudgetedBuffer: "0.00", isPrivate: false }],
         envelopes: [
           { id: "env-everyday", name: "Everyday Spending", envelopeType: "EVERYDAY", isSurplusTarget: false, isPriority: false, isPrivate: false, orderIndex: 0 },
           { id: "env-emergency", name: "Emergency Reserve", envelopeType: "GOAL", fundingMode: "RECURRING", isSurplusTarget: true, isPriority: true, isPrivate: false, orderIndex: 1 },

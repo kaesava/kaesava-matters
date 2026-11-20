@@ -39,7 +39,7 @@ export function useQuickActionState(
   const [categoryId, setCategoryId] = useState(initialData?.categoryId || "");
   const [selectedSubCategoryId, setSelectedSubCategoryId] = useState<string | null>(null);
   const [sourceCategoryId, setSourceCategoryId] = useState("");
-  const [destinationCategoryId, setDestinationCategoryId] = useState("");
+  const [destinationCategoryId, setDestinationCategoryId] = useState(initialData?.destinationPoolId || "");
   const [receivingAccountId, setReceivingAccountId] = useState("");
   const [contributionMode, setContributionMode] = useState<ContributionMode>("FULL");
   const [contributionValue, setContributionValue] = useState("");

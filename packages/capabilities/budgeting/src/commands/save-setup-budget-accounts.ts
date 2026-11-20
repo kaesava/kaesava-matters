@@ -12,6 +12,13 @@ export interface SaveSetupAccountInput {
   isPrivate?: boolean;
 }
 
+export interface PersistedSetupAccount {
+  id: string;
+  lastKnownBalance: string;
+  unbudgetedBuffer: string;
+  isPrivate: boolean;
+}
+
 export async function processSetupBankAccounts(
   tx: DbOrTx,
   accountsInput: SaveSetupAccountInput[],
@@ -20,7 +27,11 @@ export async function processSetupBankAccounts(
   appId: string,
   userId: string,
   now: Date
-): Promise<{ accountIdMap: Map<string, string>; primaryBankAccountId: string }> {
+): Promise<{
+  accountIdMap: Map<string, string>;
+  primaryBankAccountId: string;
+  persistedAccounts: PersistedSetupAccount[];
+}> {
   const existingAccounts = await tx
     .select()
     .from(bankAccounts)
@@ -33,6 +44,7 @@ export async function processSetupBankAccounts(
     );
 
   const accountIdMap = new Map<string, string>();
+  const persistedAccounts: PersistedSetupAccount[] = [];
 
   for (let i = 0; i < accountsInput.length; i++) {
     const accInput = accountsInput[i];
@@ -62,8 +74,16 @@ export async function processSetupBankAccounts(
         .where(eq(bankAccounts.id, matchedExisting.id));
       if (accInput.id) accountIdMap.set(accInput.id, matchedExisting.id);
       accountIdMap.set(`idx-${i}`, matchedExisting.id);
+      persistedAccounts.push({
+        id: matchedExisting.id,
+        lastKnownBalance: accInput.lastKnownBalance || matchedExisting.lastKnownBalance || "0.00",
+        unbudgetedBuffer: accInput.unbudgetedBuffer || matchedExisting.unbudgetedBuffer || "0.00",
+        isPrivate,
+      });
     } else {
       const newAccountId = randomUUID();
+      const lastKnownBalance = accInput.lastKnownBalance || "0.00";
+      const unbudgetedBuffer = accInput.unbudgetedBuffer || "0.00";
       await tx.insert(bankAccounts).values({
         id: newAccountId,
         tenantId,
@@ -71,8 +91,8 @@ export async function processSetupBankAccounts(
         name: accInput.name,
         bankProvider: bankProviderVal,
         accountType: accInput.accountType || "EVERYDAY",
-        lastKnownBalance: accInput.lastKnownBalance || "0.00",
-        unbudgetedBuffer: accInput.unbudgetedBuffer || "0.00",
+        lastKnownBalance,
+        unbudgetedBuffer,
         isPrivate,
         userId: isPrivate ? userId : null,
         createdAt: now,
@@ -82,6 +102,12 @@ export async function processSetupBankAccounts(
       });
       if (accInput.id) accountIdMap.set(accInput.id, newAccountId);
       accountIdMap.set(`idx-${i}`, newAccountId);
+      persistedAccounts.push({
+        id: newAccountId,
+        lastKnownBalance,
+        unbudgetedBuffer,
+        isPrivate,
+      });
     }
   }
 
@@ -109,5 +135,5 @@ export async function processSetupBankAccounts(
     existingAccounts[0]?.id ||
     "";
 
-  return { accountIdMap, primaryBankAccountId };
+  return { accountIdMap, primaryBankAccountId, persistedAccounts };
 }

@@ -325,7 +325,8 @@ const styles = StyleSheet.create({
     marginTop: 12,
     marginBottom: 20,
   },
-  customHeading: { fontSize: 12, fontWeight: '700', color: DESIGN_TOKENS.colors.primary, marginBottom: 8 },
+  headerTitleRow: { flexDirection: 'row', alignItems: 'center', gap: 6, marginBottom: 8 },
+  customHeading: { fontSize: 12, fontWeight: '700', color: DESIGN_TOKENS.colors.primary },
   customInput: {
     backgroundColor: DESIGN_TOKENS.colors.surfaceVariant,
     borderWidth: 1,

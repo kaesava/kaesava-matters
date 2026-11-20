@@ -22,6 +22,7 @@ export * from "./assistant.types.js";
 export * from "./home-summary.types.js";
 export * from "./envelope.types.js";
 export * from "./setup-steps.types.js";
+export * from "./setup-account-matching.js";
 export * from "./projection.types.js";
 export * from "./ledger.types.js";
 export * from "./analytics.types.js";

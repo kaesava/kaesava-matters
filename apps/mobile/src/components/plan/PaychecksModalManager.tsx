@@ -5,6 +5,7 @@ import { t } from '@money-matters/i18n';
 import { trpc } from '../../lib/trpc';
 import { IncomeExpenseFormModal, SourceToEdit } from '../IncomeExpenseFormModal';
 import { MarkPaidModal, MarkPaidEvent } from '../MarkPaidModal';
+import { QuickExpenseModal, QuickActionInitialData } from '../QuickExpenseModal';
 import { EventOverrideModal, EventToOverride } from '../EventOverrideModal';
 import { MobileTransferModal, TransferEventData } from './MobileTransferModal';
 import {
@@ -83,6 +84,7 @@ export function PaychecksModalManager({
 }: PaychecksModalManagerProps) {
   const router = useRouter();
   const [localMarkPaidEvent, setLocalMarkPaidEvent] = useState<MarkPaidEvent | null>(null);
+  const [quickTransferData, setQuickTransferData] = useState<QuickActionInitialData | null>(null);
   const effectiveMarkPaidEvent = markPaidEvent || localMarkPaidEvent;
   const deleteIncomeEventMut = trpc.deleteIncomeEvent.useMutation();
   const deleteExpenseEventMut = trpc.deleteExpenseEvent.useMutation();
@@ -110,6 +112,21 @@ export function PaychecksModalManager({
           setLocalMarkPaidEvent(null);
           onCloseMarkPaid();
         }}
+        onSuccess={refetchAll}
+        onOpenTransferModal={({ destinationPoolId, shortfallAmount }) => {
+          setQuickTransferData({
+            type: 'TRANSFER',
+            destinationPoolId,
+            amount: shortfallAmount > 0 ? shortfallAmount.toFixed(2) : undefined,
+          });
+        }}
+      />
+
+      <QuickExpenseModal
+        visible={Boolean(quickTransferData)}
+        initialType="TRANSFER"
+        initialData={quickTransferData ?? undefined}
+        onClose={() => setQuickTransferData(null)}
         onSuccess={refetchAll}
       />
 

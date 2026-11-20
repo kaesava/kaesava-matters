@@ -4,6 +4,7 @@ import { z } from "zod";
 import { SaveSetupBudgetCommand, DEFAULT_TIMEZONE } from "@money-matters/types";
 import { processSetupBankAccounts } from "./save-setup-budget-accounts.js";
 import { processSetupEnvelopes } from "./save-setup-budget-envelopes.js";
+import { allocateSetupOpeningBalances } from "./save-setup-budget-opening-balances.js";
 import { processSetupIncomes } from "./save-setup-budget-incomes.js";
 import { processSetupScheduledBills } from "./save-setup-budget-bills.js";
 
@@ -39,7 +40,7 @@ export function saveSetupBudgetHandler(dbClient: DbOrTx) {
       const tenantTimezone = tenantRow?.timezone || DEFAULT_TIMEZONE;
 
       // 1. Process Bank Accounts
-      const { accountIdMap, primaryBankAccountId } = await processSetupBankAccounts(
+      const { accountIdMap, primaryBankAccountId, persistedAccounts } = await processSetupBankAccounts(
         tx,
         input.bankAccounts,
         input.archivedAccountIds,
@@ -62,6 +63,19 @@ export function saveSetupBudgetHandler(dbClient: DbOrTx) {
         now,
         tenantTimezone
       );
+
+      // 2b. Allocate Opening Bank Balances for Accounts with Zero Ledger History
+      await allocateSetupOpeningBalances(tx, {
+        persistedAccounts,
+        envelopesInput: input.envelopes,
+        envelopeIdMap,
+        accountIdMap,
+        primaryBankAccountId,
+        tenantId,
+        appId,
+        userId,
+        now,
+      });
 
       // 3. Process Income Schedules (Upserts, Archivals, Event Synchronization)
       await processSetupIncomes(

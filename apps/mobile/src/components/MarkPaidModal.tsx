@@ -24,6 +24,7 @@ export interface MarkPaidModalProps {
   onClose: () => void;
   onSuccess?: () => void;
   onConfirmOverride?: (data: { amount: number; date: string; transfers: Array<{ poolId: string; amount: string }> }) => Promise<void>;
+  onOpenTransferModal?: (context: { destinationPoolId: string; shortfallAmount: number }) => void;
 }
 
 export function MarkPaidModal({
@@ -32,6 +33,7 @@ export function MarkPaidModal({
   onClose,
   onSuccess,
   onConfirmOverride,
+  onOpenTransferModal,
 }: MarkPaidModalProps) {
   const {
     actualAmount,
@@ -156,6 +158,17 @@ export function MarkPaidModal({
             shortfallValidation={shortfallValidation}
             onToggleGroup={toggleGroup}
             onAmountChange={handleAmountChange}
+            onOpenTransferModal={
+              onOpenTransferModal
+                ? () => {
+                    onClose();
+                    onOpenTransferModal({
+                      destinationPoolId: event.poolId ?? '',
+                      shortfallAmount,
+                    });
+                  }
+                : undefined
+            }
             surplusPoolName={surplusPool?.name}
             surplusCoverableAmount={
               surplusPool

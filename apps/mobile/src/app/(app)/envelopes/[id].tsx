@@ -141,7 +141,7 @@ export default function PoolDetailScreen() {
 
       <QuickExpenseModal
         visible={quickExpenseVisible}
-        initialType="DEBIT"
+        initialType={quickExpenseData?.type ?? 'DEBIT'}
         initialData={quickExpenseData}
         onClose={() => {
           setQuickExpenseVisible(false);
@@ -194,6 +194,14 @@ export default function PoolDetailScreen() {
           expenseEventsQuery.refetch();
           poolsQuery.refetch();
           txLedgerQuery.refetch();
+        }}
+        onOpenTransferModal={({ destinationPoolId, shortfallAmount }) => {
+          setQuickExpenseData({
+            type: 'TRANSFER',
+            destinationPoolId,
+            amount: shortfallAmount > 0 ? shortfallAmount.toFixed(2) : undefined,
+          });
+          setQuickExpenseVisible(true);
         }}
       />
 

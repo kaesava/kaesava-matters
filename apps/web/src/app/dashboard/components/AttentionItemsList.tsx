@@ -1,5 +1,5 @@
 "use client";
-import { getTenantDateString } from "@money-matters/types";
+import { getTenantDateString, type QuickActionInitialData } from "@money-matters/types";
 
 
 import React, { useState, useMemo } from "react";
@@ -8,6 +8,7 @@ import { ConfirmDialog } from "@money-matters/ui/web";
 import { t } from "@money-matters/i18n";
 import { MarkPaidModal } from "../plan/components/MarkPaidModal";
 import { TransferModal } from "../../../components/web/TransferModal";
+import { QuickActionDrawer } from "../../../components/web/QuickExpenseDrawer";
 import { useLocale } from "../../../providers/LocaleProvider";
 
 export interface WebAttentionItem {
@@ -76,6 +77,7 @@ export const AttentionItemsList: React.FC<WebAttentionItemsListProps> = ({
   const format = formatCurrency ?? fmt;
   const [selectedMarkPaidItem, setSelectedMarkPaidItem] = useState<WebAttentionItem | null>(null);
   const [selectedTransferItem, setSelectedTransferItem] = useState<WebAttentionItem | null>(null);
+  const [quickTransferData, setQuickTransferData] = useState<QuickActionInitialData | null>(null);
   const [selectedDeleteItem, setSelectedDeleteItem] = useState<WebAttentionItem | null>(null);
 
   const todayStr = useMemo(() => {
@@ -91,6 +93,12 @@ export const AttentionItemsList: React.FC<WebAttentionItemsListProps> = ({
               {t("dashboard.upcomingExpensesTransfers.title")}
             </h2>
           </div>
+          <Link
+            href="/dashboard/plan?tab=STREAMS"
+            className="text-xs font-bold text-blue-600 hover:text-blue-700 transition-colors"
+          >
+            {t("planTabs.schedules")}
+          </Link>
         </div>
         <p className="text-xs text-gray-400 py-4 text-center">
           {t("dashboard.upcomingExpensesTransfers.empty")}
@@ -119,14 +127,25 @@ export const AttentionItemsList: React.FC<WebAttentionItemsListProps> = ({
             {items.length})
           </h2>
         </div>
-        {items.length > 3 && (
+        <div className="flex items-center gap-2.5">
           <Link
-            href="/dashboard/plan?tab=EVENTS"
+            href="/dashboard/plan?tab=STREAMS"
             className="text-xs font-bold text-blue-600 hover:text-blue-700 transition-colors"
           >
-            {t("common.showMore")}
+            {t("planTabs.schedules")}
           </Link>
-        )}
+          {items.length > 3 && (
+            <>
+              <span className="text-gray-300 text-xs">·</span>
+              <Link
+                href="/dashboard/plan?tab=EVENTS"
+                className="text-xs font-bold text-blue-600 hover:text-blue-700 transition-colors"
+              >
+                {t("common.showMore")}
+              </Link>
+            </>
+          )}
+        </div>
       </div>
 
       <div className="space-y-3">
@@ -272,14 +291,11 @@ export const AttentionItemsList: React.FC<WebAttentionItemsListProps> = ({
             const item = selectedMarkPaidItem;
             setSelectedMarkPaidItem(null);
             if (item) {
-              setSelectedTransferItem({
-                id: `transfer_${Date.now()}`,
+              const shortfall = Math.max(0, (item.expectedAmount || 0) - (item.categoryBalance ?? 0));
+              setQuickTransferData({
                 type: "TRANSFER",
-                name: "Transfer between Pools",
-                expectedAmount: 0,
-                expectedDate: todayStr,
-                destinationPoolId: item.categoryId,
-                isOverdue: false,
+                destinationPoolId: item.categoryId || availableCategories[0]?.id,
+                amount: shortfall > 0 ? shortfall.toFixed(2) : undefined,
               });
             }
           }}
@@ -320,6 +336,14 @@ export const AttentionItemsList: React.FC<WebAttentionItemsListProps> = ({
             setSelectedTransferItem(null);
           }}
           formatCurrency={format}
+        />
+      )}
+
+      {quickTransferData && (
+        <QuickActionDrawer
+          onClose={() => setQuickTransferData(null)}
+          initialTab="TRANSFER"
+          initialData={quickTransferData}
         />
       )}
 
