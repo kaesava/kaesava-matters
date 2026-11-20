@@ -14,8 +14,8 @@ export async function enforceApiRateLimit(
   baseHeaders: Record<string, string>,
   env?: { UPSTASH_REDIS_REST_URL?: string; UPSTASH_REDIS_REST_TOKEN?: string }
 ): Promise<Response | null> {
-  // Exempt cryptographic Stripe webhooks from general rate limiting
-  if (url.pathname === '/webhooks/stripe') {
+  // Exempt cryptographic Stripe webhooks and Inngest cron callbacks from general rate limiting
+  if (url.pathname === '/webhooks/stripe' || url.pathname.startsWith('/api/inngest')) {
     return null;
   }
 

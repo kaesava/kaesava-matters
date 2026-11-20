@@ -1,6 +1,6 @@
 import { Inngest } from "inngest";
 import { db, incomeEvents, incomeSources, bankAccounts, tenants, tenantUsers, users, userPreferences, tenantUserPreferences } from "@money-matters/db";
-import { eq, and, sql } from "drizzle-orm";
+import { eq, and, sql, inArray } from "drizzle-orm";
 import { sendNotificationEmail, todayInZone, getLocalHourInZone, formatCurrency } from "@money-matters/core";
 import { isChannelEnabled, readNotificationPrefs, resolveNotificationRecipient } from "../helpers.js";
 
@@ -45,6 +45,8 @@ export function createPaydayAlertWorkflow(inngest: Inngest) {
           .where(
             and(
               sql`"income_events"."archived_at" IS NULL`,
+              sql`"tenants"."archived_at" IS NULL`,
+              inArray(tenants.subscriptionStatus, ["TRIAL_ACTIVE", "SUBSCRIBED"]),
               eq(incomeEvents.status, "PENDING")
             )
           );
@@ -82,8 +84,8 @@ export function createPaydayAlertWorkflow(inngest: Inngest) {
             await sendNotificationEmail(
               emailRecipient,
               `Payday Alert — ${item.tenantName}`,
-              `It's payday! An expected deposit of ${formattedAmount} is due today.\n\n` +
-              `Log in to Money Matters to confirm your payday plan and ring-fence your committed expenses!`
+              `It's payday! An expected deposit of ${formattedAmount} is scheduled today.\n\n` +
+              `Open Money Matters to review and confirm your Payday Plan.`
             );
           }
 

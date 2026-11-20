@@ -33,12 +33,16 @@ export default function MobileNotificationSettingsScreen() {
 
   const sendTestMutation = trpc.sendTestNotification.useMutation({
     onSuccess: (res) => {
-      toast.success(
-        t("notifications.settings.testSuccessWithDetails", {
-          email: res.emailRecipient,
-          count: String(res.mobilePushDeviceCount),
-        })
-      );
+      const msg =
+        res.mobilePushDeviceCount > 0
+          ? t("notifications.settings.testSuccessWithDetails", {
+              email: res.emailRecipient,
+              count: String(res.mobilePushDeviceCount),
+            })
+          : t("notifications.settings.testEmailSuccess", {
+              email: res.emailRecipient,
+            });
+      toast.success(msg);
     },
     onError: (err) => toast.error(err.message || t("common.errorTryAgain")),
   });
@@ -55,11 +59,12 @@ export default function MobileNotificationSettingsScreen() {
   };
 
   const topics = [
-    { id: "weekly_digest", title: t("notifications.settings.weeklyDigestTitle"), desc: t("notifications.settings.weeklyDigestDesc"), emailKey: "weekly_digest_email", pushKey: "weekly_digest_push", legacyKey: "weekly_digest_enabled" },
     { id: "payday_alerts", title: t("notifications.settings.paydayTitle"), desc: t("notifications.settings.paydayDesc"), emailKey: "payday_alerts_email", pushKey: "payday_alerts_push", legacyKey: "payday_alerts_enabled" },
-    { id: "balance_nudge", title: t("notifications.settings.balanceMatchTitle"), desc: t("notifications.settings.balanceMatchDesc"), emailKey: "balance_nudge_email", pushKey: "balance_nudge_push", legacyKey: "balance_nudge_enabled" },
+    { id: "bill_alerts", title: t("notifications.settings.billAlertsTitle"), desc: t("notifications.settings.billAlertsDesc"), emailKey: "bill_alerts_email", pushKey: "bill_alerts_push", legacyKey: "bill_alerts_enabled" },
+    { id: "weekly_digest", title: t("notifications.settings.weeklyDigestTitle"), desc: t("notifications.settings.weeklyDigestDesc"), emailKey: "weekly_digest_email", pushKey: "weekly_digest_push", legacyKey: "weekly_digest_enabled" },
   ];
   const status = channelStatusQuery.data;
+  const showMobilePush = (status?.mobilePushDeviceCount ?? 0) > 0;
 
   return (
     <MobileScreenWrapper title={t("notifications.settings.title")} user={session?.user} showBack onBackPress={() => router.back()}>
@@ -67,12 +72,15 @@ export default function MobileNotificationSettingsScreen() {
         {status && (
           <View style={styles.statusBanner}>
             <Text style={styles.descText}>{t("notifications.settings.emailChannelNote", { email: status.emailRecipient })}</Text>
-            <Text style={styles.descText}>{t("notifications.settings.mobilePushNote")}</Text>
-            <Text style={styles.statusBold}>
-              {status.mobilePushDeviceCount > 0
-                ? t("notifications.settings.pushDeviceStatusCount", { count: String(status.mobilePushDeviceCount) })
-                : t("notifications.settings.pushDeviceStatusNone")}
-            </Text>
+            <Text style={styles.descText}>{t("notifications.settings.timezoneNote")}</Text>
+            {showMobilePush && (
+              <>
+                <Text style={styles.descText}>{t("notifications.settings.mobilePushNote")}</Text>
+                <Text style={styles.statusBold}>
+                  {t("notifications.settings.pushDeviceStatusCount", { count: String(status.mobilePushDeviceCount) })}
+                </Text>
+              </>
+            )}
           </View>
         )}
 
@@ -84,12 +92,14 @@ export default function MobileNotificationSettingsScreen() {
             </View>
             <View style={styles.matrixDivider} />
             <SwitchRow label={t("notifications.settings.emailChannel")} value={isEnabled(topic.emailKey, topic.legacyKey)} onValueChange={(val) => handleToggle(topic.emailKey, val)} />
-            <SwitchRow label={t("notifications.settings.pushChannel")} value={isEnabled(topic.pushKey, topic.legacyKey)} onValueChange={(val) => handleToggle(topic.pushKey, val)} />
+            {showMobilePush && (
+              <SwitchRow label={t("notifications.settings.pushChannel")} value={isEnabled(topic.pushKey, topic.legacyKey)} onValueChange={(val) => handleToggle(topic.pushKey, val)} />
+            )}
           </View>
         ))}
 
         <View style={styles.testActionContainer}>
-          <MobileButton variant="secondary" title={sendTestMutation.isPending ? t("notifications.settings.sendingTest") : t("notifications.settings.sendTestButton")} onPress={() => sendTestMutation.mutate({ channel: "all" })} disabled={sendTestMutation.isPending} />
+          <MobileButton variant="secondary" title={sendTestMutation.isPending ? t("notifications.settings.sendingTest") : t("notifications.settings.sendTestButton")} onPress={() => sendTestMutation.mutate({ channel: showMobilePush ? "all" : "email" })} disabled={sendTestMutation.isPending} />
         </View>
       </ScrollView>
     </MobileScreenWrapper>

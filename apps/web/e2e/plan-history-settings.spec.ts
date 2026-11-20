@@ -172,12 +172,12 @@ test.describe('10. Settings 4-Tab Layout, Governance & Subpages (`/dashboard/set
     await page.goto('/dashboard/settings/notifications');
 
     await expect(page.getByRole('heading', { level: 1, name: /Notification Preferences/i }).first()).toBeVisible();
-    await expect(page.getByText('Weekly Balance Digest').first()).toBeVisible();
-    await expect(page.getByText('Payday Plan Alerts').first()).toBeVisible();
-    await expect(page.getByText('Bank Balance Match Nudge').first()).toBeVisible();
+    await expect(page.getByText('Payday Plan Reminders').first()).toBeVisible();
+    await expect(page.getByText('Upcoming Bill & Shortfall Alerts').first()).toBeVisible();
+    await expect(page.getByText('Weekly Money Summary').first()).toBeVisible();
 
     const checkboxes = page.locator('input[type="checkbox"]');
-    await expect(checkboxes).toHaveCount(6);
+    await expect(checkboxes).toHaveCount(3);
 
     // Wait for initial preferences query hydration (channel status card renders once user prefs + channels resolve).
     await expect(page.getByText(/Emails deliver to/i).first()).toBeVisible();

@@ -136,7 +136,7 @@ export async function sendNotificationEmail(
 ): Promise<{ success: boolean; id?: string }> {
   const footerHtml = `
     <div style="margin-top: 32px; padding-top: 16px; border-top: 1px solid #e2e8f0; font-size: 11px; color: #64748b; line-height: 1.5;">
-      Money Matters by Kaesava AU • Sydney, NSW, Australia • info@moneymatters.kaesava.au<br />
+      Money Matters by Kaesava AU • VIC 3030, Australia • info@moneymatters.kaesava.au<br />
       <a href="https://moneymatters.kaesava.au/dashboard/settings/notifications" style="color: #2563eb; text-decoration: underline;">Manage Notification Preferences & Unsubscribe</a>
     </div>
   `;

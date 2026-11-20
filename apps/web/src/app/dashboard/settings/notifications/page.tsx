@@ -1,7 +1,9 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { Mail, Clock } from "lucide-react";
 import { t } from "@money-matters/i18n";
 import { useToast, Button } from "@money-matters/ui/web";
 import { trpc } from "../../../../lib/trpc";
@@ -33,9 +35,8 @@ export default function NotificationSettingsPage() {
   const sendTestMutation = trpc.sendTestNotification.useMutation({
     onSuccess: (res) => {
       toast.success(
-        t("notifications.settings.testSuccessWithDetails", {
+        t("notifications.settings.testEmailSuccess", {
           email: res.emailRecipient,
-          count: String(res.mobilePushDeviceCount),
         })
       );
     },
@@ -54,57 +55,114 @@ export default function NotificationSettingsPage() {
   };
 
   const topics = [
-    { id: "weekly_digest", title: t("notifications.settings.weeklyDigestTitle"), desc: t("notifications.settings.weeklyDigestDesc"), emailKey: "weekly_digest_email", pushKey: "weekly_digest_push", legacyKey: "weekly_digest_enabled" },
-    { id: "payday_alerts", title: t("notifications.settings.paydayTitle"), desc: t("notifications.settings.paydayDesc"), emailKey: "payday_alerts_email", pushKey: "payday_alerts_push", legacyKey: "payday_alerts_enabled" },
-    { id: "balance_nudge", title: t("notifications.settings.balanceMatchTitle"), desc: t("notifications.settings.balanceMatchDesc"), emailKey: "balance_nudge_email", pushKey: "balance_nudge_push", legacyKey: "balance_nudge_enabled" },
+    {
+      id: "payday_alerts",
+      title: t("notifications.settings.paydayTitle"),
+      desc: t("notifications.settings.paydayDesc"),
+      schedule: t("notifications.settings.paydaySchedule"),
+      emailKey: "payday_alerts_email",
+      legacyKey: "payday_alerts_enabled",
+    },
+    {
+      id: "bill_alerts",
+      title: t("notifications.settings.billAlertsTitle"),
+      desc: t("notifications.settings.billAlertsDesc"),
+      schedule: t("notifications.settings.billAlertsSchedule"),
+      emailKey: "bill_alerts_email",
+      legacyKey: "bill_alerts_enabled",
+    },
+    {
+      id: "weekly_digest",
+      title: t("notifications.settings.weeklyDigestTitle"),
+      desc: t("notifications.settings.weeklyDigestDesc"),
+      schedule: t("notifications.settings.weeklyDigestSchedule"),
+      emailKey: "weekly_digest_email",
+      legacyKey: "weekly_digest_enabled",
+    },
   ];
 
   const status = channelStatusQuery.data;
 
   return (
-    <div className="flex flex-col gap-6 max-w-xl">
-      <div className="flex items-center gap-3">
-        <button onClick={() => router.back()} className="p-2 rounded-xl bg-zinc-100 hover:bg-zinc-200 text-zinc-700 font-bold text-xs cursor-pointer">
+    <div className="flex flex-col gap-6 max-w-2xl">
+      <div className="space-y-1.5">
+        <button
+          type="button"
+          onClick={() => router.back()}
+          className="text-xs font-semibold text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-200 transition-colors inline-flex items-center gap-1 cursor-pointer"
+        >
           {t("notifications.settings.backCta")}
         </button>
-        <h1 className="text-2xl font-black text-[#1B2B4B]">{t("notifications.settings.title")}</h1>
+        <h1 className="text-2xl font-black text-[#1B2B4B] dark:text-white tracking-tight">
+          {t("notifications.settings.title")}
+        </h1>
+        <p className="text-sm text-slate-500 dark:text-slate-400">
+          {t("notifications.settings.subtitle")}
+        </p>
       </div>
 
       {status && (
-        <div className="p-3.5 rounded-xl bg-slate-50 border border-slate-200 text-xs text-slate-600 flex flex-col gap-1">
-          <span>{t("notifications.settings.emailChannelNote", { email: status.emailRecipient })}</span>
-          <span>{t("notifications.settings.mobilePushNote")}</span>
-          <span className="font-semibold text-slate-700">
-            {status.mobilePushDeviceCount > 0
-              ? t("notifications.settings.pushDeviceStatusCount", { count: String(status.mobilePushDeviceCount) })
-              : t("notifications.settings.pushDeviceStatusNone")}
+        <div className="p-4 rounded-xl bg-slate-50 dark:bg-zinc-900/70 border border-slate-200 dark:border-zinc-800 flex flex-col gap-1.5 text-xs text-slate-600 dark:text-slate-300">
+          <div className="flex items-center justify-between gap-3 flex-wrap">
+            <span className="inline-flex items-center gap-2 font-semibold text-[#1B2B4B] dark:text-white">
+              <Mail className="w-3.5 h-3.5 text-[#2563eb]" />
+              {t("notifications.settings.emailChannelNote", { email: status.emailRecipient })}
+            </span>
+            <Link
+              href="/dashboard/settings?tab=profile"
+              className="text-xs font-semibold text-[#2563eb] hover:underline"
+            >
+              {t("notifications.settings.changeEmailLink")}
+            </Link>
+          </div>
+          <span className="text-slate-500 dark:text-slate-400">
+            {t("notifications.settings.timezoneNote")}
           </span>
         </div>
       )}
 
-      <div className="flex flex-col gap-4">
-        {topics.map((topic) => (
-          <div key={topic.id} className="p-4 rounded-xl bg-white border border-slate-200 flex flex-col gap-3 shadow-xs">
-            <div className="flex flex-col gap-1">
-              <span className="text-sm font-bold text-[#1B2B4B]">{topic.title}</span>
-              <span className="text-xs text-zinc-500">{topic.desc}</span>
-            </div>
-            <div className="flex items-center gap-6 pt-2 border-t border-slate-100">
-              <label className="flex items-center gap-2 cursor-pointer text-xs font-semibold text-slate-700">
-                <input type="checkbox" checked={isEnabled(topic.emailKey, topic.legacyKey)} onChange={(e) => handleToggle(topic.emailKey, e.target.checked)} className="w-4 h-4 text-[#2563eb] rounded focus:ring-2 focus:ring-[#2563eb] cursor-pointer" />
-                <span>{t("notifications.settings.emailChannel")}</span>
-              </label>
-              <label className="flex items-center gap-2 cursor-pointer text-xs font-semibold text-slate-700">
-                <input type="checkbox" checked={isEnabled(topic.pushKey, topic.legacyKey)} onChange={(e) => handleToggle(topic.pushKey, e.target.checked)} className="w-4 h-4 text-[#2563eb] rounded focus:ring-2 focus:ring-[#2563eb] cursor-pointer" />
-                <span>{t("notifications.settings.pushChannel")}</span>
-              </label>
-            </div>
-          </div>
-        ))}
+      <div className="flex flex-col gap-3">
+        {topics.map((topic) => {
+          const checked = isEnabled(topic.emailKey, topic.legacyKey);
+          return (
+            <label
+              key={topic.id}
+              className="p-4 rounded-xl bg-white dark:bg-zinc-900 border border-slate-200 dark:border-zinc-800 flex items-start justify-between gap-4 shadow-xs hover:border-slate-300 dark:hover:border-zinc-700 transition-colors cursor-pointer"
+            >
+              <div className="flex flex-col gap-1.5 min-w-0">
+                <div className="flex items-center gap-2 flex-wrap">
+                  <span className="text-sm font-bold text-[#1B2B4B] dark:text-white">{topic.title}</span>
+                  <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] font-semibold bg-slate-100 dark:bg-zinc-800 text-slate-600 dark:text-slate-300">
+                    <Clock className="w-3 h-3 text-slate-400" />
+                    {topic.schedule}
+                  </span>
+                </div>
+                <span className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">{topic.desc}</span>
+              </div>
+              <div className="flex items-center gap-2 shrink-0 pt-0.5">
+                <input
+                  type="checkbox"
+                  checked={checked}
+                  onChange={(e) => handleToggle(topic.emailKey, e.target.checked)}
+                  aria-label={`${topic.title} ${t("notifications.settings.emailChannel")}`}
+                  className="w-4 h-4 text-[#2563eb] rounded focus:ring-2 focus:ring-[#2563eb] cursor-pointer"
+                />
+                <span className="text-xs font-semibold text-slate-700 dark:text-slate-300">
+                  {t("notifications.settings.emailChannel")}
+                </span>
+              </div>
+            </label>
+          );
+        })}
       </div>
 
-      <div className="pt-2">
-        <Button variant="secondary" onClick={() => sendTestMutation.mutate({ channel: "all" })} disabled={sendTestMutation.isPending} className="text-xs font-bold">
+      <div className="pt-1">
+        <Button
+          variant="secondary"
+          onClick={() => sendTestMutation.mutate({ channel: "email" })}
+          disabled={sendTestMutation.isPending}
+          className="text-xs font-bold"
+        >
           {sendTestMutation.isPending ? t("notifications.settings.sendingTest") : t("notifications.settings.sendTestButton")}
         </Button>
       </div>
