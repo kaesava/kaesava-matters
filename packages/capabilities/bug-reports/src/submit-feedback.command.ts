@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { checkRateLimit, sendEmail, logger } from "@money-matters/core";
+import { checkRateLimit, sendEmail, logger, buildBrandEmailHeader } from "@money-matters/core";
 
 export const SubmitFeedbackInputSchema = z
   .object({
@@ -66,6 +66,7 @@ function buildHtmlEmail(
           <h2 style="margin: 0; font-size: 18px; font-weight: 600;">Feedback: ${safeTitle}</h2>
         </div>
         <div style="padding: 20px;">
+          ${buildBrandEmailHeader("light")}
           <h3 style="margin-top: 0; font-size: 14px; text-transform: uppercase; color: #64748b;">Diagnostic Details</h3>
           <div style="background-color: #F7F8FA; padding: 12px; border-radius: 6px; font-family: monospace; font-size: 12px; line-height: 1.6; border: 1px solid #e2e8f0;">
             ${safeDiagnostics}
@@ -118,6 +119,7 @@ export async function submitFeedbackCommand(
             <h2 style="margin: 0; font-size: 18px; font-weight: 600;">We received your feedback</h2>
           </div>
           <div style="padding: 20px;">
+            ${buildBrandEmailHeader("light")}
             <p style="margin-top: 0; font-size: 14px; line-height: 1.6;">Thank you for helping us improve Money Matters. Our team has received your report:</p>
             <div style="background-color: #F7F8FA; padding: 12px; border-radius: 6px; font-size: 13px; line-height: 1.6; border: 1px solid #e2e8f0; margin-bottom: 16px;">
               <strong>${escapeHtml(input.title)}</strong><br />

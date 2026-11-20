@@ -127,6 +127,22 @@ export async function sendEmail(payload: SendEmailPayload): Promise<{ success: b
 }
 
 /**
+ * Returns the canonical Money Matters email header HTML block using the hosted brand lockup.
+ */
+export function buildBrandEmailHeader(variant: "light" | "dark" = "light"): string {
+  const wrapperStyle =
+    variant === "dark"
+      ? "margin-bottom: 24px; background-color: #ffffff; padding: 12px 18px; border-radius: 10px; display: inline-block;"
+      : "margin-bottom: 20px; padding-bottom: 16px; border-bottom: 1px solid #e2e8f0;";
+
+  return `
+    <div style="${wrapperStyle}">
+      <img src="https://moneymatters.kaesava.au/email-header-logo.png" alt="Money Matters" width="200" height="50" style="display: block; height: auto; border: 0;" />
+    </div>
+  `;
+}
+
+/**
  * High-level helper for notification emails with Australian Spam Act compliant footer and escaped HTML.
  */
 export async function sendNotificationEmail(
@@ -134,6 +150,7 @@ export async function sendNotificationEmail(
   subject: string,
   bodyText: string
 ): Promise<{ success: boolean; id?: string }> {
+  const headerHtml = buildBrandEmailHeader("light");
   const footerHtml = `
     <div style="margin-top: 32px; padding-top: 16px; border-top: 1px solid #e2e8f0; font-size: 11px; color: #64748b; line-height: 1.5;">
       Money Matters by Kaesava AU • VIC 3030, Australia • info@moneymatters.kaesava.au<br />
@@ -141,6 +158,6 @@ export async function sendNotificationEmail(
     </div>
   `;
   const safeBody = escapeHtml(bodyText).replace(/\n/g, "<br />");
-  const html = `<div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; padding: 20px; line-height: 1.6; color: #1B2B4B;">${safeBody}${footerHtml}</div>`;
+  const html = `<div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; padding: 20px; line-height: 1.6; color: #1B2B4B;">${headerHtml}${safeBody}${footerHtml}</div>`;
   return sendEmail({ to, subject, html, text: bodyText });
 }

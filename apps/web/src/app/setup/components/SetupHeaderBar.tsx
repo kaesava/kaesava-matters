@@ -1,6 +1,7 @@
 "use client";
 
 import { t } from "@money-matters/i18n";
+import { Logo } from "@money-matters/ui/web";
 
 interface SetupHeaderBarProps {
   isRerun: boolean;
@@ -18,6 +19,7 @@ export function SetupHeaderBar({
   return (
     <div className="flex items-center justify-between bg-white px-5 py-3 rounded-2xl border border-slate-200 shadow-xs">
       <div className="flex items-center gap-2">
+        <Logo size="sm" />
         <span className="text-sm font-black text-[#1B2B4B] tracking-tight">{t("app.title")}</span>
         <span className="text-xs font-bold text-slate-300">|</span>
         <span className="text-xs font-bold text-slate-500">

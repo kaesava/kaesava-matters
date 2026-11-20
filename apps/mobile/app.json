@@ -37,7 +37,13 @@
     "plugins": [
       "expo-router",
       "expo-secure-store",
-      "expo-notifications",
+      [
+        "expo-notifications",
+        {
+          "icon": "./assets/android-notification-small.png",
+          "color": "#2563eb"
+        }
+      ],
       [
         "expo-image-picker",
         {

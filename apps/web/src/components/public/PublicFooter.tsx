@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { t } from "@money-matters/i18n";
+import { Logo } from "@money-matters/ui/web";
 
 export function PublicFooter() {
   const currentYear = new Date().getFullYear();
@@ -10,6 +11,7 @@ export function PublicFooter() {
     <footer className="w-full border-t border-slate-200 bg-white py-8 text-xs text-slate-500 font-sans">
       <div className="max-w-6xl mx-auto px-6 flex flex-col md:flex-row items-center justify-between gap-4">
         <div className="flex flex-col sm:flex-row items-center gap-2 text-center sm:text-left">
+          <Logo size="sm" />
           <span className="font-semibold text-slate-700">
             © {currentYear} {t("app.title")}
           </span>

@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
-import { sendEmail, sendNotificationEmail, escapeHtml, redactEmail } from "./email.js";
+import { sendEmail, sendNotificationEmail, escapeHtml, redactEmail, buildBrandEmailHeader } from "./email.js";
 
 describe("email service", () => {
   const originalEnv = process.env;
@@ -95,5 +95,15 @@ describe("email service", () => {
 
     expect(result.success).toBe(true);
     expect(passedBody).toContain("&lt;script&gt;alert(&#039;bad&#039;)&lt;/script&gt;<br />Line 2");
+    expect(passedBody).toContain("email-header-logo.png");
+  });
+
+  it("builds light and dark brand email headers", () => {
+    const light = buildBrandEmailHeader("light");
+    const dark = buildBrandEmailHeader("dark");
+    expect(light).toContain("https://moneymatters.kaesava.au/email-header-logo.png");
+    expect(light).toContain("border-bottom: 1px solid #e2e8f0");
+    expect(dark).toContain("https://moneymatters.kaesava.au/email-header-logo.png");
+    expect(dark).toContain("background-color: #ffffff");
   });
 });

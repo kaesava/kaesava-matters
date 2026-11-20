@@ -2,7 +2,7 @@ import { tenantProcedure, authenticatedProcedure, ownerProcedure, privateOwnerPr
 import { apps } from "@money-matters/db";
 import { eq } from "drizzle-orm";
 import { inngest } from '../../inngest/client.js';
-import { logAuditEvent, sendEmail } from '@money-matters/core';
+import { logAuditEvent, sendEmail, buildBrandEmailHeader } from '@money-matters/core';
 import { t } from '@money-matters/i18n';
 import {
   invitePartnerHandler,
@@ -42,6 +42,7 @@ export const householdProcedures = {
       const inviteUrl = `https://moneymatters.kaesava.au/invite/${result.inviteToken}`;
       const inviteHtml = `
         <div style="font-family: sans-serif; background-color: #0b132b; color: #ffffff; padding: 40px; border-radius: 16px;">
+          ${buildBrandEmailHeader('dark')}
           <h2 style="color: #ffffff;">${t('notifications.inngest.inviteSubject')}</h2>
           <p style="font-size: 16px; line-height: 1.6;">${t('notifications.inngest.inviteBody')}</p>
           <div style="margin-top: 30px;">

@@ -4,7 +4,7 @@ import React from "react";
 import Image from "next/image";
 import { User } from "lucide-react";
 import { t } from "@money-matters/i18n";
-import { DESIGN_TOKENS } from "@money-matters/ui/web";
+import { DESIGN_TOKENS, Logo } from "@money-matters/ui/web";
 
 export interface DashboardMobileHeaderProps {
   onOpenMobileMenu: () => void;
@@ -42,9 +42,12 @@ export function DashboardMobileHeader({
         </svg>
       </button>
 
-      <span className="text-sm font-extrabold text-white">
-        {title || t("app.title")}
-      </span>
+      <div className="flex items-center gap-2 min-w-0">
+        <Logo size="sm" />
+        <span className="text-sm font-extrabold text-white truncate">
+          {title || t("app.title")}
+        </span>
+      </div>
 
       <div className="flex items-center gap-2">
         <button

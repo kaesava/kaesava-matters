@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { t } from "@money-matters/i18n";
+import { Logo } from "@money-matters/ui/web";
 
 import { authClient } from "../../lib/auth";
 import { useSubscriptionStatus } from "../../hooks/useSubscriptionStatus";
@@ -88,6 +89,7 @@ export function LandingFooter({ onAuthClick }: LandingFooterProps) {
         <div className="max-w-6xl mx-auto px-6 flex flex-col sm:flex-row justify-between items-center gap-4">
           <div className="flex flex-col items-center sm:items-start gap-1 text-center sm:text-left">
             <div className="flex flex-col sm:flex-row items-center gap-2">
+              <Logo size="sm" />
               <span className="font-semibold text-slate-700">
                 © {currentYear} {t("app.title")}
               </span>

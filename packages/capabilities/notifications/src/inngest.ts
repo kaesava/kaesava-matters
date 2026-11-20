@@ -1,6 +1,6 @@
 import { Inngest } from 'inngest';
 import { db, deviceTokens } from '@money-matters/db';
-import { sendEmail, logAuditEvent } from '@money-matters/core';
+import { sendEmail, logAuditEvent, buildBrandEmailHeader } from '@money-matters/core';
 import { t } from '@money-matters/i18n';
 import { eq, and, isNull } from 'drizzle-orm';
 import { z } from 'zod';
@@ -116,6 +116,7 @@ export function createNotificationFunctions(inngest: Inngest) {
         const nameGreeting = displayName ? `Hi ${displayName},` : 'Hello,';
         const html = `
           <div style="font-family: sans-serif; background-color: #0b132b; color: #ffffff; padding: 40px; border-radius: 16px;">
+            ${buildBrandEmailHeader('dark')}
             <h1 style="color: #2563eb; margin-bottom: 16px;">Money Matters</h1>
             <p style="font-size: 16px; line-height: 1.6;">${nameGreeting}</p>
             <p style="font-size: 16px; line-height: 1.6;">${t('notifications.inngest.trialActiveBody')}</p>
@@ -146,6 +147,7 @@ export function createNotificationFunctions(inngest: Inngest) {
         const inviteUrl = `https://moneymatters.kaesava.au/invite/${inviteToken}`;
         const html = `
           <div style="font-family: sans-serif; background-color: #0b132b; color: #ffffff; padding: 40px; border-radius: 16px;">
+            ${buildBrandEmailHeader('dark')}
             <h2 style="color: #ffffff;">${t('notifications.inngest.inviteSubject')}</h2>
             <p style="font-size: 16px; line-height: 1.6;">${t('notifications.inngest.inviteBody')}</p>
             <div style="margin-top: 30px;">
@@ -179,6 +181,7 @@ export function createNotificationFunctions(inngest: Inngest) {
         await step.run('send-deletion-confirmation-email', async () => {
           const html = `
             <div style="font-family: sans-serif; background-color: #0b132b; color: #ffffff; padding: 40px; border-radius: 16px;">
+              ${buildBrandEmailHeader('dark')}
               <h1 style="color: #ba1a1a; margin-bottom: 16px;">${t('notifications.inngest.deletionSubject')}</h1>
               <p style="font-size: 16px; line-height: 1.6;">${t('notifications.inngest.deletionBody')}</p>
             </div>

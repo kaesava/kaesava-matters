@@ -140,9 +140,12 @@ export default function BlogIndexPage() {
       {/* Footer */}
       <footer className="border-t border-[#e2e4e0] bg-[#F7F8FA] py-8 text-center text-xs text-slate-500">
         <div className="max-w-5xl mx-auto px-6 flex flex-col sm:flex-row justify-between items-center gap-4">
-          <span className="font-semibold">
-            {t("landing.footerLegalEntity")}
-          </span>
+          <div className="flex items-center gap-2">
+            <Logo size="sm" />
+            <span className="font-semibold">
+              {t("landing.footerLegalEntity")}
+            </span>
+          </div>
           <div className="flex gap-4 font-semibold">
             <Link href="/" className="hover:underline text-[#2563eb]">{t("nav.home")}</Link>
             <Link href="/privacy" className="hover:underline text-[#2563eb]">{t("landing.footerPrivacy")}</Link>

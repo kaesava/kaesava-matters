@@ -1,0 +1,56 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512" fill="none">
+  <defs>
+    <radialGradient id="goldAuraHalo" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#fbbf24" stop-opacity="0.45"/>
+      <stop offset="50%" stop-color="#f59e0b" stop-opacity="0.20"/>
+      <stop offset="100%" stop-color="#d97706" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="goldCoinCore" x1="220" y1="130" x2="292" y2="230" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#fef08a"/>
+      <stop offset="25%" stop-color="#fde047"/>
+      <stop offset="60%" stop-color="#eab308"/>
+      <stop offset="100%" stop-color="#ca8a04"/>
+    </linearGradient>
+    <linearGradient id="goldCoinRim" x1="220" y1="135" x2="292" y2="225" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#ffffff"/>
+      <stop offset="50%" stop-color="#fef08a"/>
+      <stop offset="100%" stop-color="#d97706"/>
+    </linearGradient>
+    <linearGradient id="goldSpecGleam" x1="236" y1="140" x2="274" y2="185" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.95"/>
+      <stop offset="60%" stop-color="#fef9c3" stop-opacity="0.75"/>
+      <stop offset="100%" stop-color="#fef08a" stop-opacity="0"/>
+    </linearGradient>
+    <linearGradient id="softBlueWing" x1="120" y1="150" x2="280" y2="380" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#3b82f6"/>
+      <stop offset="50%" stop-color="#2563eb"/>
+      <stop offset="100%" stop-color="#1d4ed8"/>
+    </linearGradient>
+    <linearGradient id="gentleCyanWing" x1="392" y1="150" x2="232" y2="380" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#60a5fa"/>
+      <stop offset="55%" stop-color="#3b82f6"/>
+      <stop offset="100%" stop-color="#2563eb"/>
+    </linearGradient>
+    <linearGradient id="frontLapelGrad" x1="160" y1="240" x2="352" y2="370" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#1e3a8a"/>
+      <stop offset="100%" stop-color="#172554"/>
+    </linearGradient>
+  </defs>
+  <g>
+    <path d="M 124 195 C 124 162 148 142 178 146 C 206 150 230 166 256 182 C 282 166 306 150 334 146 C 364 142 388 162 388 195 L 388 310 C 388 354 352 382 310 382 L 202 382 C 160 382 124 354 124 310 Z" fill="#1B2B4B"/>
+    <g transform="translate(256, 196)">
+      <circle cx="0" cy="0" r="58" fill="url(#goldAuraHalo)"/>
+      <circle cx="0" cy="0" r="46" fill="#f59e0b" opacity="0.22"/>
+      <circle cx="0" cy="0" r="37" fill="url(#goldCoinRim)"/>
+      <circle cx="0" cy="0" r="33" fill="url(#goldCoinCore)"/>
+      <ellipse cx="-7" cy="-9" rx="15" ry="9" fill="url(#goldSpecGleam)" transform="rotate(-24 -7 -9)"/>
+      <circle cx="0" cy="0" r="24" stroke="#fef08a" stroke-width="1.8" stroke-dasharray="3 2" opacity="0.75" fill="none"/>
+      <path d="M 0 -15 C 0 -5 5 0 15 0 C 5 0 0 5 0 15 C 0 5 -5 0 -15 0 C -5 0 0 -5 0 -15 Z" fill="#FFFFFF"/>
+      <circle cx="0" cy="0" r="3" fill="#ffffff"/>
+    </g>
+    <path d="M 128 190 C 128 164 150 148 174 156 L 256 218 L 256 372 C 236 372 192 366 156 328 C 134 304 128 266 128 234 Z" fill="url(#softBlueWing)"/>
+    <path d="M 384 190 C 384 164 362 148 338 156 L 256 218 L 256 372 C 276 372 320 366 356 328 C 378 304 384 266 384 234 Z" fill="url(#gentleCyanWing)"/>
+    <path d="M 158 272 C 188 304 220 316 256 316 C 292 316 324 304 354 272 C 344 338 302 376 256 376 C 210 376 168 338 158 272 Z" fill="url(#frontLapelGrad)" opacity="0.92"/>
+    <path d="M 172 166 C 208 188 238 206 256 212 C 274 206 304 188 340 166" stroke="#93c5fd" stroke-width="4.5" stroke-linecap="round" opacity="0.75"/>
+  </g>
+</svg>

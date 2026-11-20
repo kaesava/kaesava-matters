@@ -1,6 +1,7 @@
 import React from 'react';
 import { Redirect } from 'expo-router';
 import { View, ActivityIndicator } from 'react-native';
+import { MobileLogo } from '@money-matters/ui/mobile';
 import { authClient } from '../lib/auth';
 import { trpc } from '../lib/trpc';
 
@@ -25,7 +26,8 @@ export default function IndexRoute() {
 
   if (sessionPending || (session && statusPending)) {
     return (
-      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', gap: 16, backgroundColor: '#F7F8FA' }}>
+        <MobileLogo size={64} source={require('../../assets/icon.png')} />
         <ActivityIndicator size="large" />
       </View>
     );
