@@ -3,8 +3,9 @@ import { spawnSync } from "node:child_process";
 
 console.log("🔍 Checking lockfile synchronization with pnpm-lock.yaml...");
 
-const result = spawnSync("pnpm", ["install", "--frozen-lockfile", "--prefer-offline"], {
-  stdio: "inherit",
+const result = spawnSync("pnpm", ["install", "--frozen-lockfile", "--lockfile-only", "--prefer-offline"], {
+  stdio: ["ignore", "inherit", "inherit"],
+  env: { ...process.env, CI: "true" },
   shell: true,
 });
 
