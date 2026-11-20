@@ -110,7 +110,7 @@ function FilteredMobileDonutView({
         <View style={styles.legendRow}>
           <View style={[styles.dot, { backgroundColor: DESIGN_TOKENS.colors.sereneBlue }]} />
           <Text style={styles.legendLabel}>{t('history.reporting.donut.thisFilter')}</Text>
-          <Text style={styles.legendPct}>({sharePercentage}%)</Text>
+          <Text style={styles.legendPct}>({sharePercentage.toFixed(1)}%)</Text>
         </View>
       </View>
     </View>
@@ -201,17 +201,17 @@ function MacroMobileDonutView({
         <View style={styles.legendRow}>
           <View style={[styles.dot, { backgroundColor: DESIGN_TOKENS.colors.sereneBlue }]} />
           <Text style={styles.legendLabel}>{t('history.reporting.donut.everyday')}</Text>
-          <Text style={styles.legendPct}>({data.percentages.everyday}%)</Text>
+          <Text style={styles.legendPct}>({data.percentages.everyday.toFixed(1)}%)</Text>
         </View>
         <View style={styles.legendRow}>
           <View style={[styles.dot, { backgroundColor: DESIGN_TOKENS.colors.primary }]} />
           <Text style={styles.legendLabel}>{t('history.reporting.donut.bills')}</Text>
-          <Text style={styles.legendPct}>({data.percentages.bills}%)</Text>
+          <Text style={styles.legendPct}>({data.percentages.bills.toFixed(1)}%)</Text>
         </View>
         <View style={styles.legendRow}>
           <View style={[styles.dot, { backgroundColor: DESIGN_TOKENS.colors.success }]} />
           <Text style={styles.legendLabel}>{t('history.reporting.donut.goals')}</Text>
-          <Text style={styles.legendPct}>({data.percentages.goals}%)</Text>
+          <Text style={styles.legendPct}>({data.percentages.goals.toFixed(1)}%)</Text>
         </View>
       </View>
     </View>

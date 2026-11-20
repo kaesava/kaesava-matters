@@ -127,7 +127,10 @@ function ChartLegend({
     return (
       <div className="w-full mt-3 flex items-center justify-center gap-4 text-xs">
         <div className="flex items-center gap-1.5">
-          <span className="w-2.5 h-2.5 rounded-xs bg-[#2563eb]" />
+          <span
+            className="w-2.5 h-2.5 rounded-xs"
+            style={{ backgroundColor: DESIGN_TOKENS.colors.primary }}
+          />
           <span className="text-slate-600 font-medium">{t("history.reporting.donut.thisFilter")}</span>
         </div>
       </div>
@@ -137,11 +140,17 @@ function ChartLegend({
   return (
     <div className="w-full mt-3 flex items-center justify-center gap-4 text-xs">
       <div className="flex items-center gap-1.5">
-        <span className="w-2.5 h-2.5 rounded-xs bg-[#22c55e]" />
+        <span
+          className="w-2.5 h-2.5 rounded-xs"
+          style={{ backgroundColor: DESIGN_TOKENS.colors.success }}
+        />
         <span className="text-slate-600 font-medium">{inflowLabel || t("history.reporting.cashFlow.inflow")}</span>
       </div>
       <div className="flex items-center gap-1.5">
-        <span className="w-2.5 h-2.5 rounded-xs bg-[#2563eb]" />
+        <span
+          className="w-2.5 h-2.5 rounded-xs"
+          style={{ backgroundColor: DESIGN_TOKENS.colors.primary }}
+        />
         <span className="text-slate-600 font-medium">{outflowLabel || t("history.reporting.cashFlow.outflow")}</span>
       </div>
     </div>

@@ -73,7 +73,7 @@ function TopPayeesListView({
             </span>
             <div className="flex items-center gap-1.5 font-mono text-[11px] tabular-nums">
               <span className="text-slate-800 font-semibold">{formatCurrency(payee.amount)}</span>
-              <span className="text-slate-400">({payee.percentage}%)</span>
+              <span className="text-slate-400">({payee.percentage.toFixed(1)}%)</span>
             </div>
           </div>
           <div className="w-full h-2 bg-slate-100 rounded-full overflow-hidden">
@@ -127,7 +127,7 @@ function TopPoolsListView({
             </span>
             <div className="flex items-center gap-1.5 font-mono text-[11px] tabular-nums">
               <span className="text-slate-800 font-semibold">{formatCurrency(pool.amount)}</span>
-              <span className="text-slate-400">({pool.percentage}%)</span>
+              <span className="text-slate-400">({pool.percentage.toFixed(1)}%)</span>
             </div>
           </div>
           <div className="w-full h-2 bg-slate-100 rounded-full overflow-hidden">
@@ -150,7 +150,7 @@ function TopPoolsListView({
             </span>
             <div className="flex items-center gap-1.5 font-mono text-[11px] tabular-nums">
               <span className="text-slate-600 font-medium">{formatCurrency(otherPoolsAmount)}</span>
-              <span className="text-slate-400">({otherPercentage}%)</span>
+              <span className="text-slate-400">({otherPercentage.toFixed(1)}%)</span>
             </div>
           </div>
           <div className="w-full h-2 bg-slate-100 rounded-full overflow-hidden">

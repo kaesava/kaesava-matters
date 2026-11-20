@@ -72,7 +72,7 @@ function FilteredMobilePayeesView({
             </Text>
             <View style={styles.amtGroup}>
               <Text style={styles.amount}>{formatCurrency(payee.amount)}</Text>
-              <Text style={styles.pct}>({payee.percentage}%)</Text>
+              <Text style={styles.pct}>({payee.percentage.toFixed(1)}%)</Text>
             </View>
           </View>
           <View style={styles.track}>
@@ -128,7 +128,7 @@ function MacroMobilePoolsView({
             </Text>
             <View style={styles.amtGroup}>
               <Text style={styles.amount}>{formatCurrency(pool.amount)}</Text>
-              <Text style={styles.pct}>({pool.percentage}%)</Text>
+              <Text style={styles.pct}>({pool.percentage.toFixed(1)}%)</Text>
             </View>
           </View>
           <View style={styles.track}>
@@ -153,7 +153,7 @@ function MacroMobilePoolsView({
             </Text>
             <View style={styles.amtGroup}>
               <Text style={styles.otherAmount}>{formatCurrency(otherPoolsAmount)}</Text>
-              <Text style={styles.pct}>({otherPercentage}%)</Text>
+              <Text style={styles.pct}>({otherPercentage.toFixed(1)}%)</Text>
             </View>
           </View>
           <View style={styles.track}>

@@ -112,7 +112,7 @@ function FilteredDonutView({
         <div className="flex items-center gap-1.5">
           <span className="w-2.5 h-2.5 rounded-full bg-[#2563eb]" />
           <span className="text-slate-600 font-medium">{t("history.reporting.donut.thisFilter")}</span>
-          <span className="font-mono text-slate-400">({sharePercentage}%)</span>
+          <span className="font-mono text-slate-400">({sharePercentage.toFixed(1)}%)</span>
         </div>
       </div>
     </div>
@@ -204,17 +204,17 @@ function MacroHorizonDonutView({
         <div className="flex items-center gap-1.5">
           <span className="w-2.5 h-2.5 rounded-full bg-[#2563eb]" />
           <span className="text-slate-600 font-medium">{t("history.reporting.donut.everyday")}</span>
-          <span className="font-mono text-slate-400">({data.percentages.everyday}%)</span>
+          <span className="font-mono text-slate-400">({data.percentages.everyday.toFixed(1)}%)</span>
         </div>
         <div className="flex items-center gap-1.5">
           <span className="w-2.5 h-2.5 rounded-full bg-[#1B2B4B]" />
           <span className="text-slate-600 font-medium">{t("history.reporting.donut.bills")}</span>
-          <span className="font-mono text-slate-400">({data.percentages.bills}%)</span>
+          <span className="font-mono text-slate-400">({data.percentages.bills.toFixed(1)}%)</span>
         </div>
         <div className="flex items-center gap-1.5">
           <span className="w-2.5 h-2.5 rounded-full bg-[#22c55e]" />
           <span className="text-slate-600 font-medium">{t("history.reporting.donut.goals")}</span>
-          <span className="font-mono text-slate-400">({data.percentages.goals}%)</span>
+          <span className="font-mono text-slate-400">({data.percentages.goals.toFixed(1)}%)</span>
         </div>
       </div>
     </div>
