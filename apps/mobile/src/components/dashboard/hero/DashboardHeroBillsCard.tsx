@@ -11,6 +11,7 @@ interface DashboardHeroBillsCardProps {
   readonly billsShortfall: number;
   readonly billsDue14DaysCount: number;
   readonly totalBillsDue14Days: number;
+  readonly hasNextPayday?: boolean;
   readonly isAwaitingFirstPayday?: boolean;
   readonly onBillsPress?: () => void;
   readonly onMoveMoney: () => void;
@@ -22,6 +23,7 @@ export const DashboardHeroBillsCard: React.FC<DashboardHeroBillsCardProps> = ({
   billsShortfall,
   billsDue14DaysCount,
   totalBillsDue14Days,
+  hasNextPayday = true,
   isAwaitingFirstPayday = false,
   onBillsPress,
   onMoveMoney,
@@ -56,7 +58,7 @@ export const DashboardHeroBillsCard: React.FC<DashboardHeroBillsCardProps> = ({
               })}
             </Text>
             <Text style={styles.shortfallDetail}>
-              {t('dashboard.hero.billsDueSummary', {
+              {t(hasNextPayday ? 'dashboard.hero.billsDuePaydaySummary' : 'dashboard.hero.billsDueSummary', {
                 count: billsDue14DaysCount,
                 amount: formatMobileCurrency(totalBillsDue14Days),
               })}
@@ -76,14 +78,16 @@ export const DashboardHeroBillsCard: React.FC<DashboardHeroBillsCardProps> = ({
         <View style={styles.coveredAlert}>
           <Feather name="check-circle" size={14} color={DESIGN_TOKENS.colors.successDark} />
           <Text style={styles.coveredText}>
-            {t('dashboard.hero.billsFullyCovered')}
+            {billsDue14DaysCount === 0
+              ? t(hasNextPayday ? 'dashboard.hero.noBillsDuePayday' : 'dashboard.hero.noBillsDue14Days')
+              : t(hasNextPayday ? 'dashboard.hero.billsPaydayCovered' : 'dashboard.hero.billsFullyCovered')}
           </Text>
         </View>
       )}
 
       <View style={styles.billsFooter}>
         <Text style={styles.billsCapLabel}>
-          {t('dashboard.hero.targetMonthlyBills', { amount: '' }).replace(': ', '').trim()}
+          {t('dashboard.hero.targetMonthlyBillsLabel')}
         </Text>
         <Text style={styles.billsCapValue}>{formatMobileCurrency(billsMonthlyBudget)}</Text>
       </View>

@@ -12,6 +12,7 @@ export interface BentoEnvelopesSectionProps {
   readonly billsBalance: number;
   readonly billsMonthlyBudget?: number;
   readonly daysUntilPayday?: number;
+  readonly hasNextPayday?: boolean;
   readonly safeToSpend?: number;
   readonly dailyPace?: number;
   readonly paceStatus?: "AHEAD" | "ON_TRACK" | "BEHIND" | "CRITICAL" | "AWAITING_FIRST_PAYDAY";
@@ -34,8 +35,9 @@ export const BentoEnvelopesSection: React.FC<BentoEnvelopesSectionProps> = ({
   billsBalance,
   billsMonthlyBudget = 0,
   daysUntilPayday,
+  hasNextPayday = true,
   safeToSpend,
-  dailyPace: _passedDailyPace,
+  dailyPace = 0,
   paceStatus: _paceStatus,
   isAwaitingFirstPayday = false,
   billsShortfall,
@@ -47,18 +49,11 @@ export const BentoEnvelopesSection: React.FC<BentoEnvelopesSectionProps> = ({
 }) => {
   const { fmt } = useLocale();
   const format = formatCurrency ?? fmt;
-  const today = new Date();
-  const year = today.getFullYear();
-  const month = today.getMonth();
-  const daysInMonth = new Date(year, month + 1, 0).getDate();
-  const currentDay = today.getDate();
-
-  const effectiveDays = daysUntilPayday !== undefined && daysUntilPayday > 0
-    ? daysUntilPayday
-    : Math.max(1, daysInMonth - currentDay);
-
+  const effectiveDays = daysUntilPayday !== undefined ? daysUntilPayday : 14;
   const effectiveSafeToSpend = safeToSpend !== undefined ? safeToSpend : everydayBalance;
+  const isBufferDipped = safetyBufferFloor > 0 && everydayBalance < safetyBufferFloor;
   const isBillsRisk = !isAwaitingFirstPayday && billsShortfall > 0;
+  const showHeadsUp = !isAwaitingFirstPayday && (isBillsRisk || isBufferDipped);
 
   return (
     <div className="space-y-4">
@@ -76,7 +71,7 @@ export const BentoEnvelopesSection: React.FC<BentoEnvelopesSectionProps> = ({
                 <span className="text-[10px] font-extrabold px-2 py-0.5 rounded-full bg-blue-100 text-blue-700 border border-blue-200">
                   {t('dashboard.hero.firstPaydayPendingBadge')}
                 </span>
-              ) : isBillsRisk ? (
+              ) : showHeadsUp ? (
                 <span className="text-[10px] font-extrabold px-2 py-0.5 rounded-full bg-rose-100 text-rose-700 border border-rose-200">
                   {t('dashboard.hero.atRisk')}
                 </span>
@@ -105,9 +100,11 @@ export const BentoEnvelopesSection: React.FC<BentoEnvelopesSectionProps> = ({
                 )}
               </div>
               <p className="text-xs text-gray-500 mt-2 font-medium">
-                {daysUntilPayday !== undefined && daysUntilPayday <= 0
+                {!hasNextPayday
+                  ? t('dashboard.hero.estRemainingNoPayday', { amount: format(everydayBalance), pace: format(dailyPace) })
+                  : effectiveDays <= 0
                   ? t('dashboard.hero.estRemainingToday', { amount: format(everydayBalance) })
-                  : t('dashboard.hero.estRemaining', { amount: format(everydayBalance), days: effectiveDays })
+                  : t('dashboard.hero.estRemaining', { amount: format(everydayBalance), pace: format(dailyPace), days: effectiveDays })
                 }
               </p>
             </div>
@@ -121,9 +118,15 @@ export const BentoEnvelopesSection: React.FC<BentoEnvelopesSectionProps> = ({
                 : null}
             </span>
             {safetyBufferFloor > 0 && (
-              <span className="text-emerald-600 dark:text-emerald-400 font-extrabold normal-case">
-                🛡️ {t('dashboard.hero.bufferProtected', { amount: format(safetyBufferFloor) })}
-              </span>
+              isBufferDipped ? (
+                <span className={`font-extrabold normal-case ${everydayBalance <= 0 ? 'text-[#ba1a1a]' : 'text-amber-600 dark:text-amber-400'}`}>
+                  ⚠️ {t('dashboard.hero.bufferDipped', { amount: format(safetyBufferFloor) })}
+                </span>
+              ) : (
+                <span className="text-emerald-600 dark:text-emerald-400 font-extrabold normal-case">
+                  🛡️ {t('dashboard.hero.bufferProtected', { amount: format(safetyBufferFloor) })}
+                </span>
+              )
             )}
           </div>
         </div>
@@ -135,10 +138,12 @@ export const BentoEnvelopesSection: React.FC<BentoEnvelopesSectionProps> = ({
               <span className="text-[11px] font-extrabold uppercase tracking-widest text-gray-500">
                 {t('dashboard.hero.billsEnvelopeTitle')}
               </span>
-              <BillCoverageBadge
-                status={billsShortfall > 0 ? "SHORT_BY" : "COVERED"}
-                shortfallAmount={billsShortfall > 0 ? format(billsShortfall) : null}
-              />
+              {!isAwaitingFirstPayday && (
+                <BillCoverageBadge
+                  status={billsShortfall > 0 ? "SHORT_BY" : "COVERED"}
+                  shortfallAmount={billsShortfall > 0 ? format(billsShortfall) : null}
+                />
+              )}
             </div>
 
             <div>
@@ -165,7 +170,7 @@ export const BentoEnvelopesSection: React.FC<BentoEnvelopesSectionProps> = ({
                       {t('dashboard.hero.shortfallOf', { amount: format(billsShortfall) })}
                     </span>
                     <span className="text-[10px] text-rose-700 dark:text-rose-400 block">
-                      {t('dashboard.hero.billsDueSummary', { count: billsDue14DaysCount, amount: format(totalBillsDue14Days) })}
+                      {t(hasNextPayday ? 'dashboard.hero.billsDuePaydaySummary' : 'dashboard.hero.billsDueSummary', { count: billsDue14DaysCount, amount: format(totalBillsDue14Days) })}
                     </span>
                   </div>
                 </div>
@@ -179,7 +184,11 @@ export const BentoEnvelopesSection: React.FC<BentoEnvelopesSectionProps> = ({
               </div>
             ) : (
               <div className="p-2.5 bg-emerald-50 dark:bg-emerald-950/30 border border-emerald-200/80 dark:border-emerald-900/50 rounded-xl flex items-center gap-2 text-xs font-bold text-emerald-800 dark:text-emerald-300">
-                <span>{t('dashboard.hero.billsFullyCovered')}</span>
+                <span>
+                  {billsDue14DaysCount === 0
+                    ? t(hasNextPayday ? 'dashboard.hero.noBillsDuePayday' : 'dashboard.hero.noBillsDue14Days')
+                    : t(hasNextPayday ? 'dashboard.hero.billsPaydayCovered' : 'dashboard.hero.billsFullyCovered')}
+                </span>
               </div>
             )}
           </div>

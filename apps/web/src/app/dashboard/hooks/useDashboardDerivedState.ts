@@ -28,11 +28,18 @@ interface UseDashboardDerivedStateParams {
   }>;
   homeData?: {
     everydayBalance?: number;
+    everydayBudget?: number;
+    everydaySafetyBuffer?: number;
     safeToSpend?: number;
     dailyPace?: number;
     paceStatus?: "AHEAD" | "ON_TRACK" | "BEHIND" | "CRITICAL" | "AWAITING_FIRST_PAYDAY";
     billsBalance?: number;
+    billsBudget?: number;
+    billsShortfall?: number;
+    billsDueInHorizonCount?: number;
+    totalBillsDueInHorizon?: number;
     daysToPayday?: number;
+    nextPayday?: { id: string } | null;
     oldestBalanceMatchAt?: string | null;
     tenantCreatedAt?: string | null;
     isAwaitingFirstPayday?: boolean;
@@ -93,27 +100,30 @@ export function useDashboardDerivedState({
 
   const everydayMonthlyBudget = useMemo(
     () =>
+      homeData?.everydayBudget ??
       pools
         .filter((p) => p.envelopeType === "EVERYDAY")
         .reduce((sum, p) => sum + parseFloat(p.monthlyAmount || p.targetAmount || "0"), 0),
-    [pools]
+    [homeData?.everydayBudget, pools]
   );
 
   const everydaySafetyBuffer = useMemo(
     () =>
+      homeData?.everydaySafetyBuffer ??
       pools
         .filter((p) => p.envelopeType === "EVERYDAY")
         .reduce((sum, p) => sum + parseFloat(p.safetyBufferFloor || "0"), 0),
-    [pools]
+    [homeData?.everydaySafetyBuffer, pools]
   );
 
   const billsBalance = homeData?.billsBalance ?? parseFloat(summaryData?.billsRemaining || "0");
   const billsMonthlyBudget = useMemo(
     () =>
+      homeData?.billsBudget ??
       pools
         .filter((p) => p.envelopeType === "BILL")
         .reduce((sum, p) => sum + parseFloat(p.monthlyAmount || p.targetAmount || "0"), 0),
-    [pools]
+    [homeData?.billsBudget, pools]
   );
 
   const upcomingIncomeList: WebIncomeItem[] = useMemo(
@@ -233,20 +243,10 @@ export function useDashboardDerivedState({
     [expenseEvents]
   );
 
-  const billsDue14Days = useMemo(() => {
-    const fourteenDaysMs = 14 * 24 * 60 * 60 * 1000;
-    return upcomingBillsList.filter((b) => {
-      const due = new Date(b.dueDate).getTime();
-      return due >= new Date().getTime() - 86400000 && due <= new Date().getTime() + fourteenDaysMs;
-    });
-  }, [upcomingBillsList]);
-
-  const totalBillsDue14Days = useMemo(
-    () => billsDue14Days.reduce((sum, b) => sum + b.amount, 0),
-    [billsDue14Days]
-  );
-
-  const billsShortfall = Math.max(0, totalBillsDue14Days - billsBalance);
+  const billsDue14DaysCount = homeData?.billsDueInHorizonCount ?? 0;
+  const totalBillsDue14Days = homeData?.totalBillsDueInHorizon ?? 0;
+  const billsShortfall = homeData?.billsShortfall ?? 0;
+  const hasNextPayday = homeData ? Boolean(homeData.nextPayday) : Boolean(nextPaycheck);
 
   return {
     goalCategories,
@@ -261,10 +261,11 @@ export function useDashboardDerivedState({
     upcomingIncomeList,
     nextPaycheck,
     daysUntilPayday,
+    hasNextPayday,
     isBalanceMatchOverdue,
     attentionItems,
     upcomingBillsList,
-    billsDue14Days,
+    billsDue14DaysCount,
     totalBillsDue14Days,
     billsShortfall,
   };

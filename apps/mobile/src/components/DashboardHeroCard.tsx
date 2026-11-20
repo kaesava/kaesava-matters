@@ -10,6 +10,7 @@ export interface DashboardHeroCardProps {
   readonly billsBalance: number;
   readonly billsMonthlyBudget?: number;
   readonly daysUntilPayday?: number;
+  readonly hasNextPayday?: boolean;
   readonly safeToSpend?: number;
   readonly dailyPace?: number;
   readonly paceStatus?: "AHEAD" | "ON_TRACK" | "BEHIND" | "CRITICAL" | "AWAITING_FIRST_PAYDAY";
@@ -30,7 +31,9 @@ export const DashboardHeroCard: React.FC<DashboardHeroCardProps> = ({
   billsBalance,
   billsMonthlyBudget = 0,
   daysUntilPayday,
+  hasNextPayday = true,
   safeToSpend,
+  dailyPace = 0,
   isAwaitingFirstPayday = false,
   billsShortfall,
   billsDue14DaysCount,
@@ -40,19 +43,11 @@ export const DashboardHeroCard: React.FC<DashboardHeroCardProps> = ({
   onAlignEverydayBalance,
   onBillsPress,
 }) => {
-  const today = new Date();
-  const year = today.getFullYear();
-  const month = today.getMonth();
-  const daysInMonth = new Date(year, month + 1, 0).getDate();
-  const currentDay = today.getDate();
-
-  const effectiveDays =
-    daysUntilPayday !== undefined && daysUntilPayday > 0
-      ? daysUntilPayday
-      : Math.max(1, daysInMonth - currentDay);
-
+  const effectiveDays = daysUntilPayday !== undefined ? daysUntilPayday : 14;
   const effectiveSafeToSpend = safeToSpend !== undefined ? safeToSpend : everydayBalance;
+  const isBufferDipped = safetyBufferFloor > 0 && everydayBalance < safetyBufferFloor;
   const isBillsRisk = !isAwaitingFirstPayday && billsShortfall > 0;
+  const showHeadsUp = !isAwaitingFirstPayday && (isBillsRisk || isBufferDipped);
 
   return (
     <View style={styles.container}>
@@ -61,9 +56,11 @@ export const DashboardHeroCard: React.FC<DashboardHeroCardProps> = ({
         safeToSpend={effectiveSafeToSpend}
         everydayMonthlyBudget={everydayMonthlyBudget}
         safetyBufferFloor={safetyBufferFloor}
+        dailySpendable={dailyPace}
         effectiveDays={effectiveDays}
         daysUntilPayday={daysUntilPayday}
-        isBillsRisk={isBillsRisk}
+        hasNextPayday={hasNextPayday}
+        isBillsRisk={showHeadsUp}
         isAwaitingFirstPayday={isAwaitingFirstPayday}
         onEverydayPress={onEverydayPress}
         onAlignBalance={onAlignEverydayBalance}
@@ -75,6 +72,7 @@ export const DashboardHeroCard: React.FC<DashboardHeroCardProps> = ({
         billsShortfall={billsShortfall}
         billsDue14DaysCount={billsDue14DaysCount}
         totalBillsDue14Days={totalBillsDue14Days}
+        hasNextPayday={hasNextPayday}
         isAwaitingFirstPayday={isAwaitingFirstPayday}
         onBillsPress={onBillsPress}
         onMoveMoney={onMoveMoney}

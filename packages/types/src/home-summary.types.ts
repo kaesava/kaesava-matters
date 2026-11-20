@@ -55,6 +55,8 @@ export const HomeSummaryDtoSchema = z.object({
   billsBalance: z.number(),
   billsBudget: z.number(),
   billsShortfall: z.number(),
+  billsDueInHorizonCount: z.number().int(),
+  totalBillsDueInHorizon: z.number(),
   nextPayday: HomeSummaryNextPaydaySchema.nullable(),
   attentionItems: z.array(HomeSummaryAttentionItemSchema),
   goals: z.array(HomeSummaryGoalItemSchema),

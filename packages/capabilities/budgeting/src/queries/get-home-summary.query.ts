@@ -214,25 +214,26 @@ export async function getHomeSummaryQuery(
   let nextPayday: HomeSummaryNextPayday | null = null;
   let daysToPayday = 14;
 
-  if (dbIncomes.length > 0) {
-    const firstIncome = dbIncomes[0];
-    const matchedAccount = visibleBankAccounts.find((b) => b.id === firstIncome.bankAccountId);
+  // Select the earliest non-overdue PENDING income event so overdue paychecks don't collapse horizonDate
+  const upcomingIncome = dbIncomes.find((inc) => inc.expectedDate >= todayDate);
+  if (upcomingIncome) {
+    const matchedAccount = visibleBankAccounts.find((b) => b.id === upcomingIncome.bankAccountId);
     const availableToBudget = matchedAccount
       ? parseFloat(String(matchedAccount.lastKnownBalance || "0")) -
         parseFloat(String(matchedAccount.unbudgetedBuffer || "0"))
       : null;
 
     nextPayday = {
-      id: firstIncome.id,
-      name: firstIncome.name || firstIncome.sourceName || "Paycheck Deposit",
-      expectedAmount: parseFloat(firstIncome.expectedAmount),
-      expectedDate: firstIncome.expectedDate,
-      bankAccountId: firstIncome.bankAccountId ?? null,
+      id: upcomingIncome.id,
+      name: upcomingIncome.name || upcomingIncome.sourceName || "Paycheck Deposit",
+      expectedAmount: parseFloat(upcomingIncome.expectedAmount),
+      expectedDate: upcomingIncome.expectedDate,
+      bankAccountId: upcomingIncome.bankAccountId ?? null,
       bankAccountName: matchedAccount?.name ?? null,
       availableToBudget,
     };
 
-    daysToPayday = Math.max(0, calendarDaysBetween(todayDate, firstIncome.expectedDate));
+    daysToPayday = Math.max(0, calendarDaysBetween(todayDate, upcomingIncome.expectedDate));
   }
 
   // 7. Upcoming expenses & transfers (Attention Items)
@@ -283,20 +284,28 @@ export async function getHomeSummaryQuery(
     (t) => visibleEnvelopeIds.has(t.sourceEnvelopeId) && visibleEnvelopeIds.has(t.destinationEnvelopeId)
   );
 
-  // Compute bills due within horizon (until next payday or 14 days) per envelope
+  // Compute bills due within horizon (overdue + up to next payday or 14 days) per BILL envelope
   const horizonDate = nextPayday?.expectedDate ?? todayInZone(userTimezone, new Date(Date.now() + 14 * 86400000));
+  const billEnvelopeIds = new Set(
+    visibleEnvelopes.filter((e) => e.envelopeType === "BILL").map((e) => e.id)
+  );
   const billsDueInHorizon = dbExpenses.filter(
-    (e) => e.expectedDate >= todayDate && e.expectedDate <= horizonDate
+    (e) => e.envelopeId && billEnvelopeIds.has(e.envelopeId) && e.expectedDate <= horizonDate
   );
 
-  // Group bills by envelope to check individual coverage
+  // Group bills by BILL envelope to check individual coverage
   const billsDueByEnvelope = new Map<string, number>();
+  let totalBillsDueInHorizon = 0;
   for (const b of billsDueInHorizon) {
     if (b.envelopeId) {
+      const amt = parseFloat(b.expectedAmount);
+      totalBillsDueInHorizon += amt;
       const cur = billsDueByEnvelope.get(b.envelopeId) ?? 0;
-      billsDueByEnvelope.set(b.envelopeId, cur + parseFloat(b.expectedAmount));
+      billsDueByEnvelope.set(b.envelopeId, cur + amt);
     }
   }
+  const billsDueInHorizonCount = billsDueInHorizon.length;
+  totalBillsDueInHorizon = Math.round(totalBillsDueInHorizon * 100) / 100;
 
   // Bill shortfall is the sum of unmet dues across dedicated bill envelopes
   let billsShortfall = 0;
@@ -384,6 +393,8 @@ export async function getHomeSummaryQuery(
     billsBalance,
     billsBudget,
     billsShortfall,
+    billsDueInHorizonCount,
+    totalBillsDueInHorizon,
     nextPayday,
     attentionItems,
     goals,

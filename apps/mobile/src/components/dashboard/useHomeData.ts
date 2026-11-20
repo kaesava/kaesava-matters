@@ -144,17 +144,10 @@ export function useHomeData(token?: string) {
     ? Math.max(0, Math.round((new Date(nextPaycheck.expectedDate + 'T00:00:00Z').getTime() - new Date(todayStr + 'T00:00:00Z').getTime()) / 86400000))
     : 14;
 
-  const upcomingBillsList = (expenseEventsQuery.data ?? [])
-    .filter((e) => e.status === 'PENDING')
-    .map((e) => ({ id: e.id, name: e.name, amount: parseFloat(e.expectedAmount), dueDate: e.expectedDate }));
-
-  const billsDue14Days = upcomingBillsList.filter((b) => {
-    const due = new Date(b.dueDate).getTime();
-    return due >= new Date().getTime() - 86400000 && due <= new Date().getTime() + 14 * 86400000;
-  });
-
-  const totalBillsDue14Days = billsDue14Days.reduce((sum, b) => sum + b.amount, 0);
-  const billsShortfall = Math.max(0, totalBillsDue14Days - billsBalance);
+  const billsDue14DaysCount = activeHomeSummary?.billsDueInHorizonCount ?? 0;
+  const totalBillsDue14Days = activeHomeSummary?.totalBillsDueInHorizon ?? 0;
+  const billsShortfall = activeHomeSummary?.billsShortfall ?? 0;
+  const hasNextPayday = activeHomeSummary ? Boolean(activeHomeSummary.nextPayday) : Boolean(nextPaycheck);
 
   const todayObj = useMemo(() => new Date(todayStr), [todayStr]);
 
@@ -223,15 +216,16 @@ export function useHomeData(token?: string) {
     dailyPace: activeHomeSummary?.dailyPace,
     paceStatus: activeHomeSummary?.paceStatus,
     everydayBalance: activeHomeSummary?.everydayBalance ?? everydayBalance,
-    everydayMonthlyBudget,
-    everydaySafetyBuffer: pools
+    everydayMonthlyBudget: activeHomeSummary?.everydayBudget ?? everydayMonthlyBudget,
+    everydaySafetyBuffer: activeHomeSummary?.everydaySafetyBuffer ?? pools
       .filter((c) => c.envelopeType === 'EVERYDAY')
       .reduce((sum, c) => sum + parseFloat(c.safetyBufferFloor || '0'), 0),
     billsBalance: activeHomeSummary?.billsBalance ?? billsBalance,
-    billsMonthlyBudget,
+    billsMonthlyBudget: activeHomeSummary?.billsBudget ?? billsMonthlyBudget,
     daysUntilPayday: activeHomeSummary?.daysToPayday ?? daysUntilPayday,
+    hasNextPayday,
     billsShortfall,
-    billsDue14DaysCount: billsDue14Days.length,
+    billsDue14DaysCount,
     totalBillsDue14Days,
     needsAttentionCount,
     behindCount,

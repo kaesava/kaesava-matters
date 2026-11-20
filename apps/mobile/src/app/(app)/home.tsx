@@ -44,6 +44,7 @@ export default function HomeScreen() {
     billsBalance,
     billsMonthlyBudget,
     daysUntilPayday,
+    hasNextPayday,
     billsShortfall,
     billsDue14DaysCount,
     totalBillsDue14Days,
@@ -110,6 +111,7 @@ export default function HomeScreen() {
             billsBalance={billsBalance}
             billsMonthlyBudget={billsMonthlyBudget}
             daysUntilPayday={daysUntilPayday}
+            hasNextPayday={hasNextPayday}
             safeToSpend={safeToSpend}
             dailyPace={dailyPace}
             paceStatus={paceStatus}

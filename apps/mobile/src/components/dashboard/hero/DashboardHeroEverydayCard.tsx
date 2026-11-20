@@ -12,6 +12,7 @@ interface DashboardHeroEverydayCardProps {
   readonly dailySpendable?: number;
   readonly effectiveDays: number;
   readonly daysUntilPayday?: number;
+  readonly hasNextPayday?: boolean;
   readonly progressPercent?: number;
   readonly isBillsRisk?: boolean;
   readonly isPacingTight?: boolean;
@@ -25,13 +26,16 @@ export const DashboardHeroEverydayCard: React.FC<DashboardHeroEverydayCardProps>
   safeToSpend,
   everydayMonthlyBudget,
   safetyBufferFloor = 0,
+  dailySpendable = 0,
   effectiveDays,
   daysUntilPayday,
+  hasNextPayday = true,
   isBillsRisk = false,
   isAwaitingFirstPayday = false,
   onEverydayPress,
   onAlignBalance,
 }) => {
+  const isBufferDipped = safetyBufferFloor > 0 && everydayBalance < safetyBufferFloor;
   return (
     <TouchableOpacity
       testID="tour-envelopes-row"
@@ -78,12 +82,18 @@ export const DashboardHeroEverydayCard: React.FC<DashboardHeroEverydayCardProps>
       </View>
 
       <Text style={styles.pacingSubtitle}>
-        {daysUntilPayday !== undefined && daysUntilPayday <= 0
+        {!hasNextPayday
+          ? t('dashboard.hero.estRemainingNoPayday', {
+              amount: formatMobileCurrency(everydayBalance),
+              pace: formatMobileCurrency(dailySpendable),
+            })
+          : (daysUntilPayday ?? effectiveDays) <= 0
           ? t('dashboard.hero.estRemainingToday', {
               amount: formatMobileCurrency(everydayBalance),
             })
           : t('dashboard.hero.estRemaining', {
               amount: formatMobileCurrency(everydayBalance),
+              pace: formatMobileCurrency(dailySpendable),
               days: effectiveDays,
             })
         }
@@ -102,9 +112,20 @@ export const DashboardHeroEverydayCard: React.FC<DashboardHeroEverydayCardProps>
             <View />
           )}
           {safetyBufferFloor > 0 && (
-            <Text style={styles.bufferProtectedText}>
-              🛡️ {t('dashboard.hero.bufferProtected', { amount: formatMobileCurrency(safetyBufferFloor) })}
-            </Text>
+            isBufferDipped ? (
+              <Text
+                style={[
+                  styles.bufferDippedText,
+                  everydayBalance <= 0 && styles.bufferDepletedText,
+                ]}
+              >
+                ⚠️ {t('dashboard.hero.bufferDipped', { amount: formatMobileCurrency(safetyBufferFloor) })}
+              </Text>
+            ) : (
+              <Text style={styles.bufferProtectedText}>
+                🛡️ {t('dashboard.hero.bufferProtected', { amount: formatMobileCurrency(safetyBufferFloor) })}
+              </Text>
+            )
           )}
         </View>
       </View>
@@ -221,5 +242,13 @@ const styles = StyleSheet.create({
     fontSize: 11,
     fontWeight: '800',
     color: DESIGN_TOKENS.colors.successDark,
+  },
+  bufferDippedText: {
+    fontSize: 11,
+    fontWeight: '800',
+    color: DESIGN_TOKENS.colors.warningDark,
+  },
+  bufferDepletedText: {
+    color: DESIGN_TOKENS.colors.criticalDark,
   },
 });

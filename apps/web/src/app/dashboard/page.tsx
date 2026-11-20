@@ -73,9 +73,10 @@ export default function DashboardPage() {
     billsMonthlyBudget,
     upcomingIncomeList,
     daysUntilPayday,
+    hasNextPayday,
     isBalanceMatchOverdue,
     attentionItems,
-    billsDue14Days,
+    billsDue14DaysCount,
     totalBillsDue14Days,
     billsShortfall,
   } = useDashboardDerivedState({
@@ -246,12 +247,13 @@ export default function DashboardPage() {
             billsBalance={billsBalance}
             billsMonthlyBudget={billsMonthlyBudget}
             daysUntilPayday={daysUntilPayday}
+            hasNextPayday={hasNextPayday}
             safeToSpend={safeToSpend}
             dailyPace={dailyPace}
             paceStatus={paceStatus}
             isAwaitingFirstPayday={homeData?.isAwaitingFirstPayday}
             billsShortfall={billsShortfall}
-            billsDue14DaysCount={billsDue14Days.length}
+            billsDue14DaysCount={billsDue14DaysCount}
             totalBillsDue14Days={totalBillsDue14Days}
             onMoveMoney={() => setIsMoveMoneyOpen(true)}
             onAlignEverydayBalance={handleOpenEverydayReconciliation}
