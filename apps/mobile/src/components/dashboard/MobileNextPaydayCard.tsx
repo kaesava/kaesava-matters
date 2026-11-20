@@ -96,11 +96,11 @@ export function MobileNextPaydayCard({
 
         <View style={styles.headerLinksWrap}>
           <TouchableOpacity
-            onPress={() => router.push('/(app)/plan' as Href)}
+            onPress={() => router.push('/(app)/plan?tab=events&kind=INCOME' as Href)}
             style={styles.showMoreBtn}
             activeOpacity={0.7}
           >
-            <Text style={styles.showMoreText}>{t('dashboard.nextPay.upcomingEventsLink')}</Text>
+            <Text style={styles.showMoreText}>{t('common.showMore')}</Text>
           </TouchableOpacity>
           <Text style={styles.linkSeparator}>·</Text>
           <TouchableOpacity

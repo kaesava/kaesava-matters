@@ -6,6 +6,7 @@ import { MobilePaydayMetricsGrid } from './MobilePaydayMetricsGrid';
 import { MobilePaydayActionButtons } from './MobilePaydayActionButtons';
 
 interface MobilePaydayCelebrationCardProps {
+  privateAllocated?: number;
   everydayAllocated?: number;
   billsAllocated: number;
   goalsAllocated: number;
@@ -26,6 +27,7 @@ interface MobilePaydayCelebrationCardProps {
 }
 
 export function MobilePaydayCelebrationCard({
+  privateAllocated = 0,
   everydayAllocated = 0,
   billsAllocated,
   goalsAllocated,

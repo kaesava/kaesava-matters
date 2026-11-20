@@ -33,8 +33,7 @@ export const payday = {
       "fixedRule": "Fixed allocation rule: {allocated} allocated to {name}.",
       "percentageRule": "Percentage split rule ({pct}% of remaining funds): {allocated} allocated to {name}.",
       "surplusSweep": "Swept residual excess surplus of {allocated} to designated surplus envelope ({name}).",
-      "personalSingleEnvelope": "Personal payday plan: {allocated} allocated to personal envelope ({name}).",
-      "noAllocationNeeded": "No allocation needed."
+      "personalSingleEnvelope": "Personal payday plan: {allocated} allocated to personal envelope ({name})."
     }
   },
   "paydayDrawer": {

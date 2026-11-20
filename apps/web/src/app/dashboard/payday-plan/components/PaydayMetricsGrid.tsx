@@ -1,9 +1,10 @@
 "use client";
 
-import { ShieldCheck, Target, ShoppingBag, Wallet } from "lucide-react";
+import { ShieldCheck, Target, ShoppingBag, Wallet, Lock } from "lucide-react";
 import { t } from "@money-matters/i18n";
 
 export interface PaydayMetricsGridProps {
+  privateAllocated?: number;
   everydayAllocated: number;
   billsAllocated: number;
   goalsAllocated: number;
@@ -14,6 +15,7 @@ export interface PaydayMetricsGridProps {
 }
 
 export function PaydayMetricsGrid({
+  privateAllocated = 0,
   everydayAllocated,
   billsAllocated,
   goalsAllocated,
@@ -23,8 +25,24 @@ export function PaydayMetricsGrid({
   formatCurrency,
 }: PaydayMetricsGridProps) {
   const displaySurplus = surplusAmount !== undefined ? surplusAmount : safeToSpend;
+  const hasPrivate = privateAllocated > 0;
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5 pt-1 border-t border-white/10">
+    <div className={`grid grid-cols-1 sm:grid-cols-2 ${hasPrivate ? "lg:grid-cols-5" : "lg:grid-cols-4"} gap-3.5 pt-1 border-t border-white/10`}>
+      {hasPrivate && (
+        <div className="p-4 rounded-xl bg-white/5 border border-white/10 flex items-center gap-3.5">
+          <div className="w-10 h-10 rounded-xl bg-purple-500/20 border border-purple-400/30 flex items-center justify-center text-purple-300 shrink-0">
+            <Lock className="w-5 h-5" />
+          </div>
+          <div className="min-w-0">
+            <span className="text-[11px] font-bold text-purple-200/80 uppercase tracking-wider block">
+              {t("common.private")}
+            </span>
+            <span className="font-mono text-base sm:text-lg font-black text-white tabular-nums">
+              {formatCurrency(privateAllocated)}
+            </span>
+          </div>
+        </div>
+      )}
       <div className="p-4 rounded-xl bg-white/5 border border-white/10 flex items-center gap-3.5">
         <div className="w-10 h-10 rounded-xl bg-teal-500/20 border border-teal-400/30 flex items-center justify-center text-teal-300 shrink-0">
           <ShoppingBag className="w-5 h-5" />

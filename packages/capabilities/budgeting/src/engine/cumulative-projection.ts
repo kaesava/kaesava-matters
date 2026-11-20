@@ -42,6 +42,8 @@ export interface CumulativeProjectionInput {
   timezone?: string;
   currencySymbol?: string;
   strategySteps?: AllocationStrategyStepItem[];
+  runwayDays?: number;
+  dueBufferDays?: number;
 }
 
 export interface CumulativeAllocationDetail {
@@ -54,6 +56,7 @@ export interface CumulativeProjectionTimelineStep {
   incomeEvent: CumulativeProjectionIncomeEvent;
   date: string;
   totalIncome: number;
+  unallocatedAmount: number;
   balancesBeforeAlloc: Map<string, number>;
   allocations: Map<string, CumulativeAllocationDetail>;
   balancesAfterAlloc: Map<string, number>;
@@ -84,13 +87,13 @@ export function runCumulativeProjection(input: CumulativeProjectionInput): Cumul
   const upcomingIncomes = [...input.incomeEvents]
     .filter((e) => e && Boolean(e.expectedDate) && String(e.expectedDate).length >= 10)
     .sort((a, b) => {
-      const diff = new Date(a.expectedDate + "T00:00:00").getTime() - new Date(b.expectedDate + "T00:00:00").getTime();
+      const diff = new Date(a.expectedDate + "T00:00:00Z").getTime() - new Date(b.expectedDate + "T00:00:00Z").getTime();
       return diff !== 0 ? diff : a.id.localeCompare(b.id);
     });
 
   const upcomingExpenses = (input.expenseEvents ?? [])
     .filter((e) => e && e.status === "PENDING" && Boolean(e.dueDate) && String(e.dueDate).length >= 10)
-    .sort((a, b) => new Date(a.dueDate + "T00:00:00").getTime() - new Date(b.dueDate + "T00:00:00").getTime());
+    .sort((a, b) => new Date(a.dueDate + "T00:00:00Z").getTime() - new Date(b.dueDate + "T00:00:00Z").getTime());
 
   const runningBalances = new Map<string, number>();
   for (const cat of input.categories) {
@@ -104,24 +107,29 @@ export function runCumulativeProjection(input: CumulativeProjectionInput): Cumul
     const totalIncome = evt.actualAmount ?? evt.expectedAmount;
     const balancesBeforeAlloc = new Map(runningBalances);
     const freqDays = parseFreqDays(evt.rrule);
+    const currDateObj = new Date(evt.expectedDate + "T00:00:00Z");
 
-    let daysUntilNext = 30;
+    // Find the next strictly later payday date so same-day paydays don't compute 1-day burn between them
+    const nextDistinctIncome = upcomingIncomes.slice(i + 1).find((nextEvt) => nextEvt.expectedDate > evt.expectedDate);
+    const isSameDayAsNext = i < upcomingIncomes.length - 1 && upcomingIncomes[i + 1].expectedDate === evt.expectedDate;
+
+    let daysUntilNext = freqDays;
     let nextDateObj: Date | undefined;
-    if (i < upcomingIncomes.length - 1) {
-      nextDateObj = new Date(upcomingIncomes[i + 1].expectedDate + "T00:00:00");
-      const currDateObj = new Date(evt.expectedDate + "T00:00:00");
+    if (nextDistinctIncome) {
+      nextDateObj = new Date(nextDistinctIncome.expectedDate + "T00:00:00Z");
       daysUntilNext = Math.max(1, Math.round((nextDateObj.getTime() - currDateObj.getTime()) / (1000 * 60 * 60 * 24)));
     }
+    const burnDays = isSameDayAsNext ? 0 : daysUntilNext;
 
     let nextCutoffDate: string;
     if (i < upcomingIncomes.length - 1) {
       nextCutoffDate = upcomingIncomes[i + 1].expectedDate;
     } else {
-      const lastEndTime = new Date(evt.expectedDate + "T00:00:00").getTime() + freqDays * 24 * 60 * 60 * 1000;
+      const lastEndTime = currDateObj.getTime() + freqDays * 24 * 60 * 60 * 1000;
       nextCutoffDate = new Date(lastEndTime).toISOString().slice(0, 10);
     }
 
-    const forwardWindowEndTime = new Date(evt.expectedDate + "T00:00:00").getTime() + 90 * 24 * 60 * 60 * 1000;
+    const forwardWindowEndTime = currDateObj.getTime() + 90 * 24 * 60 * 60 * 1000;
     const forwardCutoffDate = new Date(forwardWindowEndTime).toISOString().slice(0, 10);
 
     const engineUpcomingExpenses = upcomingExpenses.filter((e) => {
@@ -142,18 +150,22 @@ export function runCumulativeProjection(input: CumulativeProjectionInput): Cumul
     const eventSavedPlan = savedPlans[evt.id];
     const isConfirmed = evt.status === "CONFIRMED";
     const hasAnyCellOverride = input.categories.some((cat) => typeof cellOverrides[`${evt.id}_${cat.id}`] === "number");
+    let stepUnallocatedAmount = 0;
 
     if ((eventSavedPlan && eventSavedPlan.length > 0) || hasAnyCellOverride) {
+      let totalAllocated = 0;
       for (const cat of input.categories) {
         const savedLine = eventSavedPlan?.find((l) => l.poolId === cat.id);
         const overrideKey = `${evt.id}_${cat.id}`;
         const val = typeof cellOverrides[overrideKey] === "number" ? cellOverrides[overrideKey] : (savedLine?.proposedAmount ?? 0);
+        totalAllocated += val;
         allocations.set(cat.id, {
           proposedAmount: val,
           reasoning: savedLine?.reasoning?.trim() || (isConfirmed ? "Confirmed allocation plan" : "Custom saved allocation plan"),
           isOverride: true,
         });
       }
+      stepUnallocatedAmount = Math.max(0, Number((totalIncome - totalAllocated).toFixed(2)));
     } else {
       const currentBuckets = input.categories.map((c) => ({
         ...c,
@@ -167,6 +179,8 @@ export function runCumulativeProjection(input: CumulativeProjectionInput): Cumul
         contributionMode: evt.isPrivate ? evt.contributionMode : "FULL",
         contributionValue: evt.isPrivate ? evt.contributionValue : null,
         strategySteps: input.strategySteps,
+        runwayDays: input.runwayDays ?? 30,
+        dueBufferDays: input.dueBufferDays,
         buckets: currentBuckets,
         paycheckDate: new Date(evt.expectedDate + "T00:00:00Z"),
         paycheckFrequencyDays: freqDays,
@@ -181,6 +195,7 @@ export function runCumulativeProjection(input: CumulativeProjectionInput): Cumul
           dueDate: e.dueDate,
         })),
       });
+      stepUnallocatedAmount = engineResult.unallocatedAmount;
 
       const engineLinesMap = new Map<string, AllocationLine>(engineResult.lines.map((l) => [l.bucketId, l]));
 
@@ -221,12 +236,14 @@ export function runCumulativeProjection(input: CumulativeProjectionInput): Cumul
       if (isEverydayBucket(cat)) {
         const monthlyTarget = cat.monthlyAmount ?? cat.targetAmount ?? 0;
         const floor = cat.safetyBufferFloor ?? 0;
-        if (monthlyTarget > 0) {
-          const burnAmount = Number((((monthlyTarget * 12) / 365) * daysUntilNext).toFixed(2));
+        if (monthlyTarget > 0 && burnDays > 0) {
+          const burnAmount = Number((((monthlyTarget * 12) / 365) * burnDays).toFixed(2));
           const explicitExp = deductedExpenses.filter((d) => d.bucketId === cat.id).reduce((s, e) => s + e.amount, 0);
           const netBurn = Math.max(0, Number((burnAmount - explicitExp).toFixed(2)));
           const curBal = runningBalances.get(cat.id) ?? 0;
-          runningBalances.set(cat.id, Math.max(floor, Number((curBal - netBurn).toFixed(2))));
+          // Never raise an already-below-floor balance up to floor during burn calculation
+          const effectiveFloor = Math.min(curBal, floor);
+          runningBalances.set(cat.id, Math.max(effectiveFloor, Number((curBal - netBurn).toFixed(2))));
         }
       }
     }
@@ -248,6 +265,7 @@ export function runCumulativeProjection(input: CumulativeProjectionInput): Cumul
       incomeEvent: evt,
       date: evt.expectedDate,
       totalIncome,
+      unallocatedAmount: stepUnallocatedAmount,
       balancesBeforeAlloc,
       allocations,
       balancesAfterAlloc,

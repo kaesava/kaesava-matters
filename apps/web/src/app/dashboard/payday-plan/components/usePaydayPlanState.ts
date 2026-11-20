@@ -132,8 +132,11 @@ export function usePaydayPlanState({ incomeEventId, returnTo = "/dashboard" }: {
 
   const handleLineAmountChange = (bucketId: string, val: string) => {
     const cleaned = sanitizeDecimalInput(val);
+    const nextVal = parseFloat(cleaned) || 0;
     setLinesMap((prev) => ({ ...prev, [bucketId]: cleaned }));
-    if ((parseFloat(cleaned) || 0) <= 0) setReasoningMap((prev) => ({ ...prev, [bucketId]: "" }));
+    if (nextVal <= 0) {
+      setReasoningMap((prev) => ({ ...prev, [bucketId]: "" }));
+    }
   };
 
   const handleLineReasoningChange = (bucketId: string, reasoning: string) => {

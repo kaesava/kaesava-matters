@@ -4,6 +4,7 @@ import { t } from '@money-matters/i18n';
 import { formatMobileCurrency } from '../../lib/format';
 
 interface MobilePaydayMetricsGridProps {
+  privateAllocated?: number;
   everydayAllocated: number;
   billsAllocated: number;
   goalsAllocated: number;
@@ -13,6 +14,7 @@ interface MobilePaydayMetricsGridProps {
 }
 
 export function MobilePaydayMetricsGrid({
+  privateAllocated = 0,
   everydayAllocated,
   billsAllocated,
   goalsAllocated,
@@ -23,6 +25,12 @@ export function MobilePaydayMetricsGrid({
   const displaySurplus = surplusAmount !== undefined ? surplusAmount : safeToSpend;
   return (
     <View style={styles.metricsGrid}>
+      {privateAllocated > 0 && (
+        <View style={styles.metricItem}>
+          <Text style={styles.metricLabel}>{t('common.private')}</Text>
+          <Text style={styles.metricValue}>{formatMobileCurrency(privateAllocated)}</Text>
+        </View>
+      )}
       <View style={styles.metricItem}>
         <Text style={styles.metricLabel}>{t('paydayDrawer.everydaySpending')}</Text>
         <Text style={styles.metricValue}>{formatMobileCurrency(everydayAllocated)}</Text>

@@ -125,6 +125,11 @@ export function PaydayPlanScreen({
       />
 
       <PaydayCelebrationCard
+        privateAllocated={groupedLines.flatMap((g) => g.items).reduce((sum, l) => {
+          const p = pools.find((pool) => pool.id === l.bucketId);
+          if (!p?.isPrivate) return sum;
+          return sum + (parseFloat(linesMap[l.bucketId] ?? l.proposedAmount.toString()) || 0);
+        }, 0)}
         everydayAllocated={everydayAllocated}
         billsAllocated={billsAllocated}
         goalsAllocated={goalsAllocated}

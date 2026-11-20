@@ -128,8 +128,11 @@ export function usePaycheckStudio(id: string | undefined, returnTo?: string) {
       cleaned = parts[1] !== undefined ? `${parts[0]}.${parts[1]}` : parts[0];
     }
     if (parts[1] && parts[1].length > 2) cleaned = `${parts[0]}.${parts[1].slice(0, 2)}`;
+    const nextVal = parseFloat(cleaned) || 0;
     setLinesMap((prev) => ({ ...prev, [bucketId]: cleaned }));
-    if ((parseFloat(cleaned) || 0) <= 0) setReasoningMap((prev) => ({ ...prev, [bucketId]: '' }));
+    if (nextVal <= 0) {
+      setReasoningMap((prev) => ({ ...prev, [bucketId]: '' }));
+    }
   };
 
   const handleLineReasoningChange = (bucketId: string, reasoning: string) => {

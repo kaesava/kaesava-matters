@@ -223,4 +223,106 @@ describe("cumulative-projection engine", () => {
     expect(step.allocations.get("priv-everyday")?.proposedAmount).toBe(500);
     expect(step.allocations.get("pool-everyday")?.proposedAmount).toBeGreaterThan(0);
   });
+
+  it("should not inflate EVERYDAY balance up to safetyBufferFloor when balance is already below floor", () => {
+    const result = runCumulativeProjection({
+      categories: [
+        {
+          id: "pool-everyday",
+          name: "Everyday Expenses",
+          type: "EVERYDAY",
+          monthlyAmount: 600,
+          safetyBufferFloor: 500,
+          currentBalance: 100,
+        },
+        {
+          id: "pool-surplus",
+          name: "Surplus Target",
+          type: "GOAL",
+          isSurplusTarget: true,
+          currentBalance: 0,
+        },
+      ],
+      incomeEvents: [
+        { id: "evt-1", expectedDate: "2026-10-01", expectedAmount: 100, status: "PENDING" },
+        { id: "evt-2", expectedDate: "2026-10-10", expectedAmount: 1000, status: "PENDING" },
+      ],
+      cellOverrides: {
+        "evt-1_pool-everyday": 0,
+        "evt-1_pool-surplus": 100,
+      },
+    });
+
+    // Balance was $100 (< $500 floor), so burn must not jump it up to $500
+    expect(result.steps[0].balancesAfterExpenses.get("pool-everyday")).toBe(100);
+    expect(result.steps[1].balancesBeforeAlloc.get("pool-everyday")).toBe(100);
+  });
+
+  it("should not deduct EVERYDAY burn between same-day paydays", () => {
+    const result = runCumulativeProjection({
+      categories: [
+        {
+          id: "pool-everyday",
+          name: "Everyday Expenses",
+          type: "EVERYDAY",
+          monthlyAmount: 600,
+          currentBalance: 500,
+        },
+        {
+          id: "pool-surplus",
+          name: "Surplus Target",
+          type: "GOAL",
+          isSurplusTarget: true,
+          currentBalance: 0,
+        },
+      ],
+      incomeEvents: [
+        { id: "evt-a", expectedDate: "2026-10-05", expectedAmount: 500, status: "PENDING" },
+        { id: "evt-b", expectedDate: "2026-10-05", expectedAmount: 500, status: "PENDING" },
+        { id: "evt-c", expectedDate: "2026-10-10", expectedAmount: 500, status: "PENDING" },
+      ],
+      cellOverrides: {
+        "evt-a_pool-everyday": 0,
+        "evt-a_pool-surplus": 500,
+      },
+    });
+
+    // Same-day evt-a -> evt-b has 0 burn days, so balance remains $500 before evt-b
+    expect(result.steps[0].balancesAfterExpenses.get("pool-everyday")).toBe(500);
+    expect(result.steps[1].balancesBeforeAlloc.get("pool-everyday")).toBe(500);
+  });
+
+  it("should chain unsaved payday, saved draft payday, intermediate expenses, and everyday burn into target payday", () => {
+    const result = runCumulativeProjection({
+      categories: mockCategories,
+      incomeEvents: [
+        { id: "oct-01", expectedDate: "2026-10-01", expectedAmount: 2000, status: "PENDING" },
+        { id: "oct-05", expectedDate: "2026-10-05", expectedAmount: 2000, status: "PENDING" },
+        { id: "oct-10", expectedDate: "2026-10-10", expectedAmount: 2000, status: "PENDING" },
+      ],
+      expenseEvents: [
+        { poolId: "pool-bills", amount: 300, dueDate: "2026-10-07", status: "PENDING" },
+      ],
+      cellOverrides: {
+        "oct-05_pool-bills": 700,
+        "oct-05_pool-everyday": 300,
+        "oct-05_pool-surplus": 1000,
+      },
+    });
+
+    const stepOct01 = result.getStepForEvent("oct-01")!;
+    const stepOct05 = result.getStepForEvent("oct-05")!;
+    const stepOct10 = result.getStepForEvent("oct-10")!;
+
+    expect(stepOct01.allocations.get("pool-bills")?.isOverride).toBe(false);
+    expect(stepOct05.allocations.get("pool-bills")?.isOverride).toBe(true);
+    expect(stepOct05.allocations.get("pool-bills")?.proposedAmount).toBe(700);
+    expect(stepOct05.unallocatedAmount).toBe(0);
+    // Oct 05 deducted $300 bill due Oct 07 before Oct 10
+    expect(stepOct05.deductedExpenses).toHaveLength(1);
+    expect(stepOct10.balancesBeforeAlloc.get("pool-bills")).toBeCloseTo(
+      stepOct05.balancesAfterExpenses.get("pool-bills")!,
+      2
+    );
+  });
 });

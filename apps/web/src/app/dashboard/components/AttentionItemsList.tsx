@@ -212,7 +212,7 @@ export const AttentionItemsList: React.FC<WebAttentionItemsListProps> = ({
                     <button
                       type="button"
                       onClick={() => setSelectedMarkPaidItem(item)}
-                      className="text-xs font-bold text-[#2563eb] hover:underline cursor-pointer transition-colors px-2 py-1"
+                      className="text-xs font-bold text-[#2563eb] hover:text-blue-700 bg-blue-50 hover:bg-blue-100 border border-blue-200 transition-colors px-2.5 py-1.5 rounded-lg cursor-pointer"
                     >
                       {t("common.markSpent")}
                     </button>

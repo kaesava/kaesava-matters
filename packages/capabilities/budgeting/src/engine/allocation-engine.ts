@@ -283,7 +283,7 @@ export function runAllocationEngine(input: AllocationEngineInput): AllocationEng
     bucketName: data.bucketName,
     proposedAmount: toDollars(data.amountCents),
     ...(data.sweptCents && data.sweptCents > 0 ? { sweptAmount: toDollars(data.sweptCents) } : {}),
-    reasoning: data.reasonings.length > 0 ? data.reasonings.join(" ") : t("payday.engineReasoning.noAllocationNeeded"),
+    reasoning: data.reasonings.length > 0 ? data.reasonings.join(" ") : "",
   }));
 
   const isInsufficient = lines.some((l) => {

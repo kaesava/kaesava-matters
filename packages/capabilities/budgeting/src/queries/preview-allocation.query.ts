@@ -95,7 +95,7 @@ export async function previewAllocationQuery(
   }
 
   const bufferDays = 3;
-  const eventTime = event ? new Date(event.expectedDate + "T00:00:00").getTime() : Date.now();
+  const eventTime = event ? new Date(event.expectedDate + "T12:00:00Z").getTime() : Date.now();
   const forwardWindowDays = 90;
   const forwardCutoffDateStr = getTenantDateString(new Date(eventTime + forwardWindowDays * 24 * 60 * 60 * 1000), { timezone: tenantTz });
 
@@ -126,9 +126,12 @@ export async function previewAllocationQuery(
   const activeStrategy = await getActiveAllocationStrategyQuery(tenantId, appId, userId, dbClient);
 
   const isPrivateAccount = Boolean(event?.bankAccountIsPrivate);
-  const engineBuckets: EngineBucket[] = dbEnvelopes
-    .filter((env) => isPrivateAccount || !env.isPrivate)
-    .map((env) => mapEnvelopeToEngineBucket(env, balancesMap[env.id] || 0));
+  const allVisibleEngineBuckets: EngineBucket[] = dbEnvelopes.map((env) =>
+    mapEnvelopeToEngineBucket(env, balancesMap[env.id] || 0)
+  );
+  const engineBuckets: EngineBucket[] = isPrivateAccount
+    ? allVisibleEngineBuckets
+    : allVisibleEngineBuckets.filter((env) => !env.isPrivate);
 
   const strategySteps = activeStrategy?.steps?.map((s) => ({
     stepType: s.stepType,
@@ -220,7 +223,7 @@ export async function previewAllocationQuery(
       });
 
       const cumResult = runCumulativeProjection({
-        categories: engineBuckets,
+        categories: allVisibleEngineBuckets,
         incomeEvents: cumIncomes,
         expenseEvents: filteredPendingExpenses.map((e) => ({
           envelopeId: e.envelopeId,
@@ -235,6 +238,8 @@ export async function previewAllocationQuery(
         timezone: tenantTz,
         currencySymbol,
         strategySteps,
+        runwayDays: runwayDays ?? 30,
+        dueBufferDays: bufferDays,
       });
 
       const targetStep = cumResult.getStepForEvent(incomeEventId);
@@ -251,7 +256,7 @@ export async function previewAllocationQuery(
         return {
           status: "OK" as const,
           lines,
-          unallocatedAmount: 0,
+          unallocatedAmount: targetStep.unallocatedAmount,
         };
       }
     }

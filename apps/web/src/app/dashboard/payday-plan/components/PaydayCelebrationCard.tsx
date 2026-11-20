@@ -6,6 +6,7 @@ import { Button, InfoTooltip, DESIGN_TOKENS } from "@money-matters/ui/web";
 import { PaydayMetricsGrid } from "./PaydayMetricsGrid";
 
 interface PaydayCelebrationCardProps {
+  privateAllocated?: number;
   everydayAllocated?: number;
   billsAllocated: number;
   goalsAllocated: number;
@@ -27,6 +28,7 @@ interface PaydayCelebrationCardProps {
 }
 
 export function PaydayCelebrationCard({
+  privateAllocated = 0,
   everydayAllocated = 0,
   billsAllocated,
   goalsAllocated,
@@ -158,6 +160,7 @@ export function PaydayCelebrationCard({
       </div>
 
       <PaydayMetricsGrid
+        privateAllocated={privateAllocated}
         everydayAllocated={everydayAllocated}
         billsAllocated={billsAllocated}
         goalsAllocated={goalsAllocated}

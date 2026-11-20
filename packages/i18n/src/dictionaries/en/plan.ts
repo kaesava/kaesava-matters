@@ -43,7 +43,7 @@ export const plan = {
     "openCustomTransferModalLink": "Transfer funds between Envelopes",
     "householdContribution": {
       "title": "Household Contribution",
-      "modeLabel": "Contribution",
+      "modeLabel": "Contribution to Shared Household",
       "full": "100% to Household Envelopes",
       "percentage": "Percentage Share",
       "percentagePlaceholder": "50",
