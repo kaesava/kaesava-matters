@@ -306,6 +306,8 @@ export function useSetupWizardSubmission({
       router.replace("/dashboard");
       setTimeout(() => {
         if (typeof window !== "undefined" && window.location.pathname.startsWith("/setup")) {
+          // Hard fallback if client router navigation stalls leaving /setup
+          // eslint-disable-next-line @next/next/no-location-assign-relative-destination
           window.location.assign("/dashboard");
         }
       }, 150);

@@ -11,6 +11,7 @@ export interface GoalCategoryItem {
   readonly currentBalance: string | number;
   readonly healthStatus?: string;
   readonly targetAmount?: string | number | null;
+  readonly monthlyAmount?: string | number | null;
   readonly targetDate?: string | null;
   readonly endDate?: string | null;
   readonly fundingMode?: 'TARGET_BALANCE' | 'RECURRING' | null;
@@ -47,11 +48,13 @@ export const GoalsProgressStrip: React.FC<GoalsProgressStripProps> = ({
     milestonePct,
     monthlyRecurringPace,
     onTrackGoals,
+    previewGoals,
   } = useMemo(() => {
     let accSavings = 0;
     let targetCount = 0;
     let recurringCount = 0;
     let milestoneBal = 0;
+    let milestoneClampedBal = 0;
     let milestoneTgt = 0;
     let recurringPace = 0;
     let onTrack = 0;
@@ -63,21 +66,27 @@ export const GoalsProgressStrip: React.FC<GoalsProgressStripProps> = ({
       const isRecurring = g.fundingMode === 'RECURRING';
       if (isRecurring) {
         recurringCount += 1;
-        const rawAmt = parseFloat(String(g.targetAmount || g.enteredAmount || '0')) || 0;
-        const freq = g.budgetFrequency;
-        if (freq === 'WEEKLY') {
-          recurringPace += (rawAmt * 52) / 12;
-        } else if (freq === 'FORTNIGHTLY') {
-          recurringPace += (rawAmt * 26) / 12;
-        } else if (freq === 'ANNUALLY') {
-          recurringPace += rawAmt / 12;
+        const explicitMonthly = parseFloat(String(g.monthlyAmount || '0')) || 0;
+        if (explicitMonthly > 0) {
+          recurringPace += explicitMonthly;
         } else {
-          recurringPace += rawAmt;
+          const rawAmt = parseFloat(String(g.enteredAmount || g.targetAmount || '0')) || 0;
+          const freq = g.budgetFrequency;
+          if (freq === 'WEEKLY') {
+            recurringPace += (rawAmt * 52) / 12;
+          } else if (freq === 'FORTNIGHTLY') {
+            recurringPace += (rawAmt * 26) / 12;
+          } else if (freq === 'ANNUALLY') {
+            recurringPace += rawAmt / 12;
+          } else {
+            recurringPace += rawAmt;
+          }
         }
       } else {
         targetCount += 1;
         const tgt = parseFloat(String(g.targetAmount || g.schedule?.targetAmount || '0')) || 0;
         milestoneBal += bal;
+        milestoneClampedBal += tgt > 0 ? Math.min(Math.max(0, bal), tgt) : Math.max(0, bal);
         milestoneTgt += tgt;
       }
 
@@ -86,7 +95,14 @@ export const GoalsProgressStrip: React.FC<GoalsProgressStripProps> = ({
       }
     }
 
-    const mPct = milestoneTgt > 0 ? Math.min(100, Math.round((milestoneBal / milestoneTgt) * 100)) : 0;
+    const mPct = milestoneTgt > 0 ? Math.min(100, Math.round((milestoneClampedBal / milestoneTgt) * 100)) : 0;
+
+    const sortedPreview = [...(goalCategories ?? [])]
+      .sort((a, b) => {
+        const rank = (s?: string) => (s === 'RED' ? 0 : s === 'AMBER' ? 1 : 2);
+        return rank(a.healthStatus) - rank(b.healthStatus);
+      })
+      .slice(0, 3);
 
     return {
       totalAccumulatedSavings: accSavings,
@@ -97,6 +113,7 @@ export const GoalsProgressStrip: React.FC<GoalsProgressStripProps> = ({
       milestonePct: mPct,
       monthlyRecurringPace: recurringPace,
       onTrackGoals: onTrack,
+      previewGoals: sortedPreview,
     };
   }, [goalCategories]);
 
@@ -186,7 +203,7 @@ export const GoalsProgressStrip: React.FC<GoalsProgressStripProps> = ({
           <div className="space-y-1.5">
             <div className="flex justify-between items-center text-xs">
               <span className="font-semibold text-slate-600 dark:text-zinc-300">
-                {t('dashboard.goals.title')}
+                {t('dashboard.goals.targetDateLabel')}
               </span>
               <span className="font-mono tabular-nums text-xs text-slate-500 dark:text-zinc-400">
                 {t('dashboard.goals.milestonesFunded', {
@@ -218,12 +235,29 @@ export const GoalsProgressStrip: React.FC<GoalsProgressStripProps> = ({
         )}
       </div>
 
-      {/* Footer Breakdown */}
-      <div className="pt-3 border-t border-slate-100 dark:border-zinc-800 text-[11px] font-medium text-slate-400 dark:text-zinc-500">
-        {t('dashboard.goals.goalBreakdown', {
-          total: totalGoals,
-          targetCount: targetDateGoalsCount,
-          recurringCount: recurringGoalsCount,
+      {/* Top Goals Preview */}
+      <div className="pt-3 border-t border-slate-100 dark:border-zinc-800 space-y-1.5">
+        {previewGoals.map((g) => {
+          const bal = parseFloat(String(g.currentBalance || '0')) || 0;
+          const tgt = parseFloat(String(g.targetAmount || g.schedule?.targetAmount || '0')) || 0;
+          const pct = tgt > 0 && g.fundingMode !== 'RECURRING' ? Math.min(100, Math.round((bal / tgt) * 100)) : null;
+          const dotColor =
+            g.healthStatus === 'RED'
+              ? 'bg-rose-500'
+              : g.healthStatus === 'AMBER'
+              ? 'bg-amber-500'
+              : 'bg-emerald-500';
+          return (
+            <div key={g.id} className="flex items-center justify-between gap-2 text-xs">
+              <div className="flex items-center gap-2 min-w-0">
+                <span className={`w-1.5 h-1.5 rounded-full shrink-0 ${dotColor}`} />
+                <span className="font-medium text-slate-700 dark:text-zinc-300 truncate">{g.name}</span>
+              </div>
+              <span className="font-mono tabular-nums text-[11px] font-semibold text-slate-500 dark:text-zinc-400 shrink-0">
+                {pct !== null ? `${format(bal)} (${pct}%)` : format(bal)}
+              </span>
+            </div>
+          );
         })}
       </div>
     </div>

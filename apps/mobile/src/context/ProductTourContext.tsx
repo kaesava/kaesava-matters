@@ -61,18 +61,18 @@ export const MOBILE_TOUR_STEPS: Array<{
     badgeKey: 'tour.steps.quickActions.badge',
   },
   {
-    id: 'bank-accounts',
-    route: '/(app)/bank-accounts',
-    titleKey: 'tour.steps.bankAccounts.title',
-    descKey: 'tour.steps.bankAccounts.desc',
-    badgeKey: 'tour.steps.bankAccounts.badge',
-  },
-  {
     id: 'upcoming-events',
     route: '/(app)/plan',
     titleKey: 'tour.steps.upcomingEvents.title',
     descKey: 'tour.steps.upcomingEvents.desc',
     badgeKey: 'tour.steps.upcomingEvents.badge',
+  },
+  {
+    id: 'payday-matrix',
+    route: '/(app)/payday-plan',
+    titleKey: 'tour.steps.paydaySchedule.title',
+    descKey: 'tour.steps.paydaySchedule.desc',
+    badgeKey: 'tour.steps.paydaySchedule.badge',
   },
   {
     id: 'schedules-tab',

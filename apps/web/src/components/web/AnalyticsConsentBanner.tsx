@@ -24,7 +24,7 @@ export function AnalyticsConsentBanner() {
     retry: false,
     staleTime: 60_000,
   });
-  const updatePrefs = trpc.updateUserPreferences.useMutation();
+  const { mutate: updateTelemetryConsent, isPending: isUpdatingConsent } = trpc.updateUserPreferences.useMutation();
 
   useEffect(() => {
     try {
@@ -47,13 +47,13 @@ export function AnalyticsConsentBanner() {
         }
       }
 
-      if (dbConsent === null && (localConsent === 'granted' || localConsent === 'denied') && isAuthenticated && hasTenant && userPrefQuery.isFetched && !updatePrefs.isPending) {
-        updatePrefs.mutate({ telemetryConsent: localConsent });
+      if (dbConsent === null && (localConsent === 'granted' || localConsent === 'denied') && isAuthenticated && hasTenant && userPrefQuery.isFetched && !isUpdatingConsent) {
+        updateTelemetryConsent({ telemetryConsent: localConsent });
       }
     } catch {
       // In private browsing mode or local storage disabled
     }
-  }, [isAuthenticated, hasTenant, userPrefQuery.data?.telemetryConsent, userPrefQuery.isFetched]);
+  }, [isAuthenticated, hasTenant, userPrefQuery.data?.telemetryConsent, userPrefQuery.isFetched, isUpdatingConsent, updateTelemetryConsent]);
 
   const handleConsent = (granted: boolean) => {
     const value = granted ? 'granted' : 'denied';
@@ -65,7 +65,7 @@ export function AnalyticsConsentBanner() {
         posthog.opt_out_capturing();
       }
       if (isAuthenticated && hasTenant) {
-        updatePrefs.mutate({ telemetryConsent: value });
+        updateTelemetryConsent({ telemetryConsent: value });
       }
       window.dispatchEvent(new Event('mm-analytics-consent-changed'));
     } catch {

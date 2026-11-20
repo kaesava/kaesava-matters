@@ -287,22 +287,24 @@ function IncomeAndBillsContent() {
       )}
 
       {activeTab === "MATRIX" && (
-        <HorizonPlanTab
-          currentUserId={pools[0]?.userId || "default-user"}
-          categories={matrixCategories}
-          incomeEvents={matrixIncomeEvents}
-          expenseEvents={matrixExpenseEvents}
-          onMarkPaid={(eventId, amount, date) => {
-            const evt = expenseEvents.find((e) => e.id === eventId);
-            setMatrixMarkPaidTarget({
-              eventId,
-              name: evt?.name || "Expense",
-              amount,
-              date,
-              poolId: evt?.envelopeId ?? undefined,
-            });
-          }}
-        />
+        <div data-tour="payday-matrix">
+          <HorizonPlanTab
+            currentUserId={pools[0]?.userId || "default-user"}
+            categories={matrixCategories}
+            incomeEvents={matrixIncomeEvents}
+            expenseEvents={matrixExpenseEvents}
+            onMarkPaid={(eventId, amount, date) => {
+              const evt = expenseEvents.find((e) => e.id === eventId);
+              setMatrixMarkPaidTarget({
+                eventId,
+                name: evt?.name || "Expense",
+                amount,
+                date,
+                poolId: evt?.envelopeId ?? undefined,
+              });
+            }}
+          />
+        </div>
       )}
 
       {matrixMarkPaidTarget && (

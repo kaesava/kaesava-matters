@@ -269,6 +269,7 @@ export default function DashboardPage() {
               currentBalance: String(g.currentBalance || "0"),
               healthStatus: g.healthStatus || undefined,
               targetAmount: g.targetAmount,
+              monthlyAmount: g.monthlyAmount,
               endDate: g.endDate,
               fundingMode: g.fundingMode === "RECURRING" || g.fundingMode === "TARGET_BALANCE" ? g.fundingMode : null,
               enteredAmount: g.enteredAmount,

@@ -51,12 +51,11 @@ export const dashboard = {
       "categoryShort": "Short by {amount}"
     },
     "goals": {
-      "title": "Goals",
       "cardTitle": "Goals",
+      "targetDateLabel": "Target-Date Goals",
       "totalSavedInvested": "Total Saved & Invested",
       "milestonesFunded": "{funded} of {target} ({percent}%)",
       "recurringPace": "{amount}/mo recurring pace",
-      "goalBreakdown": "{total} Goals · {targetCount} Target Date, {recurringCount} Recurring",
       "noGoalsSubtitle": "Create a goal to start building your savings.",
       "addGoalAction": "+ Add Goal",
       "onTrack": "{count} of {total} on track",
@@ -77,7 +76,6 @@ export const dashboard = {
       "upcomingIncome": "Upcoming Income",
       "upcomingIncomeWithCount": "Upcoming Income ({count})",
       "noUpcoming": "No upcoming paydays scheduled.",
-      "upcomingEventsLink": "Upcoming Events →",
       "twelveMonthPlanLink": "12-Month Plan →",
       "nextPaydayBadge": "Next Payday",
       "allocatePayday": "Plan Payday",

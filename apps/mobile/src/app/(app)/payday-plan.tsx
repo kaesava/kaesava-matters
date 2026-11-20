@@ -1,11 +1,14 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { t } from '@money-matters/i18n';
 import { AppScreenWrapper } from '../../components/AppScreenWrapper';
 import { MobileHorizonPlanTab } from '../../components/plan/MobileHorizonPlanTab';
 import { MobileCategoryDetailSheet, MobileCategoryDetailItem } from '@money-matters/ui/mobile';
+import { useMobileProductTour } from '../../context/ProductTourContext';
 
 export default function SplitIncomeScreen() {
+  const { registerTourTarget } = useMobileProductTour();
+  const matrixRef = useRef<View>(null);
   const [categoryModalVisible, setCategoryModalVisible] = useState(false);
   const [activeCategoryDetail, setActiveCategoryDetail] = useState<{
     poolId: string;
@@ -25,7 +28,15 @@ export default function SplitIncomeScreen() {
         content: t('planTabs.twelveMonthIncomeSplitTooltip'),
       }}
     >
-      <View style={styles.container}>
+      <View
+        ref={matrixRef}
+        style={styles.container}
+        onLayout={() => {
+          matrixRef.current?.measureInWindow((x, y, width, height) => {
+            if (width > 0 && height > 0) registerTourTarget('payday-matrix', { x, y, width, height });
+          });
+        }}
+      >
         <MobileHorizonPlanTab
           onOpenCategoryModal={(params) => {
             setActiveCategoryDetail(params);

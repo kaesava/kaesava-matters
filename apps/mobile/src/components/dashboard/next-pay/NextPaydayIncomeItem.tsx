@@ -53,14 +53,12 @@ export const NextPaydayIncomeItem: React.FC<NextPaydayIncomeItemProps> = ({
           <Text style={isOverdue ? styles.overdueText : styles.daysAwayText}>
             {daysAwayText}
           </Text>
-          {' '}({formatDate(item.expectedDate)})
         </Text>
 
-        {item.bankAccountName ? (
-          <Text style={styles.bankAccountText}>
-            {item.bankAccountName}
-          </Text>
-        ) : null}
+        <Text style={styles.bankAccountText}>
+          {formatDate(item.expectedDate)}
+          {item.bankAccountName ? ` · ${item.bankAccountName}` : ''}
+        </Text>
       </View>
 
       <View style={styles.actionColumn}>

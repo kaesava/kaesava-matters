@@ -47,6 +47,8 @@ export function AuthModal({ isOpen, onClose, initialTab = "signIn" }: AuthModalP
         // Non-blocking if tenant creation handled elsewhere
       }
       onClose();
+      // Full page reload required so /setup reads the newly created tenant session
+      // eslint-disable-next-line @next/next/no-location-assign-relative-destination
       window.location.href = "/setup";
       return;
     }

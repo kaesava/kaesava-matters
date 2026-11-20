@@ -39,20 +39,20 @@ export const TOUR_STEPS: Array<{
     badgeKey: 'tour.steps.quickActions.badge',
   },
   {
-    id: 'bank-accounts',
-    route: '/dashboard/bank-accounts',
-    selector: '[data-tour="bank-accounts"]',
-    titleKey: 'tour.steps.bankAccounts.title',
-    descKey: 'tour.steps.bankAccounts.desc',
-    badgeKey: 'tour.steps.bankAccounts.badge',
-  },
-  {
     id: 'upcoming-events',
     route: '/dashboard/plan?tab=events',
     selector: '[data-tour="upcoming-events"]',
     titleKey: 'tour.steps.upcomingEvents.title',
     descKey: 'tour.steps.upcomingEvents.desc',
     badgeKey: 'tour.steps.upcomingEvents.badge',
+  },
+  {
+    id: 'payday-matrix',
+    route: '/dashboard/plan?tab=matrix',
+    selector: '[data-tour="payday-matrix"]',
+    titleKey: 'tour.steps.paydaySchedule.title',
+    descKey: 'tour.steps.paydaySchedule.desc',
+    badgeKey: 'tour.steps.paydaySchedule.badge',
   },
   {
     id: 'schedules-tab',

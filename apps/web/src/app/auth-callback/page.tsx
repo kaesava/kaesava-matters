@@ -67,6 +67,8 @@ function AuthCallbackContent() {
 
   useEffect(() => {
     if (oauthError) {
+      // Full page reload required to refresh auth/session state
+      // eslint-disable-next-line @next/next/no-location-assign-relative-destination
       window.location.href = `/sign-in?error=${encodeURIComponent(oauthError)}`;
       return;
     }
@@ -87,6 +89,7 @@ function AuthCallbackContent() {
     }
 
     if (!activeUser) {
+      // eslint-disable-next-line @next/next/no-location-assign-relative-destination
       window.location.href = "/sign-in?error=oauth_failed";
       return;
     }
@@ -102,11 +105,13 @@ function AuthCallbackContent() {
     }
 
     if (tenantStatusQuery.data && !tenantStatusQuery.data.hasTenant) {
+      // eslint-disable-next-line @next/next/no-location-assign-relative-destination
       window.location.href = `/complete-profile?redirect=${encodeURIComponent(redirectUrl)}`;
       return;
     }
 
     if (tenantStatusQuery.data && !tenantStatusQuery.data.setupCompleted) {
+      // eslint-disable-next-line @next/next/no-location-assign-relative-destination
       window.location.href = "/setup";
       return;
     }

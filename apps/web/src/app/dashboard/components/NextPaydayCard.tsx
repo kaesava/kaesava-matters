@@ -146,14 +146,17 @@ export const NextPaydayCard: React.FC<NextPaydayCardProps> = ({
                 <p className="text-[11px] text-gray-500 font-mono">
                   <span className="font-semibold text-gray-900">{format(income.amount)}</span>
                   {daysAwayText && ` · ${daysAwayText}`}
-                  {isOverdue && <strong className="font-extrabold text-rose-600 dark:text-rose-400"> {t('common.overdue').toLowerCase()}</strong>}{' '}
-                  ({formatLocaleDate(income.expectedDate)})
+                  {isOverdue && <strong className="font-extrabold text-rose-600 dark:text-rose-400"> {t('common.overdue').toLowerCase()}</strong>}
                 </p>
-                {income.bankAccountName && (
-                  <p className="text-[11px] text-gray-500">
-                    <span className="font-medium text-gray-700 dark:text-gray-300">{income.bankAccountName}</span>
-                  </p>
-                )}
+                <p className="text-[11px] text-gray-500">
+                  <span className="font-mono">{formatLocaleDate(income.expectedDate)}</span>
+                  {income.bankAccountName && (
+                    <>
+                      {' · '}
+                      <span className="font-medium text-gray-700 dark:text-gray-300">{income.bankAccountName}</span>
+                    </>
+                  )}
+                </p>
               </div>
 
               <div className="flex items-center gap-1 shrink-0">

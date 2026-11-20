@@ -90,6 +90,7 @@ export function MobilePaydayCelebrationCard({
       />
 
       <MobilePaydayMetricsGrid
+        privateAllocated={privateAllocated}
         everydayAllocated={everydayAllocated}
         billsAllocated={billsAllocated}
         goalsAllocated={goalsAllocated}

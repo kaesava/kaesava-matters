@@ -1,6 +1,6 @@
 "use client";
 import React, { useEffect } from "react";
-import { useParams, useSearchParams } from "next/navigation";
+import { useParams, useRouter, useSearchParams } from "next/navigation";
 import { logger } from "@/lib/logger";
 import { t } from "@money-matters/i18n";
 
@@ -15,11 +15,12 @@ function isAllowedHost(hostname: string): boolean {
 
 function DevCallbackContent() {
   const params = useParams();
+  const router = useRouter();
   const searchParams = useSearchParams();
 
   useEffect(() => {
     if (process.env.NODE_ENV === "production") {
-      window.location.href = "/dashboard";
+      router.replace("/dashboard");
       return;
     }
 
@@ -33,7 +34,7 @@ function DevCallbackContent() {
         const targetUrl = new URL(customTarget, `${proto}://${host}`);
         if (!isAllowedHost(targetUrl.hostname)) {
           logger.warn("[Dev Callback] Blocked unallowed redirect hostname", { hostname: targetUrl.hostname });
-          window.location.href = "/dashboard";
+          router.replace("/dashboard");
           return;
         }
 
@@ -46,12 +47,12 @@ function DevCallbackContent() {
         logger.info("[Dev Callback] Redirecting to target origin", { target: targetUrl.toString() });
         window.location.href = targetUrl.toString();
       } catch {
-        window.location.href = "/dashboard";
+        router.replace("/dashboard");
       }
     } else {
-      window.location.href = "/dashboard";
+      router.replace("/dashboard");
     }
-  }, [params, searchParams]);
+  }, [params, router, searchParams]);
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-zinc-50 gap-4">

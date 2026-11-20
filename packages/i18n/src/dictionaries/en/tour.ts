@@ -28,15 +28,15 @@ export const tour = {
         "desc": "Paid a bill? Received income? Log it in 5 seconds or move money between envelopes with ease.",
         "badge": "Quick Actions"
       },
-      "bankAccounts": {
-        "title": "1-Click Bank Balance Alignment",
-        "desc": "No manual CSV imports or receipt checks. Compare your bank balance against your envelopes and align with one tap.",
-        "badge": "Zero CSV Hassle"
-      },
       "upcomingEvents": {
         "title": "Upcoming Paydays & Bills",
         "desc": "Track upcoming bills and paydays. Mark bills as paid when you pay them, or preview and plan your upcoming paydays ahead of time.",
         "badge": "Upcoming Events"
+      },
+      "paydaySchedule": {
+        "title": "12-Month Payday Plan",
+        "desc": "See how every upcoming paycheck fills your bills, goals, and everyday envelopes over the next 12 months—and save custom drafts anytime.",
+        "badge": "12-Month Plan"
       },
       "schedulesTab": {
         "title": "Income & Bill Schedules",

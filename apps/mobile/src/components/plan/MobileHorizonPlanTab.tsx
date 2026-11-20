@@ -237,7 +237,7 @@ export function MobileHorizonPlanTab({ onOpenCategoryModal }: MobileHorizonPlanT
       />
       <EventOverrideModal
         visible={Boolean(eventToOverride)}
-        event={eventToOverride}
+        eventToEdit={eventToOverride}
         onClose={() => setEventToOverride(null)}
         onSuccess={() => {
           utils.getHorizonProjectionData.invalidate();

@@ -11,6 +11,7 @@ export interface GoalItem {
   name: string;
   currentBalance: number | string;
   targetAmount?: string | number | null;
+  monthlyAmount?: string | number | null;
   targetDate?: string | null;
   fundingMode?: 'TARGET_BALANCE' | 'RECURRING' | string | null;
   enteredAmount?: string | null;
@@ -38,11 +39,13 @@ export function GoalsProgressStrip({ goals }: GoalsProgressStripProps) {
     milestonePct,
     monthlyRecurringPace,
     onTrackGoals,
+    previewGoals,
   } = useMemo(() => {
     let accSavings = 0;
     let targetCount = 0;
     let recurringCount = 0;
     let milestoneBal = 0;
+    let milestoneClampedBal = 0;
     let milestoneTgt = 0;
     let recurringPace = 0;
     let onTrack = 0;
@@ -54,21 +57,27 @@ export function GoalsProgressStrip({ goals }: GoalsProgressStripProps) {
       const isRecurring = g.fundingMode === 'RECURRING';
       if (isRecurring) {
         recurringCount += 1;
-        const rawAmt = parseFloat(String(g.targetAmount || g.enteredAmount || '0')) || 0;
-        const freq = g.budgetFrequency;
-        if (freq === 'WEEKLY') {
-          recurringPace += (rawAmt * 52) / 12;
-        } else if (freq === 'FORTNIGHTLY') {
-          recurringPace += (rawAmt * 26) / 12;
-        } else if (freq === 'ANNUALLY') {
-          recurringPace += rawAmt / 12;
+        const explicitMonthly = parseFloat(String(g.monthlyAmount || '0')) || 0;
+        if (explicitMonthly > 0) {
+          recurringPace += explicitMonthly;
         } else {
-          recurringPace += rawAmt;
+          const rawAmt = parseFloat(String(g.enteredAmount || g.targetAmount || '0')) || 0;
+          const freq = g.budgetFrequency;
+          if (freq === 'WEEKLY') {
+            recurringPace += (rawAmt * 52) / 12;
+          } else if (freq === 'FORTNIGHTLY') {
+            recurringPace += (rawAmt * 26) / 12;
+          } else if (freq === 'ANNUALLY') {
+            recurringPace += rawAmt / 12;
+          } else {
+            recurringPace += rawAmt;
+          }
         }
       } else {
         targetCount += 1;
         const tgt = parseFloat(String(g.targetAmount || '0')) || 0;
         milestoneBal += bal;
+        milestoneClampedBal += tgt > 0 ? Math.min(Math.max(0, bal), tgt) : Math.max(0, bal);
         milestoneTgt += tgt;
       }
 
@@ -77,7 +86,14 @@ export function GoalsProgressStrip({ goals }: GoalsProgressStripProps) {
       }
     }
 
-    const mPct = milestoneTgt > 0 ? Math.min(100, Math.round((milestoneBal / milestoneTgt) * 100)) : 0;
+    const mPct = milestoneTgt > 0 ? Math.min(100, Math.round((milestoneClampedBal / milestoneTgt) * 100)) : 0;
+
+    const sortedPreview = [...(goals ?? [])]
+      .sort((a, b) => {
+        const rank = (s?: string) => (s === 'RED' ? 0 : s === 'AMBER' ? 1 : 2);
+        return rank(a.healthStatus) - rank(b.healthStatus);
+      })
+      .slice(0, 3);
 
     return {
       totalAccumulatedSavings: accSavings,
@@ -88,10 +104,39 @@ export function GoalsProgressStrip({ goals }: GoalsProgressStripProps) {
       milestonePct: mPct,
       monthlyRecurringPace: recurringPace,
       onTrackGoals: onTrack,
+      previewGoals: sortedPreview,
     };
   }, [goals]);
 
-  if (totalGoals === 0) return null;
+  if (totalGoals === 0) {
+    return (
+      <View style={styles.card}>
+        <View style={styles.headerRow}>
+          <Text style={styles.cardTitle}>{t('dashboard.goals.cardTitle')}</Text>
+          <TouchableOpacity
+            onPress={() => router.push('/(app)/envelopes?type=GOAL' as Href)}
+            style={styles.seeAllBtn}
+            activeOpacity={0.7}
+          >
+            <Text style={styles.seeAllText}>{t('dashboard.goals.viewAll')}</Text>
+            <Feather name="chevron-right" size={14} color={DESIGN_TOKENS.colors.accent} />
+          </TouchableOpacity>
+        </View>
+        <View style={styles.heroSection}>
+          <Text style={styles.heroSubtitle}>{t('dashboard.goals.totalSavedInvested')}</Text>
+          <Text style={styles.heroAmount}>{formatMobileCurrency(0)}</Text>
+          <Text style={styles.emptySubtitle}>{t('dashboard.goals.noGoalsSubtitle')}</Text>
+        </View>
+        <TouchableOpacity
+          onPress={() => router.push('/(app)/envelopes?type=GOAL' as Href)}
+          style={styles.footerRow}
+          activeOpacity={0.7}
+        >
+          <Text style={styles.seeAllText}>{t('dashboard.goals.addGoalAction')} →</Text>
+        </TouchableOpacity>
+      </View>
+    );
+  }
 
   const allOnTrack = onTrackGoals === totalGoals;
 
@@ -124,7 +169,7 @@ export function GoalsProgressStrip({ goals }: GoalsProgressStripProps) {
         </View>
 
         <TouchableOpacity
-          onPress={() => router.push('/(app)/envelopes' as Href)}
+          onPress={() => router.push('/(app)/envelopes?type=GOAL' as Href)}
           style={styles.seeAllBtn}
           activeOpacity={0.7}
         >
@@ -143,7 +188,7 @@ export function GoalsProgressStrip({ goals }: GoalsProgressStripProps) {
       {targetDateGoalsCount > 0 && (
         <View style={styles.milestoneSection}>
           <View style={styles.progressLabelRow}>
-            <Text style={styles.milestoneTitle}>{t('dashboard.goals.title')}</Text>
+            <Text style={styles.milestoneTitle}>{t('dashboard.goals.targetDateLabel')}</Text>
             <Text style={styles.milestoneMetric}>
               {t('dashboard.goals.milestonesFunded', {
                 funded: formatMobileCurrency(totalMilestoneBalance),
@@ -172,15 +217,30 @@ export function GoalsProgressStrip({ goals }: GoalsProgressStripProps) {
         </View>
       )}
 
-      {/* Footer Breakdown */}
+      {/* Top Goals Preview */}
       <View style={styles.footerRow}>
-        <Text style={styles.footerText}>
-          {t('dashboard.goals.goalBreakdown', {
-            total: totalGoals,
-            targetCount: targetDateGoalsCount,
-            recurringCount: recurringGoalsCount,
-          })}
-        </Text>
+        {previewGoals.map((g) => {
+          const bal = typeof g.currentBalance === 'number' ? g.currentBalance : parseFloat(String(g.currentBalance || '0')) || 0;
+          const tgt = parseFloat(String(g.targetAmount || '0')) || 0;
+          const pct = tgt > 0 && g.fundingMode !== 'RECURRING' ? Math.min(100, Math.round((bal / tgt) * 100)) : null;
+          const dotColor =
+            g.healthStatus === 'RED'
+              ? '#ef4444'
+              : g.healthStatus === 'AMBER'
+              ? '#f59e0b'
+              : '#10b981';
+          return (
+            <View key={g.id} style={styles.previewRow}>
+              <View style={styles.previewLeft}>
+                <View style={[styles.statusDot, { backgroundColor: dotColor }]} />
+                <Text style={styles.previewName} numberOfLines={1}>{g.name}</Text>
+              </View>
+              <Text style={styles.previewVal}>
+                {pct !== null ? `${formatMobileCurrency(bal)} (${pct}%)` : formatMobileCurrency(bal)}
+              </Text>
+            </View>
+          );
+        })}
       </View>
     </View>
   );
@@ -322,11 +382,41 @@ const styles = StyleSheet.create({
     paddingTop: 8,
     borderTopWidth: 1,
     borderTopColor: DESIGN_TOKENS.colors.slate[100],
+    gap: 6,
   },
-  footerText: {
-    fontSize: 11,
-    fontWeight: '500',
+  emptySubtitle: {
+    fontSize: 12,
     color: DESIGN_TOKENS.colors.slate[400],
+    marginTop: 4,
+  },
+  previewRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    gap: 8,
+  },
+  previewLeft: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+    flex: 1,
+  },
+  statusDot: {
+    width: 6,
+    height: 6,
+    borderRadius: 3,
+  },
+  previewName: {
+    fontSize: 12,
+    fontWeight: '600',
+    color: DESIGN_TOKENS.colors.slate[700],
+    flex: 1,
+  },
+  previewVal: {
+    fontSize: 11,
+    fontWeight: '600',
+    color: DESIGN_TOKENS.colors.slate[500],
+    fontFamily: DESIGN_TOKENS.fonts.mono,
   },
 });
 
