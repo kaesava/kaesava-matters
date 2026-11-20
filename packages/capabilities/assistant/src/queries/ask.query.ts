@@ -44,10 +44,10 @@ function buildClarifyResult(): AssistantResult {
 
 async function resolveLlmQuery(opts: AskAssistantOptions): Promise<AssistantResult> {
   const { query, context, handler, llmProvider, usageStore } = opts;
-  const snapshot = handler.buildSafeContext ? await handler.buildSafeContext(context) : undefined;
 
   let outcome;
   try {
+    const snapshot = handler.buildSafeContext ? await handler.buildSafeContext(context) : undefined;
     outcome = await llmProvider.classifyIntent(query, snapshot);
   } catch (err) {
     await usageStore.decrementLlmCalls?.(context.tenantId);

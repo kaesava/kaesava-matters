@@ -222,4 +222,76 @@ describe("Ask Assistant Query Orchestration", () => {
       params: { entityId: "bill-1", name: "Internet" },
     });
   });
+
+  it("increments quota once and does not refund when LLM succeeds", async () => {
+    mockLlm.classifyIntent = vi.fn().mockResolvedValue({
+      ok: true,
+      response: { mode: "answer", text: "Your groceries envelope is on track." },
+    });
+
+    const res = await askAssistant({
+      query: "How are my envelopes looking this month?",
+      context,
+      appId,
+      handler: mockHandler,
+      llmProvider: mockLlm,
+      usageStore: mockStore,
+    });
+
+    expect(res).toEqual({ type: "answer", text: "Your groceries envelope is on track." });
+    expect(mockStore.incrementLlmCalls).toHaveBeenCalledTimes(1);
+    expect(mockStore.decrementLlmCalls).not.toHaveBeenCalled();
+  });
+
+  it("refunds quota if buildSafeContext throws before LLM is called", async () => {
+    mockHandler.buildSafeContext = vi.fn().mockRejectedValue(new Error("DB timeout"));
+
+    await expect(
+      askAssistant({
+        query: "How are my envelopes looking this month?",
+        context,
+        appId,
+        handler: mockHandler,
+        llmProvider: mockLlm,
+        usageStore: mockStore,
+      })
+    ).rejects.toThrow("DB timeout");
+
+    expect(mockStore.incrementLlmCalls).toHaveBeenCalledTimes(1);
+    expect(mockStore.decrementLlmCalls).toHaveBeenCalledTimes(1);
+    expect(mockLlm.classifyIntent).not.toHaveBeenCalled();
+  });
+
+  it("refunds quota when LLM provider returns missing_config", async () => {
+    mockLlm.classifyIntent = vi.fn().mockResolvedValue({ ok: false, reason: "missing_config" });
+
+    const res = await askAssistant({
+      query: "How are my envelopes looking this month?",
+      context,
+      appId,
+      handler: mockHandler,
+      llmProvider: mockLlm,
+      usageStore: mockStore,
+    });
+
+    expect(res).toEqual({ type: "unavailable", reason: "service_error" });
+    expect(mockStore.incrementLlmCalls).toHaveBeenCalledTimes(1);
+    expect(mockStore.decrementLlmCalls).toHaveBeenCalledTimes(1);
+  });
+
+  it("does not increment quota when subscription is expired", async () => {
+    const res = await askAssistant({
+      query: "How are my envelopes looking this month?",
+      context,
+      appId,
+      isExpired: true,
+      handler: mockHandler,
+      llmProvider: mockLlm,
+      usageStore: mockStore,
+    });
+
+    expect(res).toEqual({ type: "unavailable", reason: "subscription_required" });
+    expect(mockStore.incrementLlmCalls).not.toHaveBeenCalled();
+    expect(mockLlm.classifyIntent).not.toHaveBeenCalled();
+  });
 });

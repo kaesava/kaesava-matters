@@ -1,17 +1,15 @@
-import { sql, eq, and } from "drizzle-orm";
+import { sql, eq, and, isNull } from "drizzle-orm";
 import { aiUsage, DbOrTx } from "@money-matters/db";
 import { AI_TIER_LIMITS } from "@money-matters/config";
 import type { UsageStorePort } from "./index.js";
 
-function getCurrentPeriodMonth(): string {
-  const now = new Date();
+function getCurrentPeriodMonth(now: Date): string {
   const year = now.getUTCFullYear();
   const month = (now.getUTCMonth() + 1).toString().padStart(2, "0");
   return `${year}-${month}-01`;
 }
 
-function getNextResetDate(): string {
-  const now = new Date();
+function getNextResetDate(now: Date): string {
   const nextMonth = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth() + 1, 1));
   const year = nextMonth.getUTCFullYear();
   const month = (nextMonth.getUTCMonth() + 1).toString().padStart(2, "0");
@@ -19,16 +17,20 @@ function getNextResetDate(): string {
 }
 
 export class DbUsageStore implements UsageStorePort {
-  constructor(private db: DbOrTx) {}
+  constructor(
+    private db: DbOrTx,
+    private now: () => Date = () => new Date()
+  ) {}
 
   async getUsage(tenantId: string): Promise<{ used: number; limit: number; remaining: number; resetsOn: string }> {
-    const periodMonth = getCurrentPeriodMonth();
+    const current = this.now();
+    const periodMonth = getCurrentPeriodMonth(current);
     const limit = AI_TIER_LIMITS.free.monthlyLlmCalls;
 
     const [row] = await this.db
       .select({ llmCalls: aiUsage.llmCalls })
       .from(aiUsage)
-      .where(and(eq(aiUsage.tenantId, tenantId), eq(aiUsage.periodMonth, periodMonth)))
+      .where(and(eq(aiUsage.tenantId, tenantId), eq(aiUsage.periodMonth, periodMonth), isNull(aiUsage.archivedAt)))
       .limit(1);
 
     const used = row?.llmCalls ?? 0;
@@ -38,12 +40,14 @@ export class DbUsageStore implements UsageStorePort {
       used,
       limit,
       remaining,
-      resetsOn: getNextResetDate(),
+      resetsOn: getNextResetDate(current),
     };
   }
 
   async incrementLlmCalls(tenantId: string, limit: number): Promise<boolean> {
-    const periodMonth = getCurrentPeriodMonth();
+    if (limit <= 0) return false;
+    const current = this.now();
+    const periodMonth = getCurrentPeriodMonth(current);
 
     // Atomic conditional upsert protecting against race conditions
     const result = await this.db
@@ -57,7 +61,7 @@ export class DbUsageStore implements UsageStorePort {
         target: [aiUsage.tenantId, aiUsage.periodMonth],
         set: {
           llmCalls: sql`${aiUsage.llmCalls} + 1`,
-          updatedAt: new Date(),
+          updatedAt: current,
         },
         where: sql`${aiUsage.llmCalls} < ${limit}`,
       })
@@ -67,12 +71,13 @@ export class DbUsageStore implements UsageStorePort {
   }
 
   async decrementLlmCalls(tenantId: string): Promise<void> {
-    const periodMonth = getCurrentPeriodMonth();
+    const current = this.now();
+    const periodMonth = getCurrentPeriodMonth(current);
     await this.db
       .update(aiUsage)
       .set({
         llmCalls: sql`GREATEST(0, ${aiUsage.llmCalls} - 1)`,
-        updatedAt: new Date(),
+        updatedAt: current,
       })
       .where(and(eq(aiUsage.tenantId, tenantId), eq(aiUsage.periodMonth, periodMonth)));
   }

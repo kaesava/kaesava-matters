@@ -27,24 +27,28 @@ pnpm app:set-flag --flag=customAllocationRules --value=true --env=prod
 * Ensure parity between mobile and web - UI & functionality. So, when you write address a new/change/fix for the Web app, also ensure that the mobile app is in parity and address it there too. When you write address a new/change/fix for the Mobile app, also ensure that the web app is in parity and address it there too. Do this even if not explicitly asked, unless I explicitly state the app (Mobile: or Web:). Re-use code as much as possible while keeping native UI experiences.
 * As you build code, you decide whether you want to run pnpm typecheck/lint/test/test coverage/i8ln-check/install/ and any other scripts/checks as you complete changes. However, at the end, ensure pnpm validate:prod runs successfully. Once successful, commit code, but ask me before pushing the code.
 
+# DEEP DIVES
 
-# Web
+## Allocation Rules
+You are now going to do a full critical pass of the entire codebase to ensure that:
+* All capabilities in the .md files in root are implemented across web and mobile, fully and consistently,
+* There are no logical gaps or contradictions in the behaviour of key items like envelopes, envelope types, bank accounts, income schedules, expense schedules, income events, expense events, 
+* Currency format, date formats and other locale follow setting across every field across web and mobile
+* Archival and Un-archival of all elements is done consistently, cleanly
+* All critical calculations (payday allocation, matrix allocation projection, envelope projection, can I afford, can I afford - recurring, Ask Penny, etc) 
+* Creation of History and Allocation History across confirmed actions (like transfers, mark spent, confirm income split, one-off expense/income confirmed, bank reconciliation etc.) - anything that changes an envelope's balance - are all the fields set correctly and immutable
+* Important: Absolutely aggressive culling of un-used or redundant code
+* 100% mobile/web parity
+* 100% user-facing literals NOT hard-coded (optimised with maximal re-use within and across web and mobile apps)
+* No hardocding and 100% re-use of centralised UI elements and UI modules (like modals, badges, input fields, date fields, etc), fonts, colours, themes and styles unless absolutely needed and by exception (in which case it must be documented) - mobile and web can be separate and native to them but within web and within mobile, need consistency.
+* Right now, we have a ruleset that for Shared and ruleset for Private. However, when income comes in, it is either linked to a shared or private bank account. Critically audit the allocation rules in relation to the rule-sets - are they designed consistently? Do they conflict? Has the code been written correctly? Are there logical inconsistencies or errors or edge-case issues to fix? Be thorough. Be critical.
+* General confirmation of 100% alignment and consistency of business rules and logic within and across the web and mobile apps
 
-# Forgot Password
-- Prod - Says it sent a code, but I didn't receive it (I've checked my email incl Spam folders). Resend code also didn't work. Also, should we put some security around the use of "Resend code" - like waiting time, or number of attempts, etc? Interestingly, it worked in dev (I received email). Also, check that the timeout of the code (for example, if a new code was requested, or code timed out) is correctly implemented, including clean-up of expired codes in the system. Applies to web and mobile.
-
-
-/plan-feature
-
-# Signin with GOogle
-- Dev - web - Sign-in with Google - "This site can’t be reached" - "https://kesh-imac.tail09ef18.ts.net/dev-callback/http/localhost:3000?neon_auth_session_verifier=S_AzgXtFV5TxRuDx
-- Prod - web - Sign-in with Google - "An unexpected error occurred. Please try again."
-- Fix and also do a deep audit of the codebase to ensure that all combinations of the user attempting to sign-up/sign-in with Google followed by email (and vice-versa) work as expected, including the correct and full setup fo the tenant and all related information like country? (consistent between sign-in methods). Be thorough. Be critical. Ensure all combinations of sign-up and sign-in across Google and email/password work as expected for a modern SaaS product. This should be across web and mobile.
 
 
 
-# Telemetry testing - does this work - privacy warning
 
+############# IGNORE BELOW ##########################
 
 Manual Verification
 
@@ -101,10 +105,6 @@ Bills|Goals & All|Shared|Private, pagination, History link, Progress)
 * Sign-In, Sign-Up (validations, Google, email/password, combinations of these for sign-up and/or sign-in & handling, etc)
 
 -----------------------------------------------
-
-
-
-
 
 ## Header
 
