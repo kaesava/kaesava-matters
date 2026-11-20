@@ -6,7 +6,7 @@ import {
 } from 'react-native';
 import { useRouter, type Href } from 'expo-router';
 import { Feather } from '@expo/vector-icons';
-import { useMobileToast, MobileButton, TypedConfirmDialog, InfoTooltip, DESIGN_TOKENS } from '@money-matters/ui/mobile';
+import { useMobileToast, MobileButton, TypedConfirmDialog, DESIGN_TOKENS } from '@money-matters/ui/mobile';
 import { usePostHog } from 'posthog-react-native';
 import { t } from '@money-matters/i18n';
 import * as SecureStore from 'expo-secure-store';
@@ -88,7 +88,6 @@ export function HouseholdDangerZoneSection() {
       <View style={styles.headerRow}>
         <Feather name="alert-triangle" size={16} color={DESIGN_TOKENS.colors.critical} />
         <Text style={styles.cardTitle}>{t('settings.dangerZone.title')}</Text>
-        <InfoTooltip content={t('settings.dangerZone.tooltip')} />
       </View>
       <Text style={styles.cardSubtitle}>
         {t('settings.dangerZone.subtitle')}

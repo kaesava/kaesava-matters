@@ -37,7 +37,6 @@ export function HouseholdReadOnlyView({
   return (
     <SettingsCard
       title={t('settings.household.title')}
-      tooltip={t('settings.householdTooltip')}
       action={
         isOwner ? (
           <TouchableOpacity onPress={onEdit} style={styles.editBtn}>

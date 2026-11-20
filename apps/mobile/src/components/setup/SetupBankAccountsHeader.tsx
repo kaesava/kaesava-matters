@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import { t } from '@money-matters/i18n';
-import { DESIGN_TOKENS, InfoTooltip } from '@money-matters/ui/mobile';
+import { DESIGN_TOKENS } from '@money-matters/ui/mobile';
 
 interface SetupBankAccountsHeaderProps {
   currentStep: number;
@@ -14,7 +14,6 @@ export function SetupBankAccountsHeader({ currentStep, totalSteps }: SetupBankAc
       <Text style={styles.stepLabel}>{t('setup.stepOf', { step: currentStep, total: totalSteps })}</Text>
       <View style={styles.titleRow}>
         <Text style={styles.title}>{t('setup.bankAccountsStep.title')}</Text>
-        <InfoTooltip title={t('setup.bankAccountsStep.title')} content={t('setup.bankAccountsStep.subtitle')} />
       </View>
 
       <View style={styles.tipCard}>

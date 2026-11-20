@@ -3,7 +3,7 @@ import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { useRouter, useLocalSearchParams, Href } from 'expo-router';
 import { Feather } from '@expo/vector-icons';
 import { t } from '@money-matters/i18n';
-import { DESIGN_TOKENS, showMobileConfirm, useMobileToast } from '@money-matters/ui/mobile';
+import { DESIGN_TOKENS, InfoTooltip, showMobileConfirm, useMobileToast } from '@money-matters/ui/mobile';
 import { trpc } from '../../lib/trpc';
 import { useAppFeatures } from '../../context/useAppFeatures';
 
@@ -137,11 +137,14 @@ export function MobileAllocationStrategySection() {
       {/* Header (Pill tag removed) */}
       <View style={styles.headerRow}>
         <View style={styles.titleContainer}>
-          <Text style={styles.title}>
-            {isPersonalScope
-              ? t('settings.paydayRules.tabs.personal')
-              : t('settings.paydayRules.title')}
-          </Text>
+          <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+            <Text style={styles.title}>
+              {isPersonalScope
+                ? t('settings.paydayRules.tabs.personal')
+                : t('settings.paydayRules.title')}
+            </Text>
+            <InfoTooltip content={t('settings.paydayRules.infoTooltip')} />
+          </View>
           <Text style={styles.subtitle}>{t('settings.paydayRules.description')}</Text>
         </View>
 

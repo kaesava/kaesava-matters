@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { trpc } from "../../../../lib/trpc";
 import { t, ARCHIVED_ITEM_TYPE_KEYS } from "@money-matters/i18n";
-import { PaginationBar, Spinner, InfoTooltip, SearchInput, SkeletonTable, ConfirmDialog, useToast } from "@money-matters/ui/web";
+import { PaginationBar, Spinner, SearchInput, SkeletonTable, ConfirmDialog, useToast } from "@money-matters/ui/web";
 import { useLocale } from "../../../../providers/LocaleProvider";
 
 type ArchivedItemType = "POOL" | "ENVELOPE" | "INCOME_SOURCE" | "BANK_ACCOUNT";
@@ -81,10 +81,6 @@ export function ArchivedSection() {
         <h2 className="text-base font-extrabold text-[#1B2B4B]">
           {t("settings.tabs.archived")}
         </h2>
-        <InfoTooltip
-          title={t("tooltips.archived.title")}
-          content={t("tooltips.archived.content")}
-        />
       </div>
 
       {/* Filter and Search Bar */}

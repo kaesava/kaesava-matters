@@ -7,7 +7,6 @@ import {
   SkeletonCard,
   MobilePaginationBar,
   MobileFilterSheet,
-  InfoTooltip,
   showMobileConfirm,
   useMobileToast,
 } from '@money-matters/ui/mobile';
@@ -106,13 +105,9 @@ export function MobileArchivedSection() {
 
   return (
     <View style={styles.container}>
-      {/* Title & InfoTooltip Header */}
+      {/* Title Header */}
       <View style={styles.headerRow}>
         <Text style={styles.headerTitle}>{t('settings.tabs.archived')}</Text>
-        <InfoTooltip
-          title={t('tooltips.archived.title')}
-          content={t('tooltips.archived.content')}
-        />
       </View>
 
       {/* Search & Filter Bar */}

@@ -3,7 +3,6 @@ export const privacy = {
     "title": "Your Data and Privacy",
     "deletionNotificationSubject": "Household Budget Deleted by Owner",
     "deletionNotificationBody": "Your Money Matters household budget has been deleted by the owner ({ownerEmail}). All shared data has been permanently erased.",
-    "aussiePrivacyGuarantee": "🔒 Your Money Data is Locked Down Tight",
     "aussiePrivacyDetail": "Your family's finances are kept 100% private to your household. We use bank-grade encryption (AES-256 / TLS 1.3) and strict Aussie privacy standards (Privacy Act 1988 Cth). We will never sell, rent, or share your data with anyone. Period.",
     "analyticsConsentTitle": "Privacy & Analytics",
     "analyticsConsentDesc": "We use optional, anonymous product analytics to understand feature usage and improve workflows. We never record dollar amounts, bank account names, or personal financial details.",

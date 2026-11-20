@@ -16,10 +16,6 @@ export default function MobileArchivedItemsScreen() {
       user={session?.user}
       showBack
       onBackPress={() => router.back()}
-      infoTooltip={{
-        title: t('tooltips.archived.title'),
-        content: t('tooltips.archived.content'),
-      }}
     >
       <View style={styles.container}>
         <MobileArchivedSection />

@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { t } from "@money-matters/i18n";
-import { ConfirmDialog, InfoTooltip, FormErrorBanner } from "@money-matters/ui/web";
+import { ConfirmDialog, FormErrorBanner } from "@money-matters/ui/web";
 import { computeAccountAvailability } from "@money-matters/types";
 import { SetupBankAccountRow, BankAccountRowItem } from "./SetupBankAccountRow";
 
@@ -59,10 +59,6 @@ export function SetupBankAccountsStep({
           <h2 className="text-xl font-black text-[#1B2B4B] tracking-tight">
             {t("setup.bankAccountsStep.title")}
           </h2>
-          <InfoTooltip
-            title={t("setup.bankAccountsStep.title")}
-            content={t("setup.bankAccountsStep.subtitle")}
-          />
         </div>
       </div>
 

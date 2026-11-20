@@ -57,7 +57,6 @@ export const dashboard = {
     },
     "upcomingExpensesTransfers": {
       "title": "Upcoming Expenses & Transfers",
-      "tooltip": "Upcoming bill commitments and scheduled envelope transfers.",
       "empty": "✨ All caught up! All bills are covered until your next payday.",
       "daysAway": "{count} day{plural} away",
       "daysOverdue": "{count} day{plural} overdue",

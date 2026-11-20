@@ -39,7 +39,6 @@ export function MembersList({
         <h2 className="text-base font-extrabold text-[#1B2B4B]">
           {t("settings.members.title")}
         </h2>
-        <InfoTooltip content={t("settings.members.tooltip")} />
       </div>
 
       <div className="space-y-3 pt-1">

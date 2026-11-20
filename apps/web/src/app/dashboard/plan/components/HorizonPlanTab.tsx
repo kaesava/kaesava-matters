@@ -112,7 +112,7 @@ export function HorizonPlanTab({
         <div className="flex items-center gap-2">
           <h2 className="text-lg font-bold text-[#1B2B4B] dark:text-white flex items-center gap-2">
             <span>{t("paydaySchedule.incomeAllocationGridTitle")}</span>
-            <InfoTooltip content={t("paydaySchedule.incomeAllocationGridTooltip")} />
+            <InfoTooltip content={t("planTabs.twelveMonthIncomeSplitTooltip")} />
           </h2>
         </div>
 

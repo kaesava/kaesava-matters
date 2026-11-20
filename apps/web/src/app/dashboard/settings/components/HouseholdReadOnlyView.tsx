@@ -1,7 +1,7 @@
 "use client";
 
 import { t } from "@money-matters/i18n";
-import { Button, InfoTooltip } from "@money-matters/ui/web";
+import { Button } from "@money-matters/ui/web";
 import { SUPPORTED_CURRENCIES, SUPPORTED_COUNTRIES } from "@money-matters/types";
 
 interface HouseholdReadOnlyViewProps {
@@ -35,7 +35,6 @@ export function HouseholdReadOnlyView({
           <h2 className="text-base font-extrabold text-[#1B2B4B]">
             {t("settings.householdProfileAndLocation")}
           </h2>
-          <InfoTooltip content={t("settings.householdProfileTooltip")} />
         </div>
 
         {isOwner && (

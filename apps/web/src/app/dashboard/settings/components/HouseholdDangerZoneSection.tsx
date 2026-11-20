@@ -6,7 +6,7 @@ import Link from "next/link";
 import { t } from "@money-matters/i18n";
 import { trpc } from "../../../../lib/trpc";
 import { authClient } from "../../../../lib/auth";
-import { useToast, InfoTooltip, TypedConfirmDialog } from "@money-matters/ui/web";
+import { useToast, TypedConfirmDialog } from "@money-matters/ui/web";
 
 export function HouseholdDangerZoneSection() {
   const router = useRouter();
@@ -73,7 +73,6 @@ export function HouseholdDangerZoneSection() {
         <h2 className="text-base font-extrabold text-red-700 tracking-wide uppercase">
           {t("settings.dangerZone.title")}
         </h2>
-        <InfoTooltip content={t("settings.dangerZone.tooltip")} />
       </div>
 
       <p className="text-xs text-slate-600 font-medium">

@@ -2,7 +2,7 @@ import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import { Feather } from '@expo/vector-icons';
 import { t } from '@money-matters/i18n';
-import { DESIGN_TOKENS, CardDrawerIndicator, formatRecurrenceSuffix } from '@money-matters/ui/mobile';
+import { DESIGN_TOKENS, CardDrawerIndicator, InfoTooltip, formatRecurrenceSuffix } from '@money-matters/ui/mobile';
 import { formatMobileCurrency } from '../../lib/format';
 import { useRouter, type Href } from 'expo-router';
 
@@ -92,8 +92,9 @@ export function EnvelopeItemCard({
               </View>
             )}
             {pool.isSurplusTarget && (
-              <View style={styles.surplusBadge}>
+              <View style={[styles.surplusBadge, { flexDirection: 'row', alignItems: 'center' }]}>
                 <Text style={styles.surplusBadgeText}>{t('categories.surplusBadgeText')}</Text>
+                <InfoTooltip content={t('categories.targetEnvelopeShortfallSurplus')} />
               </View>
             )}
           </View>

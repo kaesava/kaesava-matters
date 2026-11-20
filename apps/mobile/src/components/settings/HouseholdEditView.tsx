@@ -11,6 +11,7 @@ import {
   MobileButton,
   FormLabel,
   FormFieldError,
+  InfoTooltip,
   DESIGN_TOKENS,
 } from '@money-matters/ui/mobile';
 import { t } from '@money-matters/i18n';
@@ -60,7 +61,10 @@ export function HouseholdEditView({
   return (
     <View style={styles.card}>
       <View style={styles.headerRow}>
-        <Text style={styles.cardTitle}>{t('settings.editHouseholdTitle')}</Text>
+        <View style={{ flexDirection: 'row', alignItems: 'center', flex: 1 }}>
+          <Text style={styles.cardTitle}>{t('settings.editHouseholdTitle')}</Text>
+          <InfoTooltip content={t('settings.householdTooltip')} />
+        </View>
         <View style={styles.actionRow}>
           <TouchableOpacity onPress={onCancel} style={styles.cancelBtn}>
             <Text style={styles.cancelBtnText}>{t('common.cancel')}</Text>

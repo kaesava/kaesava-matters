@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { Feather } from '@expo/vector-icons';
-import { DESIGN_TOKENS } from '@money-matters/ui/mobile';
+import { DESIGN_TOKENS, InfoTooltip } from '@money-matters/ui/mobile';
 import { t } from '@money-matters/i18n';
 
 interface MobilePaydayActionButtonsProps {
@@ -51,15 +51,20 @@ export function MobilePaydayActionButtons({
       )}
 
       {/* Confirm & Apply (primary button) */}
-      <TouchableOpacity
-        activeOpacity={0.85}
-        onPress={onConfirm}
-        disabled={isDeficit || submitting || isFutureDate}
-        style={[styles.confirmBtnFull, (isDeficit || submitting || isFutureDate) && styles.disabledBtn]}
-      >
-        <Feather name="check-circle" size={15} color="#FFFFFF" />
-        <Text style={styles.confirmBtnText}>{t('paydayDrawer.confirmIncomeSplit')}</Text>
-      </TouchableOpacity>
+      <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
+        <TouchableOpacity
+          activeOpacity={0.85}
+          onPress={onConfirm}
+          disabled={isDeficit || submitting || isFutureDate}
+          style={[styles.confirmBtnFull, { flex: 1 }, (isDeficit || submitting || isFutureDate) && styles.disabledBtn]}
+        >
+          <Feather name="check-circle" size={15} color="#FFFFFF" />
+          <Text style={styles.confirmBtnText}>{t('paydayDrawer.confirmIncomeSplit')}</Text>
+        </TouchableOpacity>
+        {isFutureDate && (
+          <InfoTooltip content={t('paydayDrawer.futureConfirmDisabledTooltip')} />
+        )}
+      </View>
 
       {/* Row 2: Discard Edits and Save Draft in this order */}
       {(isDirty || !isLocked) && (

@@ -167,15 +167,11 @@ export const common = {
   },
   "tooltips": {
     "incomeBills": {
-      "content": "Setup income and ongoing expenses. On payday, upcoming expenses are protected by planning your income into the right Envelopes so you never get caught out by surprise due dates."
+      "content": "Set up income and ongoing bill schedules. On payday, upcoming bills are protected by allocating your income into the right envelopes so due dates never catch you off guard."
     },
     "bankAccounts": {
       "title": "About Bank Accounts",
-      "content": "Linking your envelopes (Everyday, Bills, Savings) to your actual bank accounts ensures your payday plan matches your real-world bank balances for effortless 1-tap reconciliation."
-    },
-    "archived": {
-      "title": "About Archived Items",
-      "content": "View and restore archived spending envelopes, bill schedules, income schedules, or bank accounts. Restoring an item reactivates its upcoming schedule, while historical transactions remain permanently preserved."
+      "content": "Linking your envelopes (Everyday, Bills, Goals) to your real-world bank accounts ensures your payday plan matches your actual balances for quick Match Balance checks."
     }
   },
   "validation": {

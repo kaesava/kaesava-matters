@@ -191,7 +191,7 @@ export function CommandPaletteProvider({ children }: { children: React.ReactNode
           hasAiAssistant
             ? async (q) => {
                 const res = await askMutation.mutateAsync({ query: q });
-                usageQuery.refetch();
+                await utils.assistantUsage.invalidate();
                 return res;
               }
             : undefined

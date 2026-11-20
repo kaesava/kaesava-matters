@@ -372,7 +372,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
             remainingCalls={hasAiAssistant && usageQuery.data?.limit && usageQuery.data ? Math.max(0, usageQuery.data.limit - usageQuery.data.used) : undefined}
             onAskPenny={hasAiAssistant ? async (q) => {
               const res = await askMutation.mutateAsync({ query: q });
-              usageQuery.refetch();
+              await utils.assistantUsage.invalidate();
               return res;
             } : undefined}
           />

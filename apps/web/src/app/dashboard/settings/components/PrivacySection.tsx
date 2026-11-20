@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import JSZip from "jszip";
 import { t } from "@money-matters/i18n";
 import { trpc } from "../../../../lib/trpc";
-import { useToast, InfoTooltip, Button, fmtDateIso } from "@money-matters/ui/web";
+import { useToast, Button, fmtDateIso } from "@money-matters/ui/web";
 import { useLocale } from "../../../../providers/LocaleProvider";
 import { buildExportFileName } from "@money-matters/types";
 import posthog from "../../../../lib/posthog-client";
@@ -94,7 +94,6 @@ export function PrivacySection() {
               <h2 className="text-base font-extrabold text-[#1B2B4B]">
                 {t("privacy.title")}
               </h2>
-              <InfoTooltip content={t("privacy.aussiePrivacyGuarantee")} />
             </div>
             <p className="text-xs text-slate-600 leading-relaxed font-medium">
               {t("privacy.aussiePrivacyDetail")}

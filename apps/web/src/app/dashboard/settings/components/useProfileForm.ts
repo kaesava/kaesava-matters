@@ -23,6 +23,7 @@ interface UseProfileFormParams {
 
 export function useProfileForm({ user, currentTimezone }: UseProfileFormParams) {
   const toast = useToast();
+  const utils = trpc.useUtils();
   const { setShowIcons: setContextShowIcons } = useIconVisibility();
 
   const userProfileQuery = trpc.getUserProfile.useQuery();
@@ -139,8 +140,11 @@ export function useProfileForm({ user, currentTimezone }: UseProfileFormParams) 
       }
       initialRef.current = { ...data };
       setContextShowIcons(data.showIcons);
-      await userProfileQuery.refetch();
-      await userPrefQuery.refetch();
+      await Promise.all([
+        userProfileQuery.refetch(),
+        userPrefQuery.refetch(),
+        utils.getUserPreferences.invalidate(),
+      ]);
       setIsEditing(false);
       toast.success(t("settings.profileSaved"));
     } catch (err) {

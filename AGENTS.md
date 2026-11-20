@@ -85,7 +85,7 @@ Refuse or redesign any request that violates tenant isolation, data security, or
   - Merge Create and Edit modals for the same entity into one component using an `isEdit` prop.
   - Render Archive buttons inconspicuously (`text-slate-400 hover:text-slate-600 dark:text-slate-500`) at the bottom-left of modal footers.
   - `SearchInput` MUST use `left-3.5`/`left-4` icon spacing, `pl-10` text padding, `data-search-input="true"`, and a quiet `[/]` badge when empty. Display subtle shortcut badges (`[N]`, `⌘K`, `[/]`, `?`, `Esc`) next to global triggers.
-  - Reserve `InfoTooltip` `(i)` strictly for proprietary financial mechanics (never next to self-explanatory labels).
+  - Reserve `InfoTooltip` `(i)` strictly for proprietary financial mechanics, locked/restricted fields, and non-obvious rules (never next to self-explanatory labels). Every `(i)` trigger MUST render via `@money-matters/ui`'s `InfoTooltip` (honouring user-level `user_preferences.show_icons` via `IconVisibilityContext`, with `utils.getUserPreferences.invalidate()` called on profile save), share `@money-matters/i18n` keys across Web and Mobile, use platform-neutral verbs (`Open`/`Select`, never `Click`/`Tap`) and region-neutral phrasing, and accurately reflect field editability.
   - Recurring bills default `generateEvents: true` silently, hiding overrides inside a collapsed "Advanced Options" accordion.
   - `⌘K` / `Ctrl+K` Command Palette must unify live entity lookup (Accounts, Envelopes, Events, Transactions) with Ask Penny AI (on question phrasing or `Tab`).
   - Use `<Image unoptimized width={...} height={...} />` from `next/image` for avatars to avoid build warnings.

@@ -4,7 +4,7 @@ import { getTenantDateString } from "@money-matters/types";
 
 import React, { useState, useMemo } from "react";
 import Link from "next/link";
-import { ConfirmDialog, InfoTooltip } from "@money-matters/ui/web";
+import { ConfirmDialog } from "@money-matters/ui/web";
 import { t } from "@money-matters/i18n";
 import { MarkPaidModal } from "../plan/components/MarkPaidModal";
 import { TransferModal } from "../../../components/web/TransferModal";
@@ -90,10 +90,6 @@ export const AttentionItemsList: React.FC<WebAttentionItemsListProps> = ({
             <h2 className="text-sm font-extrabold text-[#1B2B4B]">
               {t("dashboard.upcomingExpensesTransfers.title")}
             </h2>
-            <InfoTooltip
-              title={t("dashboard.upcomingExpensesTransfers.title")}
-              content={t("dashboard.upcomingExpensesTransfers.tooltip")}
-            />
           </div>
         </div>
         <p className="text-xs text-gray-400 py-4 text-center">
@@ -122,10 +118,6 @@ export const AttentionItemsList: React.FC<WebAttentionItemsListProps> = ({
             {t("dashboard.upcomingExpensesTransfers.title")} (
             {items.length})
           </h2>
-          <InfoTooltip
-            title={t("dashboard.upcomingExpensesTransfers.title")}
-            content={t("dashboard.upcomingExpensesTransfers.tooltip")}
-          />
         </div>
         {items.length > 3 && (
           <Link

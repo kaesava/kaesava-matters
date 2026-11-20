@@ -1,7 +1,6 @@
 export const reports = {
   "reports": {
     "title": "Reports",
-    "subtitle": "Visual analytics and historical breakdown of your spending, cash flow, and payday plans.",
     "tabs": {
       "spending": "Spending & Cash Flow",
       "paydayPlans": "Payday Plans"

@@ -10,7 +10,6 @@ import {
   PoolPicker,
   SearchInput,
   SpendingOverviewCard,
-  InfoTooltip,
 } from "@money-matters/ui/web";
 import { useLocale } from "../../../providers/LocaleProvider";
 import { useAppFeatures } from "../../../hooks/useAppFeatures";
@@ -135,7 +134,6 @@ function ReportsPageContent() {
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
           <h1 className="text-2xl font-extrabold text-[#1B2B4B]">{t("reports.title")}</h1>
-          <InfoTooltip title={t("reports.title")} content={t("reports.subtitle")} />
         </div>
       </div>
 

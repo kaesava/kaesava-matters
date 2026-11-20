@@ -6,7 +6,7 @@ import * as WebBrowser from 'expo-web-browser';
 import JSZip from 'jszip';
 import * as SecureStore from 'expo-secure-store';
 import { usePostHog } from 'posthog-react-native';
-import { useMobileToast, DESIGN_TOKENS, InfoTooltip, MobileButton, SwitchRow } from '@money-matters/ui/mobile';
+import { useMobileToast, DESIGN_TOKENS, MobileButton, SwitchRow } from '@money-matters/ui/mobile';
 import { t } from '@money-matters/i18n';
 import { buildExportFileName } from '@money-matters/types';
 import { trpc } from '../../lib/trpc';
@@ -104,13 +104,9 @@ export function PrivacyGovernanceSection() {
 
   return (
     <View style={styles.card}>
-      {/* Title & InfoTooltip Row */}
+      {/* Title Row */}
       <View style={styles.titleRow}>
         <Text style={styles.cardTitle}>{t('privacy.title')}</Text>
-        <InfoTooltip
-          title={t('privacy.title')}
-          content={t('privacy.aussiePrivacyGuarantee')}
-        />
       </View>
 
       <Text style={styles.cardSubtitle}>{t('privacy.aussiePrivacyDetail')}</Text>

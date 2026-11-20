@@ -3,6 +3,7 @@ import { View, Text, TouchableOpacity, StyleSheet, PanResponder, LayoutChangeEve
 import { Feather } from '@expo/vector-icons';
 import { t } from '@money-matters/i18n';
 import { DESIGN_TOKENS } from '../tokens';
+import { InfoTooltip } from './InfoTooltip';
 import { useCurrencyLocale } from '../hooks/CurrencyLocaleContext';
 import { formatAmountNumber } from '../lib/format';
 
@@ -126,9 +127,15 @@ export function MobileDiscretionarySliders({
     <View style={styles.container}>
       <View style={styles.headerRow}>
         <Text style={styles.heading}>{t('setup.lifestyle.spendingTitle')}</Text>
-        <Text style={styles.estimateText}>
-          {t('setup.lifestyle.everydaySpendingEstimate', { amount: formattedTotal })}
-        </Text>
+        <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+          <Text style={styles.estimateText}>
+            {t('setup.lifestyle.everydaySpendingEstimate', { amount: formattedTotal })}
+          </Text>
+          <InfoTooltip
+            title={t('setup.lifestyle.everydaySpendingTooltipTitle')}
+            content={t('setup.lifestyle.everydaySpendingTooltipContent')}
+          />
+        </View>
       </View>
 
       <SliderRow

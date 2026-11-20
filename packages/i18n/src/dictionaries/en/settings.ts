@@ -80,7 +80,7 @@ export const settings = {
       "roleOwner": "Owner",
       "roleMember": "Member",
       "removeAction": "Remove",
-      "inviteTooltip": "Active members sharing this household budget.",
+      "inviteTooltip": "Send an email invitation to share this household budget with another household member.",
       "onlyOwnerCanInvite": "Only the household owner can manage members.",
       "trialUpgradeRequired": "Managing members requires an active household subscription.",
       "trialExpiredBadge": "Trial Expired",
@@ -101,7 +101,6 @@ export const settings = {
     },
     "dangerZone": {
       "title": "Danger Zone",
-      "tooltip": "Irreversible actions for your household membership and data.",
       "subtitle": "Once executed, these actions cannot be undone.",
       "leaveCta": "Leave Household",
       "deleteCta": "Delete Household & Data",
@@ -123,7 +122,7 @@ export const settings = {
       "availableLabel": "Amount Available to Budget:",
       "availableTooltip": "Current balance minus set-aside amount. This amount is safely distributable across your envelopes.",
       "privacyLabel": "Private Bank Account",
-      "privacyHint": "Only visible to you. Other household members will not see this bank account, its balances, or envelopes linked to it. (Cannot be modified after creation).",
+      "privacyHint": "Only visible to you. Other household members cannot see this account, its balance, or linked envelopes. Cannot be changed after creation.",
       "privacyConfirmTitle": "Make Bank Account Private?",
       "privacyConfirmBody": "Making this bank account private hides all associated balances and history from other household members. This setting cannot be undone once confirmed.",
       "archiveAccountCta": "Archive Bank Account",
@@ -161,7 +160,7 @@ export const settings = {
     "profileSaved": "Profile details saved successfully.",
     "editHouseholdTitle": "Edit Household Details",
     "saveHouseholdCta": "Save Household Details",
-    "householdTooltip": "Update your household name, base currency, and location details. Shared across household members.",
+    "householdTooltip": "Household name, timezone, and state or province. Base currency and country are locked after setup; only household owners can edit these details.",
     "accounts": "Bank accounts",
     "language": "Language",
     "currency": "Household Currency",
@@ -186,7 +185,6 @@ export const settings = {
       "addAccount": "Add Bank Account"
     },
     "householdProfileAndLocation": "Household Profile & Location",
-    "householdProfileTooltip": "Update your household name, base currency, and location details. Shared across household members.",
     "householdNameLabel": "Household Name",
     "countryLabel": "Country",
     "items": {
@@ -263,7 +261,7 @@ export const settings = {
         "SURPLUS_SWEEP": "Sweeps any remaining unallocated income into your designated envelope."
       },
       "pageTitle": "Payday Rules & Allocation Recipe",
-      "pageSubtitle": "Customize the priority and order in which your income is allocated across your household envelopes on payday.",
+      "pageSubtitle": "Customise the priority and order in which your income fills your household or private envelopes on payday.",
       "moveUp": "Move Up",
       "moveDown": "Move Down",
       "targetEnvelopeLabel": "Target Envelope",

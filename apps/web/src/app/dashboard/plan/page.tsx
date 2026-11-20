@@ -106,7 +106,7 @@ function IncomeAndBillsContent() {
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div className="flex items-center gap-2">
           <h1 className="text-2xl font-black text-[#1B2B4B] dark:text-white tracking-tight">{t("planTabs.incomeSchedulesAndBillsTitle")}</h1>
-          <InfoTooltip content={t("planTabs.incomeSchedulesAndBillsSubtitle")} />
+          <InfoTooltip content={t("tooltips.incomeBills.content")} />
         </div>
         <div className="flex items-center gap-2">
           <div className="relative" ref={dropdownRef}>

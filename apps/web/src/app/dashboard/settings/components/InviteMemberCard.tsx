@@ -3,7 +3,7 @@
 import React from "react";
 import Link from "next/link";
 import { t } from "@money-matters/i18n";
-import { InfoTooltip, Button } from "@money-matters/ui/web";
+import { Button } from "@money-matters/ui/web";
 
 interface InviteMemberCardProps {
   isOwner: boolean;
@@ -31,7 +31,6 @@ export function InviteMemberCard({
           <h2 className="text-base font-extrabold text-[#1B2B4B]">
             {t("settings.addMemberTitle")}
           </h2>
-          <InfoTooltip content={t("settings.members.inviteTooltip")} />
         </div>
         {isTrialExpired && (
           <span className="px-2.5 py-1 text-[10px] font-black uppercase tracking-wider bg-rose-100 text-rose-800 rounded-full">

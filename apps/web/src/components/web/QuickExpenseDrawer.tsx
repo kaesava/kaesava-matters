@@ -2,7 +2,6 @@ import { t } from "@money-matters/i18n";
 import {
   SlideOverDrawer,
   PoolPicker,
-  InfoTooltip,
   ConfirmDialog,
   Button,
   Input,
@@ -89,23 +88,12 @@ export function QuickActionDrawer({ onClose, initialTab = "DEBIT", initialData }
     ? t("drawers.quickExpense.oneOffIncome")
     : t("drawers.quickExpense.oneOffExpense");
 
-  const infoContent = isTransfer
-    ? t("drawers.quickExpense.transferInfo")
-    : isIncome
-    ? t("drawers.quickExpense.incomeInfo")
-    : t("drawers.quickExpense.expenseInfo");
-
   const isDirty = name.trim() !== "" || amount.trim() !== "" || categoryId !== "";
 
   return (
     <>
       <SlideOverDrawer
-        title={
-          <div className="flex items-center gap-2">
-            <span>{titleText}</span>
-            <InfoTooltip title={titleText} content={infoContent} />
-          </div>
-        }
+        title={titleText}
         onClose={onClose}
         isDirty={isDirty}
         widthClass="max-w-xl"
