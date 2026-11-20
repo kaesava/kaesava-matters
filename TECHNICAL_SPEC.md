@@ -65,7 +65,7 @@ money-matters/
 - **`tenantId`**: Root multi-tenant isolation boundary for all data. PostgreSQL RLS policies enforce `tenantId` + `appId` at DB layer.
 - **`appId`**: Product shell identifier (`01908bde-34bb-7b19-a178-574211bc93aa` for Money Matters).
 - **Authentication & Security**:
-  - Neon Auth (Better Auth) JWT & cookie session verification in Fastify (`apps/api/src/index.ts`) & Next.js middleware (`apps/web/src/middleware.ts`).
+  - Neon Auth (Better Auth) JWT & cookie session verification in Fastify (`apps/api/src/index.ts`) & Next.js proxy (`apps/web/src/proxy.ts`).
   - **Google OAuth 2.0 Integration**:
     - Registered Authorized Redirect URI: `https://ep-spring-snow-a70f61xz.neonauth.ap-southeast-2.aws.neon.tech/neondb/auth/callback/google`
     - Registered Authorized Origins: `https://moneymatters.kaesava.au` and Neon Auth base URL.
@@ -304,7 +304,7 @@ tenants (id PK, appId FK→apps.id, name, subscriptionTier, stripeCustomerId, st
   - `privateMode`: Controls stealth personal privacy isolation and partner invitations (`hasPartnerInvites: Boolean(features.privateMode)`). When disabled, partner invites and private envelope tagging are gated.
   - `simulation`: Controls the "Can I Afford It?" Purchase Simulator. When disabled, the Afford Check button, route `/dashboard/afford-check`, Command Palette prompt, and assistant prefill are suppressed, and tRPC `simulation.canAfford` query throws `TRPCError FORBIDDEN`. Onboarding product tour steps dynamically recalculate (7 steps vs 8 steps) to skip afford-check cleanly.
   - `customAllocationRules`: Controls user customization of payday allocation waterfall rules. When disabled, standard strategy presets (`BALANCED`, `BILLS_FORTRESS`, `PAY_YOURSELF_FIRST`) remain fully functional, but custom rule steps editing, the 4th "Custom" preset card, and the `/dashboard/settings/allocation-rules` sub-page are hidden and guarded with `TRPCError FORBIDDEN` on `updateAllocationStrategySteps`.
-- **Auth Toggle & Downtime Early Access Flow (`NEXT_PUBLIC_ENABLE_AUTH`)**: When set to `"false"`, `middleware.ts` intercepts all authenticated and sign-in routes and redirects to `/?early_access=true`. The landing page automatically displays `EarlyAccessModal`, allowing prospective or returning users to submit their email via public tRPC procedure `subscribeEarlyAccess` (upserting to `early_access_subscribers`) to be notified when the platform resumes operations.
+- **Auth Toggle & Downtime Early Access Flow (`NEXT_PUBLIC_ENABLE_AUTH`)**: When set to `"false"`, `proxy.ts` intercepts all authenticated and sign-in routes and redirects to `/?early_access=true`. The landing page automatically displays `EarlyAccessModal`, allowing prospective or returning users to submit their email via public tRPC procedure `subscribeEarlyAccess` (upserting to `early_access_subscribers`) to be notified when the platform resumes operations.
 - **Strict Database Typing (`DbOrTx`)**: Zero `any` policy enforced across all capability command and query signatures. All capability handlers receive strict `DbOrTx` (`DbClient | DbTransaction`) without default client injection parameters, guaranteeing deterministic transactional boundaries and full type safety.
 
 ### 5.10 App Versioning Architecture, Database Schema & Diagnostics

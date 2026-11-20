@@ -12,7 +12,7 @@ const PUBLIC_PREFIXES = [
   "/blog",
 ];
 
-export function middleware(request: NextRequest) {
+export function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
   // Global feature flag check: block auth and app access when auth is disabled
@@ -23,8 +23,6 @@ export function middleware(request: NextRequest) {
     landingUrl.searchParams.set("early_access", "true");
     return NextResponse.redirect(landingUrl);
   }
-
-
 
   // Allow root landing page
   if (pathname === "/") {
@@ -58,6 +56,6 @@ export function middleware(request: NextRequest) {
 }
 
 export const config = {
-  // Apply middleware strictly to protected routes; public pages (/sign-in, /sign-up, etc.) are served statically from edge cache
+  // Apply proxy strictly to protected routes; public pages (/sign-in, /sign-up, etc.) are served statically from edge cache
   matcher: ["/dashboard/:path*", "/setup/:path*", "/complete-profile/:path*", "/subscription/:path*"],
 };
