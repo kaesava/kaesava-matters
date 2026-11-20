@@ -194,4 +194,67 @@ describe("getIncomeSplitAnalyticsQuery DB interaction", () => {
     expect(res.totalOutflow).toBe(2500);
     expect(res.horizonBreakdown.everyday).toBe(2500);
   });
+
+  it("aggregates exact sweptAmount instead of total allocation when Everyday or Bill is the surplus target", async () => {
+    const mockPlans = [
+      {
+        id: "plan-1",
+        totalIncomeAmount: "5000",
+        expectedDate: "2026-10-10",
+        actualDate: "2026-10-10",
+        createdAt: new Date("2026-10-10"),
+      },
+    ];
+    const mockEnvelopes = [
+      {
+        id: "env-everyday",
+        name: "Everyday Spending",
+        envelopeType: "EVERYDAY" as const,
+        isSurplusTarget: true,
+        isPrivate: false,
+      },
+    ];
+    const mockLines = [
+      {
+        planId: "plan-1",
+        envelopeId: "env-everyday",
+        proposedAmount: "3000",
+        confirmedAmount: "3000",
+        sweptAmount: "500.00",
+        reasoning: "Everyday allowance: $2500.00. Swept residual excess surplus of $500.00.",
+        envelopeName: "Everyday Spending",
+        envelopeType: "EVERYDAY" as const,
+      },
+    ];
+
+    let queryCallCount = 0;
+    const mockDb = {
+      select: vi.fn().mockImplementation(() => ({
+        from: vi.fn().mockImplementation(() => ({
+          leftJoin: vi.fn().mockReturnThis(),
+          where: vi.fn().mockImplementation(() => {
+            queryCallCount++;
+            if (queryCallCount === 1) {
+              return { orderBy: vi.fn().mockResolvedValue(mockPlans) };
+            }
+            if (queryCallCount === 2) {
+              return Promise.resolve(mockEnvelopes);
+            }
+            return Promise.resolve(mockLines);
+          }),
+        })),
+      })),
+    };
+
+    const res = await getPaydayPlanAnalyticsQuery(
+      "tenant-1",
+      "app-1",
+      { timeframe: "90D" },
+      mockDb as unknown as DbOrTx,
+      new Date("2026-10-15T00:00:00Z")
+    );
+
+    const octPoint = res.monthlyCashFlow.find((p) => p.monthKey === "2026-10");
+    expect(octPoint?.outflow).toBe(500);
+  });
 });

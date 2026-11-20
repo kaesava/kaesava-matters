@@ -2,6 +2,7 @@ import { privateTenantProcedure, requiresWriteAccess } from '../trpc/trpc.js';
 import {
   createEnvelopeCommand,
   updateEnvelopeCommand,
+  setSurplusTargetCommand,
   archiveEnvelopeCommand,
   listEnvelopesQuery,
   moveMoneyCommand,
@@ -16,6 +17,7 @@ import {
 import {
   CreateEnvelopeCommand,
   UpdateEnvelopeCommand,
+  SetSurplusTargetCommand,
   MoveMoneyCommand,
   SaveSetupBudgetCommand,
 } from "@money-matters/types";
@@ -38,6 +40,13 @@ export const budgetingRouter = {
     .mutation(async ({ input, ctx }) => {
       requiresWriteAccess(ctx);
       return await updateEnvelopeCommand(input.envelopeId, input.data, ctx.tenantId!, ctx.appId!, ctx.userId!, ctx.db);
+    }),
+
+  setSurplusTarget: privateTenantProcedure
+    .input(SetSurplusTargetCommand)
+    .mutation(async ({ input, ctx }) => {
+      requiresWriteAccess(ctx);
+      return await setSurplusTargetCommand(input.envelopeId, ctx.tenantId!, ctx.appId!, ctx.userId!, ctx.db);
     }),
 
   archiveEnvelope: privateTenantProcedure

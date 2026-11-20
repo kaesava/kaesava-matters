@@ -1,6 +1,6 @@
-import { DbOrTx, allocationStrategies, allocationStrategySteps } from "@money-matters/db";
+import { DbOrTx, allocationStrategies, allocationStrategySteps, envelopes, bankAccounts } from "@money-matters/db";
 import { AllocationStepType, detectMatchingAllocationPreset } from "@money-matters/types";
-import { eq, and, sql } from "drizzle-orm";
+import { eq, and, isNull, ne, sql } from "drizzle-orm";
 
 export interface StrategyStepInputItem {
   id?: string;
@@ -39,7 +39,69 @@ export async function updateAllocationStrategyStepsCommand(
     // Pin SURPLUS_SWEEP as the final step so it never starves downstream steps
     const nonSweepSteps = steps.filter((s) => s.stepType !== "SURPLUS_SWEEP");
     const sweepSteps = steps.filter((s) => s.stepType === "SURPLUS_SWEEP");
-    const orderedSteps = [...nonSweepSteps, ...sweepSteps];
+    let orderedSteps = [...nonSweepSteps, ...sweepSteps];
+
+    // Two-way sync between household SURPLUS_SWEEP step and envelopes.isSurplusTarget
+    if (!strategy.isPrivate && sweepSteps.length > 0) {
+      const requestedTargetId = sweepSteps[0]?.targetEnvelopeId ?? null;
+      if (requestedTargetId) {
+        const [targetRow] = await tx
+          .select({
+            id: envelopes.id,
+            isPrivate: envelopes.isPrivate,
+            bankIsPrivate: bankAccounts.isPrivate,
+          })
+          .from(envelopes)
+          .leftJoin(bankAccounts, eq(envelopes.bankAccountId, bankAccounts.id))
+          .where(
+            and(
+              eq(envelopes.id, requestedTargetId),
+              eq(envelopes.tenantId, tenantId),
+              eq(envelopes.appId, appId),
+              isNull(envelopes.archivedAt)
+            )
+          )
+          .limit(1);
+        if (!targetRow || targetRow.isPrivate || targetRow.bankIsPrivate) {
+          throw new Error("Only shared envelopes can be set as the Shortfall/Surplus target.");
+        }
+        const now = new Date();
+        await tx
+          .update(envelopes)
+          .set({ isSurplusTarget: false, updatedAt: now, updatedBy: userId })
+          .where(
+            and(
+              eq(envelopes.tenantId, tenantId),
+              eq(envelopes.appId, appId),
+              eq(envelopes.isSurplusTarget, true),
+              ne(envelopes.id, requestedTargetId)
+            )
+          );
+        await tx
+          .update(envelopes)
+          .set({ isSurplusTarget: true, updatedAt: now, updatedBy: userId })
+          .where(eq(envelopes.id, requestedTargetId));
+      } else {
+        const [currentTarget] = await tx
+          .select({ id: envelopes.id })
+          .from(envelopes)
+          .where(
+            and(
+              eq(envelopes.tenantId, tenantId),
+              eq(envelopes.appId, appId),
+              eq(envelopes.isSurplusTarget, true),
+              eq(envelopes.isPrivate, false),
+              isNull(envelopes.archivedAt)
+            )
+          )
+          .limit(1);
+        if (currentTarget) {
+          orderedSteps = orderedSteps.map((s) =>
+            s.stepType === "SURPLUS_SWEEP" ? { ...s, targetEnvelopeId: currentTarget.id } : s
+          );
+        }
+      }
+    }
 
     const matchedPreset = detectMatchingAllocationPreset(orderedSteps);
     const resolvedPresetKey = matchedPreset ?? "CUSTOM";

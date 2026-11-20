@@ -165,6 +165,7 @@ function AllocationRulesContent() {
       });
       await Promise.all([
         utils.getActiveAllocationStrategy.invalidate(),
+        utils.listEnvelopes.invalidate(),
         utils.previewPayday.invalidate(),
         utils.getHorizonProjectionData.invalidate(),
         utils.listAllAllocationPlans.invalidate(),

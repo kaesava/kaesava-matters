@@ -9,6 +9,15 @@ describe("allocation strategy commands", () => {
     let insertedRows: Array<{ stepType: string; orderIndex: number }> = [];
 
     const mockTx = {
+      select: vi.fn().mockReturnValue({
+        from: vi.fn().mockReturnValue({
+          leftJoin: vi.fn().mockReturnValue({
+            where: vi.fn().mockReturnValue({
+              limit: vi.fn().mockResolvedValue([{ id: "env-sweep", isPrivate: false, bankIsPrivate: false }]),
+            }),
+          }),
+        }),
+      }),
       update: vi.fn().mockReturnValue({
         set: vi.fn().mockReturnValue({
           where: vi.fn().mockResolvedValue({ rowCount: 1 }),
@@ -103,6 +112,15 @@ describe("allocation strategy commands", () => {
 
   it("updateAllocationStrategyStepsCommand detects matching canonical presetKey and preserves targetEnvelopeId", async () => {
     const mockTx = {
+      select: vi.fn().mockReturnValue({
+        from: vi.fn().mockReturnValue({
+          leftJoin: vi.fn().mockReturnValue({
+            where: vi.fn().mockReturnValue({
+              limit: vi.fn().mockResolvedValue([{ id: "env-sweep", isPrivate: false, bankIsPrivate: false }]),
+            }),
+          }),
+        }),
+      }),
       update: vi.fn().mockReturnValue({
         set: vi.fn().mockReturnValue({
           where: vi.fn().mockResolvedValue({ rowCount: 1 }),

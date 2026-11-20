@@ -61,7 +61,7 @@ export async function restoreItemCommand(
 
       const restoredEnvelopes = await tx
         .update(envelopes)
-        .set({ archivedAt: null, archivedBy: null, updatedBy: userId, updatedAt: now })
+        .set({ archivedAt: null, archivedBy: null, isSurplusTarget: false, updatedBy: userId, updatedAt: now })
         .where(
           and(
             eq(envelopes.tenantId, tenantId),
@@ -251,7 +251,7 @@ export async function restoreItemCommand(
 
       const [restored] = await tx
         .update(envelopes)
-        .set({ archivedAt: null, archivedBy: null, updatedBy: userId, updatedAt: now })
+        .set({ archivedAt: null, archivedBy: null, isSurplusTarget: false, updatedBy: userId, updatedAt: now })
         .where(
           and(
             eq(envelopes.id, itemId),

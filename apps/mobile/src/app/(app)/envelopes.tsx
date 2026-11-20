@@ -7,14 +7,17 @@ import {
   SkeletonCard,
   SearchInput,
   RecordFilterBadge,
+  showMobileConfirm,
+  useMobileToast,
 } from '@money-matters/ui/mobile';
 import { AppScreenWrapper } from '../../components/AppScreenWrapper';
 import { t } from '@money-matters/i18n';
 import { trpc } from '../../lib/trpc';
 import { authClient } from '../../lib/auth';
 import { EnvelopeFormModal } from '../../components/EnvelopeFormModal';
-import { QuickExpenseModal } from '../../components/QuickExpenseModal';
+import { QuickExpenseModal, QuickActionInitialData } from '../../components/QuickExpenseModal';
 import { EnvelopeOverflowMenuModal } from '../../components/envelopes/EnvelopeOverflowMenuModal';
+import { EnvelopeRowActionsSheet } from '../../components/envelopes/EnvelopeRowActionsSheet';
 import { EnvelopeGroupSection } from '../../components/envelopes/EnvelopeGroupSection';
 import { EnvelopesFilterSheet } from '../../components/envelopes/EnvelopesFilterSheet';
 import {
@@ -25,6 +28,8 @@ export default function PoolsScreen() {
   const router = useRouter();
   const params = useLocalSearchParams<{ poolId?: string; categoryId?: string; create?: string; name?: string; editId?: string }>();
   const { data: session } = authClient.useSession();
+  const toast = useMobileToast();
+  const utils = trpc.useUtils();
 
   const [refreshing, setRefreshing] = useState(false);
   const [poolModalVisible, setPoolModalVisible] = useState(false);
@@ -34,7 +39,9 @@ export default function PoolsScreen() {
   const [defaultPoolType, setDefaultPoolType] = useState<'EVERYDAY' | 'BILL' | 'GOAL'>('BILL');
   const [moveMoneyVisible, setMoveMoneyVisible] = useState(false);
   const [quickExpenseInitialType, setQuickExpenseInitialType] = useState<'DEBIT' | 'CREDIT' | 'TRANSFER'>('TRANSFER');
+  const [quickExpenseData, setQuickExpenseData] = useState<QuickActionInitialData | undefined>(undefined);
   const [overflowMenuVisible, setOverflowMenuVisible] = useState(false);
+  const [actionPoolId, setActionPoolId] = useState<string | null>(null);
   const [filterSheetVisible, setFilterSheetVisible] = useState(false);
   const [collapsedTypes, setCollapsedTypes] = useState<Record<string, boolean>>({});
 
@@ -46,6 +53,34 @@ export default function PoolsScreen() {
 
   const pools = poolsQuery.data ?? [];
   const bankAccounts = bankAccountsQuery.data ?? [];
+  const setSurplusTargetMut = trpc.setSurplusTarget.useMutation();
+  const currentSurplusTarget = pools.find((p) => p.isSurplusTarget && !p.isPrivate);
+  const actionPool = actionPoolId ? (pools.find((p) => p.id === actionPoolId) ?? null) : null;
+
+  const handleMarkAsSurplusTarget = (targetPool: (typeof pools)[number]) => {
+    showMobileConfirm({
+      title: t('categories.setSurplusTargetConfirmTitle'),
+      message: t('categories.setSurplusTargetConfirmMessage', {
+        currentName: currentSurplusTarget?.name || t('categories.mainEnvelope'),
+        nextName: targetPool.name,
+      }),
+      confirmText: t('categories.setSurplusTargetConfirmCta'),
+      cancelText: t('common.cancel'),
+      onConfirm: async () => {
+        try {
+          await setSurplusTargetMut.mutateAsync({ envelopeId: targetPool.id });
+          await Promise.all([
+            utils.listEnvelopes.invalidate(),
+            utils.getActiveAllocationStrategy.invalidate(),
+            utils.getPaydayPlanAnalytics.invalidate(),
+          ]);
+          toast.success(t('categories.setSurplusTargetSuccess', { name: targetPool.name }));
+        } catch (err) {
+          toast.error(err instanceof Error ? err.message : t('categories.setSurplusTargetFailed'));
+        }
+      },
+    });
+  };
 
   const {
     activePoolIdFilter,
@@ -163,6 +198,7 @@ export default function PoolsScreen() {
               onToggleCollapse={() => toggleTypeCollapse('EVERYDAY')}
               bankAccounts={bankAccounts}
               groupType="EVERYDAY"
+              onOpenPoolActions={(p) => setActionPoolId(p.id)}
             />
             <EnvelopeGroupSection
               title={t('categories.billsEnvelopesUpper')}
@@ -172,9 +208,11 @@ export default function PoolsScreen() {
               bankAccounts={bankAccounts}
               groupType="BILL"
               onAddPool={(gType) => {
+                setEnvelopeToEdit(null);
                 setDefaultPoolType(gType);
                 setPoolModalVisible(true);
               }}
+              onOpenPoolActions={(p) => setActionPoolId(p.id)}
             />
             <EnvelopeGroupSection
               title={t('categories.goalsUpper')}
@@ -184,9 +222,11 @@ export default function PoolsScreen() {
               bankAccounts={bankAccounts}
               groupType="GOAL"
               onAddPool={(gType) => {
+                setEnvelopeToEdit(null);
                 setDefaultPoolType(gType);
                 setPoolModalVisible(true);
               }}
+              onOpenPoolActions={(p) => setActionPoolId(p.id)}
             />
             {filteredPools.length === 0 && (
               <View style={styles.emptyCard}>
@@ -227,6 +267,46 @@ export default function PoolsScreen() {
         onReset={resetFilters}
       />
 
+      <EnvelopeRowActionsSheet
+        visible={Boolean(actionPool)}
+        envelope={actionPool}
+        onClose={() => setActionPoolId(null)}
+        onEdit={() => {
+          if (!actionPool) return;
+          setEnvelopeToEdit({
+            id: actionPool.id,
+            name: actionPool.name,
+            type: actionPool.envelopeType === 'EVERYDAY' ? 'EVERYDAY' : actionPool.envelopeType === 'BILL' ? 'BILL' : 'GOAL',
+            envelopeType: actionPool.envelopeType,
+            fundingMode: actionPool.fundingMode,
+            isPriority: actionPool.isPriority,
+            poolType: actionPool.envelopeType,
+            targetAmount: actionPool.targetAmount,
+            enteredAmount: actionPool.enteredAmount,
+            monthlyAmount: actionPool.monthlyAmount,
+            budgetFrequency: actionPool.budgetFrequency as 'WEEKLY' | 'FORTNIGHTLY' | 'MONTHLY' | 'ANNUALLY' | null,
+            startDate: actionPool.startDate,
+            rrule: actionPool.rrule,
+            endDate: actionPool.endDate,
+            bankAccountId: actionPool.bankAccountId,
+            safetyBufferFloor: actionPool.safetyBufferFloor,
+            isSurplusTarget: actionPool.isSurplusTarget,
+            hasScheduledEvents: actionPool.hasScheduledEvents,
+          });
+          setPoolModalVisible(true);
+        }}
+        onDrawDown={() => {
+          if (!actionPool) return;
+          setQuickExpenseInitialType('DEBIT');
+          setQuickExpenseData({ type: 'DEBIT', name: 'Draw down', categoryId: actionPool.id });
+          setMoveMoneyVisible(true);
+        }}
+        onMarkAsSurplusTarget={() => {
+          if (!actionPool) return;
+          handleMarkAsSurplusTarget(actionPool);
+        }}
+      />
+
       <EnvelopeFormModal
         visible={poolModalVisible}
         defaultType={defaultPoolType}
@@ -240,7 +320,11 @@ export default function PoolsScreen() {
       <QuickExpenseModal
         visible={moveMoneyVisible}
         initialType={quickExpenseInitialType}
-        onClose={() => setMoveMoneyVisible(false)}
+        initialData={quickExpenseData}
+        onClose={() => {
+          setMoveMoneyVisible(false);
+          setQuickExpenseData(undefined);
+        }}
         onSuccess={() => poolsQuery.refetch()}
       />
     </AppScreenWrapper>

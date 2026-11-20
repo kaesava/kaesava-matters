@@ -124,6 +124,22 @@ describe("matrix-projection-engine", () => {
     expect(cell.allocated).toBe(800);
   });
 
+  it("places a BILL or EVERYDAY surplus target exclusively in the surplus group without duplicating it", () => {
+    const billAsSurplus: EngineBucket[] = [
+      { id: "cat-everyday", name: "Everyday", type: "EVERYDAY", monthlyAmount: 500, currentBalance: 200 },
+      { id: "cat-bill-surplus", name: "Offset Bill", type: "BILL", monthlyAmount: 300, isSurplusTarget: true, currentBalance: 100 },
+    ];
+    const result = computeMatrixProjection({
+      currentUserId: "user-kesh",
+      categories: billAsSurplus,
+      incomeEvents: [mockIncomeEvents[0]],
+    });
+    const billsGroup = result.groups.find((g) => g.id === "bills")!;
+    const surplusGroup = result.groups.find((g) => g.id === "surplus")!;
+    expect(billsGroup.rows.some((r) => r.categoryId === "cat-bill-surplus")).toBe(false);
+    expect(surplusGroup.rows.some((r) => r.categoryId === "cat-bill-surplus")).toBe(true);
+  });
+
   describe("getEarliestPendingIncomeId", () => {
     it("should return null for empty or null array", () => {
       expect(getEarliestPendingIncomeId([])).toBeNull();

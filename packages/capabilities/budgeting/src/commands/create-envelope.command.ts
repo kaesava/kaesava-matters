@@ -32,23 +32,6 @@ export async function createEnvelopeCommand(
 
     const isPrivate = Boolean(targetAccount.isPrivate || input.isPrivate);
 
-    // 2. Clear previous surplus target in the same scope if this one is designated
-    if (input.isSurplusTarget === true) {
-      const clearConditions = [
-        eq(envelopes.tenantId, tenantId),
-        eq(envelopes.appId, appId),
-        eq(envelopes.isSurplusTarget, true),
-        eq(envelopes.isPrivate, isPrivate),
-      ];
-      if (isPrivate && userId) {
-        clearConditions.push(eq(envelopes.userId, userId));
-      }
-      await tx
-        .update(envelopes)
-        .set({ isSurplusTarget: false })
-        .where(and(...clearConditions));
-    }
-
     const fundingMode = input.fundingMode ?? (input.envelopeType === "GOAL" ? "TARGET_BALANCE" : "RECURRING");
     const isPriority = input.isPriority ?? (input.envelopeType === "BILL");
 
@@ -91,7 +74,7 @@ export async function createEnvelopeCommand(
         endDate,
         rrule,
         targetAmount: input.targetAmount || null,
-        isSurplusTarget: input.isSurplusTarget ?? false,
+        isSurplusTarget: false,
         isPrivate,
         generateEvents: effectiveGenerateEvents,
         userId: isPrivate ? (targetAccount.userId ?? userId) : null,

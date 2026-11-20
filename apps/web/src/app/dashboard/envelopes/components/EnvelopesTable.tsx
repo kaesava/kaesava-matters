@@ -21,6 +21,7 @@ export interface EnvelopesTableProps {
   onPageSizeChange: (newSize: number) => void;
   onEditPool: (pool: PoolTableRow["rawPool"]) => void;
   onDrawDown?: (pool: PoolTableRow["rawPool"]) => void;
+  onMarkAsSurplusTarget?: (pool: PoolTableRow["rawPool"]) => void;
   onOpenCategoryDrawer?: (pool: PoolTableRow) => void;
   onAddPool?: (poolType?: "EVERYDAY" | "BILL" | "GOAL") => void;
   fmtMoney: (val: number | null | undefined) => string;
@@ -43,6 +44,7 @@ export function EnvelopesTable({
   onPageSizeChange,
   onEditPool,
   onDrawDown,
+  onMarkAsSurplusTarget,
   onOpenCategoryDrawer,
   fmtMoney,
   isLoading = false,
@@ -125,6 +127,7 @@ export function EnvelopesTable({
                   onOpenCategoryDrawer={onOpenCategoryDrawer}
                   onEditPool={onEditPool}
                   onDrawDown={onDrawDown}
+                  onMarkAsSurplusTarget={onMarkAsSurplusTarget}
                   fmtMoney={fmtMoney}
                   fmtDate={fmtDate}
                 />

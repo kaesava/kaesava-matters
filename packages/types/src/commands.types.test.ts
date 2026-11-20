@@ -6,6 +6,7 @@ import {
   UpdateBankAccountCommand,
   CreateEnvelopeCommand,
   UpdateEnvelopeCommand,
+  SetSurplusTargetCommand,
   CreateIncomeSourceCommand,
   UpdateIncomeSourceCommand,
   CreateIncomeSourceScheduleCommand,
@@ -62,6 +63,18 @@ describe('Command Schemas Validation', () => {
       targetAmount: '300.00',
     });
     expect(updateEnv.isPriority).toBe(true);
+    expect(() =>
+      CreateEnvelopeCommand.parse({
+        name: 'Bill',
+        envelopeType: 'BILL',
+        bankAccountId: '11111111-1111-4111-8111-111111111111',
+        isSurplusTarget: true,
+      })
+    ).toThrow();
+    expect(() => UpdateEnvelopeCommand.parse({ isSurplusTarget: true })).toThrow();
+    expect(
+      SetSurplusTargetCommand.parse({ envelopeId: '11111111-1111-4111-8111-111111111111' }).envelopeId
+    ).toBe('11111111-1111-4111-8111-111111111111');
   });
 
   it('validates CreateIncomeSourceCommand and UpdateIncomeSourceCommand', () => {

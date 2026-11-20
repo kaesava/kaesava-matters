@@ -9,6 +9,7 @@ export const allocationPlanLines = pgTable("allocation_plan_lines", {
   envelopeId: uuid("envelope_id").references(() => envelopes.id, { onDelete: "cascade" }).notNull(),
   proposedAmount: numeric("proposed_amount", { precision: 12, scale: 2 }).notNull(),
   confirmedAmount: numeric("confirmed_amount", { precision: 12, scale: 2 }),
+  sweptAmount: numeric("swept_amount", { precision: 12, scale: 2 }),
   reasoning: text("reasoning"),
   ...tenantAndTimestamps,
 });

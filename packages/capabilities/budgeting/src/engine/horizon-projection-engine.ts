@@ -78,8 +78,8 @@ export function computeMatrixProjection(input: MatrixProjectionInput): MatrixPro
     (c) => c.isPrivate && c.userId && c.userId !== input.currentUserId
   );
 
-  const everydayCats = visibleCategories.filter(isEverydayBucket);
-  const billsCats = visibleCategories.filter(isBillsBucket);
+  const everydayCats = visibleCategories.filter((c) => isEverydayBucket(c) && !c.isSurplusTarget);
+  const billsCats = visibleCategories.filter((c) => isBillsBucket(c) && !c.isSurplusTarget);
   const goalCats = visibleCategories.filter((c) => isGoalBucket(c) && !c.isSurplusTarget);
   const surplusCats = visibleCategories.filter((c) => c.isSurplusTarget);
 

@@ -1,7 +1,7 @@
 import React, { useState, useMemo } from 'react';
 import { View, Text, ScrollView, StyleSheet, ActivityIndicator } from 'react-native';
 import { useLocalSearchParams, useRouter, type Href } from 'expo-router';
-import { MobileScreenWrapper, DESIGN_TOKENS } from '@money-matters/ui/mobile';
+import { MobileScreenWrapper, DESIGN_TOKENS, showMobileConfirm, useMobileToast } from '@money-matters/ui/mobile';
 import { t } from '@money-matters/i18n';
 import { trpc } from '../../../lib/trpc';
 import { authClient } from '../../../lib/auth';
@@ -18,6 +18,9 @@ export default function PoolDetailScreen() {
   const { id, returnTo } = useLocalSearchParams<{ id: string; returnTo?: string }>();
   const router = useRouter();
   const { data: session } = authClient.useSession();
+  const toast = useMobileToast();
+  const utils = trpc.useUtils();
+  const setSurplusTargetMut = trpc.setSurplusTarget.useMutation();
 
   const [poolModalVisible, setPoolModalVisible] = useState(false);
   const [quickExpenseVisible, setQuickExpenseVisible] = useState(false);
@@ -34,6 +37,7 @@ export default function PoolDetailScreen() {
   const expenseEventsQuery = trpc.listExpenseEvents.useQuery(undefined, { enabled: !!session?.user && !!id });
 
   const pool = poolsQuery.data?.find((p) => p.id === id);
+  const currentSurplusTarget = poolsQuery.data?.find((p) => p.isSurplusTarget && !p.isPrivate);
   const bankAccount = bankAccountsQuery.data?.find((b) => b.id === pool?.bankAccountId);
 
   const upcomingExpenses = useMemo(() => {
@@ -73,6 +77,34 @@ export default function PoolDetailScreen() {
           bankAccountName={bankAccount?.name}
           onEdit={() => setPoolModalVisible(true)}
           onOpenNotes={hasFileNotes ? () => setNotesModalVisible(true) : undefined}
+          onMarkAsSurplusTarget={
+            !pool.isPrivate
+              ? () => {
+                  showMobileConfirm({
+                    title: t('categories.setSurplusTargetConfirmTitle'),
+                    message: t('categories.setSurplusTargetConfirmMessage', {
+                      currentName: currentSurplusTarget?.name || t('categories.mainEnvelope'),
+                      nextName: pool.name,
+                    }),
+                    confirmText: t('categories.setSurplusTargetConfirmCta'),
+                    cancelText: t('common.cancel'),
+                    onConfirm: async () => {
+                      try {
+                        await setSurplusTargetMut.mutateAsync({ envelopeId: pool.id });
+                        await Promise.all([
+                          utils.listEnvelopes.invalidate(),
+                          utils.getActiveAllocationStrategy.invalidate(),
+                          utils.getPaydayPlanAnalytics.invalidate(),
+                        ]);
+                        toast.success(t('categories.setSurplusTargetSuccess', { name: pool.name }));
+                      } catch (err) {
+                        toast.error(err instanceof Error ? err.message : t('categories.setSurplusTargetFailed'));
+                      }
+                    },
+                  });
+                }
+              : undefined
+          }
           onDrawDown={
             pool.envelopeType === 'EVERYDAY'
               ? undefined

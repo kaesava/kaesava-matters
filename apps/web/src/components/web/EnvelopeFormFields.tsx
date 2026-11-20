@@ -10,7 +10,6 @@ import {
 import { t } from '@money-matters/i18n';
 import { EnvelopeRecurrenceFields } from './EnvelopeRecurrenceFields';
 import { EnvelopeEventsToggleSection } from './EnvelopeEventsToggleSection';
-import { EnvelopeSurplusTargetField } from './EnvelopeSurplusTargetField';
 
 export interface EnvelopeFormFieldsProps {
   name: string;
@@ -38,9 +37,6 @@ export interface EnvelopeFormFieldsProps {
   goalStartDate?: string;
   setGoalStartDate?: (val: string) => void;
   calculatedMonthly?: string;
-  isSurplusTarget: boolean;
-  setIsSurplusTarget: (val: boolean) => void;
-  isSurplusDisabled: boolean;
   isPriority?: boolean;
   setIsPriority?: (val: boolean) => void;
   generateEvents?: boolean;
@@ -76,9 +72,6 @@ export function EnvelopeFormFields({
   goalStartDate = '',
   setGoalStartDate,
   calculatedMonthly = '0.00',
-  isSurplusTarget,
-  setIsSurplusTarget,
-  isSurplusDisabled,
   generateEvents = true,
   setGenerateEvents,
   initialGenerateEvents = true,
@@ -303,14 +296,6 @@ export function EnvelopeFormFields({
             </div>
           )}
         </>
-      )}
-
-      {type !== 'EVERYDAY' && (
-        <EnvelopeSurplusTargetField
-          isSurplusTarget={isSurplusTarget}
-          setIsSurplusTarget={setIsSurplusTarget}
-          isSurplusDisabled={isSurplusDisabled}
-        />
       )}
     </>
   );

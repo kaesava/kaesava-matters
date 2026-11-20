@@ -193,7 +193,7 @@ export function runStep7SurplusSweep(
 
   if (eligibleSurplus) {
     const toAlloc = ctx.remainingCents;
-    allocate(
+    const swept = allocate(
       ctx,
       eligibleSurplus,
       toAlloc,
@@ -202,6 +202,12 @@ export function runStep7SurplusSweep(
         name: eligibleSurplus.name,
       })
     );
+    if (swept > 0) {
+      const line = ctx.linesMap.get(eligibleSurplus.id);
+      if (line) {
+        line.sweptCents = (line.sweptCents ?? 0) + swept;
+      }
+    }
   }
 }
 

@@ -1,5 +1,6 @@
 export * from "./commands/create-envelope.command.js";
 export * from "./commands/update-envelope.command.js";
+export * from "./commands/set-surplus-target.command.js";
 export * from "./commands/archive-envelope.command.js";
 export * from "./commands/envelope-schedule.js";
 export * from "./commands/income-schedule.js";

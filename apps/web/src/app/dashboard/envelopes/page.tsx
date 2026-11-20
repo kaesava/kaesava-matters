@@ -50,6 +50,7 @@ function PoolsPageContent() {
   const [poolToEdit, setPoolToEdit] = useState<EnvelopeSummaryItem | null>(null);
   const [selectedPoolForDrawer, setSelectedPoolForDrawer] = useState<PoolTableRow | null>(null);
   const [poolToArchive, setPoolToArchive] = useState<EnvelopeSummaryItem | null>(null);
+  const [poolToSetSurplusTarget, setPoolToSetSurplusTarget] = useState<EnvelopeSummaryItem | null>(null);
 
   const hasArchivedCategories =
     archivedQuery.data?.some(
@@ -152,6 +153,28 @@ function PoolsPageContent() {
       utils.listEnvelopes.invalidate();
     },
   });
+
+  const setSurplusTargetMut = trpc.setSurplusTarget.useMutation();
+  const currentSurplusTarget = (poolsQuery.data ?? []).find((p) => p.isSurplusTarget && !p.isPrivate);
+
+  const confirmSetSurplusTarget = async () => {
+    if (!poolToSetSurplusTarget) return;
+    const targetName = poolToSetSurplusTarget.name;
+    try {
+      await setSurplusTargetMut.mutateAsync({ envelopeId: poolToSetSurplusTarget.id });
+      await Promise.all([
+        utils.listEnvelopes.invalidate(),
+        utils.getActiveAllocationStrategy.invalidate(),
+        utils.getProjectedEnvelopeBalances.invalidate(),
+        utils.getPaydayPlanAnalytics.invalidate(),
+      ]);
+      toast.success(t("categories.setSurplusTargetSuccess", { name: targetName }));
+    } catch (err: unknown) {
+      toast.error(err instanceof Error ? err.message : t("categories.setSurplusTargetFailed"));
+    } finally {
+      setPoolToSetSurplusTarget(null);
+    }
+  };
 
   const handleDrawDown = (pool: { id: string; name?: string }) => {
     setSelectedPoolForDrawer(null);
@@ -336,6 +359,10 @@ function PoolsPageContent() {
             setIsPoolModalOpen(true);
           }}
           onDrawDown={handleDrawDown}
+          onMarkAsSurplusTarget={(pool) => {
+            if (showProjectionMatrix) return;
+            setPoolToSetSurplusTarget(pool);
+          }}
           onOpenCategoryDrawer={(pool) => {
             setSelectedPoolForDrawer(pool);
           }}
@@ -392,6 +419,11 @@ function PoolsPageContent() {
         setPoolToArchive={setPoolToArchive}
         onConfirmArchive={confirmArchivePool}
         isArchiving={archivePoolMut.isPending}
+        poolToSetSurplusTarget={poolToSetSurplusTarget}
+        setPoolToSetSurplusTarget={setPoolToSetSurplusTarget}
+        currentSurplusTargetName={currentSurplusTarget?.name || t("categories.mainEnvelope")}
+        onConfirmSetSurplusTarget={confirmSetSurplusTarget}
+        isSettingSurplusTarget={setSurplusTargetMut.isPending}
       />
     </div>
   );

@@ -41,7 +41,7 @@ export async function archiveEnvelopeCommand(
     throw new Error("The Everyday envelope cannot be archived.");
   }
 
-  if (envelope.isSurplusTarget && !envelope.isPrivate) {
+  if (envelope.isSurplusTarget) {
     throw new Error("Cannot archive an envelope designated as the household Surplus Sweep Target. Please designate another envelope as the Surplus Sweep Target first.");
   }
 

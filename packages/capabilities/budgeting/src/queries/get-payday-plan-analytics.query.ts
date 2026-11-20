@@ -37,6 +37,7 @@ export async function getPaydayPlanAnalyticsQuery(
   const conditions = [
     eq(allocationPlans.tenantId, tenantId),
     eq(allocationPlans.appId, appId),
+    eq(allocationPlans.status, "CONFIRMED"),
     sql`${allocationPlans.archivedAt} IS NULL`,
     gte(sql<string>`COALESCE(${incomeEvents.actualDate}, ${incomeEvents.expectedDate})`, cutoffDateStr),
   ];
@@ -72,13 +73,15 @@ export async function getPaydayPlanAnalyticsQuery(
       name: envelopes.name,
       envelopeType: envelopes.envelopeType,
       isSurplusTarget: envelopes.isSurplusTarget,
+      isPrivate: envelopes.isPrivate,
     })
     .from(envelopes)
     .where(and(eq(envelopes.tenantId, tenantId), eq(envelopes.appId, appId), sql`${envelopes.archivedAt} IS NULL`));
 
   const defaultSweepEnvelope =
-    allTenantEnvelopes.find((e) => e.isSurplusTarget) ||
-    allTenantEnvelopes.find((e) => e.envelopeType === "EVERYDAY") ||
+    allTenantEnvelopes.find((e) => !e.isPrivate && e.isSurplusTarget) ||
+    allTenantEnvelopes.find((e) => !e.isPrivate && e.envelopeType === "EVERYDAY") ||
+    allTenantEnvelopes.find((e) => !e.isPrivate) ||
     allTenantEnvelopes[0];
 
   const planIds = rawPlans.map((p) => p.id);
@@ -89,6 +92,8 @@ export async function getPaydayPlanAnalyticsQuery(
           envelopeId: allocationPlanLines.envelopeId,
           proposedAmount: allocationPlanLines.proposedAmount,
           confirmedAmount: allocationPlanLines.confirmedAmount,
+          sweptAmount: allocationPlanLines.sweptAmount,
+          reasoning: allocationPlanLines.reasoning,
           envelopeName: envelopes.name,
           envelopeType: envelopes.envelopeType,
         })

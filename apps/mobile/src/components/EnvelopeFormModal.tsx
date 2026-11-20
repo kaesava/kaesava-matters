@@ -73,8 +73,6 @@ export function EnvelopeFormModal({
     setGoalStartDate,
     bankAccountId,
     setBankAccountId,
-    isSurplusTarget,
-    setIsSurplusTarget,
     isPriority,
     setIsPriority,
     generateEvents,
@@ -356,12 +354,9 @@ export function EnvelopeFormModal({
         bankDisabled={isBankDisabled}
         isTargetDateInPast={isTargetDateInPast}
         isPastStartDate={isPastStartDate}
-        isSurplusTarget={isSurplusTarget}
-        setIsSurplusTarget={setIsSurplusTarget}
         isPriority={isPriority}
         setIsPriority={setIsPriority}
         isEdit={isEdit}
-        isSurplusDisabled={Boolean(isEdit && categoryToEdit?.isSurplusTarget)}
         hideTypeOptions={initialMode === "BILL_SCHEDULE"}
         hideBillModeToggle={initialMode === "BILL_SCHEDULE"}
         generateEvents={generateEvents}

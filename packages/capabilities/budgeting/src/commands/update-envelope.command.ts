@@ -1,5 +1,5 @@
 import { envelopes, expenseEvents, bankAccounts, tenants, DbOrTx } from "@money-matters/db";
-import { eq, and, sql, isNull } from "drizzle-orm";
+import { eq, and, sql } from "drizzle-orm";
 import { z } from "zod";
 import { UpdateEnvelopeCommand, DEFAULT_TIMEZONE } from "@money-matters/types";
 import {
@@ -106,45 +106,6 @@ export async function updateEnvelopeCommand(
       throw new Error("Envelope type cannot be changed to or from Everyday.");
     }
     const effectiveEnvelopeType = rawEnvelopeType ?? existing.envelopeType;
-    const willBeSurplusTarget = input.isSurplusTarget !== undefined ? input.isSurplusTarget : existing.isSurplusTarget;
-
-    if (willBeSurplusTarget && effectiveEnvelopeType === "BILL") {
-      throw new Error("A Bill envelope cannot be set as a Surplus Sweep Target.");
-    }
-
-    if (input.isSurplusTarget === false && existing.isSurplusTarget && !effectiveIsPrivate) {
-      const otherSurplusTargets = await tx
-        .select({ id: envelopes.id })
-        .from(envelopes)
-        .where(
-          and(
-            eq(envelopes.tenantId, tenantId),
-            eq(envelopes.appId, appId),
-            eq(envelopes.isSurplusTarget, true),
-            eq(envelopes.isPrivate, false),
-            isNull(envelopes.archivedAt)
-          )
-        );
-      if (otherSurplusTargets.length <= 1) {
-        throw new Error("The household must have at least one public Surplus Sweep Target.");
-      }
-    }
-
-    if (input.isSurplusTarget === true) {
-      const clearConditions = [
-        eq(envelopes.tenantId, tenantId),
-        eq(envelopes.appId, appId),
-        eq(envelopes.isSurplusTarget, true),
-        eq(envelopes.isPrivate, effectiveIsPrivate),
-      ];
-      if (effectiveIsPrivate && userId) {
-        clearConditions.push(eq(envelopes.userId, userId));
-      }
-      await tx
-        .update(envelopes)
-        .set({ isSurplusTarget: false })
-        .where(and(...clearConditions));
-    }
 
     const { fundingMode, isPriority, ...restInput } = input;
     const effectiveFundingMode = fundingMode ?? existing.fundingMode ?? (effectiveEnvelopeType === "GOAL" ? "TARGET_BALANCE" : "RECURRING");

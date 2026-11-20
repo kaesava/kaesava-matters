@@ -4,7 +4,7 @@ import { toCents, toDollars } from "./allocation-engine-utils.js";
 
 export interface StepContext {
   remainingCents: number;
-  linesMap: Map<string, { bucketName: string; amountCents: number; reasonings: string[] }>;
+  linesMap: Map<string, { bucketName: string; amountCents: number; sweptCents?: number; reasonings: string[] }>;
   runningBalances: Map<string, number>;
   priorBillAllocated: Map<string, number>;
   currencySymbol: string;

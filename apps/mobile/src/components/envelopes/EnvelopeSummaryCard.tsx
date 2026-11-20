@@ -14,12 +14,14 @@ interface EnvelopeSummaryCardProps {
     fundingMode?: "TARGET_BALANCE" | "RECURRING" | null;
     currentBalance?: number | string | null;
     isSurplusTarget?: boolean | null;
+    isPrivate?: boolean | null;
     isPriority?: boolean | null;
   };
   bankAccountName?: string | null;
   onEdit: () => void;
   onDrawDown?: () => void;
   onOpenNotes?: () => void;
+  onMarkAsSurplusTarget?: () => void;
 }
 
 export function EnvelopeSummaryCard({
@@ -28,6 +30,7 @@ export function EnvelopeSummaryCard({
   onEdit,
   onDrawDown,
   onOpenNotes,
+  onMarkAsSurplusTarget,
 }: EnvelopeSummaryCardProps) {
   const isBill = pool.envelopeType === 'BILL';
   const isGoal = pool.envelopeType === 'GOAL' || pool.poolType === 'GOAL';
@@ -120,6 +123,23 @@ export function EnvelopeSummaryCard({
           <Text style={styles.primaryActionBtnText}>{t('categories.editEnvelope')}</Text>
         </TouchableOpacity>
       </View>
+
+      {onMarkAsSurplusTarget && !pool.isPrivate && (
+        <TouchableOpacity
+          onPress={onMarkAsSurplusTarget}
+          disabled={Boolean(pool.isSurplusTarget)}
+          style={[styles.surplusActionBtn, Boolean(pool.isSurplusTarget) && styles.surplusActionBtnDisabled]}
+        >
+          <Feather
+            name="target"
+            size={15}
+            color={pool.isSurplusTarget ? DESIGN_TOKENS.colors.slate[400] : DESIGN_TOKENS.colors.accent}
+          />
+          <Text style={[styles.surplusActionBtnText, Boolean(pool.isSurplusTarget) && styles.surplusActionBtnTextDisabled]}>
+            {t('categories.actions.markAsSurplusTarget')}
+          </Text>
+        </TouchableOpacity>
+      )}
     </View>
   );
 }
@@ -190,6 +210,24 @@ const styles = StyleSheet.create({
     elevation: 2,
   },
   primaryActionBtnText: { fontSize: 13, fontWeight: '700', color: DESIGN_TOKENS.colors.onAccent },
+  surplusActionBtn: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 8,
+    borderWidth: 1,
+    borderColor: DESIGN_TOKENS.colors.accentBorder,
+    backgroundColor: DESIGN_TOKENS.colors.accentLight,
+    borderRadius: 12,
+    paddingVertical: 10,
+    paddingHorizontal: 12,
+  },
+  surplusActionBtnDisabled: {
+    borderColor: DESIGN_TOKENS.colors.slate[200],
+    backgroundColor: DESIGN_TOKENS.colors.slate[50],
+  },
+  surplusActionBtnText: { fontSize: 13, fontWeight: '700', color: DESIGN_TOKENS.colors.accent },
+  surplusActionBtnTextDisabled: { color: DESIGN_TOKENS.colors.slate[400] },
   drawDownBtn: {
     flex: 1,
     flexDirection: 'row',

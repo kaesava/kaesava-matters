@@ -154,4 +154,19 @@ test.describe('7. Envelopes & Move Money Screen (`/dashboard/envelopes`)', () =>
     await exitBtn.click();
     await expect(exitBtn).not.toBeVisible();
   });
+
+  test('7.6 Shortfall/Surplus Target Row Action & Create Modal Parity', async ({ page }) => {
+    await page.goto('/dashboard/envelopes');
+
+    await page.getByRole('button', { name: /Add Envelope/i }).first().click();
+    const createModal = page.getByRole('dialog').first();
+    await expect(createModal).toBeVisible();
+    await expect(createModal.getByText(/Mark this envelope as Shortfall\/Surplus target/i)).toHaveCount(0);
+    await page.keyboard.press('Escape');
+
+    const manageBtn = page.locator('tbody tr').first().getByRole('button', { name: /Manage/i }).first();
+    await expect(manageBtn).toBeVisible();
+    await manageBtn.click();
+    await expect(page.getByRole('button', { name: /Mark as Target Envelope for Shortfall\/Surplus/i })).toBeVisible();
+  });
 });

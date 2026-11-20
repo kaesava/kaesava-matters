@@ -14,7 +14,6 @@ import {
 import { t } from '@money-matters/i18n';
 import { EnvelopeRecurrenceFields } from './EnvelopeRecurrenceFields';
 import { EnvelopeEventsToggleSection } from './EnvelopeEventsToggleSection';
-import { EnvelopeSurplusTargetField } from './EnvelopeSurplusTargetField';
 import { EnvelopeGoalFields } from './EnvelopeGoalFields';
 
 export interface EnvelopeFormFieldsProps {
@@ -32,10 +31,8 @@ export interface EnvelopeFormFieldsProps {
   calculatedMonthly?: string;
   bankAccountId: string; setBankAccountId: (v: string) => void;
   bankDisabled?: boolean;
-  isSurplusTarget: boolean; setIsSurplusTarget: (v: boolean) => void;
   isPriority?: boolean; setIsPriority?: (v: boolean) => void;
   isEdit: boolean;
-  isSurplusDisabled: boolean;
   hideTypeOptions?: boolean;
   hideBillModeToggle?: boolean;
   generateEvents?: boolean; setGenerateEvents?: (v: boolean) => void;
@@ -74,12 +71,9 @@ export const EnvelopeFormFields: React.FC<EnvelopeFormFieldsProps> = ({
   bankAccountId,
   setBankAccountId,
   bankDisabled = false,
-  isSurplusTarget,
-  setIsSurplusTarget,
   isPriority,
   setIsPriority,
   isEdit,
-  isSurplusDisabled,
   hideTypeOptions = false,
   hideBillModeToggle = false,
   generateEvents = true,
@@ -243,14 +237,6 @@ export const EnvelopeFormFields: React.FC<EnvelopeFormFieldsProps> = ({
             </View>
           )}
         </View>
-      )}
-
-      {type !== 'EVERYDAY' && (
-        <EnvelopeSurplusTargetField
-          isSurplusTarget={isSurplusTarget}
-          setIsSurplusTarget={setIsSurplusTarget}
-          isSurplusDisabled={isSurplusDisabled}
-        />
       )}
     </View>
   );

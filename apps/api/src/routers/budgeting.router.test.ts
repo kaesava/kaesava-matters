@@ -36,5 +36,8 @@ describe("budgeting router", () => {
     });
 
     await expect(caller.listEnvelopes()).rejects.toMatchObject({ code: "UNAUTHORIZED" });
+    await expect(
+      caller.setSurplusTarget({ envelopeId: "11111111-1111-4111-8111-111111111111" })
+    ).rejects.toMatchObject({ code: "UNAUTHORIZED" });
   });
 });

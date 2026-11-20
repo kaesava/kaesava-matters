@@ -55,6 +55,7 @@ export interface AllocationLine {
   bucketId: string;
   bucketName: string;
   proposedAmount: number;
+  sweptAmount?: number;
   reasoning: string;
 }
 
@@ -115,7 +116,7 @@ export function runAllocationEngine(input: AllocationEngineInput): AllocationEng
     envImmediateExpensesMap.set(targetId, (envImmediateExpensesMap.get(targetId) ?? 0) + toCents(exp.amount));
   }
 
-  const linesMap = new Map<string, { bucketName: string; amountCents: number; reasonings: string[] }>();
+  const linesMap = new Map<string, { bucketName: string; amountCents: number; sweptCents?: number; reasonings: string[] }>();
   const runningBalances = new Map<string, number>();
   for (const b of input.buckets) {
     linesMap.set(b.id, { bucketName: b.name, amountCents: 0, reasonings: [] });
@@ -291,6 +292,7 @@ export function runAllocationEngine(input: AllocationEngineInput): AllocationEng
     bucketId,
     bucketName: data.bucketName,
     proposedAmount: toDollars(data.amountCents),
+    ...(data.sweptCents && data.sweptCents > 0 ? { sweptAmount: toDollars(data.sweptCents) } : {}),
     reasoning: data.reasonings.length > 0 ? data.reasonings.join(" ") : t("payday.engineReasoning.noAllocationNeeded"),
   }));
 

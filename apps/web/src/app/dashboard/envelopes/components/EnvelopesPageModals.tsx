@@ -29,6 +29,11 @@ interface EnvelopesPageModalsProps {
   setPoolToArchive: (pool: EnvelopeSummaryItem | null) => void;
   onConfirmArchive: () => void;
   isArchiving: boolean;
+  poolToSetSurplusTarget: EnvelopeSummaryItem | null;
+  setPoolToSetSurplusTarget: (pool: EnvelopeSummaryItem | null) => void;
+  currentSurplusTargetName: string;
+  onConfirmSetSurplusTarget: () => void;
+  isSettingSurplusTarget: boolean;
 }
 
 /**
@@ -51,6 +56,11 @@ export function EnvelopesPageModals({
   setPoolToArchive,
   onConfirmArchive,
   isArchiving,
+  poolToSetSurplusTarget,
+  setPoolToSetSurplusTarget,
+  currentSurplusTargetName,
+  onConfirmSetSurplusTarget,
+  isSettingSurplusTarget,
 }: EnvelopesPageModalsProps) {
   const utils = trpc.useUtils();
 
@@ -108,6 +118,19 @@ export function EnvelopesPageModals({
         confirmLabel={t("categories.archiveEnvelope")}
         variant="danger"
         isLoading={isArchiving}
+      />
+
+      <ConfirmDialog
+        isOpen={Boolean(poolToSetSurplusTarget)}
+        onClose={() => setPoolToSetSurplusTarget(null)}
+        onConfirm={onConfirmSetSurplusTarget}
+        title={t("categories.setSurplusTargetConfirmTitle")}
+        description={t("categories.setSurplusTargetConfirmMessage", {
+          currentName: currentSurplusTargetName,
+          nextName: poolToSetSurplusTarget?.name || "",
+        })}
+        confirmLabel={t("categories.setSurplusTargetConfirmCta")}
+        isLoading={isSettingSurplusTarget}
       />
     </>
   );

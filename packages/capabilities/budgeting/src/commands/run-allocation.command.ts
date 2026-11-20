@@ -233,6 +233,15 @@ export async function runAllocationCommand(
     const customItem = customLinesMap?.get(line.bucketId);
     const confirmedVal = customItem !== undefined ? customItem.amount : line.proposedAmount;
     const lineReasoning = customItem?.reasoning !== undefined ? customItem.reasoning : line.reasoning;
+    const engineSwept = line.sweptAmount ?? 0;
+    const env = dbEnvelopes.find((e) => e.id === line.bucketId);
+    let sweptVal = 0;
+    if (customItem === undefined) {
+      sweptVal = engineSwept;
+    } else if (env?.isSurplusTarget || engineSwept > 0) {
+      const nonSweptProposed = Math.max(0, line.proposedAmount - engineSwept);
+      sweptVal = Math.max(0, confirmedVal - nonSweptProposed);
+    }
 
     return {
       tenantId,
@@ -241,6 +250,7 @@ export async function runAllocationCommand(
       envelopeId: line.bucketId,
       proposedAmount: line.proposedAmount.toFixed(2),
       confirmedAmount: confirmedVal.toFixed(2),
+      sweptAmount: sweptVal > 0 ? sweptVal.toFixed(2) : null,
       reasoning: lineReasoning,
       createdBy: userId,
       updatedBy: userId,
@@ -323,12 +333,15 @@ export async function runAllocationCommand(
       const isOngoingGoal = isGoal && env.fundingMode === "RECURRING";
 
       if (env.isSurplusTarget) {
-        targetsHit.push({
-          id: env.id,
-          name: env.name,
-          type: "SURPLUS_SWEPT",
-          amount: confirmedVal,
-        });
+        const sweptVal = line.sweptAmount ? parseFloat(line.sweptAmount) : 0;
+        if (sweptVal > 0) {
+          targetsHit.push({
+            id: env.id,
+            name: env.name,
+            type: "SURPLUS_SWEPT",
+            amount: sweptVal,
+          });
+        }
       } else if (isGoal) {
         const targetVal = env.targetAmount ? parseFloat(env.targetAmount) : 0;
         if (!isOngoingGoal && targetVal > 0 && preBal < targetVal && postBal >= targetVal) {

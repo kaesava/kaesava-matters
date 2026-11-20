@@ -100,8 +100,6 @@ export function EnvelopeFormModal({
     setInterval,
     goalStartDate,
     setGoalStartDate,
-    isSurplusTarget,
-    setIsSurplusTarget,
     isPriority,
     setIsPriority,
     generateEvents,
@@ -296,9 +294,6 @@ export function EnvelopeFormModal({
           goalStartDate={goalStartDate}
           setGoalStartDate={setGoalStartDate}
           calculatedMonthly={calculatedMonthly}
-          isSurplusTarget={isSurplusTarget}
-          setIsSurplusTarget={setIsSurplusTarget}
-          isSurplusDisabled={Boolean(isEdit && categoryToEdit?.isSurplusTarget)}
           isPriority={isPriority}
           setIsPriority={setIsPriority}
           generateEvents={generateEvents}

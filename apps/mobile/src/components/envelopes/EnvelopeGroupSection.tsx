@@ -15,6 +15,7 @@ interface EnvelopeGroupSectionItem {
   currentBalance?: number | string | null;
   targetAmount?: string | null;
   isSurplusTarget?: boolean | null;
+  isPrivate?: boolean | null;
   bankAccountId?: string | null;
 }
 
@@ -31,6 +32,7 @@ interface EnvelopeGroupSectionProps {
   bankAccounts: BankAccountItem[];
   groupType?: 'EVERYDAY' | 'BILL' | 'GOAL';
   onAddPool?: (type: 'EVERYDAY' | 'BILL' | 'GOAL') => void;
+  onOpenPoolActions?: (pool: EnvelopeGroupSectionItem) => void;
 }
 
 export function EnvelopeGroupSection({
@@ -40,6 +42,7 @@ export function EnvelopeGroupSection({
   onToggleCollapse,
   groupType,
   onAddPool,
+  onOpenPoolActions,
 }: EnvelopeGroupSectionProps) {
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(5);
@@ -95,6 +98,7 @@ export function EnvelopeGroupSection({
             <EnvelopeItemCard
               key={p.id}
               pool={p}
+              onOpenActions={onOpenPoolActions ? () => onOpenPoolActions(p) : undefined}
             />
           ))}
           <MobilePaginationBar

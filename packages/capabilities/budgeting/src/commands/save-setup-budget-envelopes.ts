@@ -1,5 +1,5 @@
-import { DbOrTx, envelopes, transactionLedger, getEnvelopeBalancesMap } from "@money-matters/db";
-import { eq, and, sql } from "drizzle-orm";
+import { DbOrTx, envelopes, transactionLedger, allocationStrategies, allocationStrategySteps, getEnvelopeBalancesMap } from "@money-matters/db";
+import { eq, and, isNull, sql } from "drizzle-orm";
 import { randomUUID } from "crypto";
 import { EnvelopeType, DEFAULT_TIMEZONE } from "@money-matters/types";
 import { deriveRrule, computeBillScheduleAnchorDate } from "./save-setup-budget-calculators.js";
@@ -313,6 +313,35 @@ export async function processSetupEnvelopes(
       .update(envelopes)
       .set({ archivedAt: now, archivedBy: userId, lastBurstDate: null, updatedAt: now, updatedBy: userId })
       .where(eq(envelopes.id, envId));
+  }
+
+  if (resolvedSurplusTargetId) {
+    const [householdStrategy] = await tx
+      .select({ id: allocationStrategies.id })
+      .from(allocationStrategies)
+      .where(
+        and(
+          eq(allocationStrategies.tenantId, tenantId),
+          eq(allocationStrategies.appId, appId),
+          eq(allocationStrategies.isDefault, true),
+          eq(allocationStrategies.isPrivate, false),
+          isNull(allocationStrategies.archivedAt)
+        )
+      )
+      .limit(1);
+    if (householdStrategy) {
+      await tx
+        .update(allocationStrategySteps)
+        .set({ targetEnvelopeId: resolvedSurplusTargetId, updatedAt: now, updatedBy: userId })
+        .where(
+          and(
+            eq(allocationStrategySteps.strategyId, householdStrategy.id),
+            eq(allocationStrategySteps.tenantId, tenantId),
+            eq(allocationStrategySteps.stepType, "SURPLUS_SWEEP"),
+            isNull(allocationStrategySteps.archivedAt)
+          )
+        );
+    }
   }
 
   await archivePendingExpenseEvents(tx, tenantId, archivedEnvelopeIds, userId, now);

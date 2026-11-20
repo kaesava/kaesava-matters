@@ -418,6 +418,7 @@ tenants (id PK, appId FK→apps.id, name, subscriptionTier, stripeCustomerId, st
 | `envelopes.listEnvelopes` | 35 | `privateTenantProcedure` | None | None | None | `listEnvelopesQuery` (`envelopes`, `bankAccounts`, `expenseEvents`, `transactionLedger`) |
 | `envelopes.createEnvelope` | 40 | `privateTenantProcedure` | `requiresWriteAccess` | `CreateEnvelopeCommandSchema` (`.strict()`) | None | `createEnvelopeCommand` (`envelopes`, `bankAccounts`, `expenseEvents`) |
 | `envelopes.updateEnvelope` | 57 | `privateTenantProcedure` | `requiresWriteAccess` | `UpdateEnvelopeCommandSchema` (`.strict()`) | None | `updateEnvelopeCommand` (`envelopes`, `bankAccounts`, `expenseEvents`) |
+| `budgeting.setSurplusTarget` | 43 | `privateTenantProcedure` | `requiresWriteAccess` | `SetSurplusTargetCommand` (`.strict()`) | None | `setSurplusTargetCommand` (`envelopes`, `bankAccounts`, `allocationStrategies`, `allocationStrategySteps`) |
 | `envelopes.archiveEnvelope` | 62 | `privateTenantProcedure` | `requiresWriteAccess` | `ArchiveEnvelopeCommandSchema` (`.strict()`) | None | `archiveEnvelopeCommand` (`envelopes`, `expenseEvents`, `transferEvents`, `allocationStrategySteps`) |
 | `envelopes.listArchivedItems` | 67 | `privateTenantProcedure` | None | None | None | `listArchivedItemsQuery` (`envelopes`, `incomeSources`, `bankAccounts`) |
 | `envelopes.restoreArchivedItem` | 75 | `privateTenantProcedure` | `requiresWriteAccess` | `RestoreItemCommand` (`.strict()`) | None | `restoreItemCommand` (`envelopes`, `incomeSources`, `bankAccounts`, `apps`) |

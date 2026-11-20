@@ -23,6 +23,8 @@ export interface ProcessedLine {
   envelopeName: string;
   envelopeType: EnvelopeType;
   amount: number;
+  sweptAmount?: number | null;
+  reasoning?: string | null;
 }
 
 export interface RawPlanInput {
@@ -38,6 +40,8 @@ export interface RawLineInput {
   envelopeId: string;
   proposedAmount: string;
   confirmedAmount: string | null;
+  sweptAmount?: string | null;
+  reasoning?: string | null;
   envelopeName: string | null;
   envelopeType: EnvelopeType | null;
 }
@@ -79,6 +83,8 @@ export function buildIncomeSplitAnalytics({
     envelopeName: l.envelopeName ?? "Unknown Envelope",
     envelopeType: l.envelopeType ?? "EVERYDAY",
     amount: parseFloat(l.confirmedAmount ?? l.proposedAmount) || 0,
+    sweptAmount: l.sweptAmount !== undefined && l.sweptAmount !== null ? parseFloat(l.sweptAmount) || 0 : null,
+    reasoning: l.reasoning ?? null,
   }));
 
   const totalIncome = plans.reduce((acc, p) => acc + p.totalIncomeAmount, 0);
@@ -177,6 +183,17 @@ export function computeHorizonBreakdown(lines: ProcessedLine[]): HorizonBreakdow
   };
 }
 
+function resolveLineSweptAmount(line: ProcessedLine, defaultSweepId: string): number {
+  if (line.sweptAmount !== undefined && line.sweptAmount !== null) return line.sweptAmount;
+  if (line.reasoning) {
+    const match = line.reasoning.match(/swept residual excess surplus of [^0-9]*([\d,]+(?:\.\d+)?)/i);
+    if (match?.[1]) {
+      return parseFloat(match[1].replace(/,/g, "")) || 0;
+    }
+  }
+  return line.envelopeId === defaultSweepId ? line.amount : 0;
+}
+
 export function computeMonthlyCashFlow(
   plans: ProcessedPlan[],
   lines: ProcessedLine[],
@@ -189,8 +206,9 @@ export function computeMonthlyCashFlow(
   const sweepLinesByPlan = new Map<string, number>();
 
   for (const line of lines) {
-    if (line.envelopeId === defaultSweepId) {
-      sweepLinesByPlan.set(line.planId, (sweepLinesByPlan.get(line.planId) || 0) + line.amount);
+    const swept = resolveLineSweptAmount(line, defaultSweepId);
+    if (swept > 0) {
+      sweepLinesByPlan.set(line.planId, (sweepLinesByPlan.get(line.planId) || 0) + swept);
     }
   }
 

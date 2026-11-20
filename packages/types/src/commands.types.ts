@@ -63,7 +63,6 @@ export const CreateEnvelopeCommand = z.object({
   rrule: z.string().optional().nullable(),
   targetAmount: z.string().regex(/^(\d{1,12}(\.\d{1,2})?)?$/, { message: "Target amount must be a valid positive number" }).optional().nullable(),
   isPriority: z.boolean().default(false).optional(),
-  isSurplusTarget: z.boolean().default(false).optional(),
   isPrivate: z.boolean().default(false).optional(),
   orderIndex: z.number().int().default(0).optional(),
   generateEvents: z.boolean().optional(),
@@ -85,13 +84,6 @@ export const CreateEnvelopeCommand = z.object({
       });
     }
   }
-  if (data.isSurplusTarget && data.envelopeType === "BILL") {
-    ctx.addIssue({
-      code: z.ZodIssueCode.custom,
-      message: "Bill envelopes cannot be set as the surplus target",
-      path: ["isSurplusTarget"],
-    });
-  }
 });
 
 export const UpdateEnvelopeCommand = z.object({
@@ -108,19 +100,14 @@ export const UpdateEnvelopeCommand = z.object({
   rrule: z.string().optional().nullable(),
   targetAmount: z.string().regex(/^(\d{1,12}(\.\d{1,2})?)?$/, { message: "Target amount must be a valid positive number" }).optional().nullable(),
   isPriority: z.boolean().optional(),
-  isSurplusTarget: z.boolean().optional(),
   isPrivate: z.boolean().optional(),
   orderIndex: z.number().int().optional(),
   generateEvents: z.boolean().optional(),
-}).strict().superRefine((data, ctx) => {
-  if (data.isSurplusTarget && data.envelopeType === "BILL") {
-    ctx.addIssue({
-      code: z.ZodIssueCode.custom,
-      message: "Bill envelopes cannot be set as the surplus target",
-      path: ["isSurplusTarget"],
-    });
-  }
-});
+}).strict();
+
+export const SetSurplusTargetCommand = z.object({
+  envelopeId: z.string().uuid(),
+}).strict();
 
 export const CreateIncomeSourceCommand = z.object({
   name: z.string().min(1),

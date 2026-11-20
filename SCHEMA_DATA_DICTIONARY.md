@@ -12,7 +12,7 @@
 | :-: | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
 | 1 | `ai_usage` (`aiUsage`) | `packages/db/src/schema/ai_usage.ts` (31L) | `periodMonth`, `llmCalls` | Complete (`0059`: `appId`, `archivedBy`) | Enabled + **Forced** (`0045`) | `tenant_isolation`: `tenant_id = current_setting('app.current_tenant_id')` | `packages/capabilities/assistant/src/queries/ask.query.ts`, `packages/capabilities/assistant/src/usage/db-usage-store.ts`, `packages/capabilities/tenant/src/delete-account.ts` |
 | 2 | `allocation_plans` (`allocationPlans`) | `packages/db/src/schema/allocation_plan.ts` (16L) | `incomeEventId`, `status`, `totalIncomeAmount`, `confirmedAt` | Complete (`tenantAndTimestamps`) | Enabled + **Forced** (`0014`, `0047`) | `tenant_isolation` + `RESTRICTIVE stealth_privacy_isolation` (joins `income_events -> income_sources -> bank_accounts` on `app.current_user_id`) | `apps/api/src/routers/payday/*`, `packages/capabilities/budgeting/*`, `simulation/*`, `tenant/src/delete-account.ts`, `tenant/src/export-data.ts` |
-| 3 | `allocation_plan_lines` (`allocationPlanLines`) | `packages/db/src/schema/allocation_plan_line.ts` (16L) | `planId`, `envelopeId`, `proposedAmount`, `confirmedAmount`, `reasoning` | Complete (`tenantAndTimestamps`) | Enabled + **Forced** (`0014`, `0047`) | `tenant_isolation` + `RESTRICTIVE stealth_privacy_isolation` (joins `envelopes` on `app.current_user_id`) | `apps/api/src/routers/payday/*`, `packages/capabilities/budgeting/*`, `simulation/*`, `tenant/src/delete-account.ts` |
+| 3 | `allocation_plan_lines` (`allocationPlanLines`) | `packages/db/src/schema/allocation_plan_line.ts` (17L) | `planId`, `envelopeId`, `proposedAmount`, `confirmedAmount`, `sweptAmount`, `reasoning` | Complete (`tenantAndTimestamps`) | Enabled + **Forced** (`0014`, `0047`) | `tenant_isolation` + `RESTRICTIVE stealth_privacy_isolation` (joins `envelopes` on `app.current_user_id`) | `apps/api/src/routers/payday/*`, `packages/capabilities/budgeting/*`, `simulation/*`, `tenant/src/delete-account.ts` |
 | 4 | `allocation_strategies` (`allocationStrategies`) | `packages/db/src/schema/allocation_strategy.ts` (17L) | `name`, `presetKey`, `description`, `isDefault`, `isPrivate`, `userId` | Complete (`tenantAndTimestamps`) | Enabled + **Forced** (`0046`, `0058`) | `tenant_isolation` + `RESTRICTIVE stealth_privacy_isolation` (`0058`: `is_private = false OR user_id = app.current_user_id`) | `apps/api/src/routers/payday/payday-strategy.procedures.ts`, `packages/capabilities/budgeting/src/commands/*`, `queries/*`, `tenant/src/handlers/create-tenant.ts`, `partner-invites.ts` |
 | 5 | `allocation_strategy_steps` (`allocationStrategySteps`) | `packages/db/src/schema/allocation_strategy_step.ts` (36L) | `strategyId`, `orderIndex`, `stepType`, `targetEnvelopeId`, `config` | Complete (`tenantAndTimestamps`) | Enabled + **Forced** (`0046`) | `tenant_isolation` | `packages/capabilities/budgeting/src/commands/*`, `queries/*`, `tenant/src/handlers/create-tenant.ts`, `partner-invites.ts` |
 | 6 | `apps` (`apps`) | `packages/db/src/schema/app.ts` (25L) | `name`, `slug`, `featureFlags` | Global catalog table: `id`, `createdAt`, `createdBy`, `updatedAt`, `updatedBy`, `archivedAt`, `archivedBy` (`0059`) | **Disabled** (Global catalog table) | None | `apps/api/src/routers/*`, `packages/capabilities/budgeting/src/commands/restore-item.command.ts`, `tenant/src/handlers/create-tenant.ts`, `packages/db/src/set-app-flag.ts` |
@@ -65,6 +65,7 @@
 | `envelopeId` | uuid | No | Domain column |
 | `proposedAmount` | numeric | No | Domain column |
 | `confirmedAmount` | numeric | Yes | Domain column |
+| `sweptAmount` | numeric | Yes | Exact residual Step 7 surplus sweep amount recorded at payday confirmation (`0063`) |
 | `reasoning` | text | Yes | Domain column |
 | `tenantId` | uuid | No | Tenant Foreign Key (RLS isolation) |
 | `appId` | uuid | No | Application ID |
@@ -225,7 +226,7 @@
 | `rrule` | varchar | Yes | Domain column |
 | `targetAmount` | numeric | Yes | Target milestone or buffer amount |
 | `isPriority` | boolean | No | Priority flag for allocation waterfalls (Priority Bills & Priority Goals) |
-| `isSurplusTarget` | boolean | No | Domain column |
+| `isSurplusTarget` | boolean | No | Single shared Shortfall/Surplus target per `(tenant_id, app_id)` enforced by `CHECK (NOT (is_surplus_target AND is_private))` and partial unique index `envelopes_single_surplus_target_idx` (`0063`) |
 | `isPrivate` | boolean | No | Domain column |
 | `generateEvents` | boolean | No | Controls auto-generation of upcoming scheduled expense events (`true` only for `BILL` + `RECURRING`; normalized to `false` otherwise) |
 | `userId` | uuid | Yes | Domain column |

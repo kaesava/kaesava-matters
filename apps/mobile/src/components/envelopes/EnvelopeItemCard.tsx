@@ -1,5 +1,6 @@
 import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import { Feather } from '@expo/vector-icons';
 import { t } from '@money-matters/i18n';
 import { DESIGN_TOKENS, CardDrawerIndicator, formatRecurrenceSuffix } from '@money-matters/ui/mobile';
 import { formatMobileCurrency } from '../../lib/format';
@@ -23,10 +24,12 @@ interface EnvelopeItemCardProps {
     fundingMode?: "TARGET_BALANCE" | "RECURRING" | null;
     isPriority?: boolean | null;
   };
+  onOpenActions?: () => void;
 }
 
 export function EnvelopeItemCard({
   pool,
+  onOpenActions,
 }: EnvelopeItemCardProps) {
   const router = useRouter();
   const isBill = pool.envelopeType === 'BILL';
@@ -127,7 +130,18 @@ export function EnvelopeItemCard({
                 : t('categories.mainEnvelope')}
             </Text>
           </View>
-          <CardDrawerIndicator size={18} />
+          {onOpenActions ? (
+            <TouchableOpacity
+              onPress={onOpenActions}
+              style={styles.moreBtn}
+              hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
+              accessibilityLabel={t('common.manage')}
+            >
+              <Feather name="more-vertical" size={16} color={DESIGN_TOKENS.colors.slate[400]} />
+            </TouchableOpacity>
+          ) : (
+            <CardDrawerIndicator size={18} />
+          )}
         </View>
       </TouchableOpacity>
 
@@ -172,7 +186,8 @@ const styles = StyleSheet.create({
   surplusBadgeText: { fontSize: 9, fontWeight: '700', color: '#047857' },
   bankBadgeWrap: { marginTop: 3 },
   bankNameText: { fontSize: 11, color: DESIGN_TOKENS.colors.textMuted },
-  balWrap: { flexDirection: 'row', alignItems: 'center', gap: 10 },
+  balWrap: { flexDirection: 'row', alignItems: 'center', gap: 6 },
+  moreBtn: { width: 44, height: 44, alignItems: 'center', justifyContent: 'center', marginRight: -10 },
   balCol: { alignItems: 'flex-end' },
   balNum: { fontSize: 14, fontWeight: '800', fontFamily: 'monospace', color: DESIGN_TOKENS.colors.primary },
   balSub: { fontSize: 10, color: DESIGN_TOKENS.colors.textMuted, marginTop: 1 },
