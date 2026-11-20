@@ -51,7 +51,7 @@ function AuthenticatedHeroActions({
         }}
         className="w-full sm:w-auto bg-white border border-slate-200 hover:bg-slate-50 text-[#1B2B4B] font-bold px-7 py-4 rounded-2xl transition-all text-sm shadow-2xs cursor-pointer"
       >
-        {t("landing.trySimulator")} ↓
+        {t("landing.trySimulator")}
       </button>
     </div>
   );
@@ -75,7 +75,7 @@ function GuestHeroActions({ onAuthClick }: { onAuthClick: (tab: "signIn" | "sign
         }}
         className="w-full sm:w-auto bg-white border border-slate-200 hover:bg-slate-50 text-[#1B2B4B] font-bold px-7 py-4 rounded-2xl transition-all text-sm shadow-2xs cursor-pointer"
       >
-        {t("landing.trySimulator")} ↓
+        {t("landing.trySimulator")}
       </button>
     </div>
   );

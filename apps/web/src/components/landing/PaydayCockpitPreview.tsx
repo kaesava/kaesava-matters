@@ -87,22 +87,6 @@ export function PaydayCockpitPreview() {
           </div>
         </div>
 
-        {/* Visual Allocation Waterfall Bar */}
-        <div className="space-y-2">
-          <div className="w-full h-3 bg-slate-100 rounded-full overflow-hidden flex shadow-inner">
-            <div className="bg-[#2563eb] h-full w-[51%] transition-all duration-500" title="Bills" />
-            <div className="bg-indigo-500 h-full w-[18%] transition-all duration-500" title="Goals" />
-            <div className="bg-[#22c55e] h-full w-[25%] transition-all duration-500" title="Everyday" />
-            <div className="bg-emerald-300 h-full w-[6%] transition-all duration-500" title="Offset" />
-          </div>
-          <div className="flex flex-wrap items-center justify-between text-[11px] font-bold text-slate-500 font-mono pt-1">
-            <span className="text-[#2563eb]">{t("landing.cockpitBarBills")}</span>
-            <span className="text-indigo-600">{t("landing.cockpitBarGoals")}</span>
-            <span className="text-[#22c55e]">{t("landing.cockpitBarEveryday")}</span>
-            <span className="text-emerald-700">{t("landing.cockpitBarOffset")}</span>
-          </div>
-        </div>
-
         {/* Cockpit 4-Card Allocation Matrix */}
         <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4 pt-2">
           {/* Card 1: Bills Ring-Fenced */}

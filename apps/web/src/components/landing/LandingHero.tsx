@@ -26,8 +26,10 @@ export function LandingHero({ onAuthClick }: LandingHeroProps) {
       </h1>
 
       {/* Hero Subtitle */}
-      <p className="text-base sm:text-lg text-slate-600 max-w-2xl leading-relaxed font-medium">
-        {t("landing.heroSubtitle")}
+      <p className="text-base sm:text-lg text-slate-600 max-w-2xl leading-relaxed font-medium space-y-1">
+        <span className="block">{t("landing.heroSubtitle1")}</span>
+        <span className="block">{t("landing.heroSubtitle2")}</span>
+        <span className="block text-sm text-slate-500 pt-1">{t("landing.heroSubtitle3")}</span>
       </p>
 
       {/* Primary & Secondary Action CTAs */}

@@ -70,6 +70,62 @@ export function InteractivePaydayEngine({ onAuthClick }: InteractivePaydayEngine
   const everydayBadge = statusBadge(baseSplit.everyday.status, t("landing.spendFreelyNoGuilt"));
   const goalsBadge = statusBadge(baseSplit.goals.status, t("landing.automaticGoalGrowth"));
 
+  const stepOrder: ReadonlyArray<Exclude<EnvelopeKey, "surplus">> =
+    preset === "PAY_YOURSELF_FIRST"
+      ? ["bills", "goals", "everyday"]
+      : ["bills", "everyday", "goals"];
+
+  const stepBadges = [
+    t("landing.step1Badge"),
+    t("landing.step2Badge"),
+    t("landing.step3Badge"),
+  ] as const;
+
+  const cardConfig: Record<
+    Exclude<EnvelopeKey, "surplus">,
+    {
+      borderCls: string;
+      badgeCls: string;
+      transferHoverCls: string;
+      amountCls: string;
+      title: string;
+      amount: number;
+      subtitle: string;
+      status: { label: string; cls: string };
+    }
+  > = {
+    bills: {
+      borderCls: "border border-blue-200/90",
+      badgeCls: "text-blue-700 bg-blue-100",
+      transferHoverCls: "hover:text-[#2563eb]",
+      amountCls: "text-[#2563eb]",
+      title: t("landing.heroBentoBillsTitle"),
+      amount: billsTarget,
+      subtitle: t("landing.heroBentoBillsDue"),
+      status: billsBadge,
+    },
+    everyday: {
+      borderCls: "border-2 border-[#22c55e]",
+      badgeCls: "text-emerald-800 bg-emerald-100",
+      transferHoverCls: "hover:text-[#22c55e]",
+      amountCls: "text-[#22c55e]",
+      title: t("landing.heroBentoEverydayTitle"),
+      amount: everydayTarget,
+      subtitle: t("landing.heroBentoEverydaySubtitle"),
+      status: everydayBadge,
+    },
+    goals: {
+      borderCls: "border border-indigo-200/90",
+      badgeCls: "text-indigo-700 bg-indigo-100",
+      transferHoverCls: "hover:text-indigo-600",
+      amountCls: "text-indigo-700",
+      title: t("landing.heroBentoGoalsTitle"),
+      amount: goalsTarget,
+      subtitle: t("landing.heroBentoGoalsSubtitle"),
+      status: goalsBadge,
+    },
+  };
+
   const resetAdjustments = () => setAdjustments({ bills: 0, everyday: 0, goals: 0, surplus: 0 });
 
   const handleCadenceChange = (nextCadence: "weekly" | "fortnightly" | "monthly") => {
@@ -259,98 +315,44 @@ export function InteractivePaydayEngine({ onAuthClick }: InteractivePaydayEngine
 
             {/* 4-Envelope Allocation Grid */}
             <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-5">
-              <div className="p-5 rounded-2xl bg-white border border-blue-200/90 shadow-2xs flex flex-col justify-between gap-4">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2">
-                    <span className="text-[10px] font-bold font-mono text-blue-700 bg-blue-100 px-2 py-0.5 rounded-md">
-                      {t("landing.step1Badge")}
-                    </span>
-                    <span className="text-xs font-black text-[#1B2B4B]">
-                      {t("landing.heroBentoBillsTitle")}
-                    </span>
-                  </div>
-                  <button
-                    type="button"
-                    onClick={() => openTransfer("bills")}
-                    className="text-[10px] font-bold text-slate-400 hover:text-[#2563eb] cursor-pointer"
+              {stepOrder.map((key, idx) => {
+                const cfg = cardConfig[key];
+                return (
+                  <div
+                    key={key}
+                    className={`p-5 rounded-2xl bg-white ${cfg.borderCls} shadow-2xs flex flex-col justify-between gap-4 transition-all duration-300`}
                   >
-                    ⇄ {t("common.transfer")}
-                  </button>
-                </div>
-                <div>
-                  <div className="text-2xl font-black font-mono text-[#2563eb] tabular-nums">
-                    {currencySymbol}{billsTarget.toLocaleString()}
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-2">
+                        <span className={`text-[10px] font-bold font-mono ${cfg.badgeCls} px-2 py-0.5 rounded-md`}>
+                          {stepBadges[idx]}
+                        </span>
+                        <span className="text-xs font-black text-[#1B2B4B]">
+                          {cfg.title}
+                        </span>
+                      </div>
+                      <button
+                        type="button"
+                        onClick={() => openTransfer(key)}
+                        className={`text-[10px] font-bold text-slate-400 ${cfg.transferHoverCls} cursor-pointer`}
+                      >
+                        ⇄ {t("common.transfer")}
+                      </button>
+                    </div>
+                    <div>
+                      <div className={`text-2xl font-black font-mono ${cfg.amountCls} tabular-nums`}>
+                        {currencySymbol}{cfg.amount.toLocaleString()}
+                      </div>
+                      <p className="text-[11px] text-slate-500 font-medium mt-1">
+                        {cfg.subtitle}
+                      </p>
+                    </div>
+                    <div className={`text-[11px] font-bold p-2 rounded-xl border ${cfg.status.cls}`}>
+                      {cfg.status.label}
+                    </div>
                   </div>
-                  <p className="text-[11px] text-slate-500 font-medium mt-1">
-                    {t("landing.heroBentoBillsDue")}
-                  </p>
-                </div>
-                <div className={`text-[11px] font-bold p-2 rounded-xl border ${billsBadge.cls}`}>
-                  {billsBadge.label}
-                </div>
-              </div>
-
-              <div className="p-5 rounded-2xl bg-white border-2 border-[#22c55e] shadow-2xs flex flex-col justify-between gap-4">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2">
-                    <span className="text-[10px] font-bold font-mono text-emerald-800 bg-emerald-100 px-2 py-0.5 rounded-md">
-                      {t("landing.step2Badge")}
-                    </span>
-                    <span className="text-xs font-black text-[#1B2B4B]">
-                      {t("landing.heroBentoEverydayTitle")}
-                    </span>
-                  </div>
-                  <button
-                    type="button"
-                    onClick={() => openTransfer("everyday")}
-                    className="text-[10px] font-bold text-slate-400 hover:text-[#22c55e] cursor-pointer"
-                  >
-                    ⇄ {t("common.transfer")}
-                  </button>
-                </div>
-                <div>
-                  <div className="text-2xl font-black font-mono text-[#22c55e] tabular-nums">
-                    {currencySymbol}{everydayTarget.toLocaleString()}
-                  </div>
-                  <p className="text-[11px] text-slate-500 font-medium mt-1">
-                    {t("landing.heroBentoEverydaySubtitle")}
-                  </p>
-                </div>
-                <div className={`text-[11px] font-bold p-2 rounded-xl border ${everydayBadge.cls}`}>
-                  {everydayBadge.label}
-                </div>
-              </div>
-
-              <div className="p-5 rounded-2xl bg-white border border-indigo-200/90 shadow-2xs flex flex-col justify-between gap-4">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2">
-                    <span className="text-[10px] font-bold font-mono text-indigo-700 bg-indigo-100 px-2 py-0.5 rounded-md">
-                      {t("landing.step3Badge")}
-                    </span>
-                    <span className="text-xs font-black text-[#1B2B4B]">
-                      {t("landing.heroBentoGoalsTitle")}
-                    </span>
-                  </div>
-                  <button
-                    type="button"
-                    onClick={() => openTransfer("goals")}
-                    className="text-[10px] font-bold text-slate-400 hover:text-indigo-600 cursor-pointer"
-                  >
-                    ⇄ {t("common.transfer")}
-                  </button>
-                </div>
-                <div>
-                  <div className="text-2xl font-black font-mono text-indigo-700 tabular-nums">
-                    {currencySymbol}{goalsTarget.toLocaleString()}
-                  </div>
-                  <p className="text-[11px] text-slate-500 font-medium mt-1">
-                    {t("landing.heroBentoGoalsSubtitle")}
-                  </p>
-                </div>
-                <div className={`text-[11px] font-bold p-2 rounded-xl border ${goalsBadge.cls}`}>
-                  {goalsBadge.label}
-                </div>
-              </div>
+                );
+              })}
 
               <div className="p-5 rounded-2xl bg-white border border-slate-200/90 shadow-2xs flex flex-col justify-between gap-4">
                 <div className="flex items-center justify-between">
