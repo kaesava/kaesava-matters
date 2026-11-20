@@ -15,6 +15,7 @@ const nextConfig: NextConfig = {
   ],
   turbopack: {},
   experimental: {
+    agentUpgrade: "security",
     optimizePackageImports: [
       "lucide-react",
       "@trpc/react-query",
