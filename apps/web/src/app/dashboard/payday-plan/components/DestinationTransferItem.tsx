@@ -9,6 +9,8 @@ export interface DestinationTransferGroup {
   sourceAccountName: string;
   totalAmount: number;
   payId?: string | null;
+  bsb?: string | null;
+  accountNumber?: string | null;
   pools: Array<{ id: string; name: string; amount: number }>;
 }
 
@@ -39,9 +41,15 @@ export function DestinationTransferItem({
             </span>
           </div>
 
-          {group.payId && (
+          {(group.payId || group.bsb || group.accountNumber) && (
             <p className="text-[10px] text-zinc-400 font-mono mt-0.5">
-              PayID: {group.payId}
+              {[
+                group.payId ? `PayID: ${group.payId}` : null,
+                group.bsb ? `BSB: ${group.bsb}` : null,
+                group.accountNumber ? `Acc: ${group.accountNumber}` : null,
+              ]
+                .filter(Boolean)
+                .join(" · ")}
             </p>
           )}
         </div>

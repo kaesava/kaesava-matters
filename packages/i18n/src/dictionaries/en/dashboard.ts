@@ -96,7 +96,7 @@ export const dashboard = {
       "rollupDescription": "Bank transfers are rolled up by destination account so you only make 1 transfer per bank:",
       "allRetainedDescription": "All allocations remain in your source account. No external bank transfers needed!",
       "retainedTitle": "Retained in",
-      "noTransferNeeded": "No transfer required — funds stay in this account for:",
+      "noTransferNeeded": "No transfer required — funds stay in this account.",
       "transfersRequired": "Required Transfers",
       "copyTooltip": "Copy amount to clipboard for banking app",
       "coversEnvelopes": "Covers {count} envelopes: ",

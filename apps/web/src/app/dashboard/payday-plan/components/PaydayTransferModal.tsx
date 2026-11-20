@@ -3,7 +3,7 @@
 import { useState, useMemo } from "react";
 import Link from "next/link";
 import { t } from "@money-matters/i18n";
-import { ModalDialog, Button, CelebrationBanner } from "@money-matters/ui/web";
+import { ModalDialog, Button, CelebrationBanner, InfoTooltip } from "@money-matters/ui/web";
 import type { TargetCelebrationItem } from "@money-matters/types";
 import { useLocale } from "../../../../providers/LocaleProvider";
 import { DestinationTransferItem, DestinationTransferGroup } from "./DestinationTransferItem";
@@ -60,21 +60,24 @@ export function PaydayTransferModal({
 
   const sourceAccountName = sourceAccount?.name || t("cards.paydayTransfer.sourceAccountDefault");
 
+  const effectiveSourceId = receivingAccountId || sourceAccount?.id || null;
+
   const { retainedItems, retainedTotal, externalTransfers } = useMemo(() => {
     const retained: Array<{ id: string; name: string; amount: number }> = [];
     const transferMap = new Map<string, DestinationTransferGroup>();
 
     for (const pool of pools) {
-      const amount =
+      const rawAmount =
         pool.id === sweepPoolId
           ? Math.max(0, sweepPoolRemainder)
           : parseFloat(linesMap[pool.id] || "0");
+      const amount = Number.isFinite(rawAmount) ? Number(rawAmount.toFixed(2)) : 0;
 
       if (amount <= 0.005) continue;
 
-      const isSameAccount =
-        (receivingAccountId && pool.bankAccountId === receivingAccountId) ||
-        (!pool.bankAccountId && (!receivingAccountId || pool.bankAccountId === receivingAccountId));
+      const isSameAccount = effectiveSourceId
+        ? !pool.bankAccountId || pool.bankAccountId === effectiveSourceId
+        : !pool.bankAccountId;
 
       if (isSameAccount) {
         retained.push({ id: pool.id, name: pool.name, amount });
@@ -85,7 +88,7 @@ export function PaydayTransferModal({
 
         const existing = transferMap.get(destId);
         if (existing) {
-          existing.totalAmount += amount;
+          existing.totalAmount = Number((existing.totalAmount + amount).toFixed(2));
           existing.pools.push({ id: pool.id, name: pool.name, amount });
         } else {
           transferMap.set(destId, {
@@ -94,23 +97,35 @@ export function PaydayTransferModal({
             sourceAccountName,
             totalAmount: amount,
             payId: destAcc?.payId,
+            bsb: destAcc?.bsb,
+            accountNumber: destAcc?.accountNumber,
             pools: [{ id: pool.id, name: pool.name, amount }],
           });
         }
       }
     }
 
+    retained.sort((a, b) => b.amount - a.amount);
+    const groups = Array.from(transferMap.values())
+      .filter((g) => g.totalAmount > 0.005)
+      .map((g) => ({ ...g, pools: [...g.pools].sort((a, b) => b.amount - a.amount) }))
+      .sort((a, b) => b.totalAmount - a.totalAmount);
+
     return {
       retainedItems: retained,
-      retainedTotal: retained.reduce((acc, item) => acc + item.amount, 0),
-      externalTransfers: Array.from(transferMap.values()).filter((g) => g.totalAmount > 0.005),
+      retainedTotal: Number(retained.reduce((acc, item) => acc + item.amount, 0).toFixed(2)),
+      externalTransfers: groups,
     };
-  }, [pools, linesMap, sweepPoolId, sweepPoolRemainder, receivingAccountId, bankAccounts, sourceAccountName]);
+  }, [pools, linesMap, sweepPoolId, sweepPoolRemainder, effectiveSourceId, bankAccounts, sourceAccountName]);
 
-  const handleCopy = (amount: number, key: string) => {
-    navigator.clipboard.writeText(amount.toFixed(minorUnits));
-    setCopiedKey(key);
-    setTimeout(() => setCopiedKey(null), 2000);
+  const handleCopy = async (amount: number, key: string) => {
+    try {
+      await navigator.clipboard?.writeText(amount.toFixed(minorUnits));
+      setCopiedKey(key);
+      setTimeout(() => setCopiedKey(null), 2000);
+    } catch {
+      // Clipboard write may be blocked by browser permissions
+    }
   };
 
   return (
@@ -143,12 +158,13 @@ export function PaydayTransferModal({
                 {fmt(retainedTotal)}
               </span>
             </div>
-            <p className="text-[11px] text-emerald-800/80 dark:text-emerald-300/70 leading-snug">
-              {t("cards.paydayTransfer.noTransferNeeded")}{" "}
-              <span className="font-semibold">
-                {retainedItems.map((p) => `${p.name} (${fmt(p.amount)})`).join(", ")}
-              </span>
-            </p>
+            <div className="flex items-center gap-1.5 text-[11px] text-emerald-800/80 dark:text-emerald-300/70 leading-snug">
+              <span>{t("cards.paydayTransfer.noTransferNeeded")}</span>
+              <InfoTooltip
+                title={`${t("cards.paydayTransfer.retainedTitle")} ${sourceAccountName}`}
+                content={retainedItems.map((p) => `${p.name} (${fmt(p.amount)})`).join(", ")}
+              />
+            </div>
           </div>
         )}
 

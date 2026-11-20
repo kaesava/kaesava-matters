@@ -5,6 +5,7 @@ import {
   MobileModalDialog,
   MobileButton,
   MobileCelebrationBanner,
+  useCurrencyLocale,
 } from '@money-matters/ui/mobile';
 import { t } from '@money-matters/i18n';
 import { RollupRetainedCard } from './rollup/RollupRetainedCard';
@@ -51,6 +52,7 @@ export const MobilePaydayTransferModal: React.FC<MobilePaydayTransferModalProps>
   sweepPoolRemainder,
   bankAccounts,
 }) => {
+  const { minorUnits } = useCurrencyLocale();
   const [copiedKey, setCopiedKey] = useState<string | null>(null);
 
   const sourceAccount = useMemo(() => {
@@ -71,16 +73,18 @@ export const MobilePaydayTransferModal: React.FC<MobilePaydayTransferModalProps>
       receivingAccountId,
       bankAccounts,
       sourceAccountName,
+      effectiveSourceAccountId: receivingAccountId || sourceAccount?.id || null,
     });
-  }, [pools, linesMap, sweepPoolId, sweepPoolRemainder, receivingAccountId, bankAccounts, sourceAccountName]);
+  }, [pools, linesMap, sweepPoolId, sweepPoolRemainder, receivingAccountId, bankAccounts, sourceAccountName, sourceAccount]);
 
   const handleCopyAmount = async (key: string, amount: number) => {
+    const formattedAmount = amount.toFixed(minorUnits);
     try {
       if (typeof navigator !== 'undefined' && (navigator as { clipboard?: { writeText: (s: string) => Promise<void> } }).clipboard?.writeText) {
-        await (navigator as { clipboard: { writeText: (s: string) => Promise<void> } }).clipboard.writeText(amount.toFixed(2));
+        await (navigator as { clipboard: { writeText: (s: string) => Promise<void> } }).clipboard.writeText(formattedAmount);
       } else {
         await Share.share({
-          message: amount.toFixed(2),
+          message: formattedAmount,
           title: t('cards.paydayTransfer.transfersRequired'),
         });
       }

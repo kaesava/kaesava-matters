@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
-import { DESIGN_TOKENS } from '@money-matters/ui/mobile';
+import { DESIGN_TOKENS, InfoTooltip } from '@money-matters/ui/mobile';
 import { t } from '@money-matters/i18n';
 import { formatMobileCurrency } from '../../../lib/format';
 
@@ -29,12 +29,15 @@ export const RollupRetainedCard: React.FC<RollupRetainedCardProps> = ({
         </Text>
       </View>
 
-      <Text style={styles.retainedDesc}>
-        {t('cards.paydayTransfer.noTransferNeeded')}{' '}
-        <Text style={styles.retainedBoldList}>
-          {retainedItems.map((r) => `${r.name} (${formatMobileCurrency(r.amount)})`).join(', ')}
+      <View style={styles.retainedDescRow}>
+        <Text style={styles.retainedDesc}>
+          {t('cards.paydayTransfer.noTransferNeeded')}
         </Text>
-      </Text>
+        <InfoTooltip
+          title={`${t('cards.paydayTransfer.retainedTitle')} ${sourceAccountName}`}
+          content={retainedItems.map((r) => `${r.name} (${formatMobileCurrency(r.amount)})`).join(', ')}
+        />
+      </View>
     </View>
   );
 };
@@ -75,12 +78,14 @@ const styles = StyleSheet.create({
     fontFamily: 'monospace',
     color: DESIGN_TOKENS.colors.successDark,
   },
+  retainedDescRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    flexWrap: 'wrap',
+  },
   retainedDesc: {
     fontSize: 11,
     color: DESIGN_TOKENS.colors.successDark,
     lineHeight: 16,
-  },
-  retainedBoldList: {
-    fontWeight: '700',
   },
 });

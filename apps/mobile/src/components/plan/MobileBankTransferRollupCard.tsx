@@ -1,7 +1,7 @@
 import React, { useState, useMemo } from 'react';
 import { View, Text, StyleSheet, Share, TouchableOpacity } from 'react-native';
 import { Feather } from '@expo/vector-icons';
-import { DESIGN_TOKENS } from '@money-matters/ui/mobile';
+import { DESIGN_TOKENS, useCurrencyLocale } from '@money-matters/ui/mobile';
 import { t } from '@money-matters/i18n';
 import { RollupRetainedCard } from './rollup/RollupRetainedCard';
 import { RollupTransferItem } from './rollup/RollupTransferItem';
@@ -32,6 +32,7 @@ export function MobileBankTransferRollupCard({
   sweepPoolRemainder,
   bankAccounts,
 }: MobileBankTransferRollupCardProps) {
+  const { minorUnits } = useCurrencyLocale();
   const [copiedKey, setCopiedKey] = useState<string | null>(null);
   const [collapsed, setCollapsed] = useState(true);
 
@@ -53,16 +54,18 @@ export function MobileBankTransferRollupCard({
       receivingAccountId,
       bankAccounts,
       sourceAccountName,
+      effectiveSourceAccountId: receivingAccountId || sourceAccount?.id || null,
     });
-  }, [pools, linesMap, sweepPoolId, sweepPoolRemainder, receivingAccountId, bankAccounts, sourceAccountName]);
+  }, [pools, linesMap, sweepPoolId, sweepPoolRemainder, receivingAccountId, bankAccounts, sourceAccountName, sourceAccount]);
 
   const handleCopyAmount = async (key: string, amount: number) => {
+    const formattedAmount = amount.toFixed(minorUnits);
     try {
       if (typeof navigator !== 'undefined' && navigator.clipboard?.writeText) {
-        await navigator.clipboard.writeText(amount.toFixed(2));
+        await navigator.clipboard.writeText(formattedAmount);
       } else {
         await Share.share({
-          message: amount.toFixed(2),
+          message: formattedAmount,
           title: t('cards.paydayTransfer.transfersRequired'),
         });
       }

@@ -7,6 +7,8 @@ export interface DestinationTransferGroup {
   sourceAccountName: string;
   totalAmount: number;
   payId?: string | null;
+  bsb?: string | null;
+  accountNumber?: string | null;
   pools: Array<{ id: string; name: string; amount: number }>;
 }
 
@@ -18,6 +20,7 @@ interface ComputeRollupParams {
   receivingAccountId?: string | null;
   bankAccounts: MobileBankTransferAccount[];
   sourceAccountName: string;
+  effectiveSourceAccountId?: string | null;
 }
 
 export function computeBankTransferRollup({
@@ -28,21 +31,24 @@ export function computeBankTransferRollup({
   receivingAccountId,
   bankAccounts,
   sourceAccountName,
+  effectiveSourceAccountId,
 }: ComputeRollupParams) {
   const retained: Array<{ id: string; name: string; amount: number }> = [];
   const transferMap = new Map<string, DestinationTransferGroup>();
+  const resolvedSourceId = effectiveSourceAccountId ?? receivingAccountId ?? null;
 
   for (const pool of pools) {
-    const amount =
+    const rawAmount =
       pool.id === sweepPoolId
         ? Math.max(0, sweepPoolRemainder)
         : parseFloat(linesMap[pool.id] || '0');
+    const amount = Number.isFinite(rawAmount) ? Number(rawAmount.toFixed(2)) : 0;
 
     if (amount <= 0.005) continue;
 
-    const isSameAccount =
-      (receivingAccountId && pool.bankAccountId === receivingAccountId) ||
-      (!pool.bankAccountId && (!receivingAccountId || pool.bankAccountId === receivingAccountId));
+    const isSameAccount = resolvedSourceId
+      ? !pool.bankAccountId || pool.bankAccountId === resolvedSourceId
+      : !pool.bankAccountId;
 
     if (isSameAccount) {
       retained.push({ id: pool.id, name: pool.name, amount });
@@ -53,7 +59,7 @@ export function computeBankTransferRollup({
 
       const existing = transferMap.get(destId);
       if (existing) {
-        existing.totalAmount += amount;
+        existing.totalAmount = Number((existing.totalAmount + amount).toFixed(2));
         existing.pools.push({ id: pool.id, name: pool.name, amount });
       } else {
         transferMap.set(destId, {
@@ -62,15 +68,23 @@ export function computeBankTransferRollup({
           sourceAccountName,
           totalAmount: amount,
           payId: destAcc?.payId,
+          bsb: destAcc?.bsb,
+          accountNumber: destAcc?.accountNumber,
           pools: [{ id: pool.id, name: pool.name, amount }],
         });
       }
     }
   }
 
+  retained.sort((a, b) => b.amount - a.amount);
+  const externalTransfers = Array.from(transferMap.values())
+    .filter((g) => g.totalAmount > 0.005)
+    .map((g) => ({ ...g, pools: [...g.pools].sort((a, b) => b.amount - a.amount) }))
+    .sort((a, b) => b.totalAmount - a.totalAmount);
+
   return {
     retainedItems: retained,
-    retainedTotal: retained.reduce((s, r) => s + r.amount, 0),
-    externalTransfers: Array.from(transferMap.values()),
+    retainedTotal: Number(retained.reduce((s, r) => s + r.amount, 0).toFixed(2)),
+    externalTransfers,
   };
 }

@@ -10,6 +10,8 @@ interface DestinationTransferGroup {
   sourceAccountName: string;
   totalAmount: number;
   payId?: string | null;
+  bsb?: string | null;
+  accountNumber?: string | null;
   pools: Array<{ id: string; name: string; amount: number }>;
 }
 
@@ -35,8 +37,16 @@ export const RollupTransferItem: React.FC<RollupTransferItemProps> = ({
             <Text style={styles.destName}>{tx.destAccountName}</Text>
           </View>
 
-          {tx.payId && (
-            <Text style={styles.payIdText}>PayID: {tx.payId}</Text>
+          {(tx.payId || tx.bsb || tx.accountNumber) && (
+            <Text style={styles.payIdText}>
+              {[
+                tx.payId ? `PayID: ${tx.payId}` : null,
+                tx.bsb ? `BSB: ${tx.bsb}` : null,
+                tx.accountNumber ? `Acc: ${tx.accountNumber}` : null,
+              ]
+                .filter(Boolean)
+                .join(' · ')}
+            </Text>
           )}
         </View>
 
