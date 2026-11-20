@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect } from "react";
+import React from "react";
 import Link from "next/link";
 import { FileText } from "lucide-react";
 import { PaginationBar, SkeletonTable, ModalDialog, Button } from "@money-matters/ui/web";
@@ -8,7 +8,6 @@ import { t, BANK_ACCOUNT_TYPE_KEYS } from "@money-matters/i18n";
 import { useAppFeatures } from "../../../../hooks/useAppFeatures";
 import type { AccountType } from "@money-matters/types";
 
-export type BankName = "CBA" | "Westpac" | "ANZ" | "NAB" | "ING" | "Macquarie" | "Other";
 export type CategoryType = "EVERYDAY" | "BILL" | "GOAL";
 
 export interface BankAccountItem {
@@ -69,17 +68,6 @@ export function BankAccountTable({
   const [selectedAccForPools, setSelectedAccForPools] = React.useState<BankAccountItem | null>(null);
   const { hasPrivateMode } = useAppFeatures();
 
-  useEffect(() => {
-    if (!selectedAccForPools) return;
-    function handleKeyDown(e: KeyboardEvent) {
-      if (e.key === "Escape") {
-        setSelectedAccForPools(null);
-      }
-    }
-    document.addEventListener("keydown", handleKeyDown);
-    return () => document.removeEventListener("keydown", handleKeyDown);
-  }, [selectedAccForPools]);
-
   return (
     <div className="bg-white rounded-2xl border border-zinc-200 shadow-xs overflow-hidden">
       {isLoading ? (
@@ -138,7 +126,7 @@ export function BankAccountTable({
                           )}
                           {hasPrivateMode && acc.isPrivate && (
                             <span
-                              title="Private"
+                              title={t("bankAccounts.privateBadge")}
                               className="text-[10px] font-extrabold px-1.5 py-0.5 rounded-full bg-slate-100 text-slate-700 border border-slate-200 inline-flex items-center cursor-help"
                             >
                               🔒

@@ -1,11 +1,7 @@
 import React from 'react';
 import { View, Text, TouchableOpacity, ScrollView, StyleSheet } from 'react-native';
-import { FormLabel, BankProviderBadge, DESIGN_TOKENS } from '@money-matters/ui/mobile';
+import { FormLabel, MobileInput, DESIGN_TOKENS } from '@money-matters/ui/mobile';
 import { t } from '@money-matters/i18n';
-import {
-  PROVIDERS,
-  type SupportedBankProvider,
-} from './bankAccountTypes';
 import {
   ACCOUNT_TYPES,
   type AccountType,
@@ -13,8 +9,8 @@ import {
 } from '@money-matters/types';
 
 interface BankAccountInstitutionSelectorProps {
-  provider: SupportedBankProvider;
-  setProvider: (p: SupportedBankProvider) => void;
+  provider: string;
+  setProvider: (p: string) => void;
   accountType: AccountType;
   setAccountType: (t: AccountType) => void;
 }
@@ -27,20 +23,15 @@ export function BankAccountInstitutionSelector({
 }: BankAccountInstitutionSelectorProps) {
   return (
     <>
-      {/* 1. Bank Institution (Required Chips) */}
+      {/* 1. Bank Institution (Optional Free-Text) */}
       <View style={styles.inputGroup}>
-        <FormLabel label={t('settings.bankAccountForm.bankProviderLabel')} required />
-        <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.providersRow}>
-          {PROVIDERS.map((p) => (
-            <TouchableOpacity
-              key={p}
-              onPress={() => setProvider(p)}
-              style={[styles.providerChip, provider === p && styles.providerChipActive]}
-            >
-              <BankProviderBadge provider={p} size="sm" />
-            </TouchableOpacity>
-          ))}
-        </ScrollView>
+        <MobileInput
+          label={t('settings.bankAccountForm.bankProviderLabel')}
+          value={provider === 'Other' ? '' : provider}
+          onChangeText={(val) => setProvider(val || 'Other')}
+          placeholder={t('settings.bankAccountForm.bankProviderPlaceholder')}
+          maxLength={50}
+        />
       </View>
 
       {/* 2. Account Type (Required Chips) */}
@@ -74,15 +65,6 @@ const styles = StyleSheet.create({
   providersRow: {
     gap: 8,
     paddingVertical: 2,
-  },
-  providerChip: {
-    padding: 2,
-    borderRadius: 8,
-    borderWidth: 1.5,
-    borderColor: 'transparent',
-  },
-  providerChipActive: {
-    borderColor: DESIGN_TOKENS.colors.sereneBlue,
   },
   typeChip: {
     paddingHorizontal: 12,

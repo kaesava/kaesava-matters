@@ -126,6 +126,7 @@ export async function deleteTransferEventCommand(
   const [evt] = await db
     .select({
       id: transferEvents.id,
+      status: transferEvents.status,
       sourceIsPrivate: sourceEnvelopes.isPrivate,
       sourceUserId: sourceEnvelopes.userId,
       sourceBankIsPrivate: sourceBankAccounts.isPrivate,
@@ -145,10 +146,13 @@ export async function deleteTransferEventCommand(
   if (!evt || !isTransferVisibleToUser(evt, userId)) {
     throw new Error("Transfer event not found.");
   }
+  if (evt.status === "CONFIRMED") {
+    throw new Error("Confirmed events are locked and cannot be edited or deleted.");
+  }
 
   await db
     .update(transferEvents)
-    .set({ archivedAt: new Date(), updatedAt: new Date(), updatedBy: userId })
+    .set({ archivedAt: new Date(), archivedBy: userId, updatedAt: new Date(), updatedBy: userId })
     .where(and(eq(transferEvents.id, eventId), eq(transferEvents.tenantId, tenantId), eq(transferEvents.appId, appId)));
 
   return { success: true };
@@ -164,6 +168,13 @@ export async function updateTransferEventCommand(
   userId: string,
   db: DbOrTx
 ) {
+  const [evt] = await db
+    .select({ status: transferEvents.status })
+    .from(transferEvents)
+    .where(and(eq(transferEvents.id, input.eventId), eq(transferEvents.tenantId, tenantId), eq(transferEvents.appId, appId)));
+  if (evt?.status === "CONFIRMED") {
+    throw new Error("Confirmed events are locked and cannot be edited or deleted.");
+  }
   await db
     .update(transferEvents)
     .set({
@@ -211,6 +222,9 @@ export async function executeTransferEventCommand(
     .where(and(eq(transferEvents.id, input.eventId), eq(transferEvents.tenantId, tenantId), eq(transferEvents.appId, appId)));
 
   if (!evt) throw new Error("Transfer event not found.");
+  if (evt.status === "CONFIRMED") {
+    throw new Error("Transfer event has already been confirmed.");
+  }
 
   const transferName = input.name || evt.name;
   const sourceEnvelopeId = input.sourceEnvelopeId || input.sourcePoolId || evt.sourceEnvelopeId;

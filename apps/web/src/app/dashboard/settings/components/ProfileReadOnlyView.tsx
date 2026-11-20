@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import { User } from "lucide-react";
 import { t } from "@money-matters/i18n";
 import { Button, InfoTooltip } from "@money-matters/ui/web";
 
@@ -28,7 +29,7 @@ export function ProfileReadOnlyView({
   language,
   showIcons,
   avatarUrl,
-  initials,
+  initials: _initials,
   onEdit,
 }: ProfileReadOnlyViewProps) {
 
@@ -48,8 +49,8 @@ export function ProfileReadOnlyView({
                 className="w-14 h-14 rounded-full object-cover border-2 border-[#2563eb] shadow-xs"
               />
             ) : (
-              <div className="w-14 h-14 rounded-full bg-[#1B2B4B] flex items-center justify-center text-white text-lg font-extrabold shadow-xs">
-                {initials}
+              <div className="w-14 h-14 rounded-full bg-[#1B2B4B] flex items-center justify-center text-white shadow-xs">
+                <User className="w-7 h-7" />
               </div>
             )}
           </div>

@@ -40,6 +40,7 @@ export const CanAffordQuery = z.object({
   frequency: z.enum(["WEEKLY", "FORTNIGHTLY", "MONTHLY", "ANNUALLY"]).optional(),
   includePersonal: z.boolean().default(false).optional(),
   itemName: z.string().max(100).optional(),
+  locale: z.string().optional(),
 }).strict();
 
 /**

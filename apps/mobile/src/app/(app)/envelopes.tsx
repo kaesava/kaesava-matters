@@ -23,11 +23,14 @@ import {
 
 export default function PoolsScreen() {
   const router = useRouter();
-  const params = useLocalSearchParams<{ poolId?: string; categoryId?: string; create?: string; name?: string }>();
+  const params = useLocalSearchParams<{ poolId?: string; categoryId?: string; create?: string; name?: string; editId?: string }>();
   const { data: session } = authClient.useSession();
 
   const [refreshing, setRefreshing] = useState(false);
   const [poolModalVisible, setPoolModalVisible] = useState(false);
+  const [envelopeToEdit, setEnvelopeToEdit] = useState<
+    Parameters<typeof EnvelopeFormModal>[0]['categoryToEdit']
+  >(null);
   const [defaultPoolType, setDefaultPoolType] = useState<'EVERYDAY' | 'BILL' | 'GOAL'>('BILL');
   const [moveMoneyVisible, setMoveMoneyVisible] = useState(false);
   const [quickExpenseInitialType, setQuickExpenseInitialType] = useState<'DEBIT' | 'CREDIT' | 'TRANSFER'>('TRANSFER');
@@ -70,10 +73,32 @@ export default function PoolsScreen() {
   React.useEffect(() => {
     if (params.create === '1' && !handledCreateRef.current) {
       handledCreateRef.current = true;
+      setEnvelopeToEdit(null);
       setDefaultPoolType('EVERYDAY');
       setPoolModalVisible(true);
     }
   }, [params.create]);
+
+  React.useEffect(() => {
+    if (params.editId && pools.length > 0) {
+      const target = pools.find((p) => p.id === params.editId);
+      if (target) {
+        setEnvelopeToEdit({
+          ...target,
+          type: target.envelopeType,
+          currentBalance: String(target.currentBalance ?? 0),
+        });
+        setPoolModalVisible(true);
+        router.setParams({ editId: '' });
+      }
+    }
+  }, [params.editId, pools, router]);
+
+  React.useEffect(() => {
+    if (params.name && params.create !== '1') {
+      setSearchQuery(params.name);
+    }
+  }, [params.name, params.create, setSearchQuery]);
 
   React.useEffect(() => {
     if (params.poolId) setActivePoolIdFilter(params.poolId);
@@ -205,7 +230,11 @@ export default function PoolsScreen() {
       <EnvelopeFormModal
         visible={poolModalVisible}
         defaultType={defaultPoolType}
-        onClose={() => setPoolModalVisible(false)}
+        categoryToEdit={envelopeToEdit}
+        onClose={() => {
+          setPoolModalVisible(false);
+          setEnvelopeToEdit(null);
+        }}
         onSuccess={() => poolsQuery.refetch()}
       />
       <QuickExpenseModal

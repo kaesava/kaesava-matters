@@ -96,7 +96,7 @@ export function EnvelopeRecurrenceFields({
                   setInterval?.(1);
                 }
               }}
-              className="ui-input w-16 px-2.5 py-2.5 text-xs font-bold text-center"
+              className="ui-input h-[46px] w-16 px-2.5 py-2.5 text-xs font-bold text-center"
             />
             <span className="text-xs font-bold text-zinc-500 shrink-0">
               {unitLabel}

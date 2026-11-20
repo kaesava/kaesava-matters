@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { Info } from "lucide-react";
 import {
   ModalDialog,
+  ConfirmDialog,
   Input,
   DatePickerField,
   AmountField,
@@ -44,6 +45,16 @@ export function EditUpcomingEventModal({
   const [contributionValue, setContributionValue] = useState("");
   const [errorMsg, setErrorMsg] = useState("");
   const [submitting, setSubmitting] = useState(false);
+  const [pendingSeriesUrl, setPendingSeriesUrl] = useState<string | null>(null);
+
+  const handleOpenSeries = (url: string) => {
+    if (isDirty) {
+      setPendingSeriesUrl(url);
+      return;
+    }
+    onClose();
+    router.push(url);
+  };
 
   const isIncomeEvent = event?.eventKind === "INCOME";
   const poolsQuery = trpc.listEnvelopes.useQuery(undefined, { enabled: isOpen && isIncomeEvent });
@@ -95,13 +106,13 @@ export function EditUpcomingEventModal({
     if (!event) return;
 
     if (!name.trim()) {
-      setErrorMsg("Event name is required.");
+      setErrorMsg(t("categories.nameRequired"));
       return;
     }
 
     const numAmount = parseFloat(expectedAmount);
     if (isNaN(numAmount) || numAmount <= 0) {
-      setErrorMsg("Amount must be greater than 0.");
+      setErrorMsg(t("planTabs.amountGreaterThanZero"));
       return;
     }
 
@@ -152,7 +163,7 @@ export function EditUpcomingEventModal({
       onSuccess?.();
       onClose();
     } catch (err) {
-      setErrorMsg(err instanceof Error ? err.message : "Failed to update event.");
+      setErrorMsg(err instanceof Error ? err.message : t("common.errorTryAgain"));
     } finally {
       setSubmitting(false);
     }
@@ -179,10 +190,7 @@ export function EditUpcomingEventModal({
             <div>
               <button
                 type="button"
-                onClick={() => {
-                  onClose();
-                  router.push(`/dashboard/plan?tab=streams&editIncomeId=${event.incomeSourceId}`);
-                }}
+                onClick={() => handleOpenSeries(`/dashboard/plan?tab=streams&editIncomeId=${event.incomeSourceId}`)}
                 className="font-bold text-[#2563eb] hover:underline cursor-pointer inline-flex items-center gap-1 ml-5.5"
               >
                 <span>{t("modals.eventOverride.editIncomeScheduleLink")}</span>
@@ -200,10 +208,7 @@ export function EditUpcomingEventModal({
             <div>
               <button
                 type="button"
-                onClick={() => {
-                  onClose();
-                  router.push(`/dashboard/plan?tab=streams&editBillId=${event.poolId || event.categoryId}`);
-                }}
+                onClick={() => handleOpenSeries(`/dashboard/plan?tab=streams&editBillId=${event.poolId || event.categoryId}`)}
                 className="font-bold text-[#2563eb] hover:underline cursor-pointer inline-flex items-center gap-1 ml-5.5"
               >
                 <span>{t("modals.eventOverride.editBillScheduleLink")}</span>
@@ -278,6 +283,21 @@ export function EditUpcomingEventModal({
           </Button>
         </div>
       </form>
+      <ConfirmDialog
+        isOpen={pendingSeriesUrl !== null}
+        title={t("modals.discardChanges.title")}
+        description={t("modals.discardChanges.description")}
+        confirmLabel={t("modals.discardChanges.discard")}
+        cancelLabel={t("common.keepEditing")}
+        variant="warning"
+        onConfirm={() => {
+          const targetUrl = pendingSeriesUrl;
+          setPendingSeriesUrl(null);
+          onClose();
+          if (targetUrl) router.push(targetUrl);
+        }}
+        onClose={() => setPendingSeriesUrl(null)}
+      />
     </ModalDialog>
   );
 }

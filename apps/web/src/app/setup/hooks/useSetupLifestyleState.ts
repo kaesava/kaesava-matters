@@ -10,7 +10,7 @@ import {
 export function useSetupLifestyleState(initialCountry: "AU" | "NZ" | "OTHER" = "AU") {
   const [country, setCountry] = useState<"AU" | "NZ" | "OTHER">(initialCountry);
   const [housingType, setHousingType] = useState<HousingType>("RENT_SOLO");
-  const [hasCars, setHasCars] = useState(true);
+  const [hasCars, setHasCars] = useState(false);
   const [vehicles, setVehicles] = useState<VehicleConfig[]>([{ id: "veh-1", name: "Vehicle 1", size: "MID_SUV" }]);
   const [usePublicTransport, setUsePublicTransport] = useState(true);
   const [useRideshare, setUseRideshare] = useState(false);

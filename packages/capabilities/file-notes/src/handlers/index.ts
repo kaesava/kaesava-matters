@@ -256,7 +256,7 @@ export async function getDownloadUrlHandler(
     throw new TRPCError({ code: "NOT_FOUND", message: "attachmentNotFound" });
   }
 
-  const downloadUrl = await getPresignedDownloadUrl(note.fileKey);
+  const downloadUrl = await getPresignedDownloadUrl(note.id);
   return { downloadUrl };
 }
 

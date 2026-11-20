@@ -32,6 +32,7 @@ describe('Capability Tenant Handlers', () => {
       const promiseObj = Promise.resolve([]);
       (promiseObj as unknown as Record<string, unknown>).returning = returningMock;
       (promiseObj as unknown as Record<string, unknown>).onConflictDoNothing = vi.fn().mockResolvedValue([]);
+      (promiseObj as unknown as Record<string, unknown>).onConflictDoUpdate = vi.fn().mockResolvedValue([]);
       return promiseObj;
     });
     const insertMock = vi.fn().mockReturnValue({ values: valuesMock });
@@ -70,6 +71,7 @@ describe('Capability Tenant Handlers', () => {
     const valuesMock = vi.fn().mockImplementation(() => {
       const promiseObj = Promise.resolve([]);
       (promiseObj as unknown as Record<string, unknown>).onConflictDoNothing = vi.fn().mockResolvedValue([]);
+      (promiseObj as unknown as Record<string, unknown>).onConflictDoUpdate = vi.fn().mockResolvedValue([]);
       return promiseObj;
     });
     const insertMock = vi.fn().mockReturnValue({ values: valuesMock });

@@ -1,14 +1,13 @@
 "use client";
 
 import { useState } from "react";
-import { getDefaultAccountName } from "@money-matters/types";
 import { BankAccountRowItem } from "../components/SetupBankAccountRow";
 
 export function useSetupBankAccountsState() {
   const [bankAccounts, setBankAccounts] = useState<BankAccountRowItem[]>([
     {
       id: "acc-default",
-      name: getDefaultAccountName("Other", "EVERYDAY"),
+      name: "Primary Bank Account",
       bankProvider: "Other",
       accountType: "EVERYDAY",
       lastKnownBalance: "1000.00",
@@ -23,7 +22,7 @@ export function useSetupBankAccountsState() {
       ...prev,
       {
         id: `acc-${Date.now()}`,
-        name: getDefaultAccountName("Other", "EVERYDAY"),
+        name: "Savings Bank Account",
         bankProvider: "Other",
         accountType: "EVERYDAY",
         lastKnownBalance: "0.00",

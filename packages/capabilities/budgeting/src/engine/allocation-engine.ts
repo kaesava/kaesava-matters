@@ -1,3 +1,4 @@
+import { t } from "@money-matters/i18n";
 import { EnvelopeType, FundingMode, AllocationStepType } from "@money-matters/types";
 import { getTenantDateString } from "@money-matters/core";
 import { isBillsBucket, isGoalBucket, isEverydayBucket } from "./envelope-engine-mapper.js";
@@ -253,7 +254,9 @@ export function runAllocationEngine(input: AllocationEngineInput): AllocationEng
 
   // 1. Run Shared Allocation
   const sharedBuckets = input.buckets.filter((b) => !b.isPrivate);
-  const leftoverSharedCents = executePipeline(sharedCents, sharedBuckets, false, sharedSteps);
+  const leftoverSharedCents = sharedCents > 0 || totalIncomeCents === 0
+    ? executePipeline(sharedCents, sharedBuckets, false, sharedSteps)
+    : 0;
 
   // 2. Run Private Allocation (if private funds exist and earner owns private envelopes)
   let leftoverPrivateCents = 0;
@@ -269,7 +272,10 @@ export function runAllocationEngine(input: AllocationEngineInput): AllocationEng
       const line = linesMap.get(privateTarget.id)!;
       line.amountCents += privateCents;
       line.reasonings.push(
-        `Personal income allocation: ${sym}${toDollars(privateCents).toFixed(2)} allocated to personal envelope (${privateTarget.name}).`
+        t("payday.engineReasoning.personalSingleEnvelope", {
+          allocated: `${sym}${toDollars(privateCents).toFixed(2)}`,
+          name: privateTarget.name,
+        })
       );
       const curBal = runningBalances.get(privateTarget.id) ?? 0;
       runningBalances.set(privateTarget.id, curBal + privateCents);
@@ -285,12 +291,18 @@ export function runAllocationEngine(input: AllocationEngineInput): AllocationEng
     bucketId,
     bucketName: data.bucketName,
     proposedAmount: toDollars(data.amountCents),
-    reasoning: data.reasonings.length > 0 ? data.reasonings.join(" ") : "No allocation needed.",
+    reasoning: data.reasonings.length > 0 ? data.reasonings.join(" ") : t("payday.engineReasoning.noAllocationNeeded"),
   }));
 
   const isInsufficient = lines.some((l) => {
     const bucket = input.buckets.find((b) => b.id === l.bucketId);
     if (!bucket || (!bucket.isPriority && !isBillsBucket(bucket))) return false;
+    if (bucket.isPrivate) {
+      if (privateCents <= 0 && totalIncomeCents > 0) return false;
+      if (input.incomeUserId && bucket.userId && bucket.userId !== input.incomeUserId) return false;
+    } else {
+      if (sharedCents <= 0 && totalIncomeCents > 0) return false;
+    }
     if (bucket.envelopeType === "GOAL" && bucket.targetAmount) {
       const targetCents = toCents(bucket.targetAmount);
       const balanceCents = toCents(bucket.currentBalance ?? 0);

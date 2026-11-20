@@ -57,7 +57,7 @@ export function SetupGoalItemRow({
       </div>
 
       <div className="flex flex-nowrap whitespace-nowrap items-center gap-2 self-end sm:self-auto">
-        <div className="w-40">
+        <div className="w-44">
           <AmountField
             value={
               isOngoing
@@ -86,7 +86,7 @@ export function SetupGoalItemRow({
                 onUpdateGoal(goal.id, "monthlyAmount", Math.round(num / months));
               }
             }}
-            placeholder={isOngoing ? t("setup.goals.recurringContributionLabel") : t("setup.goals.targetAmountLabel")}
+            placeholder="0.00"
             allowNegative={false}
           />
         </div>
@@ -125,7 +125,7 @@ export function SetupGoalItemRow({
                 : Math.round(rawAmt);
               onUpdateGoal(goal.id, "monthlyAmount", monthly);
             }}
-            className="ui-input w-32 px-2.5 text-xs font-bold rounded-xl border border-zinc-200 bg-blue-50 text-blue-700 font-medium cursor-pointer h-[46px]"
+            className="w-28 px-2 text-xs font-bold rounded-xl border border-zinc-200 bg-blue-50 text-blue-700 cursor-pointer h-[46px]"
           >
             <option value="WEEKLY">{t("forms.weekly")}</option>
             <option value="FORTNIGHTLY">{t("forms.fortnightly")}</option>

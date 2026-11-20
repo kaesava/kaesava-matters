@@ -38,34 +38,26 @@ function IncomeAndBillsContent() {
   const [setupSearchQuery, setSetupSearchQuery] = useState("");
   const toast = useToast();
   const markExpensePaidMut = trpc.markExpensePaid.useMutation();
-  const [matrixMarkPaidTarget, setMatrixMarkPaidTarget] = useState<{
-    eventId: string;
-    name: string;
-    amount: string;
-    date: string;
-    poolId?: string;
-  } | null>(null);
+  const [matrixMarkPaidTarget, setMatrixMarkPaidTarget] = useState<{ eventId: string; name: string; amount: string; date: string; poolId?: string } | null>(null);
   const [setupScopeFilter, setSetupScopeFilter] = useState<"ALL" | "SHARED" | "PRIVATE">("ALL");
   const [overflowMenuOpen, setOverflowMenuOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
-        setOverflowMenuOpen(false);
-      }
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) setOverflowMenuOpen(false);
     }
-    if (overflowMenuOpen) {
-      document.addEventListener("mousedown", handleClickOutside);
-    }
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
+    if (overflowMenuOpen) document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
   }, [overflowMenuOpen]);
 
   const editIncomeId = searchParams.get("editIncomeId");
   const editBillId = searchParams.get("editBillId");
   const paramSearch = searchParams.get("search") || "";
+  const paramPoolId = searchParams.get("poolId");
+  const rawTypeParam = searchParams.get("type")?.toUpperCase();
+  const paramKindFilter: "ALL" | "INCOME" | "EXPENSE" | "TRANSFER" | undefined =
+    rawTypeParam === "INCOME" || rawTypeParam === "EXPENSE" || rawTypeParam === "TRANSFER" ? rawTypeParam : undefined;
   const createBillParam = searchParams.get("createBill") === "1";
   const createIncomeParam = searchParams.get("createIncome") === "1";
   const prefillName = searchParams.get("name") || "";
@@ -73,30 +65,15 @@ function IncomeAndBillsContent() {
   const prefillDate = searchParams.get("date") || "";
 
   useEffect(() => {
-    const key = createBillParam
-      ? `bill:${prefillName}:${prefillAmount}:${prefillDate}`
-      : createIncomeParam
-        ? `income:${prefillName}:${prefillAmount}:${prefillDate}`
-        : "";
+    const key = createBillParam ? `bill:${prefillName}:${prefillAmount}:${prefillDate}` : createIncomeParam ? `income:${prefillName}:${prefillAmount}:${prefillDate}` : "";
     if (!key || handledCreateRef.current === key) return;
     handledCreateRef.current = key;
     if (createBillParam) {
-      setEnvelopeToEdit({
-        id: "",
-        name: prefillName,
-        envelopeType: "BILL",
-        fundingMode: "RECURRING",
-        enteredAmount: prefillAmount || undefined,
-        startDate: prefillDate || undefined,
-      });
+      setEnvelopeToEdit({ id: "", name: prefillName, envelopeType: "BILL", fundingMode: "RECURRING", enteredAmount: prefillAmount || undefined, startDate: prefillDate || undefined });
       setIsEnvelopeModalOpen(true);
     } else if (createIncomeParam) {
       setIncomeToEdit(undefined);
-      setIncomeInitialPrefill({
-        name: prefillName || undefined,
-        amount: prefillAmount || undefined,
-        date: prefillDate || undefined,
-      });
+      setIncomeInitialPrefill({ name: prefillName || undefined, amount: prefillAmount || undefined, date: prefillDate || undefined });
       setIsIncomeModalOpen(true);
     }
   }, [createBillParam, createIncomeParam, prefillName, prefillAmount, prefillDate]);
@@ -104,9 +81,7 @@ function IncomeAndBillsContent() {
   React.useEffect(() => {
     if (rawTab) {
       const upper = rawTab.toUpperCase() as PlanTab;
-      if (VALID_TABS.includes(upper) && upper !== activeTab) {
-        setActiveTab(upper);
-      }
+      if (VALID_TABS.includes(upper) && upper !== activeTab) setActiveTab(upper);
     }
   }, [rawTab, activeTab]);
 
@@ -118,26 +93,9 @@ function IncomeAndBillsContent() {
 
   const utils = trpc.useUtils();
   const {
-    isLoading,
-    pools,
-    bankAccounts,
-    incomeSources,
-    billSchedules,
-    incomeEvents,
-    expenseEvents,
-    transferEvents,
-    savedIncomeEventIds,
-    matrixIncomeEvents,
-    matrixExpenseEvents,
-    matrixCategories,
-  } = usePlanData({
-    editIncomeId,
-    editBillId,
-    setIncomeToEdit,
-    setIsIncomeModalOpen,
-    setEnvelopeToEdit,
-    setIsEnvelopeModalOpen,
-  });
+    isLoading, pools, bankAccounts, incomeSources, billSchedules, incomeEvents, expenseEvents, transferEvents,
+    savedIncomeEventIds, matrixIncomeEvents, matrixExpenseEvents, matrixCategories,
+  } = usePlanData({ editIncomeId, editBillId, setIncomeToEdit, setIsIncomeModalOpen, setEnvelopeToEdit, setIsEnvelopeModalOpen });
 
   if (isLoading) {
     return <div className="flex h-96 items-center justify-center"><Spinner /></div>;
@@ -216,7 +174,7 @@ function IncomeAndBillsContent() {
         <div data-tour="schedules-tab" className="space-y-6">
           <div className="flex flex-wrap items-center justify-between gap-4 p-4 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-2xl shadow-xs">
             <div className="flex-1 w-full max-w-full">
-              <SearchInput value={setupSearchQuery} onChange={setSetupSearchQuery} placeholder="Search income or bill schedules..." />
+              <SearchInput value={setupSearchQuery} onChange={setSetupSearchQuery} placeholder={t("common.searchPlaceholder")} />
             </div>
             <div className="flex items-center gap-1 bg-zinc-100 dark:bg-zinc-800 p-1 rounded-xl">
               {(["ALL", "SHARED", "PRIVATE"] as const).map((sc) => (
@@ -230,7 +188,7 @@ function IncomeAndBillsContent() {
                       : "text-zinc-500 hover:text-zinc-900 dark:hover:text-white"
                   }`}
                 >
-                  {sc === "ALL" ? "All" : sc === "SHARED" ? "Shared" : "Private"}
+                  {sc === "ALL" ? t("common.all") : sc === "SHARED" ? t("common.shared") : t("common.private")}
                 </button>
               ))}
             </div>
@@ -289,6 +247,9 @@ function IncomeAndBillsContent() {
           <TimelineTabWrapper
             isLoading={isLoading}
             initialSearchQuery={paramSearch}
+            initialKindFilter={paramKindFilter}
+            filterPoolId={paramPoolId}
+            onClearFilter={() => router.replace("/dashboard/plan?tab=events", { scroll: false })}
             savedIncomeEventIds={savedIncomeEventIds}
             incomeEvents={incomeEvents.map((e) => {
               const src = incomeSources.find((s) => s.id === e.incomeSourceId);

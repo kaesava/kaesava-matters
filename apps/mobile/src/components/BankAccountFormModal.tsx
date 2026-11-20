@@ -21,12 +21,11 @@ import { useAppFeatures } from '../context/useAppFeatures';
 import { BankAccountBalanceCard } from './bank-accounts/BankAccountBalanceCard';
 import {
   type BankAccountItemToEdit,
-  type SupportedBankProvider,
 } from './bank-accounts/bankAccountTypes';
 import { useBankAccountForm } from './bank-accounts/useBankAccountForm';
 import { BankAccountInstitutionSelector } from './bank-accounts/BankAccountInstitutionSelector';
 
-export type { BankAccountItemToEdit, SupportedBankProvider };
+export type { BankAccountItemToEdit };
 
 interface BankAccountFormModalProps {
   visible: boolean;
@@ -105,7 +104,7 @@ export function BankAccountFormModal({
               variant="primary"
               onPress={handleSubmit}
               loading={submitting}
-              disabled={!name.trim() || isNegativeAvailable}
+              disabled={!name.trim() || isNegativeAvailable || (isEdit && !isDirty)}
               style={styles.actionBtn}
             >
               {isEdit ? t('common.saveChanges') : t('settings.bankAccounts.addAccount')}

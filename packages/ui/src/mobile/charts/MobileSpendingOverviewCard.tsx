@@ -5,6 +5,7 @@ import { MobileDonutChart } from './MobileDonutChart';
 import { MobileBarTrendChart } from './MobileBarTrendChart';
 import { MobileHorizontalRankedBarChart } from './MobileHorizontalRankedBarChart';
 import { DESIGN_TOKENS } from '../../tokens';
+import { SkeletonCard } from '../SkeletonCard';
 import { t } from '@money-matters/i18n';
 import {
   ChartTab,
@@ -103,8 +104,8 @@ function ChartContent({
 }) {
   if (isLoading) {
     return (
-      <View style={styles.centerArea}>
-        <Text style={styles.mutedText}>{t('common.loading')}</Text>
+      <View style={styles.chartArea}>
+        <SkeletonCard count={2} />
       </View>
     );
   }
@@ -165,7 +166,7 @@ function ChartContent({
 
 const styles = StyleSheet.create({
   card: {
-    backgroundColor: '#FFFFFF',
+    backgroundColor: DESIGN_TOKENS.colors.surface,
     borderRadius: 16,
     borderWidth: 1,
     borderColor: DESIGN_TOKENS.colors.slate[200],

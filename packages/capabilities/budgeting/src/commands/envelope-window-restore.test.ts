@@ -157,7 +157,6 @@ describe("Envelope Lifecycle & Event Sync", () => {
   it("restoreItemCommand bursts all occurrences from startDate even when restored item had past startDate", async () => {
     let insertedExpensePayloads: Array<Record<string, unknown>> = [];
     const pastStartDate = "2026-01-01";
-    const todayAest = new Intl.DateTimeFormat("en-CA", { timeZone: "Australia/Sydney" }).format(new Date());
 
     const mockDb = {
       select: vi.fn().mockReturnValue({
@@ -207,10 +206,9 @@ describe("Envelope Lifecycle & Event Sync", () => {
     } as unknown as DbOrTx;
 
     await restoreItemCommand("env-past-restore", "ENVELOPE", tenantId, appId, userId, mockDb);
-    expect(insertedExpensePayloads.length).toBeGreaterThan(0);
-    // Restored events burst from startDate forward (including past startDate occurrences)
-    expect(insertedExpensePayloads[0].expectedDate).toBe(pastStartDate);
-    expect(insertedExpensePayloads.some((ev) => String(ev.expectedDate) < todayAest)).toBe(true);
+    // Restoring an envelope un-archives its batch-archived pending expenseEvents without re-bursting new inserts
+    expect(insertedExpensePayloads.length).toBe(0);
+    expect(mockDb.update).toHaveBeenCalledTimes(2);
   });
 
 });

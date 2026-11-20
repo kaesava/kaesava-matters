@@ -14,9 +14,11 @@ export interface QuickActionInitialData {
   amount?: string;
   date?: string;
   categoryId?: string;
+  destinationPoolId?: string;
   envelopeName?: string;
   sourcePoolName?: string;
   destinationPoolName?: string;
+  isDrawDown?: boolean;
 }
 
 export function isPaydayOrAdjustment(note?: string | null): boolean {

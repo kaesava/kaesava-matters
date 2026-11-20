@@ -11,6 +11,7 @@ import { enforceApiRateLimit } from './middleware/rate-limit.js';
 import { handleResetPasswordRequest, isValidRedirectUrl } from './routes/password-reset.js';
 import { handleStripeWebhookRequest } from './routes/stripe-webhook.js';
 import { handleDevCallbackRequest } from './routes/dev-callback.js';
+import { handleFileNotesRequest } from './routes/file-notes.js';
 
 export { isValidRedirectUrl };
 
@@ -169,6 +170,10 @@ export default {
 
       if (url.pathname.startsWith('/dev-callback')) {
         return handleDevCallbackRequest(url, isDev, baseHeaders);
+      }
+
+      if (url.pathname.startsWith('/api/file-notes/')) {
+        return await handleFileNotesRequest(request, url, env, correlationId, baseHeaders);
       }
 
       if (url.pathname.startsWith('/trpc')) {

@@ -61,6 +61,12 @@ export async function getHorizonProjectionDataQuery(
       status: incomeEvents.status,
       sourceName: sql<string>`COALESCE(${incomeEvents.name}, ${incomeSources.name}, 'Income')`,
       incomeSourceId: incomeEvents.incomeSourceId,
+      rrule: incomeSources.rrule,
+      incomeType: incomeSources.incomeType,
+      contributionMode: sql<"FULL" | "PERCENTAGE" | "FIXED_AMOUNT">`COALESCE(${incomeEvents.contributionMode}, ${incomeSources.contributionMode}, 'FULL')`,
+      contributionValue: sql<string | null>`COALESCE(${incomeEvents.contributionValue}, ${incomeSources.contributionValue})`,
+      createdBy: incomeEvents.createdBy,
+      sourceCreatedBy: incomeSources.createdBy,
       bankAccountIsPrivate: bankAccounts.isPrivate,
       bankAccountUserId: bankAccounts.userId,
     })
@@ -72,7 +78,7 @@ export async function getHorizonProjectionDataQuery(
         eq(incomeEvents.tenantId, tenantId),
         eq(incomeEvents.appId, appId),
         sql`${incomeEvents.archivedAt} IS NULL`,
-        sql`${incomeEvents.expectedDate} >= ${nowStr}`,
+        sql`(${incomeEvents.status} = 'PENDING' OR ${incomeEvents.expectedDate} >= ${nowStr})`,
         sql`${incomeEvents.expectedDate} <= ${futureStr}`
       )
     )
@@ -97,7 +103,7 @@ export async function getHorizonProjectionDataQuery(
         eq(expenseEvents.tenantId, tenantId),
         eq(expenseEvents.appId, appId),
         sql`${expenseEvents.archivedAt} IS NULL`,
-        sql`${expenseEvents.expectedDate} >= ${nowStr}`,
+        sql`(${expenseEvents.status} = 'PENDING' OR ${expenseEvents.expectedDate} >= ${nowStr})`,
         sql`${expenseEvents.expectedDate} <= ${futureStr}`
       )
     )
@@ -164,14 +170,27 @@ export async function getHorizonProjectionDataQuery(
       targetEnvelopeId: s.targetEnvelopeId,
       config: s.config as Record<string, unknown> | null,
     })),
-    incomeEvents: dbIncomeEvents.map((evt) => ({
-      id: evt.id,
-      expectedDate: evt.expectedDate,
-      expectedAmount: parseFloat(evt.expectedAmount),
-      actualAmount: evt.actualAmount ? parseFloat(evt.actualAmount) : null,
-      status: evt.status as "PENDING" | "CONFIRMED",
-      sourceName: evt.sourceName,
-    })),
+    incomeEvents: dbIncomeEvents.map((evt) => {
+      const rawCreator = evt.createdBy && evt.createdBy !== "system" ? evt.createdBy : undefined;
+      const rawSourceCreator = evt.sourceCreatedBy && evt.sourceCreatedBy !== "system" ? evt.sourceCreatedBy : undefined;
+      const incomeUserId = evt.bankAccountIsPrivate
+        ? (evt.bankAccountUserId || userId)
+        : (rawCreator ?? rawSourceCreator ?? userId);
+      return {
+        id: evt.id,
+        expectedDate: evt.expectedDate,
+        expectedAmount: parseFloat(evt.expectedAmount),
+        actualAmount: evt.actualAmount ? parseFloat(evt.actualAmount) : null,
+        status: evt.status as "PENDING" | "CONFIRMED",
+        sourceName: evt.sourceName,
+        rrule: evt.rrule,
+        incomeType: evt.incomeType,
+        userId: incomeUserId,
+        isPrivate: Boolean(evt.bankAccountIsPrivate),
+        contributionMode: evt.contributionMode || "FULL",
+        contributionValue: evt.contributionValue ? parseFloat(evt.contributionValue) : null,
+      };
+    }),
     expenseEvents: dbExpenseEvents
       .filter((evt): evt is typeof evt & { envelopeId: string } => Boolean(evt.envelopeId))
       .map((evt) => ({

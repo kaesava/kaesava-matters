@@ -40,7 +40,7 @@ function resolveApiBaseUrl(): string {
   return envUrl || (isDev ? DEV_API_URL : PROD_API_URL);
 }
 
-const API_BASE_URL = resolveApiBaseUrl();
+export const API_BASE_URL = resolveApiBaseUrl();
 
 export async function getStoredTokenAndCookie(): Promise<{ token: string | null; cookie: string | null }> {
   let token: string | null = null;

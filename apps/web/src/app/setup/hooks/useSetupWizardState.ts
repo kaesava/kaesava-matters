@@ -1,8 +1,8 @@
 "use client";
-import { DEFAULT_TIMEZONE } from "@money-matters/types";
+import { DEFAULT_CURRENCY, DEFAULT_TIMEZONE } from "@money-matters/types";
 
 
-import { useState, useMemo, useEffect, useRef } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { authClient } from "../../../lib/auth";
 import { trpc } from "../../../lib/trpc";
@@ -47,20 +47,26 @@ export function useSetupWizardState() {
   const [showDiscardModal, setShowDiscardModal] = useState(false);
   const [isDiscarding, setIsDiscarding] = useState(false);
 
-  // Re-run mode & auto-trigger when setup was already completed (not cancelled) - locked on mount to prevent submission flicker
+  // Re-run mode & strict pre-load redirect guard:
+  // COMPLETED or CANCELLED => must use /setup?mode=rerun; otherwise => must use /setup
   const isRerunParam = searchParams?.get("mode") === "rerun";
-  const setupAlreadyCompleted = userPrefQuery.data?.setupStatus === "COMPLETED";
-  const [isRerun, setIsRerun] = useState<boolean>(() => isRerunParam || setupAlreadyCompleted);
-  const initialSetupCompletedRef = useRef<boolean | null>(null);
+  const setupStatus = userPrefQuery.data?.setupStatus;
+  const setupDone = setupStatus === "COMPLETED" || setupStatus === "CANCELLED";
+  const isRouteChecking =
+    !session?.user ||
+    tenantStatusQuery.isLoading ||
+    (hasTenant && userPrefQuery.isLoading) ||
+    (hasTenant && userPrefQuery.data !== undefined && ((setupDone && !isRerunParam) || (!setupDone && isRerunParam)));
+  const isRerun = isRerunParam && setupDone;
 
   useEffect(() => {
-    if (initialSetupCompletedRef.current === null && userPrefQuery.data !== undefined) {
-      initialSetupCompletedRef.current = userPrefQuery.data?.setupStatus === "COMPLETED";
-      if (initialSetupCompletedRef.current && !isRerunParam) {
-        setIsRerun(true);
-      }
+    if (!hasTenant || userPrefQuery.data === undefined) return;
+    if (setupDone && !isRerunParam) {
+      router.replace("/setup?mode=rerun");
+    } else if (!setupDone && isRerunParam) {
+      router.replace("/setup");
     }
-  }, [userPrefQuery.data, isRerunParam]);
+  }, [hasTenant, userPrefQuery.data, setupDone, isRerunParam, router]);
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -169,6 +175,18 @@ export function useSetupWizardState() {
     [lifestyle, incomes]
   );
 
+  // Clear Step 5 manual Everyday override whenever Step 4 everyday sliders change
+  useEffect(() => {
+    if (!isRerun) {
+      setAmountOverrides((prev) => {
+        if (prev["Everyday Spending"] === undefined) return prev;
+        const next = { ...prev };
+        delete next["Everyday Spending"];
+        return next;
+      });
+    }
+  }, [isRerun, lifestyle.weeklyGroceries, lifestyle.weeklyDining, lifestyle.weeklyPersonal]);
+
   const calculations = useSetupWizardCalculations({
     quizAnswers,
     isRerun,
@@ -201,7 +219,7 @@ export function useSetupWizardState() {
           await createTenantMut.mutateAsync({
             name: "My Household",
             country: "AU",
-            currency: "AUD",
+            currency: DEFAULT_CURRENCY,
             timezone: DEFAULT_TIMEZONE,
           });
         }
@@ -229,6 +247,7 @@ export function useSetupWizardState() {
   return {
     router,
     isRerun,
+    isRouteChecking,
     isLoading: prepopulation.isLoading,
     step,
     setStep,

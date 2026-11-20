@@ -70,6 +70,7 @@ export interface RecurringSimulationParams {
   today: Date;
   timezone: string;
   currency: string;
+  locale?: string;
   userId: string;
 }
 
@@ -95,5 +96,6 @@ export interface OneOffSimulationParams {
   projectionEngine: ProjectionEngineFn;
   timezone: string;
   currency: string;
+  locale?: string;
   userId: string;
 }

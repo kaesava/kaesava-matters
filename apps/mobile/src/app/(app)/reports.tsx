@@ -29,7 +29,7 @@ type ReportTabKey = 'spending' | 'paydayPlans';
 export default function ReportsScreen() {
   const router = useRouter();
   const params = useLocalSearchParams<{ tab?: string }>();
-  const { hasReports } = useAppFeatures();
+  const { hasReports, isLoading: isFeaturesLoading } = useAppFeatures();
   const { data: session } = authClient.useSession();
 
   const [activeTab, setActiveTab] = useState<ReportTabKey>(
@@ -55,10 +55,10 @@ export default function ReportsScreen() {
 
   // Feature gate redirect
   useEffect(() => {
-    if (!hasReports) {
+    if (!isFeaturesLoading && !hasReports) {
       router.replace('/(app)/home' as Href);
     }
-  }, [hasReports, router]);
+  }, [isFeaturesLoading, hasReports, router]);
 
   // Debounce search inputs
   useEffect(() => {

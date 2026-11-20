@@ -4,8 +4,9 @@ import React, { useState, useId, useDeferredValue, useEffect } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { trpc } from '@/lib/trpc';
 import { t } from '@money-matters/i18n';
-import { InfoTooltip, useCurrencyLocale } from '@money-matters/ui';
+import { InfoTooltip, Input, useCurrencyLocale } from '@money-matters/ui/web';
 import { useAppFeatures } from '@/hooks/useAppFeatures';
+import { useLocale } from '@/providers/LocaleProvider';
 import { AffordCheckVerdict } from './AffordCheckVerdict';
 import { AffordCheckBreakdown } from './AffordCheckBreakdown';
 import { GoalDelayCard } from './GoalDelayCard';
@@ -17,10 +18,10 @@ export function AffordCheckScreen() {
   const router = useRouter();
   const { hasSimulation, isLoading: isFeaturesLoading } = useAppFeatures();
   const { currencySymbol } = useCurrencyLocale();
+  const { locale } = useLocale();
   const searchParams = useSearchParams();
   const urlAmount = searchParams.get('amount') || '';
   const amountInputId = useId();
-  const itemNameInputId = useId();
   const includePersonalId = useId();
 
   useEffect(() => {
@@ -48,6 +49,7 @@ export function AffordCheckScreen() {
       frequency,
       itemName: itemName.trim() || undefined,
       includePersonal,
+      locale,
     },
     {
       enabled: isValidAmount && hasSimulation,
@@ -183,20 +185,13 @@ export function AffordCheckScreen() {
 
         {/* Optional Item Name & Personal Checkbox */}
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2 border-t border-slate-100 dark:border-slate-800">
-          <div>
-            <label htmlFor={itemNameInputId} className="block text-xs font-medium text-slate-600 dark:text-slate-400 mb-1">
-              {t('canIAfford.itemNameLabel')}
-            </label>
-            <input
-              id={itemNameInputId}
-              type="text"
-              maxLength={100}
-              value={itemName}
-              onChange={(e) => setItemName(e.target.value)}
-              placeholder={t('canIAfford.itemNamePlaceholder')}
-              className="w-full text-xs px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/50 text-slate-900 dark:text-slate-100 focus:outline-none focus:ring-1 focus:ring-blue-500"
-            />
-          </div>
+          <Input
+            label={t('canIAfford.itemNameLabel')}
+            maxLength={100}
+            value={itemName}
+            onChange={(e) => setItemName(e.target.value)}
+            placeholder={t('canIAfford.itemNamePlaceholder')}
+          />
 
           <div className="flex items-center sm:justify-end">
             <label htmlFor={includePersonalId} className="inline-flex items-center gap-2 cursor-pointer pt-4 sm:pt-0">

@@ -48,16 +48,6 @@ export function MobileProfileReadOnlyView({
   onToggleBiometrics,
   onEdit,
 }: MobileProfileReadOnlyViewProps) {
-
-  const initials = name
-    ? name
-        .split(' ')
-        .map((w) => w[0])
-        .join('')
-        .toUpperCase()
-        .slice(0, 2)
-    : '?';
-
   return (
     <SettingsCard
       title={t('settings.myDetailsTitle')}
@@ -76,7 +66,7 @@ export function MobileProfileReadOnlyView({
               <Image source={{ uri: avatarUri }} style={styles.avatarImg} />
             ) : (
               <View style={styles.avatarPlaceholder}>
-                <Text style={styles.avatarInitials}>{initials}</Text>
+                <Feather name="user" size={24} color="#FFFFFF" />
               </View>
             )}
           </View>

@@ -54,7 +54,7 @@ export function useProfileForm({ user, currentTimezone }: UseProfileFormParams) 
     if (userProfileQuery.data) {
       const init: ProfileFormData = {
         displayName: userProfileQuery.data.displayName || user?.name || "",
-        avatarUrl: userProfileQuery.data.avatarUrl || user?.image || "",
+        avatarUrl: userProfileQuery.data.avatarUrl || "",
         notificationEmail: userProfileQuery.data.notificationEmail || user?.email || "",
         phoneCountryCode: userProfileQuery.data.phoneCountryCode || "+61",
         phoneNumber: userProfileQuery.data.phoneNumber || "",
@@ -122,7 +122,7 @@ export function useProfileForm({ user, currentTimezone }: UseProfileFormParams) 
         notificationEmail: data.notificationEmail.trim(),
         phoneCountryCode: data.phoneCountryCode,
         phoneNumber: data.phoneNumber.trim(),
-        avatarUrl: data.avatarUrl,
+        avatarUrl: data.avatarUrl || null,
       });
       await updatePrefMutation.mutateAsync({
         language: data.language,
@@ -132,7 +132,7 @@ export function useProfileForm({ user, currentTimezone }: UseProfileFormParams) 
       try {
         await authClient.updateUser({
           name: data.displayName.trim(),
-          image: data.avatarUrl || undefined,
+          image: data.avatarUrl || "",
         });
       } catch (_e) {
         // Silent fallback for authClient
@@ -143,6 +143,35 @@ export function useProfileForm({ user, currentTimezone }: UseProfileFormParams) 
       await userPrefQuery.refetch();
       setIsEditing(false);
       toast.success(t("settings.profileSaved"));
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : t("settings.profile.profileSaveFailed"));
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
+  const handleDeleteAvatar = async () => {
+    setIsSaving(true);
+    try {
+      await updateProfileMutation.mutateAsync({
+        displayName: data.displayName.trim() || user?.name || "User",
+        notificationEmail: data.notificationEmail.trim() || user?.email || "",
+        phoneCountryCode: data.phoneCountryCode,
+        phoneNumber: data.phoneNumber.trim(),
+        avatarUrl: null,
+      });
+      try {
+        await authClient.updateUser({ image: "" });
+      } catch (_e) {
+        // Silent fallback
+      }
+      setData((prev) => ({ ...prev, avatarUrl: "" }));
+      initialRef.current = { ...initialRef.current, avatarUrl: "" };
+      setRawImageSrc(null);
+      setIsCropperOpen(false);
+      await userProfileQuery.refetch();
+      setIsEditing(false);
+      toast.success(t("settings.avatarDeleted"));
     } catch (err) {
       toast.error(err instanceof Error ? err.message : t("settings.profile.profileSaveFailed"));
     } finally {
@@ -184,6 +213,7 @@ export function useProfileForm({ user, currentTimezone }: UseProfileFormParams) 
     rawImageSrc,
     setRawImageSrc,
     handleAvatarFileSelected,
+    handleDeleteAvatar,
     handleCancel,
     handleDiscardConfirm,
     handleSave,

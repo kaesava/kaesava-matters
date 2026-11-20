@@ -43,6 +43,7 @@ function PoolsPageContent() {
     type?: "DEBIT" | "CREDIT" | "TRANSFER";
     name?: string;
     categoryId?: string;
+    isDrawDown?: boolean;
   } | undefined>(undefined);
 
   const [isPoolModalOpen, setIsPoolModalOpen] = useState(false);
@@ -159,6 +160,7 @@ function PoolsPageContent() {
       type: "DEBIT",
       name: pool.name ? `${pool.name} draw-down` : "Draw-down",
       categoryId: pool.id,
+      isDrawDown: true,
     });
     setIsQuickDrawerOpen(true);
   };
@@ -286,7 +288,7 @@ function PoolsPageContent() {
           <RecordFilterBadge
             label={
               matchedPool
-                ? `Filtered to Envelope: ${matchedPool.name}`
+                ? t("history.filteredToEnvelope", { name: matchedPool.name })
                 : t("categories.requestedItemNotFound")
             }
             onClear={() => {

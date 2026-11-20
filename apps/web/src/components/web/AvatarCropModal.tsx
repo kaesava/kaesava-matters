@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useRef, useEffect, useCallback } from "react";
-import { ModalDialog, Button } from "@money-matters/ui/web";
+import { ModalDialog, ConfirmDialog, Button } from "@money-matters/ui/web";
 import { t } from "@money-matters/i18n";
 
 export interface AvatarCropModalProps {
@@ -9,6 +9,7 @@ export interface AvatarCropModalProps {
   imageSrc: string | null;
   onClose: () => void;
   onCropSave: (croppedDataUrl: string) => void;
+  onDeleteAvatar?: () => Promise<void> | void;
 }
 
 export function AvatarCropModal({
@@ -16,10 +17,14 @@ export function AvatarCropModal({
   imageSrc,
   onClose,
   onCropSave,
+  onDeleteAvatar,
 }: AvatarCropModalProps) {
   const [zoom, setZoom] = useState(1);
   const [offset, setOffset] = useState({ x: 0, y: 0 });
   const [isDragging, setIsDragging] = useState(false);
+  const [isImageLoaded, setIsImageLoaded] = useState(false);
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
 
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const imgRef = useRef<HTMLImageElement | null>(null);
@@ -62,24 +67,35 @@ export function AvatarCropModal({
 
   // Load new image source once when imageSrc changes (DO NOT depend on drawCanvas/zoom/offset)
   useEffect(() => {
+    setIsImageLoaded(false);
+    imgRef.current = null;
     if (imageSrc) {
       const img = new Image();
+      img.crossOrigin = "anonymous";
       img.onload = () => {
         imgRef.current = img;
+        setIsImageLoaded(true);
         setZoom(1);
         setOffset({ x: 0, y: 0 });
+      };
+      img.onerror = () => {
+        imgRef.current = null;
+        setIsImageLoaded(false);
       };
       img.src = imageSrc;
     }
   }, [imageSrc]);
 
-  // Redraw canvas whenever zoom or offset updates
+  // Redraw canvas whenever zoom, offset, or image load updates
   useEffect(() => {
-    drawCanvas();
-  }, [drawCanvas]);
+    if (isImageLoaded) {
+      drawCanvas();
+    }
+  }, [drawCanvas, isImageLoaded]);
 
   // Handle global pointer drag (mouse & touch)
   const handlePointerDown = (e: React.PointerEvent<HTMLDivElement>) => {
+    if (!isImageLoaded) return;
     e.preventDefault();
     isPointerDownRef.current = true;
     startPointerRef.current = { x: e.clientX, y: e.clientY };
@@ -111,6 +127,7 @@ export function AvatarCropModal({
 
   // Optional mouse wheel zooming inside canvas container
   const handleWheel = (e: React.WheelEvent) => {
+    if (!isImageLoaded) return;
     e.preventDefault();
     const delta = e.deltaY < 0 ? 0.05 : -0.05;
     setZoom((prev) => Math.min(4, Math.max(0.2, +(prev + delta).toFixed(2))));
@@ -118,10 +135,22 @@ export function AvatarCropModal({
 
   const handleApply = () => {
     const canvas = canvasRef.current;
-    if (!canvas) return;
+    if (!canvas || !isImageLoaded) return;
     const dataUrl = canvas.toDataURL("image/webp", 0.9);
     onCropSave(dataUrl);
     onClose();
+  };
+
+  const handleConfirmDelete = async () => {
+    if (!onDeleteAvatar) return;
+    setIsDeleting(true);
+    try {
+      await onDeleteAvatar();
+      setShowDeleteConfirm(false);
+      onClose();
+    } finally {
+      setIsDeleting(false);
+    }
   };
 
   if (!isOpen || !imageSrc) return null;
@@ -152,37 +181,65 @@ export function AvatarCropModal({
           <span className="text-xs font-bold text-slate-500">🔍 -</span>
           <input
             type="range"
-            autoFocus={true}
+            autoFocus={isImageLoaded}
+            disabled={!isImageLoaded}
             min="0.2"
             max="4"
             step="0.01"
             value={zoom}
             onChange={(e) => setZoom(parseFloat(e.target.value))}
-            className="flex-1 accent-[#2563eb] cursor-pointer"
+            className="flex-1 accent-[#2563eb] cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed"
           />
           <span className="text-xs font-bold text-slate-500">+</span>
         </div>
 
         {/* Action Buttons */}
-        <div className="flex items-center justify-end gap-3 w-full pt-3 border-t border-slate-100">
-          <Button
-            type="button"
-            variant="secondary"
-            size="sm"
-            onClick={onClose}
-          >
-            {t("common.cancel")}
-          </Button>
-          <Button
-            type="button"
-            variant="primary"
-            size="sm"
-            onClick={handleApply}
-          >
-            {t("settings.saveAvatarPhoto")}
-          </Button>
+        <div className="flex items-center justify-between gap-3 w-full pt-3 border-t border-slate-100">
+          <div>
+            {onDeleteAvatar && (
+              <button
+                type="button"
+                onClick={() => setShowDeleteConfirm(true)}
+                disabled={isDeleting}
+                className="text-xs font-semibold text-slate-400 hover:text-rose-600 transition-colors cursor-pointer"
+              >
+                {t("settings.deleteAvatar")}
+              </button>
+            )}
+          </div>
+          <div className="flex items-center gap-3">
+            <Button
+              type="button"
+              variant="secondary"
+              size="sm"
+              onClick={onClose}
+            >
+              {t("common.cancel")}
+            </Button>
+            <Button
+              type="button"
+              variant="primary"
+              size="sm"
+              disabled={!isImageLoaded}
+              onClick={handleApply}
+            >
+              {t("settings.saveAvatarPhoto")}
+            </Button>
+          </div>
         </div>
       </div>
+
+      <ConfirmDialog
+        isOpen={showDeleteConfirm}
+        title={t("settings.deleteAvatarConfirmTitle")}
+        description={t("settings.deleteAvatarConfirmMessage")}
+        confirmLabel={t("settings.deleteAvatar")}
+        cancelLabel={t("common.cancel")}
+        variant="danger"
+        isLoading={isDeleting}
+        onConfirm={handleConfirmDelete}
+        onClose={() => setShowDeleteConfirm(false)}
+      />
     </ModalDialog>
   );
 }

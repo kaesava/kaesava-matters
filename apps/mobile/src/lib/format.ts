@@ -142,13 +142,14 @@ export function formatRelativeDate(
   }
   if (isNaN(d.getTime())) return '';
   
-  const today = new Date();
-  const yesterday = new Date();
-  yesterday.setDate(today.getDate() - 1);
+  const todayIso = formatIsoDate(new Date(), tz);
+  const yesterdayDate = new Date(Date.now() - 86_400_000);
+  const yesterdayIso = formatIsoDate(yesterdayDate, tz);
+  const targetIso = formatIsoDate(d, tz);
 
-  if (d.toDateString() === today.toDateString()) {
+  if (targetIso === todayIso) {
     return t('common.today');
-  } else if (d.toDateString() === yesterday.toDateString()) {
+  } else if (targetIso === yesterdayIso) {
     return t('common.yesterday');
   } else {
     const key = `${loc}:${tz}:day-short-month`;

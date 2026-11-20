@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { trpc } from "../../../../lib/trpc";
 import { useSubscriptionStatus } from "../../../../hooks/useSubscriptionStatus";
-import type { BankAccountItem, BankName, CategoryType } from "./BankAccountTable";
+import type { BankAccountItem, CategoryType } from "./BankAccountTable";
 import type { AccountType } from "@money-matters/types";
 
 export function useBankAccountsList() {
@@ -26,7 +26,7 @@ export function useBankAccountsList() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingAccount, setEditingAccount] = useState<BankAccountItem | null>(null);
   const [accName, setAccName] = useState("");
-  const [accBankProvider, setAccBankProvider] = useState<BankName>("Other");
+  const [accBankProvider, setAccBankProvider] = useState<string>("Other");
   const [accAccountType, setAccAccountType] = useState<AccountType>("EVERYDAY");
   const [accBalance, setAccBalance] = useState("0.00");
   const [accBuffer, setAccBuffer] = useState("0.00");
@@ -179,7 +179,7 @@ export function useBankAccountsList() {
     setErrorMsg(null);
     setEditingAccount(acc);
     setAccName(acc.name);
-    setAccBankProvider((acc.bankProvider as BankName) || "Other");
+    setAccBankProvider(acc.bankProvider || "Other");
     setAccAccountType(acc.accountType || "EVERYDAY");
     setAccBalance(acc.lastKnownBalance || "0.00");
     setAccBuffer(acc.unbudgetedBuffer || "0.00");

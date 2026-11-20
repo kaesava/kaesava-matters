@@ -10,11 +10,14 @@ interface TimelineTabWrapperProps {
   isLoading: boolean;
   savedIncomeEventIds: Set<string>;
   initialSearchQuery?: string;
+  initialKindFilter?: "ALL" | "INCOME" | "EXPENSE" | "TRANSFER";
+  filterPoolId?: string | null;
+  onClearFilter?: () => void;
   incomeEvents: TimelineEventItem[];
   expenseEvents: TimelineEventItem[];
   transferEvents: TimelineEventItem[];
-  categories: Array<{ id: string; name: string; poolId?: string; currentBalance: string | number }>;
-  pools: Array<{ id: string; name: string; currentBalance: string | number; bankAccountId?: string | null }>;
+  categories: Array<{ id: string; name: string; poolId?: string; currentBalance: string | number; isPrivate?: boolean; isSurplusTarget?: boolean }>;
+  pools: Array<{ id: string; name: string; currentBalance: string | number; bankAccountId?: string | null; isPrivate?: boolean; isSurplusTarget?: boolean }>;
   onOpenTransferDrawer: () => void;
 }
 
@@ -22,6 +25,9 @@ export function TimelineTabWrapper({
   isLoading,
   savedIncomeEventIds,
   initialSearchQuery,
+  initialKindFilter,
+  filterPoolId,
+  onClearFilter,
   incomeEvents,
   expenseEvents,
   transferEvents,
@@ -45,6 +51,9 @@ export function TimelineTabWrapper({
       <UpcomingTimelineTab
         isLoading={isLoading}
         initialSearchQuery={initialSearchQuery}
+        initialKindFilter={initialKindFilter}
+        filterPoolId={filterPoolId ?? undefined}
+        onClearFilter={onClearFilter}
         savedIncomeEventIds={savedIncomeEventIds}
         incomeEvents={incomeEvents}
         expenseEvents={expenseEvents}

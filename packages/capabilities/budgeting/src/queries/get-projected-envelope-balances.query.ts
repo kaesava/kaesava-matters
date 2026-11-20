@@ -100,6 +100,11 @@ export async function getProjectedPoolBalancesQuery(
       status: incomeEvents.status,
       name: sql`COALESCE(NULLIF(${incomeEvents.name}, ''), ${incomeSources.name}, 'Paycheck')`,
       rrule: incomeSources.rrule,
+      incomeType: incomeSources.incomeType,
+      contributionMode: sql<"FULL" | "PERCENTAGE" | "FIXED_AMOUNT">`COALESCE(${incomeEvents.contributionMode}, ${incomeSources.contributionMode}, 'FULL')`,
+      contributionValue: sql<string | null>`COALESCE(${incomeEvents.contributionValue}, ${incomeSources.contributionValue})`,
+      createdBy: incomeEvents.createdBy,
+      sourceCreatedBy: incomeSources.createdBy,
       bankAccountIsPrivate: bankAccounts.isPrivate,
       bankAccountUserId: bankAccounts.userId,
     })
@@ -120,15 +125,27 @@ export async function getProjectedPoolBalancesQuery(
     return e.bankAccountUserId === userId;
   });
 
-  const matrixIncomeEvents: MatrixIncomeEvent[] = filteredIncomes.map((e) => ({
-    id: e.id,
-    sourceName: String(e.name || "Paycheck"),
-    expectedDate: e.expectedDate,
-    expectedAmount: parseFloat(e.expectedAmount),
-    actualAmount: e.actualAmount ? parseFloat(e.actualAmount) : null,
-    status: e.status as "PENDING" | "CONFIRMED" | "DRAFT" | "REVIEWED",
-    rrule: e.rrule,
-  }));
+  const matrixIncomeEvents: MatrixIncomeEvent[] = filteredIncomes.map((e) => {
+    const rawCreator = e.createdBy && e.createdBy !== "system" ? e.createdBy : undefined;
+    const rawSourceCreator = e.sourceCreatedBy && e.sourceCreatedBy !== "system" ? e.sourceCreatedBy : undefined;
+    const incomeUserId = e.bankAccountIsPrivate
+      ? (e.bankAccountUserId || userId)
+      : (rawCreator ?? rawSourceCreator ?? userId);
+    return {
+      id: e.id,
+      sourceName: String(e.name || "Paycheck"),
+      expectedDate: e.expectedDate,
+      expectedAmount: parseFloat(e.expectedAmount),
+      actualAmount: e.actualAmount ? parseFloat(e.actualAmount) : null,
+      status: e.status as "PENDING" | "CONFIRMED" | "DRAFT" | "REVIEWED",
+      rrule: e.rrule,
+      incomeType: e.incomeType,
+      userId: incomeUserId,
+      isPrivate: Boolean(e.bankAccountIsPrivate),
+      contributionMode: e.contributionMode || "FULL",
+      contributionValue: e.contributionValue ? parseFloat(e.contributionValue) : null,
+    };
+  });
 
   // 3. Fetch pending expense events
   const pendingExpensesRaw = await dbClient

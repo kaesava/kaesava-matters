@@ -2,8 +2,7 @@ import { useState, useMemo, useEffect } from "react";
 import { trpc } from "../../../../lib/trpc";
 import { t } from "@money-matters/i18n";
 import { useResizableColumns } from "@money-matters/ui/web";
-import { SpendingTimeframe, serializeCsvRows } from "@money-matters/types";
-import { getTenantDateString } from "@money-matters/types";
+import { DEFAULT_CURRENCY, SpendingTimeframe, serializeCsvRows, getTenantDateString } from "@money-matters/types";
 import { useLocale } from "../../../../providers/LocaleProvider";
 
 export interface TransactionRowItem {
@@ -252,7 +251,7 @@ export function useHistoryTransactionsData({
 
   const handleExportCSV = () => {
     if (sortedTransactions.length === 0) return;
-    const currencyLabel = currency || "AUD";
+    const currencyLabel = currency || DEFAULT_CURRENCY;
     const headers = [
       t("tables.date"),
       t("common.type"),

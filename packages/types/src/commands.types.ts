@@ -3,6 +3,7 @@ import { BillingCycleSchema, SubscriptionTierSchema } from "./subscription.types
 
 export const CreateTenantCommand = z.object({
   name: z.string().min(1),
+  displayName: z.string().trim().min(1).max(120).optional(),
   country: z.string().length(2),
   currency: z.string().length(3).optional(),
   timezone: z.string().optional(),
@@ -31,7 +32,7 @@ export const AccountTypeSchema = z.enum(["EVERYDAY", "SAVINGS", "LOAN_OFFSET"]);
 
 export const CreateBankAccountCommand = z.object({
   name: z.string().min(1),
-  bankProvider: z.enum(["CBA", "Westpac", "ANZ", "NAB", "ING", "Macquarie", "Other"]).default("Other"),
+  bankProvider: z.string().trim().max(50).optional().transform((v) => (v && v.length > 0 ? v : "Other")),
   accountType: AccountTypeSchema.default("EVERYDAY"),
   lastKnownBalance: z.string().regex(/^\d{1,12}(\.\d{1,2})?$/).default("0.00"),
   unbudgetedBuffer: z.string().regex(/^\d{1,12}(\.\d{1,2})?$/).default("0.00"),
@@ -40,7 +41,7 @@ export const CreateBankAccountCommand = z.object({
 
 export const UpdateBankAccountCommand = z.object({
   name: z.string().min(1).optional(),
-  bankProvider: z.enum(["CBA", "Westpac", "ANZ", "NAB", "ING", "Macquarie", "Other"]).optional(),
+  bankProvider: z.string().trim().max(50).optional().transform((v) => (v === undefined ? undefined : v.length > 0 ? v : "Other")),
   accountType: AccountTypeSchema.optional(),
   lastKnownBalance: z.string().regex(/^\d{1,12}(\.\d{1,2})?$/).optional(),
   unbudgetedBuffer: z.string().regex(/^\d{1,12}(\.\d{1,2})?$/).optional(),
@@ -178,6 +179,12 @@ export const RecordExpenseCommand = z.object({
   note: z.string().optional(),
   source: z.enum(["MANUAL", "AUTO", "IMPORT"]).default("MANUAL"),
   transferGroupId: z.string().uuid().optional(),
+  shortfallTransfers: z.array(
+    z.object({
+      sourceEnvelopeId: z.string().uuid(),
+      amount: z.string().regex(/^\d{1,12}(\.\d{1,2})?$/).refine((val) => parseFloat(val) > 0, "Transfer amount must be greater than 0"),
+    }).strict()
+  ).optional(),
 }).strict();
 
 export const MoveMoneyCommand = z.object({

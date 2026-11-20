@@ -16,7 +16,7 @@ export const plan = {
     "expenseSchedules": "Expense Schedules",
     "currentBalance": "Current Balance",
     "surplus": "Surplus",
-    "max": "Max",
+    "use": "Use",
     "available": "Available: {amount}",
     "markSpentModalTitle": "Mark Expense Spent",
     "insufficientModalMessage": "The Envelope \"{envelopeName}\" is short {amount}. Select the envelopes to transfer funds from to ensure sufficient balance.",
@@ -51,7 +51,7 @@ export const plan = {
       "fixedAmount": "Fixed Amount",
       "remainderNote": "The remaining portion will be automatically allocated to your private envelopes.",
       "percentageInvalid": "Percentage must be between 0 and 100",
-      "amountInvalid": "Amount must be a valid positive number",
+      "amountInvalid": "Amount must be a valid non-negative number",
       "fixedCannotExceedExpected": "Fixed contribution cannot exceed expected income amount."
     }
   },

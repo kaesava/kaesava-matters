@@ -77,7 +77,7 @@ export default function PoolDetailScreen() {
             pool.envelopeType === 'EVERYDAY'
               ? undefined
               : () => {
-                  setQuickExpenseData({ type: 'DEBIT', name: 'Draw down', categoryId: pool.id });
+                  setQuickExpenseData({ type: 'DEBIT', name: 'Draw down', categoryId: pool.id, isDrawDown: true });
                   setQuickExpenseVisible(true);
                 }
           }

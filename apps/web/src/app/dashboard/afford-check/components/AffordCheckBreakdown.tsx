@@ -11,7 +11,7 @@ interface AffordCheckBreakdownProps {
 }
 
 export function AffordCheckBreakdown({ data }: AffordCheckBreakdownProps) {
-  const { fmt } = useLocale();
+  const { fmt, fmtDate } = useLocale();
   const [isOpen, setIsOpen] = useState(false);
 
   return (
@@ -48,7 +48,7 @@ export function AffordCheckBreakdown({ data }: AffordCheckBreakdownProps) {
                   >
                     <span className="font-medium text-slate-800 dark:text-slate-200">{bill.name}</span>
                     <div className="flex items-center gap-3">
-                      <span className="text-slate-500">{bill.dueDate}</span>
+                      <span className="text-slate-500">{fmtDate(bill.dueDate)}</span>
                       <span className="font-mono font-semibold tabular-nums text-slate-900 dark:text-slate-100">
                         {fmt(bill.amount)}
                       </span>

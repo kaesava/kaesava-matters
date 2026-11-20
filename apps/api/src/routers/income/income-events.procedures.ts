@@ -3,10 +3,8 @@ import {
   createIncomeEventCommand,
   listIncomeEventsQuery,
   updateUpcomingIncomeCommand,
-  markIncomeReceivedCommand,
   deleteIncomeEventCommand,
 } from "@money-matters/capability-budgeting";
-import { captureIfConsented } from '../../lib/posthog.js';
 import { CreateIncomeEventCommand } from "@money-matters/types";
 import { z } from 'zod';
 
@@ -36,24 +34,6 @@ export const incomeEventsProcedures = {
     .mutation(async ({ input, ctx }) => {
       requiresWriteAccess(ctx);
       return await updateUpcomingIncomeCommand(input, ctx.tenantId!, ctx.appId!, ctx.userId!, ctx.db);
-    }),
-
-  markIncomeReceived: privateTenantProcedure
-    .input(
-      z.object({
-        eventId: z.string().uuid(),
-        actualAmount: z.string().regex(/^\d+(\.\d{1,2})?$/).optional(),
-        note: z.string().optional(),
-        recordedAt: z.string().optional(),
-      }).strict()
-    )
-    .mutation(async ({ input, ctx }) => {
-      requiresWriteAccess(ctx);
-      const result = await markIncomeReceivedCommand(input, ctx.tenantId!, ctx.appId!, ctx.userId!, ctx.db);
-      await captureIfConsented(ctx.db, ctx.userId, 'income_marked_received', {
-        tenant_id: ctx.tenantId,
-      });
-      return result;
     }),
 
   deleteIncomeEvent: privateTenantProcedure

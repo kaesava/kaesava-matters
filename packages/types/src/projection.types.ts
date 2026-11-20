@@ -30,6 +30,7 @@ export interface ProjectionIncomeEvent {
   actualAmount?: number | null;
   status: "PENDING" | "CONFIRMED" | "DRAFT" | "REVIEWED";
   rrule?: string | null;
+  incomeType?: "SALARIED" | "IRREGULAR" | null;
   userId?: string;
   isPrivate?: boolean;
   contributionMode?: "FULL" | "PERCENTAGE" | "FIXED_AMOUNT";

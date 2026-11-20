@@ -43,6 +43,7 @@ export function ProfileSection({
         imageSrc={form.rawImageSrc}
         onClose={() => form.setIsCropperOpen(false)}
         onCropSave={(croppedUri) => form.setAvatarUrl(croppedUri)}
+        onDeleteAvatar={form.handleDeleteAvatar}
       />
 
       {form.isEditing ? (

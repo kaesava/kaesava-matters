@@ -58,7 +58,8 @@
 | `/dashboard/settings/history` | `apps/web/src/app/dashboard/settings/history/page.tsx` | 41 | Authenticated + Tenant | Redirects to `/dashboard/history` |
 | `/dashboard/[...not-found]` | `apps/web/src/app/dashboard/[...not-found]/page.tsx` | 108 | Authenticated + Tenant | Scoped dashboard 404 screen |
 | `/api/auth/[...auth]` | `apps/web/src/app/api/auth/[...auth]/route.ts` | 234 | Public / Cookie | Next.js Neon Auth proxy + CSRF origin check + rate-limit header forwarding |
-| `/api/trpc/[trpc]` | `apps/web/src/app/api/trpc/[trpc]/route.ts` | 215 | Public / Cookie | Next.js tRPC proxy to Cloudflare Worker API (`NEXT_PUBLIC_API_URL`) |
+| `/api/trpc/[trpc]` | `apps/web/src/app/api/trpc/[trpc]/route.ts` | 227 | Public / Cookie | Next.js tRPC proxy to Cloudflare Worker API (`NEXT_PUBLIC_API_URL`) |
+| `/api/file-notes/[...path]` | `apps/web/src/app/api/file-notes/[...path]/route.ts` | 91 | Authenticated / Cookie | Same-origin file notes upload (`PUT`) & download (`GET`) proxy to Cloudflare Worker API |
 | `/robots.txt` & `/sitemap.xml` | `apps/web/src/app/robots.ts` (21L), `sitemap.ts` (74L) | 95 | Public | Search engine metadata routes |
 
 ---
@@ -128,13 +129,14 @@
 | `PaydayTransferModal` | `apps/web/src/app/dashboard/income-split/components/PaydayTransferModal.tsx` | 204 | `ModalDialog` | Post-payday bank transfer checklist modal |
 | `PaydaySandboxModal` | `apps/web/src/app/setup/components/PaydaySandboxModal.tsx` | 156 | `ModalDialog` | Setup wizard payday simulation modal |
 | `SetupDiscardModal` | `apps/web/src/app/setup/components/SetupDiscardModal.tsx` | 24 | `ConfirmDialog` | Setup wizard discard confirmation |
-| `ReconciliationModal` | `apps/web/src/components/ReconciliationModal.tsx` | 451 | Custom `<div role="dialog">` | Match Balance modal (flagged in `PRODUCTION_READINESS_PLAN.md` to use `ModalDialog` & <400L) |
-| `BankAccountTable` (Linked Envelopes Modal) | `apps/web/src/app/dashboard/bank-accounts/components/BankAccountTable.tsx` | 349 | Custom `<div className="fixed inset-0">` | Inline linked-envelopes modal (flagged to use `ModalDialog`) |
-| `UnsavedSplitExitDialog` | `apps/web/src/app/dashboard/income-split/components/UnsavedSplitExitDialog.tsx` | 85 | Custom `<div role="dialog">` | Unsaved payday split exit dialog (flagged to use `ConfirmDialog`) |
-| `AuthModal` | `apps/web/src/components/landing/AuthModal.tsx` | 190 | Custom `<div role="dialog">` | Landing page auth modal (flagged to use `ModalDialog`) |
-| `EarlyAccessModal` | `apps/web/src/components/landing/EarlyAccessModal.tsx` | 121 | Custom `<div role="dialog">` | Early access waitlist modal (flagged to use `ModalDialog`) |
-| `SlideOverAllocationDrawer` | `apps/web/src/components/web/SlideOverAllocationDrawer.tsx` | 184 | Custom `<div className="fixed inset-0">` | Historical payday split drawer (flagged to use `SlideOverDrawer`) |
-| `EnvelopeDetailDrawer` | `apps/web/src/app/dashboard/income-and-bills/components/EnvelopeDetailDrawer.tsx` | 350 | Custom `<div className="fixed inset-0">` | Envelope detail drawer (flagged to use `SlideOverDrawer`) |
+| `SyncBalanceModal` | `apps/web/src/components/SyncBalanceModal.tsx` | 345 | `ModalDialog` | Match Balance modal |
+| `BankAccountTable` (Linked Envelopes Modal) | `apps/web/src/app/dashboard/bank-accounts/components/BankAccountTable.tsx` | 328 | `ModalDialog` | Inline linked-envelopes modal |
+| `ScheduleBurstModal` | `apps/web/src/app/dashboard/plan/components/ScheduleBurstModal.tsx` | 150 | `ModalDialog`, `ConfirmDialog`, `EditUpcomingEventModal` | Schedule occurrence list & inline edit modal (`INCOME` / `EXPENSE`) |
+| `UnsavedPaydayPlanExitDialog` | `apps/web/src/app/dashboard/payday-plan/components/UnsavedPaydayPlanExitDialog.tsx` | 40 | `ConfirmDialog` | Unsaved payday split exit dialog |
+| `AuthModal` | `apps/web/src/components/landing/AuthModal.tsx` | 190 | Custom `<div role="dialog">` | Landing page auth modal |
+| `EarlyAccessModal` | `apps/web/src/components/landing/EarlyAccessModal.tsx` | 121 | Custom `<div role="dialog">` | Early access waitlist modal |
+| `SlideOverPaydayPlanDrawer` | `apps/web/src/components/web/SlideOverPaydayPlanDrawer.tsx` | 155 | `SlideOverDrawer`, `Button` | Historical payday split drawer |
+| `EnvelopeDetailDrawer` | `apps/web/src/app/dashboard/plan/components/EnvelopeDetailDrawer.tsx` | 313 | `SlideOverDrawer`, `Tabs` | Envelope detail drawer |
 | `DashboardMobileDrawer` | `apps/web/src/app/dashboard/components/DashboardMobileDrawer.tsx` | 34 | Custom mobile nav drawer | Responsive sidebar drawer for `<768px` viewports |
 | `PartnerInviteSection` (Role/Revoke Confirms) | `apps/web/src/app/dashboard/settings/components/PartnerInviteSection.tsx` | 165 | `TypedConfirmDialog`, `ConfirmDialog` | Ownership transfer & invite revocation dialogs |
 | `HouseholdDangerZoneSection` (Leave/Delete) | `apps/web/src/app/dashboard/settings/components/HouseholdDangerZoneSection.tsx` | 170 | `TypedConfirmDialog` (x2) | Leave household & delete household typed confirmations |
@@ -170,8 +172,8 @@
 | `MobilePlanPickerModal` | `apps/mobile/src/components/settings/MobilePlanPickerModal.tsx` | 315 | `MobileModalDialog` | Subscription plan picker & Stripe checkout sheet |
 | `MobileTenantSwitcherModal` | `apps/mobile/src/components/settings/MobileTenantSwitcherModal.tsx` | 176 | `MobileModalDialog` | Household switcher & create household sheet |
 | `MobilePaydaySandboxModal` | `apps/mobile/src/components/setup/MobilePaydaySandboxModal.tsx` | 213 | `MobileModalDialog` | Setup wizard payday simulation sheet |
-| `PoolOverflowMenuModal` | `apps/mobile/src/components/envelopes/PoolOverflowMenuModal.tsx` | 142 | Raw `<Modal>` | Envelope action menu (flagged to use `MobileModalDialog`) |
-| `MobileUnsavedSplitExitDialog` | `apps/mobile/src/components/paychecks/MobileUnsavedSplitExitDialog.tsx` | 164 | Raw `<Modal>` | Unsaved payday split exit dialog (flagged to use `MobileConfirmDialog`) |
+| `EnvelopeOverflowMenuModal` | `apps/mobile/src/components/envelopes/EnvelopeOverflowMenuModal.tsx` | 122 | `MobileModalDialog` | Envelope action menu |
+| `MobileUnsavedPaydayPlanExitDialog` | `apps/mobile/src/components/plan/MobileUnsavedPaydayPlanExitDialog.tsx` | 39 | `MobileConfirmDialog` | Unsaved payday split exit dialog |
 
 ---
 

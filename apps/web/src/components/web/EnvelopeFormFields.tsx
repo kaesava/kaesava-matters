@@ -5,6 +5,7 @@ import {
   DatePickerField,
   AmountField,
   EnvelopeModeToggle,
+  InfoTooltip,
 } from '@money-matters/ui/web';
 import { t } from '@money-matters/i18n';
 import { EnvelopeRecurrenceFields } from './EnvelopeRecurrenceFields';
@@ -144,7 +145,7 @@ export function EnvelopeFormFields({
         value={bankAccountId}
         onChange={setBankAccountId}
         options={bankAccountOptions}
-        disabled={isEdit || Boolean(bankAccountDisabled)}
+        disabled={Boolean(bankAccountDisabled)}
         required={!isEdit}
       />
 
@@ -222,12 +223,17 @@ export function EnvelopeFormFields({
       )}
 
       {type === 'EVERYDAY' && (
-        <AmountField
-          label={t('categories.safetyBufferFloorLabel')}
-          value={safetyBufferFloor}
-          onChange={setSafetyBufferFloor}
-          placeholder="0.00"
-        />
+        <div className="space-y-1">
+          <div className="flex items-center gap-1.5">
+            <FormLabel>{t('categories.safetyBufferFloorLabel')}</FormLabel>
+            <InfoTooltip content={t('categories.safetyBufferFloorTooltip')} align="left" />
+          </div>
+          <AmountField
+            value={safetyBufferFloor}
+            onChange={setSafetyBufferFloor}
+            placeholder="0.00"
+          />
+        </div>
       )}
 
       {type === 'GOAL' && (

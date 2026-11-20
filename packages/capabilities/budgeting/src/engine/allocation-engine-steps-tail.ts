@@ -1,3 +1,4 @@
+import { t } from "@money-matters/i18n";
 import { EngineBucket } from "./allocation-engine.js";
 import { toCents, toDollars } from "./allocation-engine-utils.js";
 import { allocate, type StepContext } from "./allocation-engine-steps.js";
@@ -31,7 +32,9 @@ export function runStep6Goals(
         goalDemands.push({
           bucket: b,
           needed,
-          description: `Ongoing goal contribution (${sym}${toDollars(ongoingCents).toFixed(2)}/mo)`,
+          description: t("payday.engineReasoning.ongoingGoalDesc", {
+            monthly: `${sym}${toDollars(ongoingCents).toFixed(2)}`,
+          }),
         });
         totalDemand += needed;
       }
@@ -57,7 +60,10 @@ export function runStep6Goals(
       goalDemands.push({
         bucket: b,
         needed,
-        description: `Target ${sym}${toDollars(targetCents).toFixed(2)} by ${b.targetDate ?? "12-mo"}`,
+        description: t("payday.engineReasoning.targetGoalDesc", {
+          target: `${sym}${toDollars(targetCents).toFixed(2)}`,
+          date: b.targetDate ?? "12-mo",
+        }),
       });
       totalDemand += needed;
     }
@@ -71,7 +77,10 @@ export function runStep6Goals(
         ctx,
         item.bucket,
         item.needed,
-        `${item.description}: ${sym}${toDollars(item.needed).toFixed(2)} allocated.`
+        t("payday.engineReasoning.goalAllocated", {
+          description: item.description,
+          allocated: `${sym}${toDollars(item.needed).toFixed(2)}`,
+        })
       );
     }
   } else if (ctx.remainingCents > 0) {
@@ -97,13 +106,20 @@ export function runStep6Goals(
         ctx,
         item.bucket,
         alloc,
-        `${item.description}: ${sym}${toDollars(alloc).toFixed(2)} allocated (${sym}${toDollars(item.needed - alloc).toFixed(2)} shortfall).`
+        t("payday.engineReasoning.goalShortfall", {
+          description: item.description,
+          allocated: `${sym}${toDollars(alloc).toFixed(2)}`,
+          shortfall: `${sym}${toDollars(item.needed - alloc).toFixed(2)}`,
+        })
       );
     }
   } else {
     for (const item of goalDemands) {
       ctx.linesMap.get(item.bucket.id)?.reasonings.push(
-        `${item.description}: ${sym}0 allocated (insufficient income).`
+        t("payday.engineReasoning.goalZero", {
+          description: item.description,
+          symbol: sym,
+        })
       );
     }
   }
@@ -124,7 +140,10 @@ export function runStepFixedAmount(
     ctx,
     target,
     amountCents,
-    `Fixed allocation rule: ${sym}${toDollars(Math.min(ctx.remainingCents, amountCents)).toFixed(2)} allocated to ${target.name}.`
+    t("payday.engineReasoning.fixedRule", {
+      allocated: `${sym}${toDollars(Math.min(ctx.remainingCents, amountCents)).toFixed(2)}`,
+      name: target.name,
+    })
   );
 }
 
@@ -145,7 +164,11 @@ export function runStepPercentageSplit(
     ctx,
     target,
     amountCents,
-    `Percentage split rule (${pct}% of remaining funds): ${sym}${toDollars(amountCents).toFixed(2)} allocated to ${target.name}.`
+    t("payday.engineReasoning.percentageRule", {
+      pct,
+      allocated: `${sym}${toDollars(amountCents).toFixed(2)}`,
+      name: target.name,
+    })
   );
 }
 
@@ -164,8 +187,8 @@ export function runStep7SurplusSweep(
   const eligibleSurplus =
     targetFromConfig ||
     buckets.find((b) => b.isSurplusTarget && ctx.isBucketEligible(b)) ||
-    buckets.find((b) => !b.isPrivate && b.type === "EVERYDAY" && ctx.isBucketEligible(b)) ||
-    buckets.find((b) => !b.isPrivate && b.type === "GOAL" && ctx.isBucketEligible(b)) ||
+    buckets.find((b) => b.type === "EVERYDAY" && ctx.isBucketEligible(b)) ||
+    buckets.find((b) => b.type === "GOAL" && ctx.isBucketEligible(b)) ||
     buckets.find((b) => ctx.isBucketEligible(b));
 
   if (eligibleSurplus) {
@@ -174,7 +197,10 @@ export function runStep7SurplusSweep(
       ctx,
       eligibleSurplus,
       toAlloc,
-      `Swept residual excess surplus of ${sym}${toDollars(toAlloc).toFixed(2)} to designated surplus envelope (${eligibleSurplus.name}).`
+      t("payday.engineReasoning.surplusSweep", {
+        allocated: `${sym}${toDollars(toAlloc).toFixed(2)}`,
+        name: eligibleSurplus.name,
+      })
     );
   }
 }

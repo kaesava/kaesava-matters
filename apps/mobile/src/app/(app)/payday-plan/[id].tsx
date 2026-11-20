@@ -223,10 +223,10 @@ const styles = StyleSheet.create({
     gap: 6,
     paddingVertical: 10,
     paddingHorizontal: 16,
-    backgroundColor: '#FFFFFF',
+    backgroundColor: DESIGN_TOKENS.colors.surface,
     borderRadius: 12,
     borderWidth: 1,
-    borderColor: '#E2E8F0',
+    borderColor: DESIGN_TOKENS.colors.border,
   },
   detailsToggleText: {
     fontSize: 13,

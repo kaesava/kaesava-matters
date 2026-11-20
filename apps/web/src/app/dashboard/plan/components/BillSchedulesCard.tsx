@@ -5,6 +5,7 @@ import Link from "next/link";
 import { ResizableTh, useResizableColumns, formatScheduleSummary } from "@money-matters/ui/web";
 import { t } from "@money-matters/i18n";
 import { useLocale } from "../../../../providers/LocaleProvider";
+import { ScheduleBurstModal, type ScheduleBurstSource } from "./ScheduleBurstModal";
 
 interface BillSchedulesCardProps {
   billSchedules: Array<{
@@ -57,6 +58,7 @@ export function BillSchedulesCard({
   const [selectedPoolId, setSelectedPoolId] = React.useState("");
   const [sortField, setSortField] = React.useState<"name" | "pool" | "amount">("name");
   const [sortOrder, setSortOrder] = React.useState<"asc" | "desc">("asc");
+  const [burstSource, setBurstSource] = React.useState<ScheduleBurstSource | null>(null);
 
   const { widths, onMouseDown } = useResizableColumns({ name: 220, accountOrPool: 180, amount: 120 });
 
@@ -191,6 +193,13 @@ export function BillSchedulesCard({
                         <span className="text-[10px] text-zinc-400 font-medium">
                           {formatScheduleSummary({ rrule: b.rrule, startDate: b.startDate, endDate: b.endDate, envelopeType: b.envelopeType }, fmtDate)}
                         </span>
+                        <button
+                          type="button"
+                          onClick={() => setBurstSource({ id: b.poolId, name: b.name, amount: b.amount, rrule: b.rrule })}
+                          className="text-[10px] font-bold text-slate-500 hover:text-[#2563eb] text-left cursor-pointer w-fit"
+                        >
+                          {t("planTabs.upcomingTimeline")} ↗
+                        </button>
                       </div>
                     </td>
                     <td className="py-2.5 px-3 text-left text-zinc-600 dark:text-zinc-300 font-semibold text-[11px]">
@@ -209,6 +218,13 @@ export function BillSchedulesCard({
           </div>
         )}
       </div>
+
+      <ScheduleBurstModal
+        isOpen={Boolean(burstSource)}
+        mode="EXPENSE"
+        source={burstSource}
+        onClose={() => setBurstSource(null)}
+      />
     </div>
   );
 }

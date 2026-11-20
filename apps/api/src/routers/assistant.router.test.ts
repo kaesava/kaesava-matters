@@ -16,9 +16,15 @@ vi.mock("@money-matters/db", async (importOriginal) => {
 function createQueuedDb(selectResults: unknown[][]): DbOrTx {
   let idx = 0;
   const makeChain = (): Record<string, unknown> => {
-    const res = () => selectResults[idx++] ?? [];
+    let isUserPref = false;
+    const res = () => (isUserPref ? [] : (selectResults[idx++] ?? []));
     const chain: Record<string, unknown> = {
-      from: () => chain,
+      from: (table: unknown) => {
+        if (table === dbModule.userPreferences) {
+          isUserPref = true;
+        }
+        return chain;
+      },
       where: () => chain,
       leftJoin: () => chain,
       innerJoin: () => chain,

@@ -5,13 +5,17 @@ import { Feather } from '@expo/vector-icons';
 import { DESIGN_TOKENS } from '@money-matters/ui/mobile';
 import { t } from '@money-matters/i18n';
 
-export const SyncBalanceNudgeCard: React.FC = () => {
+interface SyncBalanceNudgeCardProps {
+  onPress?: () => void;
+}
+
+export const SyncBalanceNudgeCard: React.FC<SyncBalanceNudgeCardProps> = ({ onPress }) => {
   const router = useRouter();
 
   return (
     <TouchableOpacity
       activeOpacity={0.8}
-      onPress={() => router.push('/(app)/bank-accounts' as Href)}
+      onPress={() => (onPress ? onPress() : router.push('/(app)/bank-accounts' as Href))}
       style={styles.card}
     >
       <Feather name="refresh-cw" size={16} color={DESIGN_TOKENS.colors.warningDark} />

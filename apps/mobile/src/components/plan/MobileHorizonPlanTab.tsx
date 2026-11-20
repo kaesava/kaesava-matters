@@ -1,5 +1,5 @@
 import React, { useState, useMemo } from 'react';
-import { View, Text, StyleSheet, ActivityIndicator } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, ActivityIndicator } from 'react-native';
 import { useRouter, type Href } from 'expo-router';
 import { Feather } from '@expo/vector-icons';
 import { DESIGN_TOKENS, showMobileConfirm, useMobileToast } from '@money-matters/ui/mobile';
@@ -25,6 +25,7 @@ export function MobileHorizonPlanTab({ onOpenCategoryModal }: MobileHorizonPlanT
   const toast = useMobileToast();
   const utils = trpc.useUtils();
   const [savingColId, setSavingColId] = useState<string | null>(null);
+  const [showFullHorizon, setShowFullHorizon] = useState(false);
 
   const { data, isLoading: projectionLoading } = trpc.getHorizonProjectionData.useQuery({ monthsAhead: 12 });
   const { data: plansData, isLoading: plansLoading } = trpc.listAllAllocationPlans.useQuery();
@@ -66,6 +67,7 @@ export function MobileHorizonPlanTab({ onOpenCategoryModal }: MobileHorizonPlanT
   }, [plansData]);
 
   const rawColumns = (data?.projection?.columns ?? []) as MobileMatrixColumnData[];
+  const visibleColumns = showFullHorizon ? rawColumns : rawColumns.slice(0, 5);
   const rawGroups = (data?.projection?.groups ?? []) as unknown as MobileMatrixGroupData[];
 
   const categories: MobileMatrixCategoryItem[] = useMemo(() => {
@@ -193,8 +195,22 @@ export function MobileHorizonPlanTab({ onOpenCategoryModal }: MobileHorizonPlanT
 
   return (
     <View style={styles.container}>
+      {rawColumns.length > 5 && (
+        <View style={styles.horizonBar}>
+          <TouchableOpacity
+            onPress={() => setShowFullHorizon((prev) => !prev)}
+            style={styles.horizonToggleBtn}
+            activeOpacity={0.75}
+          >
+            <Feather name={showFullHorizon ? 'minimize-2' : 'maximize-2'} size={13} color={DESIGN_TOKENS.colors.primary} />
+            <Text style={styles.horizonToggleText}>
+              {showFullHorizon ? t('paydaySchedule.showNext5') : t('paydaySchedule.showFull12Events')}
+            </Text>
+          </TouchableOpacity>
+        </View>
+      )}
       <MobileHorizonGrid
-        columns={rawColumns}
+        columns={visibleColumns}
         groups={rawGroups}
         categories={categories}
         columnStateMap={columnStateMap}
@@ -213,6 +229,28 @@ export function MobileHorizonPlanTab({ onOpenCategoryModal }: MobileHorizonPlanT
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+  },
+  horizonBar: {
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
+    paddingHorizontal: 16,
+    paddingBottom: 8,
+  },
+  horizonToggleBtn: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+    backgroundColor: DESIGN_TOKENS.colors.slate[50],
+    borderWidth: 1,
+    borderColor: DESIGN_TOKENS.colors.slate[200],
+    borderRadius: 10,
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+  },
+  horizonToggleText: {
+    fontSize: 12,
+    fontWeight: '700',
+    color: DESIGN_TOKENS.colors.primary,
   },
   loadingContainer: {
     flex: 1,

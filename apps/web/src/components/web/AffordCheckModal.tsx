@@ -2,9 +2,10 @@
 
 import React, { useState, useDeferredValue } from "react";
 import { ShoppingBag, Repeat } from "lucide-react";
-import { ModalDialog, AmountField, FormLabel } from "@money-matters/ui/web";
+import { ModalDialog, AmountField, Input } from "@money-matters/ui/web";
 import { t } from "@money-matters/i18n";
 import { trpc } from "../../lib/trpc";
+import { useLocale } from "../../providers/LocaleProvider";
 import { AffordCheckVerdict } from "../../app/dashboard/afford-check/components/AffordCheckVerdict";
 import { AffordCheckBreakdown } from "../../app/dashboard/afford-check/components/AffordCheckBreakdown";
 import { AffordCheckSkeleton } from "../../app/dashboard/afford-check/components/AffordCheckSkeleton";
@@ -17,6 +18,7 @@ interface AffordCheckModalProps {
 }
 
 export function AffordCheckModal({ isOpen, onClose, initialAmount = "" }: AffordCheckModalProps) {
+  const { locale } = useLocale();
   const [rawAmount, setRawAmount] = useState(initialAmount);
   const [itemName, setItemName] = useState("");
   const [includePersonal, setIncludePersonal] = useState(false);
@@ -38,6 +40,7 @@ export function AffordCheckModal({ isOpen, onClose, initialAmount = "" }: Afford
       frequency,
       includePersonal,
       itemName: itemName.trim() || undefined,
+      locale,
     },
     {
       enabled: isValidAmount,
@@ -91,16 +94,12 @@ export function AffordCheckModal({ isOpen, onClose, initialAmount = "" }: Afford
             autoFocus
           />
 
-          <div className="space-y-1.5">
-            <FormLabel>{t("canIAfford.itemNameLabel")}</FormLabel>
-            <input
-              type="text"
-              value={itemName}
-              onChange={(e) => setItemName(e.target.value)}
-              placeholder={t("canIAfford.itemNamePlaceholder")}
-              className="w-full h-10 px-3 text-sm bg-white dark:bg-zinc-900 border border-slate-200 dark:border-zinc-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#2563eb]"
-            />
-          </div>
+          <Input
+            label={t("canIAfford.itemNameLabel")}
+            value={itemName}
+            onChange={(e) => setItemName(e.target.value)}
+            placeholder={t("canIAfford.itemNamePlaceholder")}
+          />
 
           <label className="flex items-center justify-between gap-3 pt-1 cursor-pointer">
             <div>

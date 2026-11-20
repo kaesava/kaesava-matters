@@ -5,6 +5,11 @@ import { deleteUpcomingEventCommand } from "./delete-upcoming-event.command.js";
 describe("deleteUpcomingEventCommand", () => {
   it("deletes upcoming income event using tenant isolation", async () => {
     const mockTx = {
+      select: vi.fn().mockReturnValue({
+        from: vi.fn().mockReturnValue({
+          where: vi.fn().mockResolvedValue([{ status: "PENDING" }]),
+        }),
+      }),
       update: vi.fn().mockReturnThis(),
       set: vi.fn().mockReturnThis(),
       where: vi.fn().mockReturnThis(),
@@ -28,6 +33,11 @@ describe("deleteUpcomingEventCommand", () => {
 
   it("deletes upcoming expense event using tenant isolation", async () => {
     const mockTx = {
+      select: vi.fn().mockReturnValue({
+        from: vi.fn().mockReturnValue({
+          where: vi.fn().mockResolvedValue([{ status: "PENDING" }]),
+        }),
+      }),
       update: vi.fn().mockReturnThis(),
       set: vi.fn().mockReturnThis(),
       where: vi.fn().mockReturnThis(),

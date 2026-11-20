@@ -28,6 +28,7 @@ interface MobileProfileEditViewProps {
   phoneError?: string;
   avatarUri: string | null;
   onPickAvatar: () => void;
+  onDeleteAvatar?: () => void;
   timezone: string;
   setTimezone: (val: string) => void;
   language: 'en';
@@ -35,6 +36,7 @@ interface MobileProfileEditViewProps {
   showIcons: boolean;
   setShowIcons: (val: boolean) => void;
   saving: boolean;
+  isDirty?: boolean;
   onSave: () => void;
   onCancel: () => void;
 }
@@ -52,12 +54,14 @@ export function MobileProfileEditView({
   phoneError,
   avatarUri,
   onPickAvatar,
+  onDeleteAvatar,
   timezone,
   setTimezone,
   setLanguage,
   showIcons,
   setShowIcons,
   saving,
+  isDirty = true,
   onSave,
   onCancel,
 }: MobileProfileEditViewProps) {
@@ -77,6 +81,7 @@ export function MobileProfileEditView({
         avatarUri={avatarUri}
         name={name}
         onPickAvatar={onPickAvatar}
+        onDeleteAvatar={onDeleteAvatar}
       />
 
       {/* Contact Fields (Name, Login Email, Notification Email, Phone Number) */}
@@ -128,7 +133,7 @@ export function MobileProfileEditView({
           label={t('settings.saveProfileCta')}
           onPress={onSave}
           loading={saving}
-          disabled={saving || !name.trim() || !notificationEmail.trim()}
+          disabled={saving || !isDirty || !name.trim() || !notificationEmail.trim()}
         />
       </View>
     </View>

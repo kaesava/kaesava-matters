@@ -6,6 +6,7 @@ import { QuickExpenseModal } from './QuickExpenseModal';
 
 import { triggerHaptic } from '../lib/haptics';
 import { t } from '@money-matters/i18n';
+import { useMobileProductTour } from '../context/ProductTourContext';
 
 export interface QuickActionFabProps {
   visible?: boolean;
@@ -14,6 +15,8 @@ export interface QuickActionFabProps {
 
 export function QuickActionFab({ visible = true, onCustomPress }: QuickActionFabProps) {
   const [modalVisible, setModalVisible] = useState(false);
+  const { registerTourTarget } = useMobileProductTour();
+  const fabRef = React.useRef<View>(null);
 
   if (!visible) return null;
 
@@ -28,7 +31,16 @@ export function QuickActionFab({ visible = true, onCustomPress }: QuickActionFab
 
   return (
     <>
-      <View pointerEvents="box-none" style={styles.container}>
+      <View
+        ref={fabRef}
+        pointerEvents="box-none"
+        style={styles.container}
+        onLayout={() => {
+          fabRef.current?.measureInWindow((x, y, width, height) => {
+            if (width > 0 && height > 0) registerTourTarget('quick-actions', { x, y, width, height });
+          });
+        }}
+      >
         <TouchableOpacity
           activeOpacity={0.85}
           onPress={handlePress}
@@ -36,7 +48,7 @@ export function QuickActionFab({ visible = true, onCustomPress }: QuickActionFab
           accessibilityLabel={t('dashboard.quickAction')}
           accessibilityRole="button"
         >
-          <Feather name="plus" size={26} color="#FFFFFF" />
+          <Feather name="plus" size={26} color={DESIGN_TOKENS.colors.onAccent} />
         </TouchableOpacity>
       </View>
 

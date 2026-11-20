@@ -40,7 +40,7 @@ export const profileProcedures = {
         notificationEmail: z.string().email("Invalid email address"),
         phoneCountryCode: z.string().optional(),
         phoneNumber: z.string().optional(),
-        avatarUrl: z.string().max(300_000, "Avatar payload exceeds maximum allowed size of 200KB").optional(),
+        avatarUrl: z.string().max(300_000, "Avatar payload exceeds maximum allowed size of 200KB").nullable().optional(),
       }).strict()
     )
     .mutation(({ input, ctx }) => updateUserProfileHandler(input, ctx.userId!, ctx.db)),

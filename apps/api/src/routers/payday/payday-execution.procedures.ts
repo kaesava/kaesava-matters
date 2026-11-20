@@ -34,7 +34,7 @@ export const paydayExecutionProcedures = {
         throw new Error("Target income event not found.");
       }
 
-      return await resetAllocationPlanCommand(input.incomeEventId, ctx.tenantId!, ctx.appId!, ctx.db);
+      return await resetAllocationPlanCommand(input.incomeEventId, ctx.tenantId!, ctx.appId!, ctx.db, ctx.userId!);
     }),
 
   previewPayday: privateTenantProcedure

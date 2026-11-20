@@ -10,6 +10,7 @@ import { useRouter, useLocalSearchParams, type Href } from 'expo-router';
 import { DESIGN_TOKENS, MobileScreenWrapper, FormErrorBanner } from '@money-matters/ui/mobile';
 import { t } from '@money-matters/i18n';
 import { trpc } from '../../lib/trpc';
+import { getMobileLocaleConfig } from '../../lib/format';
 import { useAppFeatures } from '../../context/useAppFeatures';
 import { AffordCheckInputControls } from '../../components/afford-check/AffordCheckInputControls';
 import { AffordCheckVerdictCard } from '../../components/afford-check/AffordCheckVerdictCard';
@@ -48,6 +49,7 @@ export default function AffordCheckScreen() {
       frequency,
       itemName: itemName.trim() || undefined,
       includePersonal,
+      locale: getMobileLocaleConfig().locale,
     },
     {
       enabled: isValidAmount && hasSimulation,

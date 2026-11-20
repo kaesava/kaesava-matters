@@ -2,7 +2,7 @@ import React from 'react';
 import { ScrollView, RefreshControl, StyleSheet, View } from 'react-native';
 import { useRouter, useLocalSearchParams, type Href } from 'expo-router';
 import { usePostHog } from 'posthog-react-native';
-import { DESIGN_TOKENS } from '@money-matters/ui/mobile';
+import { DESIGN_TOKENS, showMobileConfirm } from '@money-matters/ui/mobile';
 import { t } from '@money-matters/i18n';
 import { AppScreenWrapper } from '../../components/AppScreenWrapper';
 import { DashboardHeroCard } from '../../components/DashboardHeroCard';
@@ -27,6 +27,7 @@ export default function HomeScreen() {
   const { registerTourTarget } = useMobileProductTour();
   const heroRef = React.useRef<View>(null);
   const paydayRef = React.useRef<View>(null);
+  const attentionRef = React.useRef<View>(null);
 
   const {
     refreshing,
@@ -146,13 +147,38 @@ export default function HomeScreen() {
               router.push(`/(app)/payday-plan/${id}` as Href);
             }}
             onDeleteIncome={(id: string) => {
-              deleteIncomeMutation.mutate({ eventId: id });
+              const matched = upcomingIncomeList.find((item) => item.id === id);
+              showMobileConfirm({
+                title: t('common.deleteIncomeTitle'),
+                message: t('common.deleteConfirmNamed', { name: matched?.name || t('common.income') }),
+                confirmText: t('common.delete'),
+                isDestructive: true,
+                onConfirm: () => deleteIncomeMutation.mutate({ eventId: id }),
+              });
             }}
           />
         </View>
 
-        <AttentionItemsList
+        <View
+          ref={attentionRef}
+          onLayout={() => {
+            attentionRef.current?.measureInWindow((x, y, width, height) => {
+              if (width > 0 && height > 0) registerTourTarget('afford-check', { x, y, width, height });
+            });
+          }}
+        >
+          <AttentionItemsList
           items={attentionItems}
+          needsBankReconciliation={bankAccounts.some(
+            (b) => !b.updatedAt || Date.now() - new Date(b.updatedAt).getTime() > 14 * 86400000
+          )}
+          onOpenSyncBalance={handleOpenEverydayReconciliation}
+          onTopUpShortfall={(item) =>
+            openQuickModal('TRANSFER', {
+              destinationPoolId: item.categoryId || undefined,
+              amount: String(Math.max(0, item.expectedAmount - (item.categoryBalance ?? 0)).toFixed(2)),
+            })
+          }
           onMarkPaid={(item) =>
             setMarkPaidEvent({
               id: item.id,
@@ -163,15 +189,28 @@ export default function HomeScreen() {
             })
           }
           onSkipExpense={(item) =>
-            deleteExpenseMutation.mutate({ eventId: item.id })
+            showMobileConfirm({
+              title: t('common.deleteExpenseTitle'),
+              message: t('common.deleteConfirmNamed', { name: item.name }),
+              confirmText: t('common.delete'),
+              isDestructive: true,
+              onConfirm: () => deleteExpenseMutation.mutate({ eventId: item.id }),
+            })
           }
           onExecuteTransfer={(item) =>
             executeTransferMutation.mutate({ eventId: item.id })
           }
           onDeleteTransfer={(item) =>
-            deleteTransferMutation.mutate({ eventId: item.id })
+            showMobileConfirm({
+              title: t('modals.transfer.deleteConfirmTitle'),
+              message: t('modals.transfer.deletePrompt'),
+              confirmText: t('common.delete'),
+              isDestructive: true,
+              onConfirm: () => deleteTransferMutation.mutate({ eventId: item.id }),
+            })
           }
         />
+        </View>
 
         {goalsList.length > 0 && (
           <GoalsProgressStrip goals={goalsList} />

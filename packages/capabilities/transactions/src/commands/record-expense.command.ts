@@ -34,6 +34,68 @@ export async function recordExpenseCommand(
       throw new Error("Unauthorized: Cannot record expenses against partner's private envelope.");
     }
 
+    const recordedDate = input.recordedAt ? new Date(input.recordedAt) : input.date ? new Date(input.date) : new Date();
+
+    // 1b. Atomically execute shortfall funding transfers before debiting target envelope
+    if (input.shortfallTransfers && input.shortfallTransfers.length > 0) {
+      for (const transfer of input.shortfallTransfers) {
+        if (transfer.sourceEnvelopeId === input.envelopeId) {
+          throw new Error("Cannot transfer shortfall from the same envelope.");
+        }
+        const [sourceEnv] = await tx
+          .select()
+          .from(envelopes)
+          .where(
+            and(
+              eq(envelopes.id, transfer.sourceEnvelopeId),
+              eq(envelopes.tenantId, tenantId),
+              eq(envelopes.appId, appId),
+              sql`${envelopes.archivedAt} IS NULL`
+            )
+          );
+        if (!sourceEnv || (sourceEnv.isPrivate && sourceEnv.userId !== userId)) {
+          throw new Error("Shortfall source envelope invalid or unauthorized.");
+        }
+
+        const transferGroupId = randomUUID();
+        const noteText = input.note ? `Shortfall cover for ${input.note}` : `Shortfall cover for ${envelope.name}`;
+        await tx.insert(transactionLedger).values([
+          {
+            envelopeId: sourceEnv.id,
+            bankAccountId: sourceEnv.bankAccountId || null,
+            flowType: "DEBIT",
+            transactionType: "TRANSFER_OUT",
+            amount: transfer.amount,
+            idempotencyKey: `shortfall-out-${transferGroupId}`,
+            note: noteText,
+            source: input.source || "MANUAL",
+            transferGroupId,
+            recordedAt: recordedDate,
+            tenantId,
+            appId,
+            createdBy: userId,
+            updatedBy: userId,
+          },
+          {
+            envelopeId: envelope.id,
+            bankAccountId: envelope.bankAccountId || null,
+            flowType: "CREDIT",
+            transactionType: "TRANSFER_IN",
+            amount: transfer.amount,
+            idempotencyKey: `shortfall-in-${transferGroupId}`,
+            note: noteText,
+            source: input.source || "MANUAL",
+            transferGroupId,
+            recordedAt: recordedDate,
+            tenantId,
+            appId,
+            createdBy: userId,
+            updatedBy: userId,
+          },
+        ]);
+      }
+    }
+
     // 2. Validate sufficient envelope balance for immediate debits
     const numAmount = parseFloat(input.amount);
     if ((input.flowType || "DEBIT") === "DEBIT" && numAmount > 0) {
@@ -83,7 +145,7 @@ export async function recordExpenseCommand(
         idempotencyKey: input.idempotencyKey || `expense-manual-${randomUUID()}`,
         note: input.note || null,
         source: input.source || "MANUAL",
-        recordedAt: input.recordedAt ? new Date(input.recordedAt) : input.date ? new Date(input.date) : new Date(),
+        recordedAt: recordedDate,
         tenantId,
         appId,
         createdBy: userId,

@@ -8,6 +8,7 @@ export const MONEY_MATTERS_APP_ID = '01908bde-34bb-7b19-a178-574211bc93aa';
 export interface EdgeContextEnv {
   DATABASE_URL?: string;
   NEON_AUTH_BASE_URL?: string;
+  NEON_AUTH_JWKS_URL?: string;
 }
 
 export interface ResolvedClaims {
@@ -31,6 +32,14 @@ export function extractCorrelationId(req: Request, resHeaders?: Headers): string
 /**
  * Extracts bearer token or Neon Auth session cookie from request headers.
  */
+const SESSION_COOKIE_PRIORITY = [
+  '__Secure-neon-auth.session_token',
+  'neon-auth.session_token',
+  '__Secure-better-auth.session_token',
+  'better-auth.session_token',
+  'neon_auth_session',
+] as const;
+
 export function extractAuthToken(req: Request): string {
   const authHeader = req.headers.get('authorization');
   let token = authHeader?.split(' ')[1] ?? '';
@@ -38,11 +47,14 @@ export function extractAuthToken(req: Request): string {
   if (!token) {
     const cookieHeader = req.headers.get('cookie');
     if (cookieHeader) {
-      const match = cookieHeader.match(
-        /(?:__Secure-)?(?:neon-auth\.session_token|better-auth\.session_token|session_token|neon_auth_session|session)=([^;]+)/
-      );
-      if (match) {
-        token = decodeURIComponent(match[1]);
+      const pairs = cookieHeader.split(';');
+      for (const cookieName of SESSION_COOKIE_PRIORITY) {
+        const prefix = `${cookieName}=`;
+        const hit = pairs.map((p) => p.trim()).find((p) => p.startsWith(prefix));
+        if (hit) {
+          token = decodeURIComponent(hit.slice(prefix.length));
+          break;
+        }
       }
     }
   }
@@ -209,11 +221,16 @@ export async function resolveClaimsFromNeonAuth(
 
     const sessionData = (await authRes.json()) as { user?: { id?: string; email?: string; name?: string } };
     if (sessionData?.user?.id && sessionData?.user?.email) {
-      return {
+      const resolved: ResolvedClaims = {
         userId: sessionData.user.id,
         email: sessionData.user.email,
         displayName: sessionData.user.name ?? undefined,
       };
+      if (token) {
+        const cacheKey = token.replace(/^s:/, '').split('.')[0];
+        sessionClaimsMemoryCache.set(cacheKey, { claims: resolved, cachedAt: Date.now() });
+      }
+      return resolved;
     }
 
     logger.warn('Neon Auth /get-session missing user ID or email', { correlationId });

@@ -8,6 +8,8 @@ import {
 } from '@money-matters/ui/mobile';
 import { t } from '@money-matters/i18n';
 import { formatIsoDate } from '../../lib/format';
+import { trpc } from '../../lib/trpc';
+import { CrossBankTransferModal } from '../CrossBankTransferModal';
 import { TransferFormFields } from './transfer/TransferFormFields';
 import { TransferModalActions } from './transfer/TransferModalActions';
 
@@ -28,6 +30,7 @@ export interface PoolOption {
   poolType?: string;
   currentBalance?: string | number | null;
   isPrivate?: boolean | null;
+  bankAccountId?: string | null;
 }
 
 export interface MobileTransferModalProps {
@@ -70,6 +73,16 @@ export function MobileTransferModal({
   const [destinationPoolId, setDestinationPoolId] = useState<string>('');
   const [submitting, setSubmitting] = useState(false);
   const [errorMsg, setErrorMsg] = useState('');
+  const [crossBankPrompt, setCrossBankPrompt] = useState<{
+    sourceAccountName: string;
+    destAccountName: string;
+    amount: number;
+    payId?: string | null;
+    bsb?: string | null;
+    accountNumber?: string | null;
+  } | null>(null);
+  const bankAccountsQuery = trpc.listBankAccounts.useQuery(undefined, { enabled: visible });
+  const bankAccounts = bankAccountsQuery.data ?? [];
 
   useEffect(() => {
     if (transfer && visible) {
@@ -142,6 +155,20 @@ export function MobileTransferModal({
           destinationPoolId || undefined
         );
       }
+      const srcPool = pools.find((p) => p.id === sourcePoolId);
+      const dstPool = pools.find((p) => p.id === destinationPoolId);
+      if (srcPool?.bankAccountId && dstPool?.bankAccountId && srcPool.bankAccountId !== dstPool.bankAccountId) {
+        const srcBank = bankAccounts.find((b) => b.id === srcPool.bankAccountId);
+        const dstBank = bankAccounts.find((b) => b.id === dstPool.bankAccountId);
+        if (srcBank && dstBank) {
+          setCrossBankPrompt({
+            sourceAccountName: srcBank.name,
+            destAccountName: dstBank.name,
+            amount: numAmt,
+          });
+          return;
+        }
+      }
       onClose();
     } catch (err) {
       setErrorMsg(err instanceof Error ? err.message : t('common.error'));
@@ -184,41 +211,59 @@ export function MobileTransferModal({
   );
 
   return (
-    <MobileModalDialog
-      visible={visible}
-      onClose={onClose}
-      isDirty={isDirty}
-      title={t('common.transfer')}
-      subtitle={transfer.name || undefined}
-    >
-      <View style={styles.formContainer}>
-        <FormErrorBanner message={errorMsg} />
+    <>
+      <MobileModalDialog
+        visible={visible && !crossBankPrompt}
+        onClose={onClose}
+        isDirty={isDirty}
+        title={t('common.transfer')}
+        subtitle={transfer.name || undefined}
+      >
+        <View style={styles.formContainer}>
+          <FormErrorBanner message={errorMsg} />
 
-        <TransferFormFields
-          name={name}
-          setName={setName}
-          amount={amount}
-          setAmount={setAmount}
-          expectedDate={expectedDate}
-          setExpectedDate={setExpectedDate}
-          sourcePoolId={sourcePoolId}
-          setSourcePoolId={setSourcePoolId}
-          destinationPoolId={destinationPoolId}
-          setDestinationPoolId={setDestinationPoolId}
-          pools={pools}
-          onFieldChange={() => {
-            if (errorMsg) setErrorMsg('');
+          <TransferFormFields
+            name={name}
+            setName={setName}
+            amount={amount}
+            setAmount={setAmount}
+            expectedDate={expectedDate}
+            setExpectedDate={setExpectedDate}
+            sourcePoolId={sourcePoolId}
+            setSourcePoolId={setSourcePoolId}
+            destinationPoolId={destinationPoolId}
+            setDestinationPoolId={setDestinationPoolId}
+            pools={pools}
+            onFieldChange={() => {
+              if (errorMsg) setErrorMsg('');
+            }}
+          />
+
+          <TransferModalActions
+            submitting={submitting}
+            onSaveDraft={handleSave}
+            onExecuteNow={handleExecuteNow}
+            onDelete={onDelete ? handleDelete : undefined}
+          />
+        </View>
+      </MobileModalDialog>
+
+      {crossBankPrompt && (
+        <CrossBankTransferModal
+          visible={true}
+          onClose={() => {
+            setCrossBankPrompt(null);
+            onClose();
           }}
+          sourceAccountName={crossBankPrompt.sourceAccountName}
+          destAccountName={crossBankPrompt.destAccountName}
+          amount={crossBankPrompt.amount}
+          payId={crossBankPrompt.payId}
+          bsb={crossBankPrompt.bsb}
+          accountNumber={crossBankPrompt.accountNumber}
         />
-
-        <TransferModalActions
-          submitting={submitting}
-          onSaveDraft={handleSave}
-          onExecuteNow={handleExecuteNow}
-          onDelete={onDelete ? handleDelete : undefined}
-        />
-      </View>
-    </MobileModalDialog>
+      )}
+    </>
   );
 }
 

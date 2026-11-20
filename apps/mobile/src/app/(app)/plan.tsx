@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
-import { StyleSheet, ScrollView, RefreshControl } from 'react-native';
+import { StyleSheet, ScrollView, RefreshControl, View } from 'react-native';
 import { useRouter, useLocalSearchParams, type Href } from 'expo-router';
 import { DESIGN_TOKENS } from '@money-matters/ui/mobile';
 import { AppScreenWrapper } from '../../components/AppScreenWrapper';
+import { useMobileProductTour } from '../../context/ProductTourContext';
 import { t } from '@money-matters/i18n';
 import { SourceToEdit } from '../../components/IncomeExpenseFormModal';
 import { UpcomingEventsTab } from '../../components/plan/UpcomingEventsTab';
@@ -17,6 +18,8 @@ import { QuickExpenseModal } from '../../components/QuickExpenseModal';
 
 export default function IncomeAndBillsScreen() {
   const router = useRouter();
+  const { registerTourTarget } = useMobileProductTour();
+  const upcomingRef = React.useRef<View>(null);
   const searchParams = useLocalSearchParams<{
     tab?: string;
     type?: string;
@@ -128,7 +131,15 @@ export default function IncomeAndBillsScreen() {
           }
         />
 
-        <UpcomingEventsTab
+        <View
+          ref={upcomingRef}
+          onLayout={() => {
+            upcomingRef.current?.measureInWindow((x, y, width, height) => {
+              if (width > 0 && height > 0) registerTourTarget('upcoming-events', { x, y, width, height });
+            });
+          }}
+        >
+          <UpcomingEventsTab
           rawIncomeEvents={rawIncomeEvents}
           rawExpenseEvents={rawExpenseEvents}
           rawTransferEvents={rawTransferEvents}
@@ -193,6 +204,7 @@ export default function IncomeAndBillsScreen() {
           onExecuteTransfer={handleOpenTransferModal}
           onDeleteTransferEvent={handleDeleteTransferEvent}
         />
+        </View>
       </ScrollView>
 
       <PaychecksModalManager

@@ -2,6 +2,7 @@ import React from 'react';
 import { View, Text, TextInput, StyleSheet } from 'react-native';
 import { MobileButton, FormLabel, DESIGN_TOKENS } from '@money-matters/ui/mobile';
 import { t } from '@money-matters/i18n';
+import { trpc } from '../../../lib/trpc';
 
 export interface HouseholdMemberInviteFormProps {
   isOwner: boolean;
@@ -20,12 +21,21 @@ export function HouseholdMemberInviteForm({
   onInvitePartner,
   inviteSuccessMsg,
 }: HouseholdMemberInviteFormProps) {
+  const subQuery = trpc.getSubscriptionStatus.useQuery();
+  const isTrialExpired = Boolean(subQuery.data?.isTrialExpired);
+
   return (
     <View style={styles.card}>
       <Text style={styles.cardTitle}>{t('settings.addMemberTitle')}</Text>
       <Text style={styles.cardSubtitle}>{t('settings.members.inviteTooltip')}</Text>
 
-      {!isOwner ? (
+      {isTrialExpired ? (
+        <View style={styles.noticeBox}>
+          <Text style={styles.noticeText}>
+            🔒 {t('settings.members.trialUpgradeRequired')}
+          </Text>
+        </View>
+      ) : !isOwner ? (
         <View style={styles.noticeBox}>
           <Text style={styles.noticeText}>
             ℹ️ {t('settings.members.onlyOwnerCanInvite')}

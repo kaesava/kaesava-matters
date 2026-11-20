@@ -88,18 +88,17 @@ export const setup = {
     "confirmArchiveEnvelopeDesc": "Removing \"{name}\" will archive this envelope, delete any unconfirmed scheduled events, and automatically sweep any remaining balance into your Surplus Sweep Target when you save. Confirmed history and bank accounts remain safely preserved.",
     "bankAccountsStep": {
       "title": "Bank Accounts & Envelope Routing",
-      "subtitle": "We've set up a default Primary Account for you. Add extra accounts or adjust how your money envelopes are routed.",
+      "subtitle": "We've set up a default Primary Bank Account for you. Add extra bank accounts or adjust how your money envelopes are routed.",
       "addAccount": "Add Bank Account",
       "backIncome": "← Back: Income",
       "nextGoals": "Next: Goals →",
       "tipTitle": "Tip: Structuring Your Bank Accounts",
-      "tipContent": "Having separate bank accounts for Everyday spending, Bills, and Goals helps keep your budget crystal clear. At a minimum, we recommend keeping a separate Everyday account so you never accidentally spend ring-fenced bill money. You can start with a single account today and add more anytime.",
-      "reservedFundsTooltip": "Set-aside amount is money kept aside in this account that won't be distributed into your envelopes.",
-      "accountNumber": "Bank Account #{number}",
+      "tipContent": "Having separate bank accounts for Everyday spending, Bills, and Goals helps keep your budget crystal clear. At a minimum, we recommend keeping a separate Everyday bank account so you never accidentally spend ring-fenced bill money. You can start with a single bank account today and add more anytime.",
+      "reservedFundsTooltip": "Set-aside amount is money kept aside in this bank account that won't be distributed into your envelopes.",
       "negativeAvailableError": "One or more bank accounts have a set-aside amount exceeding the account balance. Please adjust set-aside amounts before continuing.",
       "noSharedAccountError": "Your household requires at least one shared bank account for shared living expenses.",
-      "singleAccountPrivateDisabledTooltip": "Your household requires at least one shared account for shared living expenses. Add another account to create private accounts.",
-      "accountNamePlaceholder": "e.g. Everyday Account (Savings)"
+      "singleAccountPrivateDisabledTooltip": "Your household requires at least one shared bank account for shared living expenses. Add another bank account to create private bank accounts.",
+      "accountNamePlaceholder": "e.g. Everyday Bank Account"
     },
     "income": {
       "title": "Income & pay",

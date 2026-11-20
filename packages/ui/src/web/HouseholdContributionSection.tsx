@@ -62,7 +62,7 @@ export function HouseholdContributionSection({
           <Input
             label={t('planTabs.householdContribution.modeLabel')}
             type="number"
-            min={1}
+            min={0}
             max={100}
             value={contributionValue}
             onChange={(e) => onContributionValueChange(e.target.value)}

@@ -24,10 +24,55 @@ export function calculateQuizEstimates(answers: QuizAnswers): EstimationResult {
     regularBills.push({ name: "Utilities", type: "BILL", envelopeType: "BILL", fundingMode: "RECURRING", isPriority: true, monthlyAud: 0, icon: "zap" });
     regularBills.push({ name: "Home Internet", type: "BILL", envelopeType: "BILL", fundingMode: "RECURRING", isPriority: true, monthlyAud: 0, icon: "wifi" });
     if (answers.hasCars) {
-      regularBills.push({ name: "Vehicle & Transport", type: "BILL", envelopeType: "BILL", fundingMode: "RECURRING", isPriority: true, monthlyAud: 0, icon: "car" });
+      if (answers.vehicles.length > 0) {
+        answers.vehicles.forEach((veh, idx) => {
+          regularBills.push({ name: `${veh.name || `Vehicle ${idx + 1}`} Rego, Insurance & Fuel`, type: "BILL", envelopeType: "BILL", fundingMode: "RECURRING", isPriority: true, monthlyAud: 0, icon: "car" });
+        });
+      } else {
+        regularBills.push({ name: "Vehicle & Transport", type: "BILL", envelopeType: "BILL", fundingMode: "RECURRING", isPriority: true, monthlyAud: 0, icon: "car" });
+      }
+    }
+    if (answers.usePublicTransport) {
+      regularBills.push({ name: "Public Transport", type: "BILL", envelopeType: "BILL", fundingMode: "RECURRING", isPriority: true, monthlyAud: 0, icon: "bus" });
+    }
+    if (answers.useRideshare) {
+      regularBills.push({ name: "Rideshare / Taxi", type: "BILL", envelopeType: "BILL", fundingMode: "RECURRING", isPriority: false, monthlyAud: 0, icon: "car" });
+    }
+    if (answers.hasKids && answers.children.length > 0) {
+      answers.children.forEach((child, idx) => {
+        const childLabel = child.name || `Child ${idx + 1}`;
+        regularBills.push({
+          name: child.stage === "CHILDCARE" ? `${childLabel} - Childcare & Early Learning` : `${childLabel} - School Fees & Tuition`,
+          type: "BILL",
+          envelopeType: "BILL",
+          fundingMode: "RECURRING",
+          isPriority: true,
+          monthlyAud: 0,
+          icon: "graduation-cap",
+        });
+        regularBills.push({ name: `${childLabel} - Extracurricular & Sports`, type: "BILL", envelopeType: "BILL", fundingMode: "RECURRING", isPriority: false, monthlyAud: 0, icon: "activity" });
+      });
+    }
+    if (answers.hasPrivateHealth) {
+      regularBills.push({ name: "Private Health Insurance", type: "BILL", envelopeType: "BILL", fundingMode: "RECURRING", isPriority: true, monthlyAud: 0, icon: "heart-pulse" });
+    }
+    if (answers.hasMedicalOutofPocket !== false) {
+      regularBills.push({ name: "Out-of-Pocket Medical & Pharmacy", type: "BILL", envelopeType: "BILL", fundingMode: "TARGET_BALANCE", isPriority: true, monthlyAud: 0, icon: "pill" });
+    }
+    if (answers.hasGym) {
+      regularBills.push({ name: "Gym & Fitness Membership", type: "BILL", envelopeType: "BILL", fundingMode: "RECURRING", isPriority: false, monthlyAud: 0, icon: "dumbbell" });
+    }
+    if (answers.hasPets && answers.petsCount > 0) {
+      regularBills.push({ name: "Pet Food, Vet & Insurance", type: "BILL", envelopeType: "BILL", fundingMode: "TARGET_BALANCE", isPriority: false, monthlyAud: 0, icon: "paw-print" });
     }
     if (answers.activeDebtMonthlyRepayment > 0) {
       regularBills.push({ name: "Active Debt Repayments", type: "BILL", envelopeType: "BILL", fundingMode: "TARGET_BALANCE", isPriority: true, monthlyAud: answers.activeDebtMonthlyRepayment, icon: "credit-card" });
+    }
+    if (answers.givesCharity) {
+      regularBills.push({ name: "Charity & Donations", type: "BILL", envelopeType: "BILL", fundingMode: "TARGET_BALANCE", isPriority: false, monthlyAud: 0, icon: "heart" });
+    }
+    if (answers.familySupportMonthlyAmount > 0) {
+      regularBills.push({ name: "Family Financial Support", type: "BILL", envelopeType: "BILL", fundingMode: "TARGET_BALANCE", isPriority: true, monthlyAud: answers.familySupportMonthlyAmount, icon: "users" });
     }
     goalSinkingFunds.push({ name: "Emergency Buffer Fund", type: "GOAL", envelopeType: "GOAL", fundingMode: "TARGET_BALANCE", isPriority: true, monthlyAud: 0, icon: "shield" });
 

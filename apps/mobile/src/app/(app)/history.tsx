@@ -3,6 +3,7 @@ import { View, StyleSheet } from 'react-native';
 import { useRouter, useLocalSearchParams, type Href } from 'expo-router';
 import { SegmentedTabs } from '@money-matters/ui/mobile';
 import { AppScreenWrapper } from '../../components/AppScreenWrapper';
+import { useMobileProductTour } from '../../context/ProductTourContext';
 import { t } from '@money-matters/i18n';
 import { trpc } from '../../lib/trpc';
 import { authClient } from '../../lib/auth';
@@ -27,28 +28,37 @@ export default function TransactionsScreen() {
     tab?: string;
     search?: string;
     poolId?: string;
+    id?: string;
+    categoryId?: string;
     bankAccountId?: string;
   }>();
   const { data: session } = authClient.useSession();
 
   const [activeTab, setActiveTab] = useState<HistoryTab>(
-    params.tab === 'payday-allocations' ? 'PAYDAYS' : 'LEDGER'
+    params.tab === 'payday-allocations' || params.tab === 'payday-plans' ? 'PAYDAYS' : 'LEDGER'
   );
   const [refreshing, setRefreshing] = useState(false);
 
   // Tab 1 (Ledger) State
+  const initialPoolParam = params.poolId || params.id || params.categoryId || '';
   const [searchQuery, setSearchQuery] = useState(params.search || '');
   const [flowFilter, setFlowFilter] = useState<'ALL' | 'DEBIT' | 'CREDIT' | 'TRANSFER'>('ALL');
-  const [selectedPoolId, setSelectedPoolId] = useState<string>(params.poolId || 'ALL');
+  const [selectedPoolId, setSelectedPoolId] = useState<string>(initialPoolParam || 'ALL');
   const [selectedBankAccountId, setSelectedBankAccountId] = useState<string>(
     params.bankAccountId || 'ALL'
   );
 
   React.useEffect(() => {
+    if (params.tab === 'payday-allocations' || params.tab === 'payday-plans') {
+      setActiveTab('PAYDAYS');
+    } else if (params.tab === 'ledger' || params.tab === 'transactions') {
+      setActiveTab('LEDGER');
+    }
     if (typeof params.search === 'string') setSearchQuery(params.search);
-    if (typeof params.poolId === 'string') setSelectedPoolId(params.poolId || 'ALL');
+    const resolvedPool = params.poolId || params.id || params.categoryId;
+    if (typeof resolvedPool === 'string') setSelectedPoolId(resolvedPool || 'ALL');
     if (typeof params.bankAccountId === 'string') setSelectedBankAccountId(params.bankAccountId || 'ALL');
-  }, [params.search, params.poolId, params.bankAccountId]);
+  }, [params.tab, params.search, params.poolId, params.id, params.categoryId, params.bankAccountId]);
   const [sortField, setSortField] = useState<SortField>('recordedAt');
   const [sortDir, setSortDir] = useState<SortDir>('desc');
   const [page, setPage] = useState(1);
@@ -109,13 +119,23 @@ export default function TransactionsScreen() {
   });
 
   const { exportLedgerCsv, exportPlansCsv } = useTransactionsExport();
+  const { registerTourTarget } = useMobileProductTour();
+  const historyContainerRef = React.useRef<View>(null);
 
   return (
     <AppScreenWrapper
       title={t('history.title')}
       scrollable={false}
     >
-      <View style={styles.container}>
+      <View
+        ref={historyContainerRef}
+        style={styles.container}
+        onLayout={() => {
+          historyContainerRef.current?.measureInWindow((x, y, width, height) => {
+            if (width > 0 && height > 0) registerTourTarget('history-ledger', { x, y, width, height });
+          });
+        }}
+      >
         <SegmentedTabs<HistoryTab>
           tabs={[
             { key: 'LEDGER', label: t('history.tabs.transactions') },
@@ -179,7 +199,7 @@ export default function TransactionsScreen() {
             onPageSizeChange={setPlanPageSize}
             bankAccounts={bankAccounts}
             onExportCsv={() => exportPlansCsv(sortedPlans)}
-            onOpenReports={hasReports ? () => router.push('/(app)/reports' as Href) : undefined}
+            onOpenReports={hasReports ? () => router.push('/(app)/reports?tab=payday-plans' as Href) : undefined}
           />
         )}
       </View>

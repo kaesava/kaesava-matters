@@ -4,13 +4,9 @@ import { t } from "@money-matters/i18n";
 import { InfoTooltip, AmountField } from "@money-matters/ui/web";
 import { useLocale } from "../../../providers/LocaleProvider";
 import {
-  BANK_PROVIDERS,
   ACCOUNT_TYPES,
   ACCOUNT_TYPE_LABELS,
-  BANK_PROVIDER_LABELS,
-  BankProvider,
   AccountType,
-  getDefaultAccountName,
   computeAccountAvailability,
 } from "@money-matters/types";
 
@@ -38,7 +34,7 @@ interface SetupBankAccountRowProps {
 
 export function SetupBankAccountRow({
   acc,
-  index,
+  index: _index,
   totalCount,
   onRemove,
   onFieldChange,
@@ -51,23 +47,19 @@ export function SetupBankAccountRow({
   const isBufferInvalid = buffer > actualBalance;
   const isSoleAccount = totalCount <= 1;
 
-  const handleProviderChange = (newProvider: BankProvider) => {
-    onFieldChange(acc, "bankProvider", newProvider);
-    const newName = getDefaultAccountName(newProvider, (acc.accountType as AccountType) || "EVERYDAY");
-    onFieldChange(acc, "name", newName);
+  const handleProviderChange = (newProvider: string) => {
+    onFieldChange(acc, "bankProvider", newProvider || "Other");
   };
 
   const handleTypeChange = (newType: AccountType) => {
     onFieldChange(acc, "accountType", newType);
-    const newName = getDefaultAccountName((acc.bankProvider as BankProvider) || "Other", newType);
-    onFieldChange(acc, "name", newName);
   };
 
   return (
     <div className="p-4 bg-slate-50 rounded-2xl border border-zinc-200/80 flex flex-col gap-3.5 shadow-xs">
       <div className="flex items-center justify-between">
         <span className="text-xs font-bold text-[#1B2B4B]">
-          {t("setup.bankAccountsStep.accountNumber", { number: index + 1 })}
+          {acc.name.trim() || t("settings.bankAccounts.addAccount")}
         </span>
         {!isSoleAccount && (
           <button
@@ -86,17 +78,14 @@ export function SetupBankAccountRow({
           <label className="text-[11px] font-bold text-zinc-500">
             {t("settings.bankAccountForm.bankProviderLabel")}
           </label>
-          <select
-            value={acc.bankProvider || "Other"}
-            onChange={(e) => handleProviderChange(e.target.value as BankProvider)}
+          <input
+            type="text"
+            maxLength={50}
+            value={acc.bankProvider === "Other" ? "" : acc.bankProvider || ""}
+            onChange={(e) => handleProviderChange(e.target.value)}
+            placeholder={t("settings.bankAccountForm.bankProviderPlaceholder")}
             className="px-3 py-2 text-xs font-bold rounded-xl border border-zinc-200 bg-white text-zinc-800 focus:ring-2 focus:ring-[#2563eb]"
-          >
-            {BANK_PROVIDERS.map((bp) => (
-              <option key={bp} value={bp}>
-                {BANK_PROVIDER_LABELS[bp]}
-              </option>
-            ))}
-          </select>
+          />
         </div>
 
         <div className="flex flex-col gap-1">

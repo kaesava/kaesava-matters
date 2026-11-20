@@ -1,6 +1,7 @@
 import React, { useMemo } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import {
+  DESIGN_TOKENS,
   MobileModalDialog,
   MobileButton,
   showMobileConfirm,
@@ -10,6 +11,7 @@ import {
 } from '@money-matters/ui/mobile';
 import { t } from '@money-matters/i18n';
 import { trpc } from '../lib/trpc';
+import { formatDate } from '../lib/format';
 import { IncomeExpenseFormFields } from './plan/IncomeExpenseFormFields';
 import { useIncomeExpenseForm } from './plan/useIncomeExpenseForm';
 import { useIncomeExpenseMutations } from './plan/useIncomeExpenseMutations';
@@ -103,15 +105,15 @@ export function IncomeExpenseFormModal({
   const handleSubmit = () => {
     let hasErr = false;
     if (!name.trim()) {
-      setNameError('Name is required.');
+      setNameError(t('categories.nameRequired'));
       hasErr = true;
     }
     if (!amount || parseFloat(amount) <= 0) {
-      setAmountError('Please enter a valid positive amount.');
+      setAmountError(t('planTabs.amountGreaterThanZero'));
       hasErr = true;
     }
     if (mode === 'EXPENSE' && !poolId) {
-      setPoolError('Expense sources MUST be assigned to a Pool.');
+      setPoolError(t('common.selectEnvelope'));
       hasErr = true;
     }
     if (isEndDateInvalid) {
@@ -162,7 +164,7 @@ export function IncomeExpenseFormModal({
             ? t('modals.updateSchedule.confirmTitleIncome')
             : t('modals.updateSchedule.confirmTitleExpense'),
         message: isScheduleRuleChanged
-          ? t('modals.updateSchedule.confirmDescRuleChange', { startDate: recurrenceBuilder.startDate })
+          ? t('modals.updateSchedule.confirmDescRuleChange', { startDate: formatDate(recurrenceBuilder.startDate) })
           : t('modals.updateSchedule.confirmDescDetailChange'),
         confirmText: t('modals.updateSchedule.confirmCta'),
         onConfirm: saveAction,
@@ -264,7 +266,7 @@ const styles = StyleSheet.create({
   archiveLinkText: {
     fontSize: 13,
     fontWeight: '700',
-    color: '#94A3B8',
+    color: DESIGN_TOKENS.colors.slate[400],
   },
   submitBtn: {
     minWidth: 120,

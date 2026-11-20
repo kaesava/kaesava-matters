@@ -27,7 +27,7 @@ export function validateHouseholdContribution(params: {
 
   if (params.contributionMode === 'PERCENTAGE') {
     const pct = parseFloat(params.contributionValue);
-    if (isNaN(pct) || pct <= 0 || pct > 100) {
+    if (isNaN(pct) || pct < 0 || pct > 100) {
       return t('planTabs.householdContribution.percentageInvalid');
     }
     return null;
@@ -35,7 +35,7 @@ export function validateHouseholdContribution(params: {
 
   const fix = parseFloat(cleanContributionAmount(params.contributionValue));
   const exp = parseFloat(cleanContributionAmount(params.expectedAmount));
-  if (isNaN(fix) || fix <= 0) {
+  if (isNaN(fix) || fix < 0 || params.contributionValue.trim() === '') {
     return t('planTabs.householdContribution.amountInvalid');
   }
   if (!isNaN(exp) && exp > 0 && fix > exp) {

@@ -4,6 +4,7 @@ import { Feather } from '@expo/vector-icons';
 import { DESIGN_TOKENS, MobileModalDialog, AmountInput } from '@money-matters/ui/mobile';
 import { t } from '@money-matters/i18n';
 import { trpc } from '../../lib/trpc';
+import { getMobileLocaleConfig } from '../../lib/format';
 import { AffordCheckVerdictCard } from './AffordCheckVerdictCard';
 import { AffordCheckBreakdownCard } from './AffordCheckBreakdownCard';
 
@@ -37,6 +38,7 @@ export function MobileAffordCheckModal({ visible, onClose, initialAmount }: Mobi
       frequency,
       itemName: itemName.trim() || undefined,
       includePersonal,
+      locale: getMobileLocaleConfig().locale,
     },
     {
       enabled: isValidAmount,

@@ -74,6 +74,7 @@ export function MobilePaydayPlanDetailModal({
           lines={allocation.lines.filter(
             (l) => parseFloat(l.confirmedAmount || l.proposedAmount || '0') > 0.001
           )}
+          onNavigate={onClose}
         />
 
         {onOpenSplitStudio && !isConfirmed && (

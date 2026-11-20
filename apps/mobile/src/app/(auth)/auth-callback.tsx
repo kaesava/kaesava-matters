@@ -13,7 +13,7 @@ export default function MobileAuthCallbackScreen() {
   const router = useRouter();
   const posthog = usePostHog();
   const utils = trpc.useUtils();
-  const { token, error } = useLocalSearchParams<{ token?: string; error?: string }>();
+  const { token, error, redirect } = useLocalSearchParams<{ token?: string; error?: string; redirect?: string }>();
   const registerToken = trpc.registerToken.useMutation();
 
   useEffect(() => {
@@ -50,6 +50,11 @@ export default function MobileAuthCallbackScreen() {
         }
       } catch {
         // Non-blocking push registration
+      }
+
+      if (redirect && redirect.startsWith("/invite/")) {
+        router.replace(`/(auth)${redirect}` as Href);
+        return;
       }
 
       const status = await utils.getTenantStatus.fetch();

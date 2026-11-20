@@ -3,6 +3,7 @@
 import React from "react";
 import Link from "next/link";
 import Image from "next/image";
+import { User } from "lucide-react";
 import { t } from "@money-matters/i18n";
 import { Logo, DESIGN_TOKENS } from "@money-matters/ui/web";
 import { SidebarTrialNavItem } from "../../../components/TrialStatusBadge";
@@ -39,7 +40,7 @@ export function SidebarContent({
   setMobileMenuOpen,
   sessionUser,
   avatarUrl,
-  initials,
+  initials: _initials,
   onNavigateToSettings,
   onSignOut,
   onOpenAsk,
@@ -175,10 +176,10 @@ export function SidebarContent({
             />
           ) : (
             <div
-              className="w-9 h-9 rounded-full flex items-center justify-center text-white text-xs font-black shrink-0 ring-2 ring-white/15 group-hover:ring-blue-600 transition-all"
+              className="w-9 h-9 rounded-full flex items-center justify-center text-white shrink-0 ring-2 ring-white/15 group-hover:ring-blue-600 transition-all"
               style={{ backgroundColor: DESIGN_TOKENS.colors.sereneBlue }}
             >
-              {initials}
+              <User className="w-5 h-5" />
             </div>
           )}
           {!sidebarCollapsed && (

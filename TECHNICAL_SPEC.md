@@ -174,7 +174,7 @@ tenants (id PK, appId FK→apps.id, name, subscriptionTier, stripeCustomerId, st
   - **Re-calibration Mode (`mode=rerun`) (3 Steps, `totalSteps = 3`)**: Streamlined draft-only re-calibration flow (1. Income Schedules $\rightarrow$ 2. Goals & Commitments $\rightarrow$ 3. Review & Commit). Skips Bank Accounts and Lifestyle Quiz to avoid overwriting existing bank account balances or custom user envelopes with default ABS estimates. All edits/removals across steps are held in client draft state and committed atomically on final Save.
   - **Database Pre-population**: In re-run mode, wizard hooks fetch existing records via tRPC (`listIncomeSources`, `listPools`), preserving existing `id`, `bankAccountId`, `fundingMode`, `enteredAmount`, `budgetFrequency`, `rrule`, `startDate`, `endDate`, `isPriority`, `isSurplusTarget`, `safetyBufferFloor`, and `generateEvents`.
   - **Automatic Balance Sweep on Envelope Archival**: Removing an envelope with balance $> \$0.00$ during re-calibration prompts a confirmation warning and, inside `saveSetupBudget` (`processSetupEnvelopes`), atomically sweeps the positive balance into the household Surplus Sweep Target (`isSurplusTarget: true`, falling back to the shared `EVERYDAY` envelope) via balanced `TRANSFER_OUT` / `TRANSFER_IN` ledger entries before soft-archiving the envelope.
-  - **Event Lifecycle Standardization**: Archiving an Envelope or Income Schedule soft-archives the parent `envelopes` / `income_sources` row (`archivedAt: new Date()`) and hard-deletes (`DELETE FROM ... WHERE status = 'PENDING'`) all unperformed scheduled `expense_events` / `income_events`. Updating an existing schedule updates `status = 'PENDING'` events in-place when only name/amount changed, or hard-deletes `status = 'PENDING'` events and re-bursts from today forward when recurrence/schedule rules changed.
+  - **Event Lifecycle Standardization**: Archiving an Envelope or Income Schedule (including during setup re-calibration via `saveSetupBudget`) soft-archives the parent `envelopes` / `income_sources` row (`archivedAt: now`, `archivedBy: userId`) and soft-archives all unperformed `PENDING` `expense_events` / `income_events` with the matching `archivedAt` timestamp so `restoreItemCommand` can cleanly restore them within a $\pm 2\text{s}$ batch window. Confirmed events (`status === 'CONFIRMED'`) across `income_events`, `expense_events`, and `transfer_events` are strictly immutable and reject edit/delete mutations.
 - **Universal Table Parity & Conditional Pagination**: Left-aligned names/text, center-aligned dates/badges/actions, right-aligned mono currency figures. Pagination (`<PaginationBar />`) conditionally displays only when record count $\ge 5$.
 - **Pool Balance Adjustment Safeguards**: Pool balance adjustment modal enforces loading state and button lockout to prevent duplicate transactions from rapid double-clicking.
 - **Application-wide Date Standardisation (`fmtDate`)**: Centralized date utility in `@money-matters/ui` (`fmtDate`) formatting all date strings into standard Australian format (`26 Aug 2026`) across Web tables.
@@ -355,7 +355,7 @@ tenants (id PK, appId FK→apps.id, name, subscriptionTier, stripeCustomerId, st
 
 ---
 
-## 9. Complete tRPC Routers and Procedures Registry (12 Routers, 101 Procedures)
+## 9. Complete tRPC Routers and Procedures Registry (12 Routers, 100 Procedures)
 
 > **Cross-Reference (Zero Redundancy):**  
 > All Web routes, Mobile routes, Modals/Drawers/Confirm Dialogs, Screen-by-Screen Parity mappings, `@money-matters/ui` primitives, and `@money-matters/i18n` dictionary namespaces are documented in [FUNCTIONAL_CAPABILITIES_INVENTORY.md](file:///home/kaesava/projects/money-matters/FUNCTIONAL_CAPABILITIES_INVENTORY.md).  
@@ -427,7 +427,7 @@ tenants (id PK, appId FK→apps.id, name, subscriptionTier, stripeCustomerId, st
 | `envelopes.saveSetupBudget` | 124 | `privateOwnerProcedure` | `requiresWriteAccess` | `SaveSetupBudgetInputSchema` (`.strict()`) | None | `saveSetupBudget` (`tenants`, `bankAccounts`, `incomeSources`, `incomeEvents`, `envelopes`, `expenseEvents`, `allocationStrategies`, `allocationStrategySteps`, `transactionLedger`) |
 | `envelopes.listPools` / `createPool` / `updatePool` / `archivePool` / `getPoolRuleChangeImpact` | 145–195 | `privateTenantProcedure` | Same as canonical | Same as canonical | None | Deprecated compatibility aliases delegating to canonical `*Envelope*` handlers |
 
-### 9.4 `income` Router (`apps/api/src/routers/income.router.ts` + `apps/api/src/routers/income/*.procedures.ts` — 12 Procedures)
+### 9.4 `income` Router (`apps/api/src/routers/income.router.ts` + `apps/api/src/routers/income/*.procedures.ts` — 11 Procedures)
 
 | Procedure | File & Line | Type | Write / Flag Guard | Input Schema (`.strict()`?) | Output Schema | Capability / DB Tables |
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
@@ -436,12 +436,10 @@ tenants (id PK, appId FK→apps.id, name, subscriptionTier, stripeCustomerId, st
 | `income.getIncomeSourceRuleChangeImpact` | `income-sources.procedures.ts:227` | `privateTenantProcedure` | None | `z.object({ id: uuid, fromDate: z.string().optional() }).strict()` | None | `incomeSources`, `bankAccounts`, `incomeEvents` |
 | `income.updateIncomeSource` | `income-sources.procedures.ts:276` | `privateTenantProcedure` | `requiresWriteAccess` | Inline `z.object({ id: uuid, confirmReset: bool, data: z.object({...}).strict() }).strict()` | None | `incomeSources`, `bankAccounts`, `incomeEvents`, `tenants`, `burstIncomeEvents` |
 | `income.listIncomeSources` | `income-sources.procedures.ts:439` | `privateTenantProcedure` | None | None | None | `incomeSources`, `bankAccounts` |
-| `income.createIncomeEvent` | `income-events.procedures.ts:9` | `privateTenantProcedure` | `requiresWriteAccess` | `CreateIncomeEventCommand` (`.strict()`) | None | `incomeSources`, `bankAccounts`, `incomeEvents` |
-| `income.listUpcomingIncomeEvents` | `income-events.procedures.ts:81` | `privateTenantProcedure` | None | None | None | `incomeEvents`, `incomeSources`, `bankAccounts` |
-| `income.listIncomeEvents` | `income-events.procedures.ts:144` | `privateTenantProcedure` | None | None | None | `incomeEvents`, `incomeSources`, `bankAccounts` |
-| `income.updateIncomeEvent` | `income-events.procedures.ts:199` | `privateTenantProcedure` | `requiresWriteAccess` | Inline `z.object({...}).strict()` | None | `incomeEvents`, `incomeSources`, `bankAccounts` |
-| `income.markIncomeReceived` | `income-events.procedures.ts:255` | `privateTenantProcedure` | `requiresWriteAccess` | Inline `z.object({...}).strict()` | None | `incomeEvents`, `incomeSources`, `bankAccounts` |
-| `income.deleteIncomeEvent` | `income-events.procedures.ts:317` | `privateTenantProcedure` | `requiresWriteAccess` | `z.object({ eventId: uuid }).strict()` | None | `incomeEvents`, `incomeSources`, `bankAccounts` |
+| `income.createIncomeEvent` | `income-events.procedures.ts:13` | `privateTenantProcedure` | `requiresWriteAccess` | `CreateIncomeEventCommand` (`.strict()`) | None | `incomeSources`, `bankAccounts`, `incomeEvents` |
+| `income.listIncomeEvents` | `income-events.procedures.ts:20` | `privateTenantProcedure` | None | None | None | `incomeEvents`, `incomeSources`, `bankAccounts` |
+| `income.updateUpcomingIncome` | `income-events.procedures.ts:25` | `privateTenantProcedure` | `requiresWriteAccess` | Inline `z.object({...}).strict()` | None | `incomeEvents`, `incomeSources`, `bankAccounts` |
+| `income.deleteIncomeEvent` | `income-events.procedures.ts:40` | `privateTenantProcedure` | `requiresWriteAccess` | `z.object({ eventId: uuid }).strict()` | None | `incomeEvents`, `incomeSources`, `bankAccounts` |
 | `income.archiveIncomeSource` | `income-lifecycle.procedures.ts:7` | `privateTenantProcedure` | `requiresWriteAccess` | `z.object({ id: uuid }).strict()` | None | `incomeSources`, `bankAccounts`, `incomeEvents` |
 
 ### 9.5 `expenses` Router (`apps/api/src/routers/expenses.router.ts` — 4 Procedures)
@@ -529,9 +527,11 @@ tenants (id PK, appId FK→apps.id, name, subscriptionTier, stripeCustomerId, st
 | `/api/auth/mobile-google` | `GET` | `apps/api/src/worker.ts:166` (`apps/api/src/routes/mobile-auth.ts:52`) | Public OAuth initiator | Initiates Neon Auth social sign-in for Mobile |
 | `/api/auth/mobile-done` | `GET` | `apps/api/src/worker.ts:170` (`apps/api/src/routes/mobile-auth.ts:127`) | OAuth callback cookie/verifier exchange | Redirects to `return_to` deep link (`moneymatters://` or `exp://`) |
 | `/api/auth/*` (Worker) | `GET`, `POST` | `apps/api/src/worker.ts:174` (`apps/api/src/routes/auth-proxy.ts:152`) | Proxies to `NEON_AUTH_BASE_URL` | Passes through `enforceApiRateLimit` (`auth` bucket: 10 req / 60s) |
-| `/trpc/*` (Worker) | `GET`, `POST` | `apps/api/src/worker.ts:185` | JWT/Cookie session via `createEdgeContext` | Passes through `enforceApiRateLimit` (`mutation`: 100/60s, `query`: 300/60s) |
+| `/api/file-notes/*` (Worker) | `GET`, `PUT` | `apps/api/src/worker.ts:175` (`apps/api/src/routes/file-notes.ts:8`) | JWT/Cookie session via `createEdgeContext` + RLS session vars | Server-side R2 upload (`PUT /api/file-notes/upload`) and RLS-verified download (`GET /api/file-notes/download/:id`) |
+| `/trpc/*` (Worker) | `GET`, `POST` | `apps/api/src/worker.ts:179` | JWT/Cookie session via `createEdgeContext` | Passes through `enforceApiRateLimit` (`mutation`: 100/60s, `query`: 300/60s) |
 | `/api/auth/[...auth]` (Web) | `GET`, `POST` | `apps/web/src/app/api/auth/[...auth]/route.ts` | CSRF origin check + safe header allowlist + proxies to `NEXT_PUBLIC_NEON_AUTH_URL` | Next.js auth proxy (`rateLimitAuth.ts` Upstash OTP send/verify + general auth rate limiting; opt-in `DEV_NEON_AUTH_ORIGIN` rewrite preserving `target`) |
 | `/api/trpc/[trpc]` (Web) | `GET`, `POST` | `apps/web/src/app/api/trpc/[trpc]/route.ts:116` | Extracts session token from cookies and forwards to `NEXT_PUBLIC_API_URL/trpc` | Forwards `x-forwarded-for` to Worker API |
+| `/api/file-notes/[...path]` (Web) | `GET`, `PUT` | `apps/web/src/app/api/file-notes/[...path]/route.ts:50` | Extracts session token from cookies and forwards to `NEXT_PUBLIC_API_URL/api/file-notes` | Same-origin binary upload/download proxy avoiding cross-origin R2 CORS/CSP issues |
 
 ### 10.2 Active Inngest Workflows (`apps/api/src/inngest/index.ts` — 9 Functions)
 

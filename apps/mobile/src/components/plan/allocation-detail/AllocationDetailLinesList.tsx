@@ -1,5 +1,6 @@
 import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import { useRouter, type Href } from 'expo-router';
 import { DESIGN_TOKENS } from '@money-matters/ui/mobile';
 import { t } from '@money-matters/i18n';
 import { formatMobileCurrency } from '../../../lib/format';
@@ -7,9 +8,11 @@ import type { MobilePaydayAllocationRecord } from '../MobilePaydayPlanDetailModa
 
 interface AllocationDetailLinesListProps {
   lines: MobilePaydayAllocationRecord['lines'];
+  onNavigate?: () => void;
 }
 
-export const AllocationDetailLinesList: React.FC<AllocationDetailLinesListProps> = ({ lines }) => {
+export const AllocationDetailLinesList: React.FC<AllocationDetailLinesListProps> = ({ lines, onNavigate }) => {
+  const router = useRouter();
   const nonZeroLines = lines.filter(
     (line) => parseFloat(line.confirmedAmount || line.proposedAmount || '0') > 0.001
   );
@@ -24,9 +27,22 @@ export const AllocationDetailLinesList: React.FC<AllocationDetailLinesListProps>
         return (
           <View key={line.id || idx} style={styles.lineItem}>
             <View style={styles.flex1}>
-              <Text style={styles.poolName}>
-                {line.poolName || t('paydayDrawer.envelopeAllocationDefault')}
-              </Text>
+              {line.poolId ? (
+                <TouchableOpacity
+                  onPress={() => {
+                    onNavigate?.();
+                    router.push(`/(app)/envelopes/${line.poolId}` as Href);
+                  }}
+                >
+                  <Text style={[styles.poolName, { color: DESIGN_TOKENS.colors.sereneBlue }]}>
+                    {line.poolName || t('paydayDrawer.envelopeAllocationDefault')} ↗
+                  </Text>
+                </TouchableOpacity>
+              ) : (
+                <Text style={styles.poolName}>
+                  {line.poolName || t('paydayDrawer.envelopeAllocationDefault')}
+                </Text>
+              )}
               {line.reasoning ? (
                 <Text style={styles.lineReasoning}>{line.reasoning}</Text>
               ) : null}

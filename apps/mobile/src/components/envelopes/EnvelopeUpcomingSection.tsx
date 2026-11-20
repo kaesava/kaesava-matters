@@ -40,7 +40,13 @@ export function EnvelopeUpcomingSection({
   onMarkPaid,
 }: EnvelopeUpcomingSectionProps) {
   const router = useRouter();
-  const topUpcoming = upcomingExpenses.slice(0, 5);
+  const todayStr = new Date().toISOString().slice(0, 10);
+  const sortedUpcoming = [...upcomingExpenses].sort((a, b) => {
+    const da = typeof a.expectedDate === 'string' ? a.expectedDate : a.expectedDate.toISOString().slice(0, 10);
+    const db = typeof b.expectedDate === 'string' ? b.expectedDate : b.expectedDate.toISOString().slice(0, 10);
+    return da.localeCompare(db);
+  });
+  const topUpcoming = sortedUpcoming.slice(0, 5);
 
   return (
     <>
@@ -51,7 +57,7 @@ export function EnvelopeUpcomingSection({
             {t('planTabs.upcomingExpensesTitle')} ({upcomingExpenses.length})
           </Text>
         </TouchableOpacity>
-        {upcomingExpenses.length > 5 && (
+        {upcomingExpenses.length > 0 && (
           <TouchableOpacity
             onPress={() =>
               router.push(
@@ -74,7 +80,18 @@ export function EnvelopeUpcomingSection({
                 <View key={exp.id} style={styles.upcomingCard}>
                   <View style={{ flex: 1 }}>
                     <Text style={styles.upcomingName}>{exp.name || t('common.description')}</Text>
-                    <Text style={styles.upcomingDate}>{formatDate(exp.expectedDate)}</Text>
+                    <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6, flexWrap: 'wrap' }}>
+                      <Text style={styles.upcomingDate}>{formatDate(exp.expectedDate)}</Text>
+                      {(typeof exp.expectedDate === 'string'
+                        ? exp.expectedDate.slice(0, 10)
+                        : exp.expectedDate.toISOString().slice(0, 10)) < todayStr && (
+                        <View style={{ backgroundColor: '#FFF1F2', borderColor: '#FECDD3', borderWidth: 1, borderRadius: 4, paddingHorizontal: 4, paddingVertical: 1 }}>
+                          <Text style={{ fontSize: 9, fontWeight: '700', color: '#E11D48', textTransform: 'uppercase' }}>
+                            {t('expenseStatus.overdueLabel')}
+                          </Text>
+                        </View>
+                      )}
+                    </View>
                   </View>
 
                   <View style={styles.upcomingRightCol}>

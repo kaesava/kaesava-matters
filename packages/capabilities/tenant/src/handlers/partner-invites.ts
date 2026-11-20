@@ -125,10 +125,12 @@ export function acceptInviteHandler(db: DbOrTx) {
       await db.insert(envelopes).values({
         tenantId: updated.tenantId,
         appId: tenant.appId,
-        name: "Personal Everyday Envelope",
+        name: "Personal Spending",
         envelopeType: "EVERYDAY",
         bankAccountId: partnerAcc.id,
         monthlyAmount: "200.00",
+        isPrivate: true,
+        userId: userId,
         createdBy: userId,
         updatedBy: userId,
       });

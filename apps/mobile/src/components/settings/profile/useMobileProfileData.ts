@@ -66,7 +66,7 @@ export function useMobileProfileData({
 
     const uName = prof?.displayName || session?.user?.name || '';
     const uEmail = prof?.email || session?.user?.email || storedEmail || '';
-    const uAvatar = prof?.avatarUrl || session?.user?.image || null;
+    const uAvatar = prof?.avatarUrl || null;
     const uTz = prof?.timezone || pref?.timezone || DEFAULT_TIMEZONE;
     const uLang = 'en' as const;
     const uIcons = prof?.showIcons ?? pref?.showIcons ?? true;
@@ -103,6 +103,19 @@ export function useMobileProfileData({
   } = useProfileBiometrics();
 
   const { handlePickAvatar } = useProfileAvatarPicker({ setAvatarUri });
+
+  const handleDeleteAvatar = () => {
+    showMobileConfirm({
+      title: t('settings.deleteAvatarConfirmTitle'),
+      message: t('settings.deleteAvatarConfirmMessage'),
+      confirmText: t('settings.deleteAvatar'),
+      cancelText: t('common.cancel'),
+      isDestructive: true,
+      onConfirm: () => {
+        setAvatarUri(null);
+      },
+    });
+  };
 
   const isDirty =
     name !== initialDataRef.current.name ||
@@ -206,6 +219,7 @@ export function useMobileProfileData({
     saving,
     isDirty,
     handlePickAvatar,
+    handleDeleteAvatar,
     handleCancel,
     handleSave,
   };

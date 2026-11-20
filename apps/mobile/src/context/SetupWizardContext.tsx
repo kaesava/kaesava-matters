@@ -44,8 +44,9 @@ export function SetupWizardProvider({ children: reactChildren }: { children: Rea
 
   const globalParams = useGlobalSearchParams<{ mode?: string }>();
   const isRerunParam = globalParams.mode === 'rerun';
-  const setupAlreadyCompleted = userPrefQuery.data?.setupStatus === 'COMPLETED';
-  const [isRerun, setIsRerun] = useState<boolean>(() => isRerunParam || setupAlreadyCompleted);
+  const setupStatus = userPrefQuery.data?.setupStatus;
+  const setupDone = setupStatus === 'COMPLETED' || setupStatus === 'CANCELLED';
+  const [isRerun, setIsRerun] = useState<boolean>(() => isRerunParam || setupDone);
   const totalSteps = getTotalSetupSteps(isRerun);
   const initialSetupCompletedRef = useRef<boolean | null>(null);
 
@@ -53,13 +54,16 @@ export function SetupWizardProvider({ children: reactChildren }: { children: Rea
 
   useEffect(() => {
     if (initialSetupCompletedRef.current === null && userPrefQuery.data !== undefined) {
-      initialSetupCompletedRef.current = userPrefQuery.data?.setupStatus === 'COMPLETED';
-      if (initialSetupCompletedRef.current && !isRerunParam) {
+      initialSetupCompletedRef.current = setupDone;
+      if (setupDone && !isRerunParam) {
         setIsRerun(true);
         router.replace({ pathname: '/(setup)/income', params: { mode: 'rerun' } });
+      } else if (!setupDone && isRerunParam) {
+        setIsRerun(false);
+        router.replace('/(setup)/income');
       }
     }
-  }, [userPrefQuery.data, isRerunParam, router]);
+  }, [userPrefQuery.data, setupDone, isRerunParam, router]);
 
   const lifestyle = useSetupWizardLifestyleState();
   const accounts = useSetupWizardBankAccountsState();
@@ -183,6 +187,18 @@ export function SetupWizardProvider({ children: reactChildren }: { children: Rea
     }
     setGoals((prev) => prev.filter((g) => g.id !== id));
   };
+
+  // Clear Step 5 manual Everyday override whenever Step 4 everyday sliders change
+  useEffect(() => {
+    if (!isRerun) {
+      setAmountOverrides((prev) => {
+        if (prev['Everyday Spending'] === undefined) return prev;
+        const next = { ...prev };
+        delete next['Everyday Spending'];
+        return next;
+      });
+    }
+  }, [isRerun, lifestyle.weeklyGroceries, lifestyle.weeklyDining, lifestyle.weeklyPersonal]);
 
   const calculations = useSetupWizardCalculations({
     country: lifestyle.country,

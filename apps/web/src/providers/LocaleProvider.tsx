@@ -1,5 +1,5 @@
 "use client";
-import { DEFAULT_TIMEZONE, DEFAULT_LOCALE } from "@money-matters/types";
+import { DEFAULT_CURRENCY, DEFAULT_TIMEZONE, DEFAULT_LOCALE } from "@money-matters/types";
 
 
 import React, { createContext, useContext, useEffect, useMemo, useState } from "react";
@@ -39,19 +39,19 @@ export interface LocaleContextValue {
 }
 
 const DEFAULT_LOCALE_CONTEXT: LocaleContextValue = {
-  currency: "AUD",
-  currencySymbol: "$",
-  minorUnits: 2,
+  currency: DEFAULT_CURRENCY,
+  currencySymbol: getCurrencySymbol(DEFAULT_CURRENCY),
+  minorUnits: getCurrencyMinorUnits(DEFAULT_CURRENCY),
   country: "AU",
   timezone: DEFAULT_TIMEZONE,
   userTimezone: DEFAULT_TIMEZONE,
   locale: DEFAULT_LOCALE,
   language: "en",
-  fmt: (v) => formatCurrency(v, DEFAULT_LOCALE, "AUD"),
+  fmt: (v) => formatCurrency(v, DEFAULT_LOCALE, DEFAULT_CURRENCY),
   fmtDate: (d) => formatBaseDate(d, DEFAULT_TIMEZONE, DEFAULT_LOCALE),
   fmtDateMedium: (d) => formatBaseDateMedium(d, DEFAULT_TIMEZONE, DEFAULT_LOCALE),
   fmtDateTime: (d) => formatBaseDateTime(d, DEFAULT_TIMEZONE, DEFAULT_LOCALE),
-  fmtTx: (v, f) => formatBaseTxAmount(v, f, DEFAULT_LOCALE, "AUD"),
+  fmtTx: (v, f) => formatBaseTxAmount(v, f, DEFAULT_LOCALE, DEFAULT_CURRENCY),
 };
 
 const LocaleContext = createContext<LocaleContextValue>(DEFAULT_LOCALE_CONTEXT);
@@ -87,7 +87,7 @@ export function LocaleProvider({ children }: { children: React.ReactNode }) {
     return rawLocale;
   }, [rawLocale, isMounted]);
 
-  const currency = pref?.currency || "AUD";
+  const currency = pref?.currency || DEFAULT_CURRENCY;
   const country = pref?.country || "AU";
   const timezone = pref?.tenantTimezone || pref?.timezone || DEFAULT_TIMEZONE;
   const userTimezone = pref?.timezone || timezone;

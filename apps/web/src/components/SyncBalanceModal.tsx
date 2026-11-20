@@ -1,8 +1,8 @@
 "use client";
 
-import React, { useState, useEffect, useMemo, useId } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { t } from "@money-matters/i18n";
-import { Button, AmountField, useModalDismiss } from "@money-matters/ui/web";
+import { Button, AmountField, ModalDialog } from "@money-matters/ui/web";
 import posthog from "../lib/posthog-client";
 import { useLocale } from "../providers/LocaleProvider";
 import { SyncBalanceAdvancedTable } from "./SyncBalanceAdvancedTable";
@@ -53,7 +53,6 @@ export const SyncBalanceModal: React.FC<SyncBalanceModalProps> = ({
   const [reason, setReason] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [adjustments, setAdjustments] = useState<Record<string, string>>({});
-  const modalId = useId();
 
   useEffect(() => {
     if (isOpen) {
@@ -103,13 +102,6 @@ export const SyncBalanceModal: React.FC<SyncBalanceModalProps> = ({
   }, [visiblePools, isPoolSweepTarget, pools]);
 
   const hasHiddenZeroPools = !isSurplus && pools.some((p) => !isPoolSweepTarget(p) && p.poolType !== "EVERYDAY" && p.currentBalance <= 0);
-
-  useModalDismiss({
-    id: `reconciliation-modal-${modalId}`,
-    isOpen,
-    onDismiss: onClose,
-    isBlocked: isSubmitting,
-  });
 
   // Pre-fill sweep target pool on variance change
   useEffect(() => {
@@ -210,27 +202,14 @@ export const SyncBalanceModal: React.FC<SyncBalanceModalProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 bg-slate-950/60 backdrop-blur-sm z-50 flex items-center justify-center p-4" role="dialog" aria-modal="true">
-      <div className="bg-white dark:bg-zinc-900 max-w-xl w-full rounded-2xl shadow-2xl border border-slate-200 dark:border-zinc-800 p-6 space-y-4 animate-in fade-in zoom-in-95 duration-150">
-        
-        {/* Header */}
-        <div className="flex justify-between items-center border-b border-slate-100 dark:border-zinc-800 pb-3">
-          <div>
-            <h3 className="font-extrabold text-lg text-[#1B2B4B] dark:text-white">
-              {t("bankAccounts.reconcile.modalTitle")}
-            </h3>
-            <p className="text-xs text-slate-500 font-medium">{accountName}</p>
-          </div>
-          <button
-            onClick={onClose}
-            disabled={isSubmitting}
-            className="text-slate-400 hover:text-slate-600 dark:hover:text-zinc-200 font-bold p-1 rounded-lg transition-colors cursor-pointer"
-            aria-label="Close"
-          >
-            ✕
-          </button>
-        </div>
-
+    <ModalDialog
+      isOpen={isOpen}
+      onClose={onClose}
+      title={t("bankAccounts.reconcile.modalTitle")}
+      subtitle={accountName}
+      maxWidth="max-w-xl"
+    >
+      <div className="space-y-4">
         {/* Step 1: Editable Current Bank Balance */}
         <div className="bg-slate-50/70 dark:bg-zinc-800/40 p-4 rounded-xl border border-slate-200/80 dark:border-zinc-700/60 space-y-3">
           <AmountField
@@ -337,14 +316,15 @@ export const SyncBalanceModal: React.FC<SyncBalanceModalProps> = ({
 
         {/* Footer Actions */}
         <div className="flex gap-3 pt-2 border-t border-slate-100 dark:border-zinc-800">
-          <button
+          <Button
             type="button"
+            variant="secondary"
             onClick={onClose}
             disabled={isSubmitting}
-            className="flex-1 py-2.5 bg-slate-100 hover:bg-slate-200 dark:bg-zinc-800 dark:hover:bg-zinc-700 text-slate-700 dark:text-zinc-200 font-bold text-xs rounded-xl transition-all cursor-pointer"
+            className="flex-1"
           >
             {t("common.cancel")}
-          </button>
+          </Button>
 
           <Button
             type="button"
@@ -358,8 +338,7 @@ export const SyncBalanceModal: React.FC<SyncBalanceModalProps> = ({
               : t("bankAccounts.reconcile.modalTitle")}
           </Button>
         </div>
-
       </div>
-    </div>
+    </ModalDialog>
   );
 };

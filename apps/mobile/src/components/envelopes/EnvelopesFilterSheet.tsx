@@ -81,6 +81,9 @@ export function EnvelopesFilterSheet({
         { id: 'name', label: t('common.name') },
         { id: 'currentBalance', label: t('common.balance') },
         { id: 'targetAmount', label: t('common.target') },
+        { id: 'bankAccountName', label: t('bankAccounts.title') },
+        { id: 'poolType', label: t('common.type') },
+        { id: 'targetDate', label: t('categories.targetDateLabel') },
       ]}
       onSortFieldChange={(field) => onSortFieldChange(field as PoolSortField)}
       onSortOrderChange={onSortOrderChange}

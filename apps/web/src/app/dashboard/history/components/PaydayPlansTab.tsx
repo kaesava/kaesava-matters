@@ -5,6 +5,7 @@ import { BarChart3 } from "lucide-react";
 import { t } from "@money-matters/i18n";
 import {
   SearchInput,
+  GenericSelectField,
   PaginationBar,
   ResizableTh,
   SkeletonTable,
@@ -72,18 +73,17 @@ export function PaydayPlansTab({
 
           <div className="h-6 w-px bg-zinc-200 hidden sm:block" />
 
-          <select
-            value={selectedBankFilter}
-            onChange={(e) => setSelectedBankFilter(e.target.value)}
-            className="w-full sm:w-56 px-3 py-2 text-xs bg-white border border-zinc-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 font-semibold text-zinc-700"
-          >
-            <option value="ALL">{t("history.allBanks")}</option>
-            {uniqueBankAccounts.map((bName) => (
-              <option key={bName} value={bName}>
-                {bName}
-              </option>
-            ))}
-          </select>
+          <div className="w-full sm:w-56">
+            <GenericSelectField
+              aria-label={t("history.filterByBank")}
+              value={selectedBankFilter}
+              onChange={setSelectedBankFilter}
+              options={[
+                { value: "ALL", label: t("history.allBanks") },
+                ...uniqueBankAccounts.map((bName) => ({ value: bName, label: bName })),
+              ]}
+            />
+          </div>
         </div>
 
         <div className="flex items-center gap-2">
@@ -113,8 +113,8 @@ export function PaydayPlansTab({
           <RecordFilterBadge
             label={
               matchedBankAccount
-                ? `Filtered to Account: ${matchedBankAccount.name}`
-                : "Filter: Item unavailable"
+                ? t("history.filteredToAccount", { name: matchedBankAccount.name })
+                : t("history.filterItemUnavailable")
             }
             onClear={() => {
               const url = new URL(window.location.href);
@@ -234,18 +234,18 @@ export function PaydayPlansTab({
                       {fmtDate(plan.expectedDate || plan.createdAt)}
                     </td>
                     <td className="py-3 px-4 text-left font-semibold text-[#1B2B4B] dark:text-white">
-                      <span>{plan.incomeName || "Income Deposit"}</span>
+                      <span>{plan.incomeName || t("paydayDrawer.incomeDepositDefault")}</span>
                     </td>
                     <td className="py-3 px-4 text-left font-semibold">
                       <Link
                         href={
                           plan.receivingAccountId
-                            ? `/dashboard/envelopes?id=${plan.receivingAccountId}`
-                            : "/dashboard/envelopes"
+                            ? `/dashboard/bank-accounts?id=${plan.receivingAccountId}`
+                            : "/dashboard/bank-accounts"
                         }
                         className="text-[#2563eb] hover:underline inline-flex items-center gap-0.5"
                       >
-                        <span>{plan.receivingAccountName || "Main Account"}</span>
+                        <span>{plan.receivingAccountName || t("paydayDrawer.mainAccountDefault")}</span>
                         <span className="text-[10px] text-blue-400">↗</span>
                       </Link>
                     </td>

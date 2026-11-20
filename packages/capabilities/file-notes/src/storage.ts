@@ -1,11 +1,21 @@
 import { S3Client, PutObjectCommand, DeleteObjectCommand, GetObjectCommand } from '@aws-sdk/client-s3';
-import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
 import { TRPCError } from '@trpc/server';
 import { logger } from '@money-matters/core';
 
 function isProductionStorage(): boolean {
   return process.env.NODE_ENV === 'production' || process.env.ENVIRONMENT === 'production';
 }
+
+function hasR2Credentials(): boolean {
+  return Boolean(
+    process.env.STORAGE_BUCKET_NAME &&
+      process.env.STORAGE_ACCESS_KEY_ID &&
+      process.env.STORAGE_SECRET_ACCESS_KEY
+  );
+}
+
+// Dev-only in-memory store when R2 credentials are not configured locally
+const devMemoryStore = new Map<string, { body: Uint8Array; contentType: string }>();
 
 let _s3Client: S3Client | null = null;
 
@@ -19,97 +29,102 @@ function getS3Client(): S3Client {
       },
       region: process.env.STORAGE_REGION || 'auto',
       forcePathStyle: true,
+      requestChecksumCalculation: 'WHEN_REQUIRED',
+      responseChecksumValidation: 'WHEN_REQUIRED',
     });
   }
   return _s3Client;
 }
 
 export const s3Client = new Proxy({} as S3Client, {
-  get: (_target, prop) => {
-    return Reflect.get(getS3Client(), prop);
-  },
+  get: (_target, prop) => Reflect.get(getS3Client(), prop),
 });
 
 /**
- * Generates a pre-signed download URL for secure object access from Cloudflare R2.
+ * Returns the authenticated API proxy upload URL for a validated file key.
  */
-export async function getPresignedDownloadUrl(
-  fileKey: string,
-  expiresIn = 3600
-): Promise<string> {
-  const bucketName = process.env.STORAGE_BUCKET_NAME || '';
-  const accessKeyId = process.env.STORAGE_ACCESS_KEY_ID || '';
-  const secretAccessKey = process.env.STORAGE_SECRET_ACCESS_KEY || '';
-
-  if (!bucketName || !accessKeyId || !secretAccessKey) {
-    if (isProductionStorage()) {
-      throw new TRPCError({ code: 'INTERNAL_SERVER_ERROR', message: 'storage_not_configured' });
-    }
-    logger.warn('[Storage Mock] Returning mock download URL for key: ' + fileKey);
-    return `http://localhost:3001/api/mock-download?key=${encodeURIComponent(fileKey)}`;
+export async function getPresignedUploadUrl(fileKey: string, _contentType: string): Promise<string> {
+  if (!hasR2Credentials() && isProductionStorage()) {
+    throw new TRPCError({ code: 'INTERNAL_SERVER_ERROR', message: 'storage_not_configured' });
   }
-
-  const command = new GetObjectCommand({
-    Bucket: bucketName,
-    Key: fileKey,
-  });
-
-  return getSignedUrl(
-    getS3Client() as unknown as Parameters<typeof getSignedUrl>[0],
-    command as unknown as Parameters<typeof getSignedUrl>[1],
-    { expiresIn }
-  );
+  return `/api/file-notes/upload?key=${encodeURIComponent(fileKey)}`;
 }
 
 /**
- * Generates a pre-signed upload URL for direct-to-bucket client uploads to Cloudflare R2.
+ * Returns the authenticated API proxy download URL for a file note.
  */
-export async function getPresignedUploadUrl(
-  fileKey: string,
-  contentType: string,
-  expiresIn = 300
-): Promise<string> {
-  const bucketName = process.env.STORAGE_BUCKET_NAME || '';
-  const accessKeyId = process.env.STORAGE_ACCESS_KEY_ID || '';
-  const secretAccessKey = process.env.STORAGE_SECRET_ACCESS_KEY || '';
+export async function getPresignedDownloadUrl(noteIdOrKey: string): Promise<string> {
+  if (!hasR2Credentials() && isProductionStorage()) {
+    throw new TRPCError({ code: 'INTERNAL_SERVER_ERROR', message: 'storage_not_configured' });
+  }
+  return `/api/file-notes/download/${encodeURIComponent(noteIdOrKey)}`;
+}
 
-  if (!bucketName || !accessKeyId || !secretAccessKey) {
+/**
+ * Uploads an object server-side to Cloudflare R2 (or dev in-memory store).
+ */
+export async function uploadObjectToStorage(
+  fileKey: string,
+  body: Uint8Array,
+  contentType: string
+): Promise<void> {
+  if (!hasR2Credentials()) {
     if (isProductionStorage()) {
       throw new TRPCError({ code: 'INTERNAL_SERVER_ERROR', message: 'storage_not_configured' });
     }
-    logger.warn('[Storage Mock] Returning mock upload URL for key: ' + fileKey);
-    return `http://localhost:3001/api/mock-upload?key=${encodeURIComponent(fileKey)}`;
+    devMemoryStore.set(fileKey, { body, contentType });
+    logger.info(`[Storage Dev] Stored file in memory: ${fileKey} (${body.byteLength} bytes)`);
+    return;
   }
 
   const command = new PutObjectCommand({
-    Bucket: bucketName,
+    Bucket: process.env.STORAGE_BUCKET_NAME!,
     Key: fileKey,
+    Body: body,
     ContentType: contentType,
   });
-
-  return getSignedUrl(
-    getS3Client() as unknown as Parameters<typeof getSignedUrl>[0],
-    command as unknown as Parameters<typeof getSignedUrl>[1],
-    { expiresIn }
-  );
+  await getS3Client().send(command);
 }
 
 /**
- * Permanently deletes a file from the Cloudflare R2 bucket.
+ * Downloads an object server-side from Cloudflare R2 (or dev in-memory store).
+ */
+export async function downloadObjectFromStorage(
+  fileKey: string
+): Promise<{ body: Uint8Array; contentType: string } | null> {
+  if (!hasR2Credentials()) {
+    if (isProductionStorage()) {
+      throw new TRPCError({ code: 'INTERNAL_SERVER_ERROR', message: 'storage_not_configured' });
+    }
+    return devMemoryStore.get(fileKey) ?? null;
+  }
+
+  const command = new GetObjectCommand({
+    Bucket: process.env.STORAGE_BUCKET_NAME!,
+    Key: fileKey,
+  });
+  const response = await getS3Client().send(command);
+  if (!response.Body) return null;
+  const bytes = await response.Body.transformToByteArray();
+  return {
+    body: bytes,
+    contentType: response.ContentType || 'application/octet-stream',
+  };
+}
+
+/**
+ * Permanently deletes a file from the Cloudflare R2 bucket (or dev store).
  */
 export async function deleteFileFromBucket(fileKey: string): Promise<boolean> {
-  const bucketName = process.env.STORAGE_BUCKET_NAME || '';
-  const accessKeyId = process.env.STORAGE_ACCESS_KEY_ID || '';
-  const secretAccessKey = process.env.STORAGE_SECRET_ACCESS_KEY || '';
-
-  if (!bucketName || !accessKeyId || !secretAccessKey) {
-    logger.info(`[Storage Mock] Deleted mock file with key: ${fileKey}`);
+  if (!hasR2Credentials()) {
+    devMemoryStore.delete(fileKey);
+    logger.info(`[Storage Dev] Deleted file from memory: ${fileKey}`);
     return true;
   }
 
   try {
     const command = new DeleteObjectCommand({
-      Bucket: bucketName,
+      Bucket: process.env.STORAGE_BUCKET_NAME!,
       Key: fileKey,
     });
     await getS3Client().send(command);

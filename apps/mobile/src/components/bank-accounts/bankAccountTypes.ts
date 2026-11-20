@@ -1,3 +1,5 @@
+export type SupportedBankProvider = string;
+
 export interface BankAccountItemToEdit {
   id: string;
   name: string;
@@ -7,15 +9,3 @@ export interface BankAccountItemToEdit {
   unbudgetedBuffer?: string | null;
   isPrivate?: boolean;
 }
-
-export type SupportedBankProvider = 'CBA' | 'Westpac' | 'ANZ' | 'NAB' | 'ING' | 'Macquarie' | 'Other';
-
-export const PROVIDERS: SupportedBankProvider[] = [
-  'CBA',
-  'Westpac',
-  'ANZ',
-  'NAB',
-  'ING',
-  'Macquarie',
-  'Other',
-];

@@ -83,7 +83,7 @@ describe("restoreItemCommand", () => {
 
     const res = await restoreItemCommand("env-1", "ENVELOPE", tenantId, appId, userId, mockDb);
     expect(res).toBeDefined();
-    expect(updatedTables.length).toBe(1);
+    expect(updatedTables.length).toBe(2);
   });
 
   it("rejects restoring an already-active envelope (archivedAt IS NOT NULL guard)", async () => {

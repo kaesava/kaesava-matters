@@ -97,7 +97,14 @@ export function EnvelopeSummaryCard({
 
       <View style={styles.actionRow}>
         {onDrawDown && pool.envelopeType !== 'EVERYDAY' && (
-          <TouchableOpacity onPress={onDrawDown} style={styles.drawDownBtn}>
+          <TouchableOpacity
+            onPress={onDrawDown}
+            disabled={Number(pool.currentBalance ?? 0) <= 0}
+            style={[
+              styles.drawDownBtn,
+              Number(pool.currentBalance ?? 0) <= 0 && { opacity: 0.4 },
+            ]}
+          >
             <Feather name="arrow-down-circle" size={15} color={DESIGN_TOKENS.colors.successDark} />
             <Text style={styles.drawDownBtnText}>{t('categories.actions.drawDown')}</Text>
           </TouchableOpacity>

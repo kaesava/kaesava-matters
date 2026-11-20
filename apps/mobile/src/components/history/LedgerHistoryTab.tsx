@@ -101,7 +101,7 @@ export function LedgerHistoryTab({
   const matchedBank = bankAccounts.find((b) => b.id === selectedBankAccountId);
 
   const filterSections = useLedgerFilterSections({
-    flowFilter: flowFilter as 'ALL' | 'DEBIT' | 'CREDIT',
+    flowFilter,
     onFlowFilterChange,
     selectedPoolId,
     onPoolChange,
@@ -189,6 +189,7 @@ export function LedgerHistoryTab({
         sortOptions={[
           { id: 'recordedAt', label: t('tables.date') },
           { id: 'amount', label: t('common.amount') },
+          { id: 'description', label: t('common.description') },
         ]}
         onSortFieldChange={(f) =>
           onSortFieldChange(f as 'recordedAt' | 'amount' | 'description')

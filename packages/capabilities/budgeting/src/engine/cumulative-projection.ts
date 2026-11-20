@@ -10,6 +10,7 @@ export interface CumulativeProjectionIncomeEvent {
   actualAmount?: number | null;
   status: "PENDING" | "CONFIRMED" | "DRAFT" | "REVIEWED";
   rrule?: string | null;
+  incomeType?: "SALARIED" | "IRREGULAR" | null;
   userId?: string;
   isPrivate?: boolean;
   contributionMode?: "FULL" | "PERCENTAGE" | "FIXED_AMOUNT";
@@ -39,6 +40,7 @@ export interface CumulativeProjectionInput {
   cellOverrides?: Record<string, number>;
   currentUserId?: string;
   timezone?: string;
+  currencySymbol?: string;
   strategySteps?: AllocationStrategyStepItem[];
   personalStrategySteps?: AllocationStrategyStepItem[];
 }
@@ -120,6 +122,17 @@ export function runCumulativeProjection(input: CumulativeProjectionInput): Cumul
       nextCutoffDate = new Date(lastEndTime).toISOString().slice(0, 10);
     }
 
+    const forwardWindowEndTime = new Date(evt.expectedDate + "T00:00:00").getTime() + 90 * 24 * 60 * 60 * 1000;
+    const forwardCutoffDate = new Date(forwardWindowEndTime).toISOString().slice(0, 10);
+
+    const engineUpcomingExpenses = upcomingExpenses.filter((e) => {
+      const matchCat = e.categoryId || e.poolId || e.envelopeId;
+      if (!matchCat) return false;
+      return i === 0
+        ? e.dueDate <= forwardCutoffDate
+        : e.dueDate >= evt.expectedDate && e.dueDate <= forwardCutoffDate;
+    });
+
     const relevantExpenses = upcomingExpenses.filter((e) => {
       const matchCat = e.categoryId || e.poolId || e.envelopeId;
       if (!matchCat) return false;
@@ -150,18 +163,20 @@ export function runCumulativeProjection(input: CumulativeProjectionInput): Cumul
 
       const engineResult = runAllocationEngine({
         incomeAmount: totalIncome,
+        incomeType: evt.incomeType || "SALARIED",
         incomeUserId: evt.userId || input.currentUserId,
         contributionMode: evt.contributionMode,
         contributionValue: evt.contributionValue,
         strategySteps: input.strategySteps,
         personalStrategySteps: input.personalStrategySteps,
         buckets: currentBuckets,
-        paycheckDate: new Date(evt.expectedDate + "T00:00:00"),
+        paycheckDate: new Date(evt.expectedDate + "T00:00:00Z"),
         paycheckFrequencyDays: freqDays,
         daysUntilNextIncome: daysUntilNext,
         nextPaycheckDate: nextDateObj,
         timezone: input.timezone,
-        upcomingExpenses: relevantExpenses.map((e) => ({
+        currencySymbol: input.currencySymbol,
+        upcomingExpenses: engineUpcomingExpenses.map((e) => ({
           poolId: e.poolId || e.envelopeId || e.categoryId,
           categoryId: e.categoryId,
           amount: e.amount,

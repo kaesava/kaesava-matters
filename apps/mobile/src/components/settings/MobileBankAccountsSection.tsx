@@ -14,6 +14,7 @@ import {
   SearchInput,
   MobilePaginationBar,
   InfoTooltip,
+  RecordFilterBadge,
 } from '@money-matters/ui/mobile';
 import { t } from '@money-matters/i18n';
 import { trpc } from '../../lib/trpc';
@@ -167,35 +168,18 @@ export function MobileBankAccountsSection() {
       </View>
 
       {/* Active Account Filter Banner */}
-      {selectedAccountId && targetedAccount && (
-        <View style={styles.appliedFilterBanner}>
-          <View style={styles.appliedFilterContent}>
-            <Feather name="filter" size={13} color={DESIGN_TOKENS.colors.sereneBlue} />
-            <Text style={styles.appliedFilterText} numberOfLines={1}>
-              {targetedAccount.name}
-            </Text>
-          </View>
-          <TouchableOpacity
-            onPress={() => setSelectedAccountId(null)}
-            style={styles.clearFilterBtn}
-            activeOpacity={0.7}
-            accessibilityRole="button"
-          >
-            <Feather name="x" size={13} color={DESIGN_TOKENS.colors.sereneBlue} />
-            <Text style={styles.clearFilterText}>{t('common.clear')}</Text>
-          </TouchableOpacity>
-        </View>
-      )}
-
-            {/* Tip Card: Shown ONLY when active accounts count is 1 */}
-      {accounts.length === 1 && (
-        <View style={styles.tipCard}>
-          <Feather name="info" size={16} color={DESIGN_TOKENS.colors.sereneBlue} style={{ marginTop: 2 }} />
-          <View style={{ flex: 1, gap: 2 }}>
-            <Text style={styles.tipCardTitle}>{t('bankAccounts.tipCardTitle')}</Text>
-            <Text style={styles.tipCardBody}>{t('bankAccounts.tipCardBody')}</Text>
-          </View>
-        </View>
+      {selectedAccountId && (
+        <RecordFilterBadge
+          label={
+            targetedAccount
+              ? t('history.filteredToAccount', { name: targetedAccount.name })
+              : t('history.filterItemUnavailable')
+          }
+          onClear={() => {
+            setSelectedAccountId(null);
+            router.setParams({ id: '' });
+          }}
+        />
       )}
 
       {/* Bank Accounts List */}

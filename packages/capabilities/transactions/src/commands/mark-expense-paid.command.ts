@@ -20,6 +20,7 @@ interface EventTargetRow {
   note: string | null;
   envelopeId: string | null;
   envelopeName: string | null;
+  envelopeBankAccountId: string | null;
   envelopeIsPrivate: boolean | null;
   envelopeUserId: string | null;
   bankAccountIsPrivate: boolean | null;
@@ -42,6 +43,7 @@ async function loadAccessiblePendingTarget(
       note: expenseEvents.note,
       envelopeId: expenseEvents.envelopeId,
       envelopeName: envelopes.name,
+      envelopeBankAccountId: envelopes.bankAccountId,
       envelopeIsPrivate: envelopes.isPrivate,
       envelopeUserId: envelopes.userId,
       bankAccountIsPrivate: bankAccounts.isPrivate,
@@ -74,6 +76,7 @@ async function applyShortfallTransfers(
   transfers: NonNullable<MarkExpensePaidInput["shortfallTransfers"]>,
   destEnvelopeId: string,
   destEnvelopeName: string,
+  destBankAccountId: string | null,
   paidDate: string,
   tenantId: string,
   appId: string,
@@ -154,7 +157,7 @@ async function applyShortfallTransfers(
       },
       {
         envelopeId: destEnvelopeId,
-        bankAccountId: null,
+        bankAccountId: destBankAccountId,
         flowType: "CREDIT" as const,
         transactionType: "TRANSFER_IN" as const,
         amount: t.amount,
@@ -221,6 +224,7 @@ export async function markExpensePaidCommand(
         input.shortfallTransfers ?? [],
         evt.envelopeId,
         evt.envelopeName || "Envelope",
+        evt.envelopeBankAccountId ?? null,
         paidDate,
         tenantId,
         appId,

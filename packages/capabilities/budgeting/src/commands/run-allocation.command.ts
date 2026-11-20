@@ -1,4 +1,5 @@
-import { envelopes, allocationPlans, allocationPlanLines, transactionLedger, incomeEvents, incomeSources, expenseEvents, bankAccounts, getEnvelopeBalancesMap, tenants, DbOrTx } from "@money-matters/db";
+import { t } from "@money-matters/i18n";
+import { envelopes, allocationPlans, allocationPlanLines, transactionLedger, incomeEvents, incomeSources, expenseEvents, bankAccounts, getEnvelopeBalancesMap, tenants, userPreferences, DbOrTx } from "@money-matters/db";
 import { eq, and, sql } from "drizzle-orm";
 import { runAllocationEngine, EngineBucket } from "../engine/allocation-engine.js";
 import { getTenantDateString } from "@money-matters/core";
@@ -102,8 +103,13 @@ export async function runAllocationCommand(
     .from(tenants)
     .where(eq(tenants.id, tenantId))
     .limit(1);
-  const tenantTz = tenantRecord?.timezone || "UTC";
-  const getLocalDateString = (d: Date = new Date()) => getTenantDateString(d, { timezone: tenantTz });
+  const [userPrefRecord] = await dbClient
+    .select({ timezone: userPreferences.timezone })
+    .from(userPreferences)
+    .where(eq(userPreferences.userId, userId))
+    .limit(1);
+  const effectiveTz = userPrefRecord?.timezone || tenantRecord?.timezone || "UTC";
+  const getLocalDateString = (d: Date = new Date()) => getTenantDateString(d, { timezone: effectiveTz });
 
   let freqDays = 14;
   if (eventWithSource?.rrule) {
@@ -174,7 +180,7 @@ export async function runAllocationCommand(
     paycheckDate: eventWithSource ? new Date(eventWithSource.expectedDate + "T00:00:00Z") : new Date(),
     paycheckFrequencyDays: freqDays,
     dueBufferDays: bufferDays,
-    timezone: tenantTz,
+    timezone: effectiveTz,
     upcomingExpenses: filteredPendingExpenses.map((e) => ({
       envelopeId: e.envelopeId,
       name: e.name,
@@ -198,9 +204,14 @@ export async function runAllocationCommand(
       if (existingPlan.status === "CONFIRMED") {
         throw new Error("Cannot re-run allocation over an already-confirmed payday. Revert the payday first.");
       }
+      const archiveTime = new Date();
+      await tx
+        .update(allocationPlanLines)
+        .set({ archivedAt: archiveTime, archivedBy: userId, updatedAt: archiveTime, updatedBy: userId })
+        .where(eq(allocationPlanLines.planId, existingPlan.id));
       await tx
         .update(allocationPlans)
-        .set({ archivedAt: new Date(), updatedAt: new Date(), updatedBy: userId })
+        .set({ archivedAt: archiveTime, archivedBy: userId, updatedAt: archiveTime, updatedBy: userId })
         .where(eq(allocationPlans.id, existingPlan.id));
     }
 
@@ -212,7 +223,7 @@ export async function runAllocationCommand(
       incomeEventId,
       status: isFuturePlanned ? "PENDING" : "CONFIRMED",
       totalIncomeAmount: incomeAmount.toFixed(2),
-      confirmedAt: new Date(),
+      confirmedAt: isFuturePlanned ? null : new Date(),
       createdBy: userId,
       updatedBy: userId,
     })
@@ -264,6 +275,7 @@ export async function runAllocationCommand(
         idempotencyKey: `paydayalloc-${insertedLine.id}`,
         note: line.reasoning?.trim() || "Payday allocation",
         source: "MANUAL" as const,
+        recordedAt: markAsReceivedToday ? new Date() : new Date(eventDateStr + "T12:00:00Z"),
         createdBy: userId,
         updatedBy: userId,
       });
@@ -348,7 +360,7 @@ export async function runAllocationCommand(
       if (totalBillsAllocated > 0) {
         targetsHit.push({
           id: "bills-ring-fenced",
-          name: "Upcoming Bills Ring-Fenced",
+          name: t("payday.celebration.billsRingFenced"),
           type: "BILLS_COVERED",
           amount: totalBillsAllocated,
         });

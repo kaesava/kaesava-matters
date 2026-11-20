@@ -6,7 +6,8 @@ import {
 } from 'react-native';
 import { useRouter, type Href } from 'expo-router';
 import { Feather } from '@expo/vector-icons';
-import { useMobileToast, MobileButton, TypedConfirmDialog } from '@money-matters/ui/mobile';
+import { useMobileToast, MobileButton, TypedConfirmDialog, InfoTooltip, DESIGN_TOKENS } from '@money-matters/ui/mobile';
+import { usePostHog } from 'posthog-react-native';
 import { t } from '@money-matters/i18n';
 import * as SecureStore from 'expo-secure-store';
 import { trpc, setActiveSessionToken, setActiveTenantId } from '../../lib/trpc';
@@ -16,6 +17,7 @@ import { unregisterCachedPushToken } from '../../lib/push';
 export function HouseholdDangerZoneSection() {
   const router = useRouter();
   const toast = useMobileToast();
+  const posthog = usePostHog();
   const utils = trpc.useUtils();
   const govQuery = trpc.getHouseholdGovernanceInfo.useQuery();
   const deleteMutation = trpc.deleteMyAccount.useMutation();
@@ -30,6 +32,7 @@ export function HouseholdDangerZoneSection() {
 
   const handleSignOutAndExit = async (_hasOtherHousehold: boolean) => {
     await unregisterCachedPushToken((input) => removeToken.mutateAsync(input));
+    posthog?.reset();
     await authClient.signOut();
     await SecureStore.deleteItemAsync('money-matters_session_token');
     await SecureStore.deleteItemAsync('money-matters-session-token');
@@ -83,8 +86,9 @@ export function HouseholdDangerZoneSection() {
   return (
     <View style={styles.card}>
       <View style={styles.headerRow}>
-        <Feather name="alert-triangle" size={16} color="#B91C1C" />
+        <Feather name="alert-triangle" size={16} color={DESIGN_TOKENS.colors.critical} />
         <Text style={styles.cardTitle}>{t('settings.dangerZone.title')}</Text>
+        <InfoTooltip content={t('settings.dangerZone.tooltip')} />
       </View>
       <Text style={styles.cardSubtitle}>
         {t('settings.dangerZone.subtitle')}

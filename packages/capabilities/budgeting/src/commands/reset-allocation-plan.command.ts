@@ -5,7 +5,8 @@ export async function resetAllocationPlanCommand(
   incomeEventId: string,
   tenantId: string,
   appId: string,
-  dbClient: DbOrTx
+  dbClient: DbOrTx,
+  userId?: string
 ) {
   return await dbClient.transaction(async (tx) => {
     // Find unconfirmed pending draft allocation plan for this income event
@@ -26,15 +27,22 @@ export async function resetAllocationPlanCommand(
       return { success: true, count: 0 };
     }
 
+    const now = new Date();
+    const auditFields = {
+      archivedAt: now,
+      updatedAt: now,
+      ...(userId ? { archivedBy: userId, updatedBy: userId } : {}),
+    };
+
     // Soft-delete allocation plan lines and the plan record
     await tx
       .update(allocationPlanLines)
-      .set({ archivedAt: new Date(), updatedAt: new Date() })
+      .set(auditFields)
       .where(eq(allocationPlanLines.planId, plan.id));
 
     await tx
       .update(allocationPlans)
-      .set({ archivedAt: new Date(), updatedAt: new Date() })
+      .set(auditFields)
       .where(eq(allocationPlans.id, plan.id));
 
     return { success: true, count: 1, planId: plan.id };
