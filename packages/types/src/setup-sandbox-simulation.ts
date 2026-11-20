@@ -94,7 +94,6 @@ function buildSandboxBuckets(
   cycleFactor: number
 ): InternalSandboxBucket[] {
   const everydayMonthly = (input.activeEveryday || []).reduce((s, c) => s + (c.monthlyAud || 0), 0);
-  const floorVal = (input.activeEveryday || []).reduce((s, c) => s + (c.safetyBufferFloor || 0), 0);
   const userGoals = input.goals || [];
   return [
     {
@@ -102,7 +101,7 @@ function buildSandboxBuckets(
       type: "EVERYDAY",
       isPriority: true,
       isSurplusTarget: false,
-      neededCents: Math.round((everydayMonthly * cycleFactor + floorVal) * 100),
+      neededCents: Math.round(everydayMonthly * cycleFactor * 100),
     },
     ...(input.activeRegular || []).map((b) => ({
       name: b.name,

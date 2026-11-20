@@ -25,13 +25,18 @@ export default function SetupGoalsScreen() {
     handleRemoveGoal,
   } = useSetupWizard();
 
+  const tz = getMobileLocaleConfig().timezone;
+  const getDefaultTargetDate = () => {
+    const d = new Date();
+    d.setMonth(d.getMonth() + 12);
+    return getTenantDateString(d, { timezone: tz });
+  };
   const [customName, setCustomName] = useState('');
   const [customTarget, setCustomTarget] = useState(isAud ? '5000' : '0');
-  const [customDate, setCustomDate] = useState('');
+  const [customDate, setCustomDate] = useState(() => getDefaultTargetDate());
   const [customFrequency, setCustomFrequency] = useState<'WEEKLY' | 'FORTNIGHTLY' | 'MONTHLY' | 'QUARTERLY' | 'ANNUALLY'>('MONTHLY');
   const [customType, setCustomType] = useState<'TARGET_BALANCE' | 'RECURRING'>('TARGET_BALANCE');
 
-  const tz = getMobileLocaleConfig().timezone;
   const todayStr = getTenantDateString(new Date(), { timezone: tz });
   const isCustomPastDate = Boolean(customType === 'TARGET_BALANCE' && customDate && customDate < todayStr);
 
@@ -193,7 +198,10 @@ export default function SetupGoalsScreen() {
       <SetupGoalsPresetsGrid onTogglePreset={togglePreset} isPresetActive={isPresetActive} isAud={isAud} />
 
       <View style={styles.customBox}>
-        <Text style={styles.customHeading}>{t('setup.goals.addCustomGoal')}</Text>
+        <View style={styles.headerTitleRow}>
+          <Text style={styles.customHeading}>{t('setup.goals.addCustomGoal')}</Text>
+          <InfoTooltip title={t('setup.goals.modeTooltipTitle')} content={t('setup.goals.modeTooltipContent')} />
+        </View>
         <TextInput
           style={styles.customInput}
           placeholder={t('setup.goals.customGoalPlaceholder')}

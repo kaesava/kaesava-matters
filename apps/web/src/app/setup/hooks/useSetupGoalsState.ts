@@ -27,7 +27,7 @@ export function useSetupGoalsState({
     },
     {
       id: "g-2",
-      name: "Annual Family Holiday",
+      name: "Annual Holiday",
       monthlyAmount: 250,
       icon: "plane",
       targetAmount: 3000,

@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { View, Text, StyleSheet } from 'react-native';
-import { DESIGN_TOKENS, MobileModalDialog, AmountInput, MobileButton } from '@money-matters/ui/mobile';
+import { DESIGN_TOKENS, MobileModalDialog, AmountInput, MobileButton, InfoTooltip } from '@money-matters/ui/mobile';
 import {
   EstimatedCategoryItem,
   IncomeItem,
@@ -100,7 +100,23 @@ export function MobilePaydaySandboxModal({
               <Text style={styles.successText}>
                 {t('setup.sandbox.simulatedSuccess')}
               </Text>
+              <InfoTooltip
+                title={t('setup.sandbox.rationaleTooltipTitle')}
+                content={t('setup.sandbox.rationaleTooltipContent', {
+                  days: String(simResult.regularCycleDays),
+                  surplusAmount: formatMobileCurrency(simResult.surplusSwept),
+                  surplusTarget: simResult.surplusTargetName,
+                })}
+              />
             </View>
+            {simResult.surplusSwept > 0 && (
+              <Text style={styles.subtitle}>
+                {t('setup.sandbox.surplusSweptNote', {
+                  amount: formatMobileCurrency(simResult.surplusSwept),
+                  target: simResult.surplusTargetName,
+                })}
+              </Text>
+            )}
 
             <View style={styles.metricRow}>
               <View style={styles.metricCard}>

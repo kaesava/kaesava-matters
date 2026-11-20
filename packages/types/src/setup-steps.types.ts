@@ -73,7 +73,7 @@ export interface GoalPresetConfig {
 }
 
 export const PRESET_GOALS: GoalPresetConfig[] = [
-  { name: "Annual Family Holiday", nameKey: "setup.goals.presetHoliday", fundingMode: "TARGET_BALANCE", icon: "plane", defaultTarget: 5000, defaultMonths: 12 },
+  { name: "Annual Holiday", nameKey: "setup.goals.presetHoliday", fundingMode: "TARGET_BALANCE", icon: "plane", defaultTarget: 5000, defaultMonths: 12 },
   { name: "Car / Vehicle", nameKey: "setup.goals.presetVehicle", fundingMode: "TARGET_BALANCE", icon: "car", defaultTarget: 15000, defaultMonths: 24 },
   { name: "Tech Upgrade", nameKey: "setup.goals.presetTech", fundingMode: "TARGET_BALANCE", icon: "laptop", defaultTarget: 1500, defaultMonths: 6 },
   { name: "Emergency Reserve", nameKey: "setup.goals.presetEmergency", fundingMode: "RECURRING", icon: "shield", defaultTarget: 300 },

@@ -13,7 +13,7 @@ export interface GoalPresetConfig {
 export const PRESET_GOALS: GoalPresetConfig[] = [
   // 3 Target Balance Goals
   {
-    name: "Annual Family Holiday",
+    name: "Annual Holiday",
     nameKey: "setup.goals.presetHoliday",
     fundingMode: "TARGET_BALANCE",
     icon: "plane",

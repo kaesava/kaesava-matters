@@ -136,7 +136,7 @@ export function SetupWizardProvider({ children: reactChildren }: { children: Rea
     },
     {
       id: 'g-2',
-      name: 'Annual Family Holiday',
+      name: 'Annual Holiday',
       fundingMode: 'TARGET_BALANCE',
       monthlyAmount: 250,
       icon: 'plane',

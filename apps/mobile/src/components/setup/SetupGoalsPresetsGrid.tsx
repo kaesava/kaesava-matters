@@ -15,7 +15,7 @@ export interface MobileGoalPresetConfig {
 
 export const PRESET_GOALS: MobileGoalPresetConfig[] = [
   {
-    name: 'Annual Family Holiday',
+    name: 'Annual Holiday',
     nameKey: 'setup.goals.presetHoliday',
     fundingMode: 'TARGET_BALANCE',
     icon: 'plane',

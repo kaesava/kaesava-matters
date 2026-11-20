@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useMemo } from "react";
 import { Sparkles, ShieldCheck, Target, Wallet } from "lucide-react";
-import { ModalDialog, AmountField, Button } from "@money-matters/ui/web";
+import { ModalDialog, AmountField, Button, InfoTooltip } from "@money-matters/ui/web";
 import {
   EstimatedCategoryItem,
   IncomeItem,
@@ -102,9 +102,26 @@ export function PaydaySandboxModal({
 
         {isSimulated && (
           <div className="space-y-4 animate-in fade-in duration-300">
-            <div className="p-3 bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800 rounded-xl text-xs font-semibold text-emerald-900 dark:text-emerald-200">
-              {t("setup.sandbox.simulatedSuccess")}
+            <div className="p-3 bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800 rounded-xl text-xs font-semibold text-emerald-900 dark:text-emerald-200 flex items-center justify-between gap-2">
+              <span>{t("setup.sandbox.simulatedSuccess")}</span>
+              <InfoTooltip
+                title={t("setup.sandbox.rationaleTooltipTitle")}
+                content={t("setup.sandbox.rationaleTooltipContent", {
+                  days: String(simResult.regularCycleDays),
+                  surplusAmount: fmt(simResult.surplusSwept),
+                  surplusTarget: simResult.surplusTargetName,
+                })}
+              />
             </div>
+
+            {simResult.surplusSwept > 0 && (
+              <p className="text-[11px] font-semibold text-indigo-700 dark:text-indigo-300 px-1">
+                {t("setup.sandbox.surplusSweptNote", {
+                  amount: fmt(simResult.surplusSwept),
+                  target: simResult.surplusTargetName,
+                })}
+              </p>
+            )}
 
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
               <div className="p-3.5 bg-blue-50 dark:bg-blue-950/40 border border-blue-200 dark:border-blue-900 rounded-xl space-y-1">

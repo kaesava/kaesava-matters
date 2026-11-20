@@ -42,7 +42,7 @@ export function SetupGoalsStep({
 }: SetupGoalsStepProps) {
   const [customName, setCustomName] = useState("");
   const [customTarget, setCustomTarget] = useState(isAud ? "5000" : "0");
-  const [customDate, setCustomDate] = useState("");
+  const [customDate, setCustomDate] = useState(() => getFutureDate(12));
   const [customType, setCustomType] = useState<"TARGET_BALANCE" | "RECURRING">("TARGET_BALANCE");
   const [customFrequency, setCustomFrequency] = useState<"WEEKLY" | "FORTNIGHTLY" | "MONTHLY" | "QUARTERLY" | "ANNUALLY">("MONTHLY");
   const [showUnsavedDraftDialog, setShowUnsavedDraftDialog] = useState(false);
@@ -97,18 +97,24 @@ export function SetupGoalsStep({
       });
     } else {
       const dueDate = customDate || getFutureDate(12);
+      const now = new Date();
+      const targetDt = new Date(`${dueDate}T00:00:00`);
+      const monthsDiff = Math.max(
+        1,
+        (targetDt.getFullYear() - now.getFullYear()) * 12 + (targetDt.getMonth() - now.getMonth())
+      );
       onAddGoal({
         name: customName.trim(),
         targetAmount: amountNum,
         dueDate,
         fundingMode: "TARGET_BALANCE",
         isPriority: true,
-        monthlyAmount: Math.round(amountNum / 12),
+        monthlyAmount: Math.round(amountNum / monthsDiff),
         icon: "target",
       });
     }
     setCustomName("");
-    setCustomDate("");
+    setCustomDate(getFutureDate(12));
     setCustomTarget("5000");
   };
 
@@ -153,7 +159,13 @@ export function SetupGoalsStep({
 
       {/* Add Custom Goal Section */}
       <div className="p-4 bg-white rounded-2xl border border-zinc-200/80 flex flex-col gap-3">
-        <label className="text-xs font-bold text-[#1B2B4B]">{t("setup.goals.addCustomGoal")}</label>
+        <div className="flex items-center gap-1.5">
+          <label className="text-xs font-bold text-[#1B2B4B]">{t("setup.goals.addCustomGoal")}</label>
+          <InfoTooltip
+            title={t("setup.goals.modeTooltipTitle")}
+            content={t("setup.goals.modeTooltipContent")}
+          />
+        </div>
         <div className="max-w-xs">
           <EnvelopeModeToggle
             mode={customType}
