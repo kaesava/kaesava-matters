@@ -123,13 +123,13 @@ export function ProductFeaturesGrid() {
 
           <div className="p-3 bg-slate-50 rounded-2xl border border-slate-200/80 space-y-1.5 text-[11px] font-mono font-bold">
             <div className="text-emerald-700 bg-emerald-50/80 px-2.5 py-1 rounded-lg border border-emerald-200/60">
-              🟢 SAFE YES — bills stay 100% protected
+              {t("landing.pillar3SampleSafe")}
             </div>
             <div className="text-blue-700 bg-blue-50/80 px-2.5 py-1 rounded-lg border border-blue-200/60">
-              🔵 WAIT FOR PAYDAY — pay covers in 6 days
+              {t("landing.pillar3SampleWait")}
             </div>
             <div className="text-[#ba1a1a] bg-rose-50/80 px-2.5 py-1 rounded-lg border border-rose-200/60">
-              🔴 HARD NO — deficit risk detected
+              {t("landing.pillar3SampleNo")}
             </div>
           </div>
         </div>

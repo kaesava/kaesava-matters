@@ -96,10 +96,10 @@ export function PaydayCockpitPreview() {
             <div className="bg-emerald-300 h-full w-[6%] transition-all duration-500" title="Offset" />
           </div>
           <div className="flex flex-wrap items-center justify-between text-[11px] font-bold text-slate-500 font-mono pt-1">
-            <span className="text-[#2563eb]">■ Bills (51%)</span>
-            <span className="text-indigo-600">■ Goals (18%)</span>
-            <span className="text-[#22c55e]">■ Everyday (25%)</span>
-            <span className="text-emerald-700">■ Offset Sweep (6%)</span>
+            <span className="text-[#2563eb]">{t("landing.cockpitBarBills")}</span>
+            <span className="text-indigo-600">{t("landing.cockpitBarGoals")}</span>
+            <span className="text-[#22c55e]">{t("landing.cockpitBarEveryday")}</span>
+            <span className="text-emerald-700">{t("landing.cockpitBarOffset")}</span>
           </div>
         </div>
 

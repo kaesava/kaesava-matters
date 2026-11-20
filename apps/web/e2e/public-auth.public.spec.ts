@@ -73,6 +73,12 @@ test.describe('1. Public Marketing, SEO, Blog & Legal Pages', () => {
 
     await page.keyboard.press('Escape');
     await expect(transferModal).not.toBeVisible();
+
+    await simSection.getByRole('button', { name: 'Bills Fortress' }).click();
+    await simSection.getByRole('button', { name: /Can I Afford This/i }).click();
+    await expect(simSection.getByRole('button', { name: /Recurring Commitment/i })).toBeVisible();
+    await simSection.getByRole('button', { name: /Run Verdict Simulation/i }).click();
+    await expect(simSection.getByText(/SAFE YES/i)).toBeVisible();
   });
 
   test('1.6 Blog Index, Article Reader & Missing Slug 404 (`/blog`, `/blog/[slug]`)', async ({ page }) => {

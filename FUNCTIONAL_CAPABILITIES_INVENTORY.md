@@ -27,7 +27,7 @@
 | Root Layout | `apps/web/src/app/layout.tsx` | 168 | Public / Root | `TRPCProvider`, `ThemeProvider`, `ToastContainer`, `PostHogProvider`, `CookieConsentBanner` |
 | Global Error | `apps/web/src/app/global-error.tsx` | 60 | Public | Next.js global error boundary (`<html><body>`) |
 | Global 404 | `apps/web/src/app/not-found.tsx` | 58 | Public | Top-level 404 screen with link to `/` and `/dashboard` |
-| `/` | `apps/web/src/app/page.tsx` | 15 | Public (SSR + `metadata`) | `LandingPageClient` (`LandingHeader`, `LandingHero`, `ProductFeaturesGrid`, `InteractivePaydayEngine`, `FeaturedBlogsSection`, `PricingSection`, `TrustSection`, `FaqSection`, `LandingFooter`, `AuthModal`, `EarlyAccessModal`) |
+| `/` | `apps/web/src/app/page.tsx` | 15 | Public (SSR + `metadata`) | `LandingPageClient` (`LandingHeader`, `LandingHero`, `ProductFeaturesGrid`, `InteractivePaydayEngine` + `LandingAffordSimulatorTab`, `FeaturedBlogsSection`, `PricingSection`, `TrustSection`, `FaqSection`, `LandingFooter`, `AuthModal`, `EarlyAccessModal`) |
 | `/sign-in` | `apps/web/src/app/sign-in/page.tsx` | 120 | Public (`<Suspense>`) | `SignInForm`, `SocialAuthButtons` |
 | `/sign-up` | `apps/web/src/app/sign-up/page.tsx` | 134 | Public (`<Suspense>`) | `SignUpForm`, `SocialAuthButtons` |
 | `/forgot-password` | `apps/web/src/app/forgot-password/page.tsx` | 330 | Public | Multi-step email/OTP/new-password reset flow (`OtpInput`, `PasswordStrengthIndicator`) |
