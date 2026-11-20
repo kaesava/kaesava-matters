@@ -219,7 +219,9 @@ export async function resolveClaimsFromNeonAuth(
       return null;
     }
 
-    const sessionData = (await authRes.json()) as { user?: { id?: string; email?: string; name?: string } };
+    const sessionData = (await authRes.json()) as {
+      user?: { id?: string; email?: string; name?: string } | null;
+    } | null;
     if (sessionData?.user?.id && sessionData?.user?.email) {
       const resolved: ResolvedClaims = {
         userId: sessionData.user.id,
@@ -233,7 +235,11 @@ export async function resolveClaimsFromNeonAuth(
       return resolved;
     }
 
-    logger.warn('Neon Auth /get-session missing user ID or email', { correlationId });
+    if (!sessionData?.user) {
+      logger.debug('Neon Auth /get-session returned no active session', { correlationId });
+    } else {
+      logger.warn('Neon Auth /get-session missing user ID or email', { correlationId });
+    }
     return null;
   } catch (err: unknown) {
     logger.error('Neon Auth endpoint fallback lookup failed', { correlationId, err });
@@ -334,7 +340,7 @@ export async function createEdgeContext(
     claims = await resolveClaimsFromDatabase(token, requestDb, correlationId);
   }
 
-  if (!claims && (token || req.headers.get('cookie'))) {
+  if (!claims && token) {
     claims = await resolveClaimsFromNeonAuth(req, env, correlationId);
   }
 

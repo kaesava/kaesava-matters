@@ -1,9 +1,11 @@
-import { describe, it, expect, beforeEach } from 'vitest';
+import { describe, it, expect, beforeEach, vi } from 'vitest';
 import {
   extractCorrelationId,
   extractAuthToken,
   buildNeonAuthCookieHeader,
   clearEdgeContextCache,
+  createEdgeContext,
+  resolveClaimsFromNeonAuth,
 } from './edge-context.js';
 
 describe('Edge Context Unit Tests', () => {
@@ -195,6 +197,46 @@ describe('Edge Context Unit Tests', () => {
 
       expect(result1.tenantId).toBeNull();
       expect(result1.role).toBeNull();
+    });
+  });
+
+  describe('Neon Auth fallback & unauthenticated cookies', () => {
+    it('does not call Neon Auth when request only has non-session cookies', async () => {
+      const fetchSpy = vi.spyOn(globalThis, 'fetch');
+      const headers = new Headers();
+      headers.set('cookie', 'mm_analytics_consent=granted; theme=light');
+      const req = new Request('https://api.moneymatters.kaesava.au/trpc', { headers });
+
+      const ctx = await createEdgeContext(
+        { req, resHeaders: new Headers(), info: {} as Parameters<typeof createEdgeContext>[0]['info'] },
+        {
+          DATABASE_URL: 'postgres://user:pass@localhost:5432/db',
+          NEON_AUTH_BASE_URL: 'https://auth.example.com',
+        }
+      );
+
+      expect(ctx.session).toBeNull();
+      expect(fetchSpy).not.toHaveBeenCalled();
+      fetchSpy.mockRestore();
+    });
+
+    it('returns null cleanly when Neon Auth /get-session responds 200 with null body', async () => {
+      const fetchSpy = vi
+        .spyOn(globalThis, 'fetch')
+        .mockResolvedValue(new Response(JSON.stringify(null), { status: 200 }));
+      const headers = new Headers();
+      headers.set('cookie', 'neon-auth.session_token=expired-token-123');
+      const req = new Request('https://api.moneymatters.kaesava.au/trpc', { headers });
+
+      const claims = await resolveClaimsFromNeonAuth(
+        req,
+        { NEON_AUTH_BASE_URL: 'https://auth.example.com' },
+        'test-corr-id'
+      );
+
+      expect(claims).toBeNull();
+      expect(fetchSpy).toHaveBeenCalledTimes(1);
+      fetchSpy.mockRestore();
     });
   });
 });
