@@ -34,6 +34,7 @@ export function usePaycheckStudio(id: string | undefined, returnTo?: string) {
   const [showTransferModal, setShowTransferModal] = useState(false);
   const [celebrationTargets, setCelebrationTargets] = useState<import('@money-matters/types').TargetCelebrationItem[]>([]);
   const [showExitDialog, setShowExitDialog] = useState(false);
+  const [pendingExitHref, setPendingExitHref] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
 
   const todayStr = useMemo(() => formatIsoDate(new Date()), []);
@@ -175,17 +176,26 @@ export function usePaycheckStudio(id: string | undefined, returnTo?: string) {
     },
   });
 
-  const attemptExit = useCallback(() => {
+  const attemptExit = useCallback((targetHref?: string) => {
+    const nextHref = typeof targetHref === 'string' ? targetHref : null;
     if (isDirty && !isReadOnly) {
+      setPendingExitHref(nextHref);
       setShowExitDialog(true);
       return;
     }
-    if (returnTo) router.push(returnTo as Href);
+    if (nextHref) router.push(nextHref as Href);
+    else if (returnTo) router.push(returnTo as Href);
     else router.back();
   }, [isDirty, isReadOnly, returnTo, router]);
 
   const handleDiscardAndExit = () => {
     setShowExitDialog(false);
+    if (pendingExitHref) {
+      const next = pendingExitHref;
+      setPendingExitHref(null);
+      router.push(next as Href);
+      return;
+    }
     if (returnTo) router.push(returnTo as Href);
     else router.back();
   };
@@ -248,7 +258,11 @@ export function usePaycheckStudio(id: string | undefined, returnTo?: string) {
     handleLineAmountChange, handleLineReasoningChange,
     showTransferModal, setShowTransferModal,
     celebrationTargets,
-    showExitDialog, setShowExitDialog,
+    showExitDialog,
+    setShowExitDialog: (open: boolean) => {
+      if (!open) setPendingExitHref(null);
+      setShowExitDialog(open);
+    },
     handleDiscardAndExit,
   };
 }

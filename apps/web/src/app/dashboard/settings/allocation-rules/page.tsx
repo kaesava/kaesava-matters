@@ -187,7 +187,7 @@ function AllocationRulesContent() {
       toast.success(t("settings.paydayRules.saveSuccess"));
       setIsDirty(false);
       setHasManualOrderEdit(false);
-      router.push(backHref);
+      router.back();
     } catch (err: unknown) {
       toast.error(err instanceof Error ? err.message : t("common.errorTryAgain"));
     } finally {
@@ -195,13 +195,11 @@ function AllocationRulesContent() {
     }
   };
 
-  const backHref = "/dashboard/settings?tab=household";
-
   const handleBack = () => {
     if (isDirty) {
       setShowDiscardConfirm(true);
     } else {
-      router.push(backHref);
+      router.back();
     }
   };
 
@@ -220,7 +218,7 @@ function AllocationRulesContent() {
             className="text-xs font-semibold text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-200 transition-colors mb-2 inline-flex items-center gap-1 cursor-pointer"
           >
             <span>←</span>
-            <span>{t("settings.title")}</span>
+            <span>{t("common.back")}</span>
           </button>
           <div className="flex items-center gap-2">
             <h1 className="text-xl font-bold text-[#1B2B4B] dark:text-white">
@@ -390,7 +388,7 @@ function AllocationRulesContent() {
           variant="danger"
           onConfirm={() => {
             setShowDiscardConfirm(false);
-            router.push(backHref);
+            router.back();
           }}
           onClose={() => setShowDiscardConfirm(false)}
         />

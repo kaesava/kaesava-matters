@@ -18,6 +18,7 @@ interface PaydayCelebrationCardProps {
   submitting: boolean;
   isDeficit?: boolean;
   strategyName?: string | null;
+  onStrategyClick?: () => void;
   onConfirm: () => void;
   onUnlockAndRecalculate?: () => void;
   onRecalculate?: () => void;
@@ -40,6 +41,7 @@ export function PaydayCelebrationCard({
   submitting,
   isDeficit = false,
   strategyName,
+  onStrategyClick,
   onConfirm,
   onUnlockAndRecalculate,
   onRecalculate,
@@ -82,9 +84,19 @@ export function PaydayCelebrationCard({
               <span>{badgeText}</span>
             </div>
             {strategyName && (
-              <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold bg-white/10 text-white/90 border border-white/20">
-                {t("paydayDrawer.activeStrategyBadge", { name: strategyName })}
-              </span>
+              onStrategyClick ? (
+                <button
+                  type="button"
+                  onClick={onStrategyClick}
+                  className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold bg-white/10 hover:bg-white/20 text-blue-200 hover:text-white underline underline-offset-2 border border-white/20 transition-colors cursor-pointer"
+                >
+                  {t("paydayDrawer.activeStrategyBadge", { name: strategyName })}
+                </button>
+              ) : (
+                <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold bg-white/10 text-white/90 border border-white/20">
+                  {t("paydayDrawer.activeStrategyBadge", { name: strategyName })}
+                </span>
+              )
             )}
           </div>
           <h2 className="text-xl sm:text-2xl font-black tracking-tight text-white pt-1">

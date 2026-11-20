@@ -61,7 +61,7 @@ export default function IncomeSplitStudioScreen() {
     return (
       <View style={styles.loadingContainer}>
         <Text style={styles.loadingText}>{t('common.errorTryAgain')}</Text>
-        <TouchableOpacity onPress={attemptExit} activeOpacity={0.7}>
+        <TouchableOpacity onPress={() => attemptExit()} activeOpacity={0.7}>
           <Text style={[styles.loadingText, { color: DESIGN_TOKENS.colors.sereneBlue }]}>
             {t('common.back')}
           </Text>
@@ -119,6 +119,7 @@ export default function IncomeSplitStudioScreen() {
             submitting={submitting}
             isDeficit={isDeficit}
             strategyName={previewData?.strategyName}
+            onStrategyClick={() => attemptExit('/(app)/settings/allocation-rules')}
             onConfirm={handleConfirmSplit}
             onUnlockAndRecalculate={handleRecalculateTrigger}
             onRecalculate={handleRecalculateTrigger}

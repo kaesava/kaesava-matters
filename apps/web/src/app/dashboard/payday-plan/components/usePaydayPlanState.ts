@@ -62,6 +62,7 @@ export function usePaydayPlanState({ incomeEventId, returnTo = "/dashboard" }: {
   const [showTransferModal, setShowTransferModal] = useState(false);
   const [celebrationTargets, setCelebrationTargets] = useState<import("@money-matters/types").TargetCelebrationItem[]>([]);
   const [showExitDialog, setShowExitDialog] = useState(false);
+  const [pendingExitHref, setPendingExitHref] = useState<string | null>(null);
 
   const applyPreviewData = useCallback((pData: PaydayPreviewData) => {
     setSourceName(pData.incomeEventName || "Paycheck");
@@ -156,9 +157,16 @@ export function usePaydayPlanState({ incomeEventId, returnTo = "/dashboard" }: {
     setSourceName, setActualAmount, setSelectedDate,
   });
 
-  const attemptExit = useCallback(() => {
-    if (isDirty && !isReadOnly) { setShowExitDialog(true); return; }
-    if (returnTo) {
+  const attemptExit = useCallback((targetHref?: string) => {
+    const nextHref = typeof targetHref === "string" ? targetHref : null;
+    if (isDirty && !isReadOnly) {
+      setPendingExitHref(nextHref);
+      setShowExitDialog(true);
+      return;
+    }
+    if (nextHref) {
+      router.push(nextHref);
+    } else if (returnTo) {
       router.push(returnTo);
     } else {
       router.back();
@@ -188,6 +196,21 @@ export function usePaydayPlanState({ incomeEventId, returnTo = "/dashboard" }: {
     return groups.filter((g) => g.items.length > 0);
   }, [lines, pools]);
 
+  const handleDiscardAndExit = () => {
+    setShowExitDialog(false);
+    if (pendingExitHref) {
+      const next = pendingExitHref;
+      setPendingExitHref(null);
+      router.push(next);
+      return;
+    }
+    if (returnTo) {
+      router.push(returnTo);
+    } else {
+      router.back();
+    }
+  };
+
   return {
     poolsQuery, previewQuery, bankAccountsQuery, pools, bankAccounts, receivingAccountId,
     actualAmount, setActualAmount, sourceName, setSourceName, selectedDate, setSelectedDate,
@@ -196,11 +219,17 @@ export function usePaydayPlanState({ incomeEventId, returnTo = "/dashboard" }: {
     isReadOnly, isSavedPlan, isConfirmedPlan, isFutureDate, isDirty, submitting,
     everydayAllocated: summary.everydayAllocated, billsAllocated: summary.billsAllocated, goalsAllocated: summary.goalsAllocated,
     groupedLines, showConfirmWarning, setShowConfirmWarning, showDeleteConfirm, setShowDeleteConfirm,
-    showRecalculateConfirm, setShowRecalculateConfirm, showExitDialog, setShowExitDialog,
+    showRecalculateConfirm, setShowRecalculateConfirm,
+    showExitDialog,
+    setShowExitDialog: (open: boolean) => {
+      if (!open) setPendingExitHref(null);
+      setShowExitDialog(open);
+    },
     activeDrawerPool, setActiveDrawerPool, poolToEdit, setPoolToEdit, isPoolModalOpen, setIsPoolModalOpen,
     showTableDetails, setShowTableDetails, showTransferModal, setShowTransferModal, celebrationTargets,
     handleLineAmountChange, handleLineReasoningChange, attemptExit,
     handleRecalculateTrigger: () => setShowRecalculateConfirm(true),
     ...actions,
+    handleDiscardAndExit,
   };
 }

@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import { DESIGN_TOKENS } from '@money-matters/ui/mobile';
 import { t } from '@money-matters/i18n';
 import { MobilePaydayMetricsGrid } from './MobilePaydayMetricsGrid';
@@ -18,6 +18,7 @@ interface MobilePaydayCelebrationCardProps {
   submitting: boolean;
   isDeficit?: boolean;
   strategyName?: string | null;
+  onStrategyClick?: () => void;
   onConfirm: () => void;
   onUnlockAndRecalculate?: () => void;
   onRecalculate?: () => void;
@@ -39,6 +40,7 @@ export function MobilePaydayCelebrationCard({
   submitting,
   isDeficit = false,
   strategyName,
+  onStrategyClick,
   onConfirm,
   onUnlockAndRecalculate,
   onRecalculate,
@@ -63,11 +65,23 @@ export function MobilePaydayCelebrationCard({
             <Text style={styles.badgeText}>{badgeText}</Text>
           </View>
           {strategyName && (
-            <View style={styles.strategyBadge}>
-              <Text style={styles.strategyBadgeText}>
-                {t('paydayDrawer.activeStrategyBadge', { name: strategyName })}
-              </Text>
-            </View>
+            onStrategyClick ? (
+              <TouchableOpacity
+                onPress={onStrategyClick}
+                activeOpacity={0.75}
+                style={styles.strategyBadge}
+              >
+                <Text style={[styles.strategyBadgeText, styles.strategyBadgeLinkText]}>
+                  {t('paydayDrawer.activeStrategyBadge', { name: strategyName })}
+                </Text>
+              </TouchableOpacity>
+            ) : (
+              <View style={styles.strategyBadge}>
+                <Text style={styles.strategyBadgeText}>
+                  {t('paydayDrawer.activeStrategyBadge', { name: strategyName })}
+                </Text>
+              </View>
+            )
           )}
         </View>
         <Text style={styles.title}>{t('paydayDrawer.celebrationTitle')}</Text>
@@ -144,6 +158,10 @@ const styles = StyleSheet.create({
     fontSize: 11,
     fontWeight: '700',
     color: '#FFFFFF',
+  },
+  strategyBadgeLinkText: {
+    color: '#BFDBFE',
+    textDecorationLine: 'underline',
   },
   sparkle: {
     fontSize: 12,

@@ -101,7 +101,7 @@ export function PaydayPlanScreen({
         </p>
         <button
           type="button"
-          onClick={attemptExit}
+          onClick={() => attemptExit()}
           className="px-4 py-2 rounded-xl bg-slate-100 dark:bg-zinc-800 text-xs font-semibold text-slate-700 dark:text-slate-200 hover:bg-slate-200 dark:hover:bg-zinc-700 transition-colors cursor-pointer"
         >
           {t("common.back")}
@@ -141,6 +141,7 @@ export function PaydayPlanScreen({
         submitting={submitting}
         isDeficit={isDeficit}
         strategyName={previewQuery.data?.strategyName}
+        onStrategyClick={() => attemptExit("/dashboard/settings/allocation-rules")}
         onConfirm={() => {
           if (!isFutureDate && !isDeficit && !submitting) {
             setShowConfirmWarning(true);
