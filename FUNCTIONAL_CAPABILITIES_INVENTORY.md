@@ -215,18 +215,18 @@ All user-facing copy lives in `packages/i18n/src/dictionaries/en/*.ts` (re-expor
 | :--- | :--- | ---: | ---: | ---: | ---: | ---: |
 | `auth.ts` | `auth`, `tenantSwitcher`, `partner` | 83 | 133 (74) | 132 (76) | 0 (0) | 1 (1) |
 | `commandPalette.ts` | `commandPalette` | 26 | 4 (2) | 0 (0) | 0 (0) | 40 (21) |
-| `common.ts` | `common`, `nav`, `actions`, `badges`, `tables`, `forms`, `toasts`, `tooltips`, `validation`, `notFound`, `networkError`, `keyboardShortcuts`, `errors`, `legal`, `location`, `app`, `searchSelect` | 210 | 302 (136) | 307 (98) | 0 (0) | 133 (79) |
-| `dashboard.ts` | `dashboard`, `home`, `cards`, `assistant` | 131 | 83 (71) | 96 (78) | 0 (9) | 18 (19) |
-| `envelopes.ts` | `envelopes`, `categories`, `categoryDrawer`, `drawers`, `modals`, `poolTypes`, `quickPick`, `goalModes` | 312 | 290 (201) | 271 (177) | 0 (0) | 82 (42) |
+| `common.ts` | `common`, `nav`, `actions`, `badges`, `tables`, `forms`, `toasts`, `tooltips`, `validation`, `notFound`, `networkError`, `keyboardShortcuts`, `errors`, `legal`, `location`, `app`, `searchSelect` | 207 | 302 (136) | 307 (98) | 0 (0) | 133 (79) |
+| `dashboard.ts` | `dashboard`, `home`, `cards`, `assistant` | 130 | 83 (71) | 96 (78) | 0 (9) | 18 (19) |
+| `envelopes.ts` | `envelopes`, `categories`, `categoryDrawer`, `drawers`, `modals`, `poolTypes`, `quickPick`, `goalModes` | 309 | 290 (201) | 271 (177) | 0 (0) | 82 (42) |
 | `feedback.ts` | `feedback` | 26 | 25 (25) | 25 (25) | 0 (0) | 0 (0) |
 | `fileNotes.ts` | `fileNotes` | 16 | 2 (2) | 2 (1) | 0 (0) | 27 (16) |
-| `plan.ts` | `planTabs`, `incomeAndBills`, `schedules`, `matrix`, `billCoverage`, `expenseStatus` | 132 | 75 (66) | 100 (81) | 0 (0) | 11 (16) |
+| `plan.ts` | `planTabs`, `incomeAndBills`, `schedules`, `matrix`, `billCoverage`, `expenseStatus` | 130 | 75 (66) | 100 (81) | 0 (0) | 11 (16) |
 | `landing.ts` | `landing` | 292 | 230 (192) | 5 (3) | 0 (0) | 0 (0) |
 | `payday.ts` | `payday`, `paydayDrawer`, `paychecks` | 99 | 86 (75) | 103 (79) | 0 (0) | 14 (8) |
-| `privacy.ts` | `privacy`, `terms`, `public` | 144 | 136 (135) | 22 (21) | 0 (5) | 4 (4) |
-| `reports.ts` | `reports` | 18 | 12 (9) | 8 (8) | 0 (0) | 0 (0) |
-| `settings.ts` + `settings-sections.ts` | `settings`, `subscription`, `notifications`, `bankAccounts` | 385 | 341 (281) | 294 (247) | 4 (3) | 16 (22) |
-| `setup.ts` | `setup` | 176 | 177 (151) | 169 (153) | 0 (0) | 5 (9) |
+| `privacy.ts` | `privacy`, `terms`, `public` | 143 | 136 (135) | 22 (21) | 0 (5) | 4 (4) |
+| `reports.ts` | `reports` | 17 | 12 (9) | 8 (8) | 0 (0) | 0 (0) |
+| `settings.ts` + `settings-sections.ts` | `settings`, `subscription`, `notifications`, `bankAccounts` | 383 | 341 (281) | 294 (247) | 4 (3) | 16 (22) |
+| `setup.ts` | `setup` | 175 | 177 (151) | 169 (153) | 0 (0) | 5 (9) |
 | `tour.ts` | `tour` | 38 | 7 (33) | 7 (33) | 0 (0) | 12 (5) |
 | `history.ts` | `transactions`, `canIAfford` | 177 | 133 (101) | 101 (84) | 0 (0) | 78 (43) |
-| **Total** | **47 Top-Level Namespaces across 16 Files** | **2,260** | **2,036 (1,554)** | **1,642 (1,165)** | **4 (17)** | **441 (245)** |
+| **Total** | **47 Top-Level Namespaces across 16 Files** | **2,247** | **2,036 (1,554)** | **1,642 (1,165)** | **4 (17)** | **441 (245)** |
