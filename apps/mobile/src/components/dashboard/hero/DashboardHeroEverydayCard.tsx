@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
-import { DESIGN_TOKENS } from '@money-matters/ui/mobile';
+import { DESIGN_TOKENS, InfoTooltip } from '@money-matters/ui/mobile';
 import { t } from '@money-matters/i18n';
 import { formatMobileCurrency } from '../../../lib/format';
 
@@ -36,6 +36,10 @@ export const DashboardHeroEverydayCard: React.FC<DashboardHeroEverydayCardProps>
   onAlignBalance,
 }) => {
   const isBufferDipped = safetyBufferFloor > 0 && everydayBalance < safetyBufferFloor;
+  const bufferDippedTooltip = t('dashboard.hero.headsUpBufferTooltip', {
+    balance: formatMobileCurrency(everydayBalance),
+    buffer: formatMobileCurrency(safetyBufferFloor),
+  });
   return (
     <TouchableOpacity
       testID="tour-envelopes-row"
@@ -55,19 +59,40 @@ export const DashboardHeroEverydayCard: React.FC<DashboardHeroEverydayCardProps>
             </Text>
           </View>
         ) : isBillsRisk ? (
-          <View style={[styles.badgePill, styles.badgeRed]}>
-            <Text style={[styles.badgeText, styles.badgeTextRed]}>
-              {t('dashboard.hero.atRisk')}
-            </Text>
+          <View style={{ flexDirection: 'row', alignItems: 'center', gap: 4 }}>
+            <View style={[styles.badgePill, styles.badgeRed]}>
+              <Text style={[styles.badgeText, styles.badgeTextRed]}>
+                {t('dashboard.hero.bufferDippedBadge')}
+              </Text>
+            </View>
+            <InfoTooltip content={bufferDippedTooltip} />
           </View>
         ) : null}
       </View>
 
-      <View style={styles.metricRow}>
-        <View>
-          <Text style={styles.heroAmount}>{formatMobileCurrency(safeToSpend !== undefined ? safeToSpend : everydayBalance)}</Text>
-          <Text style={styles.safeToSpendSub}>{t('dashboard.hero.safeToSpendLabel')}</Text>
-        </View>
+      <View>
+        <Text style={styles.heroAmount}>{formatMobileCurrency(safeToSpend !== undefined ? safeToSpend : everydayBalance)}</Text>
+        <Text style={styles.safeToSpendSub}>{t('dashboard.hero.safeToSpendLabel')}</Text>
+      </View>
+
+      <Text style={styles.pacingSubtitle}>
+        {!hasNextPayday
+          ? t('dashboard.hero.estRemainingNoPayday', {
+              pace: formatMobileCurrency(dailySpendable),
+            })
+          : (daysUntilPayday ?? effectiveDays) <= 0
+          ? t('dashboard.hero.estRemainingToday')
+          : t('dashboard.hero.estRemaining', {
+              pace: formatMobileCurrency(dailySpendable),
+              days: effectiveDays,
+            })
+        }
+      </Text>
+
+      <View style={styles.balanceSyncRow}>
+        <Text style={styles.currentBalanceText}>
+          {t('dashboard.hero.currentBalanceLabel', { amount: formatMobileCurrency(everydayBalance) })}
+        </Text>
         {onAlignBalance && (
           <TouchableOpacity
             testID="tour-bank-accounts"
@@ -80,24 +105,6 @@ export const DashboardHeroEverydayCard: React.FC<DashboardHeroEverydayCardProps>
           </TouchableOpacity>
         )}
       </View>
-
-      <Text style={styles.pacingSubtitle}>
-        {!hasNextPayday
-          ? t('dashboard.hero.estRemainingNoPayday', {
-              amount: formatMobileCurrency(everydayBalance),
-              pace: formatMobileCurrency(dailySpendable),
-            })
-          : (daysUntilPayday ?? effectiveDays) <= 0
-          ? t('dashboard.hero.estRemainingToday', {
-              amount: formatMobileCurrency(everydayBalance),
-            })
-          : t('dashboard.hero.estRemaining', {
-              amount: formatMobileCurrency(everydayBalance),
-              pace: formatMobileCurrency(dailySpendable),
-              days: effectiveDays,
-            })
-        }
-      </Text>
 
       {/* Target Allowance & Buffer Protection */}
       <View style={styles.pacingFooter}>
@@ -237,6 +244,20 @@ const styles = StyleSheet.create({
     fontSize: 11,
     fontWeight: '700',
     color: DESIGN_TOKENS.colors.textMuted,
+  },
+  currentBalanceText: {
+    fontSize: 12,
+    fontWeight: '600',
+    color: DESIGN_TOKENS.colors.textMuted,
+    fontVariant: ['tabular-nums'],
+  },
+  balanceSyncRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingTop: 8,
+    borderTopWidth: 1,
+    borderTopColor: DESIGN_TOKENS.colors.slate[100],
   },
   bufferProtectedText: {
     fontSize: 11,

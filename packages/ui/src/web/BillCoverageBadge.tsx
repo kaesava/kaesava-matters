@@ -25,7 +25,17 @@ export function BillCoverageBadge({
   }
 
   if (status === 'SHORT_BY') {
-    const formatted = formatCurrency(shortfallAmount ?? 0, locale, currency);
+    const numericShortfall = typeof shortfallAmount === 'number'
+      ? shortfallAmount
+      : parseFloat(String(shortfallAmount ?? 0).replace(/[^0-9.-]/g, ''));
+    if (!Number.isFinite(numericShortfall) || numericShortfall < 0.01) {
+      return (
+        <Badge variant="success" className={className}>
+          {t('billCoverage.covered')}
+        </Badge>
+      );
+    }
+    const formatted = formatCurrency(numericShortfall, locale, currency);
     return (
       <Badge variant="danger" className={className}>
         {t('billCoverage.shortBy', { amount: formatted })}

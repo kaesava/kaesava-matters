@@ -46,8 +46,6 @@ export const DashboardHeroCard: React.FC<DashboardHeroCardProps> = ({
   const effectiveDays = daysUntilPayday !== undefined ? daysUntilPayday : 14;
   const effectiveSafeToSpend = safeToSpend !== undefined ? safeToSpend : everydayBalance;
   const isBufferDipped = safetyBufferFloor > 0 && everydayBalance < safetyBufferFloor;
-  const isBillsRisk = !isAwaitingFirstPayday && billsShortfall > 0;
-  const showHeadsUp = !isAwaitingFirstPayday && (isBillsRisk || isBufferDipped);
 
   return (
     <View style={styles.container}>
@@ -60,7 +58,7 @@ export const DashboardHeroCard: React.FC<DashboardHeroCardProps> = ({
         effectiveDays={effectiveDays}
         daysUntilPayday={daysUntilPayday}
         hasNextPayday={hasNextPayday}
-        isBillsRisk={showHeadsUp}
+        isBillsRisk={isBufferDipped}
         isAwaitingFirstPayday={isAwaitingFirstPayday}
         onEverydayPress={onEverydayPress}
         onAlignBalance={onAlignEverydayBalance}

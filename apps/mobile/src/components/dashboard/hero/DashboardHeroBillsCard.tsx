@@ -49,7 +49,7 @@ export const DashboardHeroBillsCard: React.FC<DashboardHeroBillsCardProps> = ({
             {t('dashboard.hero.firstPaydayBillsNotice')}
           </Text>
         </View>
-      ) : billsShortfall > 0 ? (
+      ) : billsShortfall >= 0.01 ? (
         <View style={styles.shortfallAlert}>
           <View style={styles.shortfallTextWrap}>
             <Text style={styles.shortfallTitle}>
