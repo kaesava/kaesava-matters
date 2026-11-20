@@ -2,7 +2,7 @@ import { useState, useRef, useEffect } from "react";
 import Link from "next/link";
 import { InfoTooltip, formatRecurrenceLabel } from "@money-matters/ui/web";
 import { t } from "@money-matters/i18n";
-import { MoreVertical, Edit2, History, Receipt, ArrowDownCircle, Target } from "lucide-react";
+import { MoreVertical, Edit2, History, Receipt, ArrowDownCircle, Target, Wallet } from "lucide-react";
 import { useAppFeatures } from "../../../../hooks/useAppFeatures";
 import { PoolTableRow } from "../types";
 
@@ -72,6 +72,9 @@ export function EnvelopeTableRowItem({
       {/* Envelope Name & Badges */}
       <td className="py-2.5 px-4 text-left">
         <div className="flex items-center gap-2 flex-wrap">
+          {isEveryday && <Wallet className="w-3.5 h-3.5 text-purple-500 shrink-0" aria-hidden="true" />}
+          {isBill && <Receipt className="w-3.5 h-3.5 text-blue-500 shrink-0" aria-hidden="true" />}
+          {isGoal && <Target className="w-3.5 h-3.5 text-emerald-600 shrink-0" aria-hidden="true" />}
           {isProjectionMode ? (
             <span className="font-bold text-zinc-800 text-left">
               {pool.name}

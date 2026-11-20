@@ -62,6 +62,13 @@ export function EnvelopeItemCard({
       >
         <View style={{ flex: 1 }}>
           <View style={styles.titleRow}>
+            {(isEveryday || isBill || isGoal) && (
+              <Feather
+                name={isEveryday ? 'shopping-bag' : isBill ? 'file-text' : 'target'}
+                size={13}
+                color={isEveryday ? '#7c3aed' : isBill ? DESIGN_TOKENS.colors.sereneBlue : '#059669'}
+              />
+            )}
             <Text style={styles.poolName}>{pool.name}</Text>
             {subTypeBadge && (
               <View style={[

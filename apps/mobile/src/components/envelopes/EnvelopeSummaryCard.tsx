@@ -84,7 +84,16 @@ export function EnvelopeSummaryCard({
               </View>
             )}
           </View>
-          <Text style={styles.name}>{pool.name}</Text>
+          <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
+            {(isEveryday || isBill || isGoal) && (
+              <Feather
+                name={isEveryday ? 'shopping-bag' : isBill ? 'file-text' : 'target'}
+                size={15}
+                color={isEveryday ? '#7c3aed' : isBill ? DESIGN_TOKENS.colors.sereneBlue : '#059669'}
+              />
+            )}
+            <Text style={styles.name}>{pool.name}</Text>
+          </View>
           {bankAccountName && (
             <Text style={styles.bankNameMeta}>
               {t('categories.linkedAccount', { name: bankAccountName })}

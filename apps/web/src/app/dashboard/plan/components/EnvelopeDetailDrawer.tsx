@@ -2,7 +2,7 @@
 
 import { useState, useMemo } from "react";
 import Link from "next/link";
-import { ArrowDownCircle } from "lucide-react";
+import { ArrowDownCircle, Wallet, Receipt, Target } from "lucide-react";
 import { t } from "@money-matters/i18n";
 import { trpc } from "../../../../lib/trpc";
 import { Tabs, SlideOverDrawer, formatRecurrenceLabel } from "@money-matters/ui/web";
@@ -61,9 +61,16 @@ export function EnvelopeDetailDrawer({
     );
   }, [poolsQuery.data, categoryId, categoryName]);
 
-  // Calculate effective monthly target amount for envelope
+  // Calculate effective target amount for envelope
   const targetAmt = useMemo(() => {
     if (!targetPool) return null;
+    if (targetPool.fundingMode === "TARGET_BALANCE") {
+      return targetPool.targetAmount
+        ? parseFloat(String(targetPool.targetAmount))
+        : targetPool.monthlyAmount
+        ? parseFloat(String(targetPool.monthlyAmount))
+        : null;
+    }
     return targetPool.monthlyAmount
       ? parseFloat(String(targetPool.monthlyAmount))
       : targetPool.targetAmount
@@ -121,6 +128,15 @@ export function EnvelopeDetailDrawer({
     <SlideOverDrawer
       title={
         <div className="flex items-center gap-2 flex-wrap">
+          {targetPool?.envelopeType === "EVERYDAY" && (
+            <Wallet className="w-4 h-4 text-purple-500 shrink-0" aria-hidden="true" />
+          )}
+          {targetPool?.envelopeType === "BILL" && (
+            <Receipt className="w-4 h-4 text-blue-500 shrink-0" aria-hidden="true" />
+          )}
+          {targetPool?.envelopeType === "GOAL" && (
+            <Target className="w-4 h-4 text-emerald-600 shrink-0" aria-hidden="true" />
+          )}
           <span className="text-xl font-black text-[#1B2B4B] dark:text-white">
             {categoryName}
           </span>
