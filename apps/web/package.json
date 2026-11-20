@@ -15,9 +15,9 @@
     "test:coverage": "vitest run --exclude=\"e2e/**\" --passWithNoTests --coverage"
   },
   "dependencies": {
+    "@money-matters/capability-file-notes": "workspace:*",
     "@money-matters/config": "workspace:*",
     "@money-matters/core": "workspace:*",
-    "@money-matters/capability-file-notes": "workspace:*",
     "@money-matters/i18n": "workspace:^",
     "@money-matters/types": "workspace:*",
     "@money-matters/ui": "workspace:^",
@@ -25,14 +25,14 @@
     "@tanstack/react-query": "^5.101.2",
     "@trpc/client": "^11.18.0",
     "@trpc/react-query": "^11.18.0",
+    "@trpc/server": "^11.18.0",
     "better-auth": "^1.6.23",
     "jszip": "^3.10.1",
     "lucide-react": "^0.470.0",
-    "next": "16.4.3",
+    "next": "16.4.6",
     "posthog-js": "^1.407.2",
     "react": "19.1.0",
     "react-dom": "19.1.0",
-    "@trpc/server": "^11.18.0",
     "zod": "^3.23.8"
   },
   "devDependencies": {
@@ -43,10 +43,10 @@
     "@types/react": "19.1.17",
     "@types/react-dom": "19.0.2",
     "eslint": "^9",
-    "eslint-config-next": "16.4.3",
+    "eslint-config-next": "16.4.6",
     "tailwindcss": "^4.0.0",
     "typescript": "^6.0.3",
-    "wrangler": "^4.114.0",
-    "vitest": "^4.1.10"
+    "vitest": "^4.1.10",
+    "wrangler": "^4.114.0"
   }
 }
