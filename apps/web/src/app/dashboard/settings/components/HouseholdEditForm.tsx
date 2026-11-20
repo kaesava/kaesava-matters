@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { Button, InfoTooltip, LocationFields } from "@money-matters/ui/web";
+import { Button, FormFieldError, InfoTooltip, LocationFields } from "@money-matters/ui/web";
 import { SUPPORTED_CURRENCIES, COMMON_TIMEZONES } from "@money-matters/types";
 import { t } from "@money-matters/i18n";
 
@@ -17,6 +17,7 @@ interface HouseholdEditFormProps {
   setState: (v: string) => void;
   postcode: string;
   setPostcode: (v: string) => void;
+  postcodeError?: string;
   isDirty: boolean;
   isSubmitting: boolean;
   onSave: (e: React.FormEvent) => void;
@@ -35,6 +36,7 @@ export function HouseholdEditForm({
   setState,
   postcode,
   setPostcode,
+  postcodeError,
   isDirty,
   isSubmitting,
   onSave,
@@ -118,6 +120,7 @@ export function HouseholdEditForm({
         postcode={postcode}
         onPostcodeChange={setPostcode}
       />
+      <FormFieldError error={postcodeError} />
 
       <div className="pt-2 flex justify-end gap-2">
         <Button type="button" variant="secondary" onClick={onCancel}>

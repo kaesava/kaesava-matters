@@ -12,8 +12,13 @@ import * as DocumentPicker from 'expo-document-picker';
 import * as ImagePicker from 'expo-image-picker';
 import { Feather } from '@expo/vector-icons';
 import { t } from '@money-matters/i18n';
-import { DESIGN_TOKENS } from '@money-matters/ui';
-import { MobileModalDialog, showMobileConfirm } from '@money-matters/ui/mobile';
+import {
+  DESIGN_TOKENS,
+  MobileModalDialog,
+  showMobileConfirm,
+  useDateLocale,
+  fmtDate,
+} from '@money-matters/ui/mobile';
 import { useFileNotesService } from '../context.js';
 import { styles } from './NotesFeedModal.styles.js';
 
@@ -33,10 +38,13 @@ export function NotesFeedModal({
   entityName,
 }: NotesFeedModalProps) {
   const service = useFileNotesService();
+  const dateLocale = useDateLocale();
   const [noteComment, setNoteComment] = useState('');
   const [pickedFile, setPickedFile] = useState<{ uri: string; name: string; mimeType?: string; size?: number } | null>(null);
   const [isUploading, setIsUploading] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [editingNoteId, setEditingNoteId] = useState<string | null>(null);
+  const [editingComment, setEditingComment] = useState('');
 
   const { data: notes, refetch: refetchNotes } = service.useListQuery({
     entityType,
@@ -45,7 +53,21 @@ export function NotesFeedModal({
 
   const createPresignedUrlMutation = service.useCreatePreSignedUrlMutation();
   const createNoteMutation = service.useCreateMutation();
+  const updateCommentMutation = service.useUpdateCommentMutation();
   const purgeNoteMutation = service.usePurgeMutation();
+
+  const handleSaveEdit = async (id: string) => {
+    if (!editingComment.trim()) return;
+    setErrorMessage(null);
+    try {
+      await updateCommentMutation.mutateAsync({ id, comment: editingComment.trim() });
+      setEditingNoteId(null);
+      setEditingComment('');
+      await refetchNotes();
+    } catch (err) {
+      setErrorMessage(err instanceof Error ? err.message : t('fileNotes.errors.updateFailed'));
+    }
+  };
 
   const isDirty = Boolean(noteComment.trim() || pickedFile);
 
@@ -238,7 +260,7 @@ export function NotesFeedModal({
               activeOpacity={0.8}
             >
               {isUploading ? (
-                <ActivityIndicator size="small" color="#ffffff" />
+                <ActivityIndicator size="small" color={DESIGN_TOKENS.colors.onAccent} />
               ) : (
                 <Text style={styles.submitButtonText}>{t('fileNotes.addNoteButton')}</Text>
               )}
@@ -264,20 +286,48 @@ export function NotesFeedModal({
                     <View>
                       <Text style={styles.noteAuthor}>{note.creatorName}</Text>
                       <Text style={styles.noteDate}>
-                        {new Date(note.createdAt).toLocaleDateString()}
+                        {fmtDate(note.createdAt, dateLocale.timeZone, dateLocale.locale)}
                       </Text>
                     </View>
-                    <TouchableOpacity
-                      onPress={() => handleConfirmPurge(note.id)}
-                      hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
-                    >
-                      <Feather name="trash-2" size={14} color={DESIGN_TOKENS.colors.slate[400]} />
-                    </TouchableOpacity>
+                    <View style={{ flexDirection: 'row', gap: 12 }}>
+                      <TouchableOpacity
+                        onPress={() => {
+                          setEditingNoteId(note.id);
+                          setEditingComment(note.comment ?? '');
+                        }}
+                        hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
+                      >
+                        <Feather name="edit-2" size={14} color={DESIGN_TOKENS.colors.slate[400]} />
+                      </TouchableOpacity>
+                      <TouchableOpacity
+                        onPress={() => handleConfirmPurge(note.id)}
+                        hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
+                      >
+                        <Feather name="trash-2" size={14} color={DESIGN_TOKENS.colors.slate[400]} />
+                      </TouchableOpacity>
+                    </View>
                   </View>
 
-                  {note.comment && (
+                  {editingNoteId === note.id ? (
+                    <View style={{ gap: 8, marginTop: 6 }}>
+                      <TextInput
+                        value={editingComment}
+                        onChangeText={setEditingComment}
+                        style={styles.textInput}
+                        multiline
+                      />
+                      <View style={{ flexDirection: 'row', justifyContent: 'flex-end', gap: 8 }}>
+                        <TouchableOpacity onPress={() => setEditingNoteId(null)}>
+                          <Text style={styles.noteDate}>{t('common.cancel')}</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity onPress={() => handleSaveEdit(note.id)} disabled={updateCommentMutation.isPending}>
+                          <Text style={[styles.noteAuthor, { color: DESIGN_TOKENS.colors.sereneBlue }]}>{t('common.save')}</Text>
+                        </TouchableOpacity>
+                      </View>
+                    </View>
+                  ) : note.comment ? (
                     <Text style={styles.noteComment}>{note.comment}</Text>
-                  )}
+                  ) : null}
 
                   {note.fileKey && (
                     <TouchableOpacity

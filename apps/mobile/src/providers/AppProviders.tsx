@@ -1,4 +1,4 @@
-import { DEFAULT_TIMEZONE, DEFAULT_LOCALE } from "@money-matters/types";
+import { DEFAULT_CURRENCY, DEFAULT_TIMEZONE, DEFAULT_LOCALE } from "@money-matters/types";
 import React, { useState } from 'react';
 import { QueryCache, MutationCache, QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { PostHogProvider } from 'posthog-react-native';
@@ -42,18 +42,38 @@ function MobilePreferencesSync({ children }: { children: React.ReactNode }) {
   const showIcons = pref?.showIcons ?? true;
 
   const resolvedLocale = React.useMemo(() => {
-    let loc = pref?.locale || 'auto';
-    return loc === 'auto' ? DEFAULT_LOCALE : loc;
+    const loc = pref?.locale || 'auto';
+    if (loc === 'auto') {
+      try {
+        return Intl.DateTimeFormat().resolvedOptions().locale || DEFAULT_LOCALE;
+      } catch {
+        return DEFAULT_LOCALE;
+      }
+    }
+    return loc;
   }, [pref?.locale]);
 
   const userTimezone = pref?.timezone || pref?.tenantTimezone || DEFAULT_TIMEZONE;
+
+  React.useEffect(() => {
+    if (!session?.user?.id) {
+      posthog.reset();
+      return;
+    }
+    if (pref?.telemetryConsent === 'granted') {
+      posthog.optIn();
+      posthog.identify(session.user.id, { platform: 'mobile' });
+    } else if (pref) {
+      posthog.optOut();
+    }
+  }, [session?.user?.id, pref]);
 
   React.useEffect(() => {
     if (pref) {
       const language = (pref.language as SupportedLanguage) || 'en';
       setLanguage(language);
 
-      const currency = pref.currency || 'AUD';
+      const currency = pref.currency || DEFAULT_CURRENCY;
 
       setMobileLocaleConfig({
         locale: resolvedLocale,
@@ -63,13 +83,12 @@ function MobilePreferencesSync({ children }: { children: React.ReactNode }) {
     }
   }, [pref, resolvedLocale, userTimezone]);
 
-  const currency = pref?.currency || 'AUD';
+  const currency = pref?.currency || DEFAULT_CURRENCY;
 
   return (
     <CurrencyLocaleProvider
       currency={currency}
       locale={resolvedLocale}
-      currencySymbol={pref ? undefined : '$'}
     >
       <DateLocaleProvider locale={resolvedLocale} timeZone={userTimezone}>
         <IconVisibilityProvider initialShowIcons={showIcons}>

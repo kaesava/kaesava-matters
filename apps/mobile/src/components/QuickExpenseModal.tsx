@@ -138,7 +138,7 @@ export function QuickExpenseModal({
               setSelectedSubCategoryId={state.setSelectedSubCategoryId}
               pools={state.pools.filter((p) => {
                 const type = p.envelopeType || (p as { poolType?: string }).poolType;
-                return type !== 'GOAL';
+                return type === 'BILL' || type === 'GOAL';
               })}
               categories={[]}
               presets={state.expensePresets}

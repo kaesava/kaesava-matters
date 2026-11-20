@@ -5,8 +5,29 @@ import type {
   ProjectionIncomeEvent,
 } from "@money-matters/types";
 import { getTenantDateString } from "@money-matters/types";
+import { formatDate } from "@money-matters/core";
 import { t } from "@money-matters/i18n";
 import type { OneOffSimulationParams } from "./simulation-types.js";
+
+function fmtMoney(value: number | string, currency: string, locale = "en"): string {
+  const num = typeof value === "string" ? parseFloat(value) : value;
+  const fractionDigits = currency === "JPY" ? 0 : 2;
+  try {
+    return new Intl.NumberFormat(locale, {
+      style: "currency",
+      currency,
+      minimumFractionDigits: fractionDigits,
+      maximumFractionDigits: fractionDigits,
+    }).format(num);
+  } catch {
+    return `${currency} ${num.toFixed(fractionDigits)}`;
+  }
+}
+
+function fmtDateStr(dateStr: string, locale = "en-AU", timezone = "UTC"): string {
+  const normalized = /^\d{4}-\d{2}-\d{2}$/.test(dateStr) ? `${dateStr}T12:00:00Z` : dateStr;
+  return formatDate(normalized, { locale, timezone }) || dateStr;
+}
 
 export function simulateOneOffPurchase(
   params: OneOffSimulationParams
@@ -32,7 +53,12 @@ export function simulateOneOffPurchase(
     dailyAllowance,
     projectionEngine,
     timezone,
+    currency,
+    locale,
+    userId,
   } = params;
+  const f = (v: number | string) => fmtMoney(v, currency, locale || "en");
+  const fd = (d: string) => fmtDateStr(d, locale || "en-AU", timezone);
 
   // ── 1. BILLS RISK CHECK ──────────────────────────────────────
   if (amount <= everydayBalance && amount > effectiveSpendable) {
@@ -49,10 +75,16 @@ export function simulateOneOffPurchase(
       effectiveAfterBills: effectiveSpendable.toFixed(2),
       billsDueItems,
       rationaleSteps: [
-        `Everyday balance: $${everydayBalance.toFixed(2)}`,
-        `Upcoming bills before payday: $${totalBillsBeforePayday.toFixed(2)} (${billsDueItems.map((b) => b.name).join(", ")})`,
-        `Net safe-to-spend today after unfunded bills: $${effectiveSpendable.toFixed(2)} — insufficient for $${amount.toFixed(2)}`,
-        `Bills are non-negotiable and cannot be spent.`,
+        t("canIAfford.rationale.everydayBalance", { balance: f(everydayBalance), personalSuffix: "" }),
+        t("canIAfford.rationale.upcomingBillsRisk", {
+          bills: f(totalBillsBeforePayday),
+          names: billsDueItems.map((b) => b.name).join(", "),
+        }),
+        t("canIAfford.rationale.netSafeToSpendInsufficient", {
+          spendable: f(effectiveSpendable),
+          amount: f(amount),
+        }),
+        t("canIAfford.rationale.billsNonNegotiable"),
       ],
     };
   }
@@ -73,10 +105,16 @@ export function simulateOneOffPurchase(
         nextPaydayDate: nextPaycheckDateStr,
         upcomingBillsBeforePayday: totalBillsBeforePayday.toFixed(2),
         rationaleSteps: [
-          `Everyday balance: $${everydayBalance.toFixed(2)}${includePersonal ? t("canIAfford.includesPersonalEnvelopes") : ""}`,
-          `Upcoming bills before payday: $${totalBillsBeforePayday.toFixed(2)} (100% protected)`,
-          `After purchase: $${everydayRemaining} remaining until payday on ${nextPaycheckDateStr}.`,
-          `Comfortably above your recommended safe cushion of $${safeCushion}.`,
+          t("canIAfford.rationale.everydayBalance", {
+            balance: f(everydayBalance),
+            personalSuffix: includePersonal ? t("canIAfford.includesPersonalEnvelopes") : "",
+          }),
+          t("canIAfford.rationale.upcomingBillsProtected", { bills: f(totalBillsBeforePayday) }),
+          t("canIAfford.rationale.afterPurchaseRemaining", {
+            remaining: f(everydayRemaining),
+            date: fd(nextPaycheckDateStr),
+          }),
+          t("canIAfford.rationale.aboveSafeCushion", { cushion: f(safeCushion) }),
         ],
       };
     } else {
@@ -92,10 +130,17 @@ export function simulateOneOffPurchase(
         nextPaydayDate: nextPaycheckDateStr,
         upcomingBillsBeforePayday: totalBillsBeforePayday.toFixed(2),
         rationaleSteps: [
-          `Everyday balance: $${everydayBalance.toFixed(2)}`,
-          `Upcoming bills before payday: $${totalBillsBeforePayday.toFixed(2)} (100% protected)`,
-          `After purchase: $${everydayRemaining} remaining for ${daysUntilPayday} days until payday on ${nextPaycheckDateStr}.`,
-          `This leaves you $${cushionShortfall} below your recommended safe cushion ($${safeCushion}).`,
+          t("canIAfford.rationale.everydayBalance", { balance: f(everydayBalance), personalSuffix: "" }),
+          t("canIAfford.rationale.upcomingBillsProtected", { bills: f(totalBillsBeforePayday) }),
+          t("canIAfford.rationale.afterPurchaseTightRemaining", {
+            remaining: f(everydayRemaining),
+            days: daysUntilPayday,
+            date: fd(nextPaycheckDateStr),
+          }),
+          t("canIAfford.rationale.belowSafeCushion", {
+            shortfall: f(cushionShortfall),
+            cushion: f(safeCushion),
+          }),
         ],
       };
     }
@@ -114,7 +159,7 @@ export function simulateOneOffPurchase(
     if (goalBal >= shortfall) {
       const poolMonthlyContrib =
         candidateGoal.fundingMode === "RECURRING"
-          ? parseFloat(candidateGoal.targetAmount || "0")
+          ? parseFloat(candidateGoal.monthlyAmount ?? candidateGoal.enteredAmount ?? candidateGoal.targetAmount ?? "0")
           : (candidateGoal.monthlyAmount ? parseFloat(candidateGoal.monthlyAmount) : (candidateGoal.targetAmount ? parseFloat(candidateGoal.targetAmount) / 12 : 0));
       const dailyContrib = poolMonthlyContrib > 0 ? poolMonthlyContrib / 30 : 1;
       const delayDays = Math.max(1, Math.round(shortfall / dailyContrib));
@@ -153,12 +198,22 @@ export function simulateOneOffPurchase(
     actualAmount: e.actualAmount ? parseFloat(e.actualAmount) : null,
     status: e.status as "PENDING" | "CONFIRMED" | "DRAFT" | "REVIEWED",
     rrule: e.rrule,
+    userId: e.incomeCreatedBy || e.sourceCreatedBy || e.bankAccountUserId || undefined,
+    isPrivate: Boolean(e.bankAccountIsPrivate),
+    contributionMode: e.incomeContributionMode ?? e.sourceContributionMode ?? "FULL",
+    contributionValue: e.incomeContributionValue
+      ? parseFloat(e.incomeContributionValue)
+      : e.sourceContributionValue
+        ? parseFloat(e.sourceContributionValue)
+        : null,
   }));
 
   const projection = projectionEngine({
     categories: engineBuckets,
     incomeEvents: cumIncomes,
     expenseEvents: cumExpenses,
+    currentUserId: userId,
+    timezone,
   });
 
   const everydayEnvelopeIds = new Set<string>(everydayEnvelopes.map((p) => p.id));
@@ -170,8 +225,8 @@ export function simulateOneOffPurchase(
 
     let daysInStep = 14;
     if (i < projection.steps.length - 1) {
-      const tCurr = new Date(step.date + "T00:00:00").getTime();
-      const tNext = new Date(projection.steps[i + 1].date + "T00:00:00").getTime();
+      const tCurr = new Date(step.date + "T00:00:00Z").getTime();
+      const tNext = new Date(projection.steps[i + 1].date + "T00:00:00Z").getTime();
       daysInStep = Math.max(1, Math.round((tNext - tCurr) / (1000 * 60 * 60 * 24)));
     }
     const stepCushion = dailyAllowance > 0 ? dailyAllowance * 0.25 * daysInStep : 15 * daysInStep;
@@ -179,23 +234,39 @@ export function simulateOneOffPurchase(
     const paycyclesAway = i + 1;
     const ordinal = ordinals[i] ?? "th";
 
-    // TIER 1: Check fresh discretionary capacity injected on this payday
+    // TIER 1: Check fresh discretionary capacity OR cumulative Everyday + Surplus capacity at this payday
     let freshEveryday = 0;
+    let accumulatedEveryday = 0;
     for (const envId of everydayEnvelopeIds) {
       freshEveryday += step.allocations.get(envId)?.proposedAmount ?? 0;
+      accumulatedEveryday += step.balancesAfterAlloc.get(envId) ?? 0;
     }
     const freshSurplus = surplusEnvelope ? (step.allocations.get(surplusEnvelope.id)?.proposedAmount ?? 0) : 0;
+    const accumulatedSurplusAtAlloc = surplusEnvelope ? (step.balancesAfterAlloc.get(surplusEnvelope.id) ?? 0) : 0;
     const freshDiscretionary = freshEveryday + freshSurplus;
+    const cumulativeDiscretionary = Math.max(freshDiscretionary, accumulatedEveryday + accumulatedSurplusAtAlloc);
 
-    if (freshDiscretionary - amount >= stepCushion) {
+    if (cumulativeDiscretionary - amount >= stepCushion) {
+      const paycycleLabel = paycyclesAway === 1 ? "next" : `${paycyclesAway}${ordinal}`;
       const rationaleSteps = [
-        `Current safe-to-spend Everyday cash: $${effectiveSpendable.toFixed(2)} (shortfall: -$${shortfall.toFixed(2)}).`,
-        `By your ${paycyclesAway === 1 ? "next" : `${paycyclesAway}${ordinal}`} paycycle (${step.date}), your incoming paycheck provides enough safe discretionary cash ($${freshDiscretionary.toFixed(2)}) to cover this purchase while keeping all bills and living essentials 100% protected.`,
+        t("canIAfford.rationale.shortfallCurrent", {
+          spendable: f(effectiveSpendable),
+          shortfall: f(shortfall),
+        }),
+        t("canIAfford.rationale.waitForPaycycleDiscretionary", {
+          paycycleLabel,
+          date: fd(step.date),
+          discretionary: f(cumulativeDiscretionary),
+        }),
       ];
 
       if (goalAlternative) {
         rationaleSteps.push(
-          `Alternatively, cover the $${shortfall.toFixed(2)} gap today using your "${goalAlternative.goalName}" goal (pushes target date back by ~${goalAlternative.delayDays} days).`
+          t("canIAfford.rationale.goalAlternativeOption", {
+            shortfall: f(shortfall),
+            goalName: goalAlternative.goalName,
+            delayDays: goalAlternative.delayDays,
+          })
         );
       }
 
@@ -203,7 +274,7 @@ export function simulateOneOffPurchase(
         verdict: "WAIT_FOR_PAYCYCLE",
         canAffordAt: step.date,
         paycyclesAway,
-        projectedEverydayAtThatDate: freshDiscretionary.toFixed(2),
+        projectedEverydayAtThatDate: cumulativeDiscretionary.toFixed(2),
         shortfallToday: shortfall.toFixed(2),
         goalAlternative,
         rationaleSteps,
@@ -213,14 +284,27 @@ export function simulateOneOffPurchase(
     // TIER 2: Check accumulated Surplus savings
     const accumulatedSurplus = surplusEnvelope ? (step.balancesAfterExpenses.get(surplusEnvelope.id) ?? 0) : 0;
     if (accumulatedSurplus >= amount) {
+      const paycycleLabel = paycyclesAway === 1 ? "next" : `${paycyclesAway}${ordinal}`;
       const rationaleSteps = [
-        `Current safe-to-spend Everyday cash: $${effectiveSpendable.toFixed(2)} (shortfall: -$${shortfall.toFixed(2)}).`,
-        `By your ${paycyclesAway === 1 ? "next" : `${paycyclesAway}${ordinal}`} paycycle (${step.date}), your accumulated savings in "${surplusEnvelope?.name}" will reach $${accumulatedSurplus.toFixed(2)}, allowing you to safely purchase this without touching everyday living or risking bills.`,
+        t("canIAfford.rationale.shortfallCurrent", {
+          spendable: f(effectiveSpendable),
+          shortfall: f(shortfall),
+        }),
+        t("canIAfford.rationale.waitForPaycycleSurplus", {
+          paycycleLabel,
+          date: fd(step.date),
+          surplusName: surplusEnvelope?.name ?? "",
+          surplus: f(accumulatedSurplus),
+        }),
       ];
 
       if (goalAlternative) {
         rationaleSteps.push(
-          `Alternatively, cover the $${shortfall.toFixed(2)} gap today using your "${goalAlternative.goalName}" goal (pushes target date back by ~${goalAlternative.delayDays} days).`
+          t("canIAfford.rationale.goalAlternativeOption", {
+            shortfall: f(shortfall),
+            goalName: goalAlternative.goalName,
+            delayDays: goalAlternative.delayDays,
+          })
         );
       }
 
@@ -242,9 +326,12 @@ export function simulateOneOffPurchase(
     shortfall: shortfall.toFixed(2),
     horizonMonths: 12,
     rationaleSteps: [
-      `Current safe-to-spend Everyday cash: $${effectiveSpendable.toFixed(2)} (shortfall: -$${shortfall.toFixed(2)}).`,
-      `Across your 12-month budget forecast, projected income does not accumulate enough Everyday surplus to cover $${amount.toFixed(2)}.`,
-      `Consider setting this up as a dedicated savings goal.`,
+      t("canIAfford.rationale.shortfallCurrent", {
+        spendable: f(effectiveSpendable),
+        shortfall: f(shortfall),
+      }),
+      t("canIAfford.rationale.hardNoOneOff", { amount: f(amount) }),
+      t("canIAfford.rationale.hardNoOneOffAdvice"),
     ],
   };
 }

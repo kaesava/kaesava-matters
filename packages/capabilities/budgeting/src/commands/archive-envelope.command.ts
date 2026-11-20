@@ -1,5 +1,5 @@
 import { envelopes, expenseEvents, bankAccounts, DbOrTx } from "@money-matters/db";
-import { eq, and } from "drizzle-orm";
+import { eq, and, isNull } from "drizzle-orm";
 
 export async function archiveEnvelopeCommand(
   envelopeId: string,
@@ -45,27 +45,35 @@ export async function archiveEnvelopeCommand(
     throw new Error("Cannot archive an envelope designated as the household Surplus Sweep Target. Please designate another envelope as the Surplus Sweep Target first.");
   }
 
-  // Hard-delete all pending (unconfirmed) expense events (both scheduled and one-off)
-  // Confirmed history and bank accounts are never modified or archived.
+  const archiveTimestamp = new Date();
+
+  // Soft-archive all pending (unconfirmed) expense events with matching timestamp
+  // so restoring the envelope restores only events archived with it (zero re-bursting).
   await dbClient
-    .delete(expenseEvents)
+    .update(expenseEvents)
+    .set({
+      archivedAt: archiveTimestamp,
+      archivedBy: userId,
+      updatedBy: userId,
+      updatedAt: archiveTimestamp,
+    })
     .where(
       and(
         eq(expenseEvents.envelopeId, envelopeId),
         eq(expenseEvents.status, "PENDING"),
         eq(expenseEvents.tenantId, tenantId),
-        eq(expenseEvents.appId, appId)
+        eq(expenseEvents.appId, appId),
+        isNull(expenseEvents.archivedAt)
       )
     );
 
   const [archived] = await dbClient
     .update(envelopes)
     .set({
-      archivedAt: new Date(),
+      archivedAt: archiveTimestamp,
       archivedBy: userId,
-      lastBurstDate: null,
       updatedBy: userId,
-      updatedAt: new Date(),
+      updatedAt: archiveTimestamp,
     })
     .where(
       and(

@@ -154,9 +154,21 @@ async function handleProxy(req: NextRequest) {
     if (authHeader) {
       headers.set("authorization", authHeader);
     } else if (cookieHeader) {
-      const match = cookieHeader.match(/(?:__Secure-)?(?:neon-auth\.session_token|better-auth\.session_token|session_token|neon_auth_session|session)=([^;]+)/);
-      if (match) {
-        headers.set("authorization", `Bearer ${decodeURIComponent(match[1])}`);
+      const pairs = cookieHeader.split(";");
+      const cookiePriority = [
+        "__Secure-neon-auth.session_token",
+        "neon-auth.session_token",
+        "__Secure-better-auth.session_token",
+        "better-auth.session_token",
+        "neon_auth_session",
+      ];
+      for (const name of cookiePriority) {
+        const prefix = `${name}=`;
+        const hit = pairs.map((p) => p.trim()).find((p) => p.startsWith(prefix));
+        if (hit) {
+          headers.set("authorization", `Bearer ${decodeURIComponent(hit.slice(prefix.length))}`);
+          break;
+        }
       }
     }
     

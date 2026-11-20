@@ -81,12 +81,12 @@ export function SetupIncomeItemRow({
                 const val = Math.max(1, Math.min(365, parseInt(e.target.value, 10) || 1));
                 onUpdateIncome(inc.id, "interval", val);
               }}
-              className="ui-input w-14 shrink-0 px-1 text-center font-mono text-xs font-bold rounded-xl border border-zinc-200 bg-white text-zinc-800 h-[46px]"
+              className="w-16 shrink-0 px-2 text-center font-mono text-xs font-bold rounded-xl border border-zinc-200 bg-white text-zinc-800 h-[46px]"
             />
             <select
               value={inc.frequency}
               onChange={(e) => onUpdateIncome(inc.id, "frequency", e.target.value as IncomeItem["frequency"])}
-              className="ui-input flex-1 min-w-0 px-2.5 text-xs font-bold rounded-xl border border-zinc-200 bg-white h-[46px] cursor-pointer"
+              className="flex-1 min-w-[110px] px-2.5 text-xs font-bold rounded-xl border border-zinc-200 bg-white text-zinc-800 h-[46px] cursor-pointer"
             >
               <option value="WEEKLY">{t("setup.freqWeeks")}</option>
               <option value="FORTNIGHTLY">{t("setup.freqFortnights")}</option>

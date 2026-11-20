@@ -10,6 +10,7 @@ export interface CumulativeProjectionIncomeEvent {
   actualAmount?: number | null;
   status: "PENDING" | "CONFIRMED" | "DRAFT" | "REVIEWED";
   rrule?: string | null;
+  incomeType?: "SALARIED" | "IRREGULAR" | null;
   userId?: string;
   isPrivate?: boolean;
   contributionMode?: "FULL" | "PERCENTAGE" | "FIXED_AMOUNT";
@@ -19,6 +20,7 @@ export interface CumulativeProjectionIncomeEvent {
 export interface CumulativeProjectionExpenseEvent {
   categoryId?: string | null;
   poolId?: string | null;
+  envelopeId?: string | null;
   amount: number;
   dueDate: string; // YYYY-MM-DD
   status: "PENDING" | "CONFIRMED";
@@ -38,6 +40,7 @@ export interface CumulativeProjectionInput {
   cellOverrides?: Record<string, number>;
   currentUserId?: string;
   timezone?: string;
+  currencySymbol?: string;
   strategySteps?: AllocationStrategyStepItem[];
   personalStrategySteps?: AllocationStrategyStepItem[];
 }
@@ -119,8 +122,19 @@ export function runCumulativeProjection(input: CumulativeProjectionInput): Cumul
       nextCutoffDate = new Date(lastEndTime).toISOString().slice(0, 10);
     }
 
+    const forwardWindowEndTime = new Date(evt.expectedDate + "T00:00:00").getTime() + 90 * 24 * 60 * 60 * 1000;
+    const forwardCutoffDate = new Date(forwardWindowEndTime).toISOString().slice(0, 10);
+
+    const engineUpcomingExpenses = upcomingExpenses.filter((e) => {
+      const matchCat = e.categoryId || e.poolId || e.envelopeId;
+      if (!matchCat) return false;
+      return i === 0
+        ? e.dueDate <= forwardCutoffDate
+        : e.dueDate >= evt.expectedDate && e.dueDate <= forwardCutoffDate;
+    });
+
     const relevantExpenses = upcomingExpenses.filter((e) => {
-      const matchCat = e.categoryId || e.poolId;
+      const matchCat = e.categoryId || e.poolId || e.envelopeId;
       if (!matchCat) return false;
       return i === 0 ? e.dueDate < nextCutoffDate : e.dueDate >= evt.expectedDate && e.dueDate < nextCutoffDate;
     });
@@ -149,19 +163,21 @@ export function runCumulativeProjection(input: CumulativeProjectionInput): Cumul
 
       const engineResult = runAllocationEngine({
         incomeAmount: totalIncome,
+        incomeType: evt.incomeType || "SALARIED",
         incomeUserId: evt.userId || input.currentUserId,
         contributionMode: evt.contributionMode,
         contributionValue: evt.contributionValue,
         strategySteps: input.strategySteps,
         personalStrategySteps: input.personalStrategySteps,
         buckets: currentBuckets,
-        paycheckDate: new Date(evt.expectedDate + "T00:00:00"),
+        paycheckDate: new Date(evt.expectedDate + "T00:00:00Z"),
         paycheckFrequencyDays: freqDays,
         daysUntilNextIncome: daysUntilNext,
         nextPaycheckDate: nextDateObj,
         timezone: input.timezone,
-        upcomingExpenses: relevantExpenses.map((e) => ({
-          poolId: e.poolId || e.categoryId,
+        currencySymbol: input.currencySymbol,
+        upcomingExpenses: engineUpcomingExpenses.map((e) => ({
+          poolId: e.poolId || e.envelopeId || e.categoryId,
           categoryId: e.categoryId,
           amount: e.amount,
           dueDate: e.dueDate,
@@ -196,7 +212,7 @@ export function runCumulativeProjection(input: CumulativeProjectionInput): Cumul
 
     const deductedExpenses: Array<{ bucketId: string; amount: number; dueDate: string }> = [];
     for (const exp of relevantExpenses) {
-      const targetId = exp.categoryId || exp.poolId;
+      const targetId = exp.categoryId || exp.poolId || exp.envelopeId;
       if (!targetId) continue;
       deductedExpenses.push({ bucketId: targetId, amount: exp.amount, dueDate: exp.dueDate });
       const curBal = runningBalances.get(targetId) ?? 0;

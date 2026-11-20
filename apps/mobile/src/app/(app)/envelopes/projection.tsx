@@ -11,9 +11,11 @@ import { Feather } from '@expo/vector-icons';
 import {
   DESIGN_TOKENS,
   MobileScreenWrapper,
+  SearchInput,
   SkeletonCard,
 } from '@money-matters/ui/mobile';
 import { t } from '@money-matters/i18n';
+import { formatIsoDate } from '../../../lib/format';
 import { trpc } from '../../../lib/trpc';
 import { authClient } from '../../../lib/auth';
 import { ProjectionScrubber } from '../../../components/envelopes/projection/ProjectionScrubber';
@@ -23,6 +25,7 @@ export default function PoolProjectionScreen() {
   const router = useRouter();
   const { data: session } = authClient.useSession();
   const [selectedHorizon, setSelectedHorizon] = useState<number>(1);
+  const [searchQuery, setSearchQuery] = useState('');
   const [refreshing, setRefreshing] = useState(false);
 
   const poolsQuery = trpc.listEnvelopes.useQuery(undefined, {
@@ -57,7 +60,7 @@ export default function PoolProjectionScreen() {
         const sortedCols = [...cols].sort((a, b) => a.date.localeCompare(b.date));
         const targetDate = new Date();
         targetDate.setDate(targetDate.getDate() + Math.round(selectedHorizon * 30.4375));
-        const targetDateISO = targetDate.toISOString().slice(0, 10);
+        const targetDateISO = formatIsoDate(targetDate);
 
         let matchingCol = sortedCols[0];
         for (const col of sortedCols) {
@@ -78,9 +81,17 @@ export default function PoolProjectionScreen() {
     return currentBalance;
   };
 
-  const everydayPools = pools.filter((p) => p.envelopeType === 'EVERYDAY');
-  const billsPools = pools.filter((p) => p.envelopeType === 'BILL');
-  const goalPools = pools.filter((p) => p.envelopeType === 'GOAL');
+  const q = searchQuery.toLowerCase().trim();
+  const visiblePools = q
+    ? pools.filter((p) => {
+        const bank = getBankForPool(p.bankAccountId);
+        return p.name.toLowerCase().includes(q) || (bank?.name.toLowerCase().includes(q) ?? false);
+      })
+    : pools;
+
+  const everydayPools = visiblePools.filter((p) => p.envelopeType === 'EVERYDAY');
+  const billsPools = visiblePools.filter((p) => p.envelopeType === 'BILL');
+  const goalPools = visiblePools.filter((p) => p.envelopeType === 'GOAL');
 
   return (
     <MobileScreenWrapper
@@ -101,10 +112,19 @@ export default function PoolProjectionScreen() {
       >
         <View style={styles.noticeBanner}>
           <Feather name="lock" size={14} color={DESIGN_TOKENS.colors.accentDark} />
-          <Text style={styles.noticeText}>
-            {t('categories.projectionModeReadOnlyNotice')}
-          </Text>
+          <View style={styles.noticeTextWrap}>
+            <Text style={styles.watermarkLabel}>{t('categories.projectionModeWatermark')}</Text>
+            <Text style={styles.noticeText}>
+              {t('categories.projectionModeReadOnlyNotice')}
+            </Text>
+          </View>
         </View>
+
+        <SearchInput
+          placeholder={t('categories.searchPlaceholder')}
+          value={searchQuery}
+          onChangeText={setSearchQuery}
+        />
 
         <ProjectionScrubber
           selectedHorizon={selectedHorizon}
@@ -159,8 +179,17 @@ const styles = StyleSheet.create({
     borderRadius: 14,
     padding: 12,
   },
-  noticeText: {
+  noticeTextWrap: {
     flex: 1,
+    gap: 2,
+  },
+  watermarkLabel: {
+    fontSize: 10,
+    fontWeight: '800',
+    letterSpacing: 0.8,
+    color: DESIGN_TOKENS.colors.accent,
+  },
+  noticeText: {
     fontSize: 12,
     fontWeight: '600',
     color: DESIGN_TOKENS.colors.accentDark,

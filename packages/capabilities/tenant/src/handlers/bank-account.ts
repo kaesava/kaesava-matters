@@ -100,19 +100,47 @@ export function createBankAccountHandler(db: DbOrTx) {
         .limit(1);
 
       if (existingPrivateEveryday.length === 0) {
-        await db.insert(envelopes).values({
-          tenantId,
-          appId,
-          bankAccountId: bankAccount.id,
-          name: "Personal Spending",
-          envelopeType: "EVERYDAY",
-          monthlyAmount: "0.00",
-          isPrivate: true,
-          userId,
-          orderIndex: 0,
-          createdBy: userId,
-          updatedBy: userId,
-        });
+        const [archivedPrivateEveryday] = await db
+          .select({ id: envelopes.id })
+          .from(envelopes)
+          .where(
+            and(
+              eq(envelopes.tenantId, tenantId),
+              eq(envelopes.appId, appId),
+              eq(envelopes.isPrivate, true),
+              eq(envelopes.userId, userId),
+              eq(envelopes.envelopeType, "EVERYDAY"),
+              sql`${envelopes.archivedAt} IS NOT NULL`
+            )
+          )
+          .limit(1);
+
+        if (archivedPrivateEveryday) {
+          await db
+            .update(envelopes)
+            .set({
+              bankAccountId: bankAccount.id,
+              archivedAt: null,
+              archivedBy: null,
+              updatedBy: userId,
+              updatedAt: new Date(),
+            })
+            .where(eq(envelopes.id, archivedPrivateEveryday.id));
+        } else {
+          await db.insert(envelopes).values({
+            tenantId,
+            appId,
+            bankAccountId: bankAccount.id,
+            name: "Personal Spending",
+            envelopeType: "EVERYDAY",
+            monthlyAmount: "0.00",
+            isPrivate: true,
+            userId,
+            orderIndex: 0,
+            createdBy: userId,
+            updatedBy: userId,
+          });
+        }
       }
     }
 
@@ -238,9 +266,33 @@ export function archiveBankAccountHandler(db: DbOrTx) {
       );
 
     if (activePools.some((p) => p.envelopeType === "EVERYDAY")) {
-      throw new Error(
-        "Cannot archive bank account linked to the Everyday envelope. Please re-assign the Everyday envelope to another bank account first."
-      );
+      if (!existing.isPrivate) {
+        throw new Error(
+          "Cannot archive bank account linked to the Everyday envelope. Please re-assign the Everyday envelope to another bank account first."
+        );
+      }
+      // For a private bank account holding the user's Personal Spending Everyday envelope,
+      // allow archival only when it is the user's last active private bank account (so 0 active private accounts => 0 active private Everyday).
+      const otherPrivateAccounts = await db
+        .select({ id: bankAccounts.id })
+        .from(bankAccounts)
+        .where(
+          and(
+            eq(bankAccounts.tenantId, tenantId),
+            eq(bankAccounts.appId, appId),
+            eq(bankAccounts.isPrivate, true),
+            eq(bankAccounts.userId, userId),
+            sql`${bankAccounts.id} <> ${accountId}`,
+            sql`${bankAccounts.archivedAt} IS NULL`
+          )
+        )
+        .limit(1);
+
+      if (otherPrivateAccounts.length > 0) {
+        throw new Error(
+          "Cannot archive private bank account linked to your Personal Spending envelope while other private bank accounts exist. Please re-assign Personal Spending to another private bank account first."
+        );
+      }
     }
 
     if (activePools.some((p) => p.isSurplusTarget)) {
@@ -295,18 +347,25 @@ export function archiveBankAccountHandler(db: DbOrTx) {
         );
 
       await db
-        .delete(expenseEvents)
+        .update(expenseEvents)
+        .set({
+          archivedAt: archiveTimestamp,
+          archivedBy: userId,
+          updatedBy: userId,
+          updatedAt: archiveTimestamp,
+        })
         .where(
           and(
             inArray(expenseEvents.envelopeId, poolIds),
             eq(expenseEvents.status, "PENDING"),
             eq(expenseEvents.tenantId, tenantId),
-            eq(expenseEvents.appId, appId)
+            eq(expenseEvents.appId, appId),
+            sql`${expenseEvents.archivedAt} IS NULL`
           )
         );
     }
 
-    // 3. Cascade archive linked income sources and delete their pending income events
+    // 3. Cascade archive linked income sources and soft-archive their pending income events
     const linkedIncomes = await db
       .select({ id: incomeSources.id })
       .from(incomeSources)
@@ -339,13 +398,20 @@ export function archiveBankAccountHandler(db: DbOrTx) {
         );
 
       await db
-        .delete(incomeEvents)
+        .update(incomeEvents)
+        .set({
+          archivedAt: archiveTimestamp,
+          archivedBy: userId,
+          updatedBy: userId,
+          updatedAt: archiveTimestamp,
+        })
         .where(
           and(
             inArray(incomeEvents.incomeSourceId, incomeIds),
             eq(incomeEvents.status, "PENDING"),
             eq(incomeEvents.tenantId, tenantId),
-            eq(incomeEvents.appId, appId)
+            eq(incomeEvents.appId, appId),
+            sql`${incomeEvents.archivedAt} IS NULL`
           )
         );
     }

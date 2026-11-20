@@ -4,7 +4,7 @@ import { HousingType, VehicleConfig, ChildConfig } from '@money-matters/types';
 export function useSetupWizardLifestyleState() {
   const [country, setCountry] = useState<'AU' | 'NZ' | 'OTHER'>('AU');
   const [housingType, setHousingType] = useState<HousingType>('RENT_SOLO');
-  const [hasCars, setHasCars] = useState(true);
+  const [hasCars, setHasCars] = useState(false);
   const [vehicles, setVehicles] = useState<VehicleConfig[]>([{ id: 'veh-1', name: 'Vehicle 1', size: 'MID_SUV' }]);
   const [usePublicTransport, setUsePublicTransport] = useState(true);
   const [useRideshare, setUseRideshare] = useState(false);

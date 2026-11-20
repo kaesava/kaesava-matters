@@ -229,11 +229,13 @@ export function EnvelopeTableRowItem({
                 {onDrawDown && pool.envelopeType !== "EVERYDAY" && (
                   <button
                     type="button"
+                    disabled={Number(pool.currentBalance || 0) <= 0}
                     onClick={() => {
+                      if (Number(pool.currentBalance || 0) <= 0) return;
                       setMenuOpen(false);
                       onDrawDown(pool.rawPool);
                     }}
-                    className="w-full px-3 py-2 text-xs font-semibold text-slate-700 dark:text-zinc-200 hover:bg-blue-50 dark:hover:bg-zinc-800 hover:text-[#2563eb] flex items-center gap-2 cursor-pointer transition-colors"
+                    className="w-full px-3 py-2 text-xs font-semibold text-slate-700 dark:text-zinc-200 hover:bg-blue-50 dark:hover:bg-zinc-800 hover:text-[#2563eb] disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:bg-transparent disabled:hover:text-slate-700 flex items-center gap-2 cursor-pointer transition-colors"
                   >
                     <ArrowDownCircle className="w-3.5 h-3.5 text-slate-400" />
                     <span>{t("categories.actions.drawDown")}</span>

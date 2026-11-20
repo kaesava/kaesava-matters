@@ -252,7 +252,7 @@ export function usePaydayPlanActions({
       const res = await confirmPaydayMut.mutateAsync({
         incomeEventId,
         actualAmount: numericActual.toFixed(2),
-        markAsReceivedToday: false,
+        markAsReceivedToday: !isFutureDate,
         lines: payload,
       });
 
@@ -260,9 +260,20 @@ export function usePaydayPlanActions({
         setCelebrationTargets(res.celebration.targetsHit);
       }
 
+      setInitialLinesMap(effectiveMap);
+      setInitialReasoningMap({ ...reasoningMap });
+      setIsSavedPlan(true);
+
       toast.success(t("paydayDrawer.confirmSuccess"));
-      await utils.listIncomeEvents.invalidate();
-      await utils.listEnvelopes.invalidate();
+      await Promise.all([
+        utils.listIncomeEvents.invalidate(),
+        utils.listEnvelopes.invalidate(),
+        utils.previewPayday.invalidate(),
+        utils.listAllAllocationPlans.invalidate(),
+        utils.getHorizonProjectionData.invalidate(),
+        utils.listTransactions.invalidate(),
+        utils.getMonthlySummary.invalidate(),
+      ]);
       setShowTransferModal(true);
     } catch (err: unknown) {
       toast.error(err instanceof Error ? err.message : t("paydayDrawer.confirmSplitFailed"));

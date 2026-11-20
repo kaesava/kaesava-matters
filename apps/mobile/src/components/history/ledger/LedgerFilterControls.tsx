@@ -86,13 +86,21 @@ export function LedgerFilterControls({
         <View style={styles.badgeRow}>
           {selectedPoolId !== 'ALL' && (
             <RecordFilterBadge
-              label={matchedPoolName ? `Pool: ${matchedPoolName}` : `Pool: ${selectedPoolId}`}
+              label={
+                matchedPoolName
+                  ? t('history.filteredToEnvelope', { name: matchedPoolName })
+                  : t('history.filterItemUnavailable')
+              }
               onClear={onClearPool}
             />
           )}
           {selectedBankAccountId !== 'ALL' && (
             <RecordFilterBadge
-              label={matchedBankName ? `Bank: ${matchedBankName}` : `Bank: ${selectedBankAccountId}`}
+              label={
+                matchedBankName
+                  ? t('history.filteredToAccount', { name: matchedBankName })
+                  : t('history.filterItemUnavailable')
+              }
               onClear={onClearBank}
             />
           )}

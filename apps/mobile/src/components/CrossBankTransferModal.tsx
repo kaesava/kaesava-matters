@@ -38,7 +38,7 @@ export function CrossBankTransferModal({
     try {
       await Share.share({
         message: amount.toFixed(2),
-        title: 'Transfer Amount',
+        title: t('history.transferAmountTitle'),
       });
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);

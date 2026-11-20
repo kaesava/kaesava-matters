@@ -1,12 +1,11 @@
 import { useState } from 'react';
-import { getDefaultAccountName } from '@money-matters/types';
 import { MobileBankAccountItem } from './setup-wizard-types';
 
 export function useSetupWizardBankAccountsState() {
   const [bankAccounts, setBankAccounts] = useState<MobileBankAccountItem[]>([
     {
       id: 'acc-default',
-      name: getDefaultAccountName('Other', 'EVERYDAY'),
+      name: 'Primary Bank Account',
       bankProvider: 'Other',
       accountType: 'EVERYDAY',
       lastKnownBalance: '1000.00',
@@ -21,7 +20,7 @@ export function useSetupWizardBankAccountsState() {
       ...prev,
       {
         id: `acc-${Date.now()}`,
-        name: getDefaultAccountName('Other', 'EVERYDAY'),
+        name: 'Savings Bank Account',
         bankProvider: 'Other',
         accountType: 'EVERYDAY',
         lastKnownBalance: '0.00',

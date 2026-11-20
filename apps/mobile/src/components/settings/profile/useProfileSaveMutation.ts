@@ -68,13 +68,13 @@ export function useProfileSaveMutation() {
         notificationEmail: notificationEmail.trim(),
         phoneCountryCode,
         phoneNumber: phoneNumber.trim(),
-        avatarUrl: avatarUri || undefined,
+        avatarUrl: avatarUri || null,
       });
 
       try {
         await authClient.updateUser({
           name: name.trim(),
-          image: avatarUri || undefined,
+          image: avatarUri || '',
         });
       } catch {
         // Silent fallback

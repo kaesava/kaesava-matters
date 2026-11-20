@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Platform } from "react-native";
 import { useRouter, useLocalSearchParams } from "expo-router";
 import { usePostHog } from "posthog-react-native";
 import { t } from "@money-matters/i18n";
@@ -111,7 +112,8 @@ export function useSignInForm() {
 
         try {
           const pushToken = await registerPushNotificationsAsync();
-          if (pushToken) await registerToken.mutateAsync({ token: pushToken, platform: "android" });
+          const platform = Platform.OS === "ios" ? "ios" : "android";
+          if (pushToken) await registerToken.mutateAsync({ token: pushToken, platform });
         } catch {
           // Push notification registration fallback
         }
@@ -158,7 +160,8 @@ export function useSignInForm() {
         posthog?.identify(session.data.user.id);
         try {
           const pushToken = await registerPushNotificationsAsync();
-          if (pushToken) await registerToken.mutateAsync({ token: pushToken, platform: "android" });
+          const platform = Platform.OS === "ios" ? "ios" : "android";
+          if (pushToken) await registerToken.mutateAsync({ token: pushToken, platform });
         } catch {
           // Push notification registration fallback
         }

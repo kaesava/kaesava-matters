@@ -1,6 +1,8 @@
 "use client";
 
+import React from "react";
 import Image from "next/image";
+import { User } from "lucide-react";
 import { t } from "@money-matters/i18n";
 import { DESIGN_TOKENS } from "@money-matters/ui/web";
 
@@ -23,7 +25,7 @@ export function DashboardMobileHeader({
   onNavigateToSettings,
   avatarUrl,
   userName,
-  initials,
+  initials: _initials,
 }: DashboardMobileHeaderProps) {
   return (
     <header
@@ -74,10 +76,10 @@ export function DashboardMobileHeader({
             />
           ) : (
             <div
-              className="w-8 h-8 rounded-full flex items-center justify-center text-white text-xs font-black ring-1 ring-white/20"
+              className="w-8 h-8 rounded-full flex items-center justify-center text-white ring-1 ring-white/20"
               style={{ backgroundColor: DESIGN_TOKENS.colors.sereneBlue }}
             >
-              {initials}
+              <User className="w-4 h-4" />
             </div>
           )}
         </button>

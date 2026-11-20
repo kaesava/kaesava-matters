@@ -9,6 +9,7 @@ import {
   MobileEnvelopeModeToggle,
   MobileCheckbox,
   RecurrenceFrequency,
+  InfoTooltip,
 } from '@money-matters/ui/mobile';
 import { t } from '@money-matters/i18n';
 import { EnvelopeRecurrenceFields } from './EnvelopeRecurrenceFields';
@@ -197,12 +198,17 @@ export const EnvelopeFormFields: React.FC<EnvelopeFormFieldsProps> = ({
       )}
 
       {type === 'EVERYDAY' && (
-        <AmountInput
-          label={t('categories.safetyBufferFloorLabel')}
-          value={safetyBufferFloor}
-          onChangeText={setSafetyBufferFloor}
-          placeholder="0.00"
-        />
+        <View style={styles.formGroup}>
+          <View style={{ flexDirection: 'row', alignItems: 'center', gap: 4 }}>
+            <FormLabel label={t('categories.safetyBufferFloorLabel')} />
+            <InfoTooltip content={t('categories.safetyBufferFloorTooltip')} />
+          </View>
+          <AmountInput
+            value={safetyBufferFloor}
+            onChangeText={setSafetyBufferFloor}
+            placeholder="0.00"
+          />
+        </View>
       )}
 
       {type === 'GOAL' && (

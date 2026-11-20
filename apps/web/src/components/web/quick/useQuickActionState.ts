@@ -139,10 +139,13 @@ export function useQuickActionState(
 
   function handleDone() {
     utils.listTransactions.invalidate();
+    utils.listEnvelopeTransactions.invalidate();
     utils.listEnvelopes.invalidate();
     utils.listIncomeSources.invalidate();
     utils.listIncomeEvents.invalidate();
     utils.listExpenseEvents.invalidate();
+    utils.getMonthlySummary.invalidate();
+    utils.getHorizonProjectionData.invalidate();
     utils.listTransferEvents.invalidate();
     utils.listBankAccountsWithExpected.invalidate();
     if (isTransfer && !isFutureDate) {
@@ -223,6 +226,7 @@ export function useQuickActionState(
         return;
       }
       if (date < todayStr) {
+        setError(t("common.transferPastDateError"));
         return;
       }
 
@@ -340,83 +344,28 @@ export function useQuickActionState(
     createIncomeSourceMut.isPending;
 
   async function handleConfirmShortfallPaid({
-    amount: finalAmt,
-    date: finalDate,
-    transfers = [],
-  }: {
-    amount: number;
-    date: string;
-    transfers?: Array<{ poolId: string; amount: string }>;
-  }) {
+    amount: finalAmt, date: finalDate, transfers = [],
+  }: { amount: number; date: string; transfers?: Array<{ poolId: string; amount: string }> }) {
     if (!shortfallModalData) return;
-    for (const tItem of transfers) {
-      if (parseFloat(tItem.amount || "0") > 0) {
-        await moveMoneyMutation.mutateAsync({
-          sourceEnvelopeId: tItem.poolId,
-          destinationEnvelopeId: shortfallModalData.poolId,
-          amount: tItem.amount,
-          note: `Cover shortfall for ${shortfallModalData.billName}`,
-        });
-      }
-    }
+    const shortfallTransfers = transfers
+      .filter((tItem) => parseFloat(tItem.amount || "0") > 0)
+      .map((tItem) => ({ sourceEnvelopeId: tItem.poolId, amount: parseFloat(tItem.amount).toFixed(2) }));
     await recordExpenseMutation.mutateAsync({
-      envelopeId: shortfallModalData.poolId,
-      amount: finalAmt.toFixed(2),
-      note: shortfallModalData.billName,
-      date: finalDate,
-      transactionType: "EXPENSE",
+      envelopeId: shortfallModalData.poolId, amount: finalAmt.toFixed(2), note: shortfallModalData.billName,
+      date: finalDate, transactionType: "EXPENSE", ...(shortfallTransfers.length > 0 ? { shortfallTransfers } : {}),
     });
     setShortfallModalData(null);
-    handleDone();
   }
 
   return {
-    type,
-    name,
-    setName,
-    amount,
-    setAmount,
-    categoryId,
-    setCategoryId,
-    selectedSubCategoryId,
-    setSelectedSubCategoryId,
-    sourceCategoryId,
-    setSourceCategoryId,
-    destinationCategoryId,
-    setDestinationCategoryId,
-    receivingAccountId,
-    setReceivingAccountId,
-    hasPrivateEnvelopes,
-    contributionMode,
-    setContributionMode,
-    contributionValue,
-    setContributionValue,
-    date,
-    setDate,
-    todayStr,
-    error,
-    success,
-    categories,
-    bankAccounts,
-    quickExpensePresets,
-    quickIncomePresets,
-    quickTransferPresets,
-    isIncome,
-    isTransfer,
-    isFutureDate,
-    isSubmitting,
-    isPending: isSubmitting,
-    confirmState,
-    setConfirmState,
-    crossBankPrompt,
-    setCrossBankPrompt,
-    shortfallModalData,
-    setShortfallModalData,
-    handleConfirmShortfallPaid,
-    handleTabChange,
-    handleSelectPreset,
-    handleSubmit,
-    executeSubmit,
+    type, name, setName, amount, setAmount, categoryId, setCategoryId, selectedSubCategoryId, setSelectedSubCategoryId,
+    sourceCategoryId, setSourceCategoryId, destinationCategoryId, setDestinationCategoryId, receivingAccountId,
+    setReceivingAccountId, hasPrivateEnvelopes, contributionMode, setContributionMode, contributionValue,
+    setContributionValue, date, setDate, todayStr, error, success, categories, allEnvelopes: rawPools ?? [],
+    bankAccounts, quickExpensePresets, quickIncomePresets, quickTransferPresets, isIncome, isTransfer, isFutureDate,
+    isSubmitting, isPending: isSubmitting, confirmState, setConfirmState, crossBankPrompt, setCrossBankPrompt,
+    shortfallModalData, setShortfallModalData, handleConfirmShortfallPaid, handleTabChange, handleSelectPreset,
+    handleSubmit, executeSubmit,
   };
 }
 

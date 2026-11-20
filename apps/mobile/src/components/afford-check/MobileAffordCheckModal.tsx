@@ -1,9 +1,10 @@
 import React, { useState, useDeferredValue } from 'react';
 import { View, Text, TextInput, StyleSheet, TouchableOpacity, ScrollView, ActivityIndicator, Switch } from 'react-native';
 import { Feather } from '@expo/vector-icons';
-import { DESIGN_TOKENS, MobileModalDialog, AmountInput, GoalDelayCard } from '@money-matters/ui/mobile';
+import { DESIGN_TOKENS, MobileModalDialog, AmountInput } from '@money-matters/ui/mobile';
 import { t } from '@money-matters/i18n';
 import { trpc } from '../../lib/trpc';
+import { getMobileLocaleConfig } from '../../lib/format';
 import { AffordCheckVerdictCard } from './AffordCheckVerdictCard';
 import { AffordCheckBreakdownCard } from './AffordCheckBreakdownCard';
 
@@ -37,6 +38,7 @@ export function MobileAffordCheckModal({ visible, onClose, initialAmount }: Mobi
       frequency,
       itemName: itemName.trim() || undefined,
       includePersonal,
+      locale: getMobileLocaleConfig().locale,
     },
     {
       enabled: isValidAmount,
@@ -155,15 +157,8 @@ export function MobileAffordCheckModal({ visible, onClose, initialAmount }: Mobi
             )}
             {data && (
               <View style={{ gap: 12 }}>
-                <AffordCheckVerdictCard
-                  verdict={data.verdict}
-                  rationaleSteps={data.rationaleSteps}
-                  canAffordAt={'canAffordAt' in data ? (data.canAffordAt as string) : null}
-                />
+                <AffordCheckVerdictCard data={data} />
                 <AffordCheckBreakdownCard data={data} />
-                {data.verdict === 'GOAL_DELAYED' && data.goalDelays && data.goalDelays.length > 0 && (
-                  <GoalDelayCard goalDelays={data.goalDelays} />
-                )}
               </View>
             )}
           </View>

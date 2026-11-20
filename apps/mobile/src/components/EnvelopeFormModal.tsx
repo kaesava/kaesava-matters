@@ -12,7 +12,7 @@ import { EnvelopeFormFields } from "./envelopes/form/EnvelopeFormFields";
 import { EnvelopeFormFooter } from "./envelopes/form/EnvelopeFormFooter";
 import { useMobileEnvelopeFormState } from "./envelopes/form/useMobileEnvelopeFormState";
 import { CrossBankTransferModal } from "./CrossBankTransferModal";
-import { formatMobileCurrency } from "../lib/format";
+import { formatMobileCurrency, formatDate } from "../lib/format";
 
 import type { EnvelopeItem, EnvelopeDraftPayload, EnvelopeFormModalProps } from "./envelopes/form/envelopeFormTypes";
 export type { EnvelopeItem, EnvelopeDraftPayload, EnvelopeFormModalProps };
@@ -234,14 +234,17 @@ export function EnvelopeFormModal({
 
   const handleSubmit = () => {
     if (!validateForm()) return;
-    if (isEdit && !isDraftMode && isScheduleRuleChanged) {
+    const isConvertingToGoal = Boolean(isEdit && !isDraftMode && categoryToEdit?.envelopeType === "BILL" && type === "GOAL");
+    if (isEdit && !isDraftMode && (isScheduleRuleChanged || isConvertingToGoal)) {
       const wasRecurring = (categoryToEdit?.fundingMode ?? (categoryToEdit?.envelopeType === "GOAL" ? "TARGET_BALANCE" : "RECURRING")) === "RECURRING";
       const isConvertingToFlexible = wasRecurring && fundingMode === "TARGET_BALANCE";
       showMobileConfirm({
         title: t("modals.updateSchedule.confirmTitleExpense"),
-        message: isConvertingToFlexible
-          ? t("modals.updateSchedule.confirmDescConvertToFlexible")
-          : t("modals.updateSchedule.confirmDescRuleChange", { startDate: goalStartDate || "" }),
+        message: isConvertingToGoal
+          ? t("categories.confirmDescConvertToGoal")
+          : isConvertingToFlexible
+            ? t("modals.updateSchedule.confirmDescConvertToFlexible")
+            : t("modals.updateSchedule.confirmDescRuleChange", { startDate: goalStartDate ? formatDate(goalStartDate) : "" }),
         confirmText: t("modals.updateSchedule.confirmCta"),
         isDestructive: false,
         onConfirm: confirmBankChangeIfNeeded,

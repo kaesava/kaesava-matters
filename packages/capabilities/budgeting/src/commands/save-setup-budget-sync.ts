@@ -8,16 +8,24 @@ import { burstIncomeEvents } from "./income-schedule.js";
 export async function archivePendingIncomeEvents(
   tx: DbOrTx,
   tenantId: string,
-  archivedIncomeIds: string[]
+  archivedIncomeIds: string[],
+  userId?: string,
+  now: Date = new Date()
 ): Promise<void> {
   if (archivedIncomeIds.length === 0) return;
   await tx
-    .delete(incomeEvents)
+    .update(incomeEvents)
+    .set({
+      archivedAt: now,
+      ...(userId ? { archivedBy: userId, updatedBy: userId } : {}),
+      updatedAt: now,
+    })
     .where(
       and(
         eq(incomeEvents.tenantId, tenantId),
         inArray(incomeEvents.incomeSourceId, archivedIncomeIds),
-        eq(incomeEvents.status, "PENDING")
+        eq(incomeEvents.status, "PENDING"),
+        sql`${incomeEvents.archivedAt} IS NULL`
       )
     );
 }
@@ -25,16 +33,24 @@ export async function archivePendingIncomeEvents(
 export async function archivePendingExpenseEvents(
   tx: DbOrTx,
   tenantId: string,
-  archivedEnvelopeIds: string[]
+  archivedEnvelopeIds: string[],
+  userId?: string,
+  now: Date = new Date()
 ): Promise<void> {
   if (archivedEnvelopeIds.length === 0) return;
   await tx
-    .delete(expenseEvents)
+    .update(expenseEvents)
+    .set({
+      archivedAt: now,
+      ...(userId ? { archivedBy: userId, updatedBy: userId } : {}),
+      updatedAt: now,
+    })
     .where(
       and(
         eq(expenseEvents.tenantId, tenantId),
         inArray(expenseEvents.envelopeId, archivedEnvelopeIds),
-        eq(expenseEvents.status, "PENDING")
+        eq(expenseEvents.status, "PENDING"),
+        sql`${expenseEvents.archivedAt} IS NULL`
       )
     );
 }

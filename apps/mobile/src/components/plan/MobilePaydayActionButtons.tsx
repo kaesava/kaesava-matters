@@ -62,17 +62,19 @@ export function MobilePaydayActionButtons({
       </TouchableOpacity>
 
       {/* Row 2: Discard Edits and Save Draft in this order */}
-      {isDirty && (
+      {(isDirty || !isLocked) && (
         <View style={styles.dualRow}>
-          <TouchableOpacity
-            activeOpacity={0.85}
-            onPress={onDiscardEdits}
-            disabled={submitting}
-            style={[styles.secondaryActionBtn, submitting && styles.disabledBtn]}
-          >
-            <Feather name="rotate-ccw" size={14} color="#FFFFFF" />
-            <Text style={styles.btnText}>{t('paydayDrawer.discardEdits')}</Text>
-          </TouchableOpacity>
+          {isDirty && (
+            <TouchableOpacity
+              activeOpacity={0.85}
+              onPress={onDiscardEdits}
+              disabled={submitting}
+              style={[styles.secondaryActionBtn, submitting && styles.disabledBtn]}
+            >
+              <Feather name="rotate-ccw" size={14} color="#FFFFFF" />
+              <Text style={styles.btnText}>{t('paydayDrawer.discardEdits')}</Text>
+            </TouchableOpacity>
+          )}
           <TouchableOpacity
             activeOpacity={0.85}
             onPress={onSaveChanges || onLockSplit}

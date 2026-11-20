@@ -98,6 +98,7 @@ export const COUNTRY_DEFAULTS: Record<string, CountryDefaults> = {
 };
 
 const DEFAULT_COUNTRY = "AU";
+export const DEFAULT_CURRENCY = "AUD";
 export const DEFAULT_TIMEZONE = "Australia/Sydney";
 export const DEFAULT_LOCALE = "en-AU";
 

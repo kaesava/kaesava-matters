@@ -4,7 +4,7 @@ import React from "react";
 import { t } from "@money-matters/i18n";
 import { trpc } from "../../../../lib/trpc";
 import { InfoTooltip, SearchInput, RecordFilterBadge, PoolPicker } from "@money-matters/ui/web";
-import { BankAccountTable, BankName } from "./BankAccountTable";
+import { BankAccountTable } from "./BankAccountTable";
 import { BankAccountFormModal } from "./BankAccountFormModal";
 import { SyncBalanceModal } from "../../../../components/SyncBalanceModal";
 import { QuickExpenseDrawer } from "../../../../components/web/QuickExpenseDrawer";
@@ -12,16 +12,6 @@ import { useLocale } from "../../../../providers/LocaleProvider";
 import { useAppFeatures } from "../../../../hooks/useAppFeatures";
 import { FileNotesDrawer } from "@money-matters/capability-file-notes/web";
 import { useBankAccountsList } from "./useBankAccountsList";
-
-const BANK_OPTIONS: Array<{ key: BankName; label: string; logoBg: string; textColor: string }> = [
-  { key: "CBA", label: "Commonwealth Bank (CBA)", logoBg: "bg-amber-400", textColor: "text-zinc-950" },
-  { key: "Westpac", label: "Westpac", logoBg: "bg-red-600", textColor: "text-white" },
-  { key: "ANZ", label: "ANZ", logoBg: "bg-blue-600", textColor: "text-white" },
-  { key: "NAB", label: "NAB", logoBg: "bg-red-700", textColor: "text-white" },
-  { key: "ING", label: "ING", logoBg: "bg-orange-500", textColor: "text-white" },
-  { key: "Macquarie", label: "Macquarie", logoBg: "bg-zinc-800", textColor: "text-white" },
-  { key: "Other", label: "Other", logoBg: "bg-slate-500", textColor: "text-white" },
-];
 
 export function BankAccountsSection() {
   const { fmt } = useLocale();
@@ -36,7 +26,7 @@ export function BankAccountsSection() {
   const list = useBankAccountsList();
 
   return (
-    <div className="flex flex-col gap-6 w-full animate-in fade-in duration-200">
+    <div data-tour="bank-accounts" className="flex flex-col gap-6 w-full animate-in fade-in duration-200">
       {/* Top Header inside tab */}
       <div className="flex flex-wrap items-center justify-between gap-4">
         <div>
@@ -118,7 +108,11 @@ export function BankAccountsSection() {
       {list.accountIdParam && (
         <div className="flex items-center gap-3 flex-wrap">
           <RecordFilterBadge
-            label={list.matchedAccount ? `Filtered to Account: ${list.matchedAccount.name}` : "Filter: Item unavailable"}
+            label={
+              list.matchedAccount
+                ? t("history.filteredToAccount", { name: list.matchedAccount.name })
+                : t("history.filterItemUnavailable")
+            }
             onClear={() => {
               const url = new URL(window.location.href);
               url.searchParams.delete("id");
@@ -187,7 +181,6 @@ export function BankAccountsSection() {
             setAccIsPrivate={list.setAccIsPrivate}
             isTrialExpired={list.isTrialExpired}
             isSaving={list.isSaving}
-            bankOptions={BANK_OPTIONS}
             onClose={list.closeModal}
             onSubmit={list.handleSaveAccount}
             fmtMoney={fmtMoney}

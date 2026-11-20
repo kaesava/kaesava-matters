@@ -109,10 +109,16 @@ function CompleteProfileContent() {
     try {
       await createTenant.mutateAsync({
         name: `${name.trim()}'s Household`,
+        displayName: name.trim(),
         country,
         currency,
         timezone,
       });
+      try {
+        await authClient.updateUser({ name: name.trim() });
+      } catch {
+        // Non-blocking: backend users.displayName is already updated
+      }
       window.location.href = redirectUrl;
     } catch (err) {
       setFormError(err instanceof Error ? err.message : t("auth.unexpectedError"));

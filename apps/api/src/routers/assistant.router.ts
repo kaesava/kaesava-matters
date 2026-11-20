@@ -50,7 +50,7 @@ export const assistantRouter = router({
         return { type: "unavailable", reason: "rate_limited" };
       }
 
-      const fmt = await loadTenantFormatting(ctx.db, ctx.tenantId);
+      const fmt = await loadTenantFormatting(ctx.db, ctx.tenantId, ctx.userId);
       const usageStore = new DbUsageStore(ctx.db);
       const handler = createAssistantIntentHandler(ctx.db, ctx.appId);
 

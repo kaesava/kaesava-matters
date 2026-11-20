@@ -125,7 +125,9 @@ export function MarkPaidShortfallSection({
           ]}
         >
           {shortfallValidation.isValid
-            ? t('planTabs.shortfallCovered')
+            ? t('planTabs.shortfallCovered', {
+                amount: formatMobileCurrency(shortfallAmount),
+              })
             : shortfallValidation.isOverAllocated
             ? t('planTabs.shortfallOverAllocated', {
                 amount: formatMobileCurrency(shortfallValidation.difference),

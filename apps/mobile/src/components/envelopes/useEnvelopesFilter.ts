@@ -1,6 +1,12 @@
 import { useMemo, useState } from 'react';
 
-export type PoolSortField = 'name' | 'currentBalance' | 'targetAmount';
+export type PoolSortField =
+  | 'name'
+  | 'currentBalance'
+  | 'targetAmount'
+  | 'bankAccountName'
+  | 'poolType'
+  | 'targetDate';
 export type PoolTypeFilter = 'ALL' | 'EVERYDAY' | 'BILL' | 'GOAL';
 export type PrivacyFilter = 'ALL' | 'SHARED' | 'PRIVATE';
 
@@ -10,6 +16,7 @@ export interface EnvelopeFilterablePool {
   envelopeType?: string | null;
   currentBalance?: number | null;
   targetAmount?: string | null;
+  targetDate?: string | null;
   bankAccountId?: string | null;
   isPrivate?: boolean | null;
 }
@@ -73,6 +80,22 @@ export function useEnvelopesFilter({
           return sortOrder === 'asc'
             ? (a.currentBalance || 0) - (b.currentBalance || 0)
             : (b.currentBalance || 0) - (a.currentBalance || 0);
+        }
+        if (sortField === 'bankAccountName') {
+          const aBank = bankAccounts.find((bk) => bk.id === a.bankAccountId)?.name ?? '';
+          const bBank = bankAccounts.find((bk) => bk.id === b.bankAccountId)?.name ?? '';
+          const res = aBank.localeCompare(bBank);
+          return sortOrder === 'asc' ? res : -res;
+        }
+        if (sortField === 'poolType') {
+          const res = (a.envelopeType || '').localeCompare(b.envelopeType || '');
+          return sortOrder === 'asc' ? res : -res;
+        }
+        if (sortField === 'targetDate') {
+          const aDate = a.targetDate || '9999-12-31';
+          const bDate = b.targetDate || '9999-12-31';
+          const res = aDate.localeCompare(bDate);
+          return sortOrder === 'asc' ? res : -res;
         }
         const aTgt = a.targetAmount ? parseFloat(a.targetAmount) : 0;
         const bTgt = b.targetAmount ? parseFloat(b.targetAmount) : 0;

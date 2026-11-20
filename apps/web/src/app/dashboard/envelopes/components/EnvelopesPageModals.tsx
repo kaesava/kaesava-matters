@@ -70,7 +70,10 @@ export function EnvelopesPageModals({
 
       <EnvelopeFormModal
         isOpen={isPoolModalOpen}
-        onClose={() => setIsPoolModalOpen(false)}
+        onClose={() => {
+          setIsPoolModalOpen(false);
+          setPoolToEdit(null);
+        }}
         envelopeToEdit={poolToEdit}
         onSuccess={async () => {
           if (poolToEdit?.id && selectedPoolForDrawer?.id === poolToEdit.id) {

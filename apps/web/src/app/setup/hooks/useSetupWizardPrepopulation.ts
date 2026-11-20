@@ -84,7 +84,9 @@ export function useSetupWizardPrepopulation({
     const goalPools = poolsQuery.data.filter(
       (p) => p.envelopeType === "GOAL"
     );
-    if (goalPools.length > 0) {
+    if (goalPools.length === 0) {
+      setGoals([]);
+    } else {
       setGoals(
         goalPools.map((g) => {
           const isOngoing = g.fundingMode === "RECURRING";

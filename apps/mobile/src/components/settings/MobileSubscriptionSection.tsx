@@ -26,6 +26,7 @@ export function MobileSubscriptionSection() {
     staleTime: 30_000,
   });
   const checkoutMut = trpc.createCheckoutSession.useMutation();
+  const verifyCheckoutMut = trpc.verifyCheckoutSession.useMutation();
   const portalMut = trpc.createCustomerPortalSession.useMutation();
   const syncMut = trpc.syncSubscription.useMutation();
 
@@ -105,19 +106,29 @@ export function MobileSubscriptionSection() {
     try {
       const res = await checkoutMut.mutateAsync({
         planType: plan,
-        successUrl: 'moneymatters://settings?tab=account-data&stripe_sync=true&checkout_success=true',
+        successUrl: 'moneymatters://settings?tab=account-data&stripe_sync=true&checkout_success=true&session_id={CHECKOUT_SESSION_ID}',
         cancelUrl: 'moneymatters://settings?tab=account-data&checkout_canceled=true',
       });
       if (res.url) {
         setPickerVisible(false);
         awaitingExternalReturn.current = true;
+        let returnedUrl: string | null = null;
         try {
-          await WebBrowser.openAuthSessionAsync(
+          const authResult = await WebBrowser.openAuthSessionAsync(
             res.url,
             'moneymatters://settings?tab=account-data'
           );
+          if (authResult.type === 'success' && authResult.url) {
+            returnedUrl = authResult.url;
+          }
         } catch {
           Linking.openURL(res.url);
+        }
+        if (returnedUrl) {
+          const match = returnedUrl.match(/[?&]session_id=([^&]+)/);
+          if (match?.[1]) {
+            await verifyCheckoutMut.mutateAsync({ sessionId: decodeURIComponent(match[1]) }).catch(() => {});
+          }
         }
         await handleSilentSync();
       }

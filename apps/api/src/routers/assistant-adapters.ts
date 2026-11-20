@@ -27,7 +27,7 @@ async function goalDateAnswer(
   goalName?: string
 ): Promise<AssistantResult> {
   const [fmt, visible] = await Promise.all([
-    loadTenantFormatting(db, ctx.tenantId),
+    loadTenantFormatting(db, ctx.tenantId, ctx.userId),
     fetchVisibleEnvelopes(db, ctx.tenantId, appId, ctx.userId),
   ]);
   const goals = visible.filter((r) => r.envelopeType === "GOAL");
@@ -63,7 +63,7 @@ async function poolBalanceAnswer(
   poolName?: string
 ): Promise<AssistantResult> {
   const [fmt, rows, balancesMap] = await Promise.all([
-    loadTenantFormatting(db, ctx.tenantId),
+    loadTenantFormatting(db, ctx.tenantId, ctx.userId),
     fetchVisibleEnvelopes(db, ctx.tenantId, appId, ctx.userId),
     getEnvelopeBalancesMap(ctx.tenantId, appId, db),
   ]);
@@ -90,7 +90,7 @@ async function poolBalanceAnswer(
 async function nextPaydayAnswer(db: DbOrTx, appId: string, ctx: IntentContext): Promise<AssistantResult> {
   try {
     const [fmt, events] = await Promise.all([
-      loadTenantFormatting(db, ctx.tenantId),
+      loadTenantFormatting(db, ctx.tenantId, ctx.userId),
       db
         .select({ event: incomeEvents, isPriv: bankAccounts.isPrivate, ownerId: bankAccounts.userId })
         .from(incomeEvents)
@@ -129,7 +129,7 @@ async function billsDueAnswer(
   daysAhead = 7
 ): Promise<AssistantResult> {
   const [fmt, visible] = await Promise.all([
-    loadTenantFormatting(db, ctx.tenantId),
+    loadTenantFormatting(db, ctx.tenantId, ctx.userId),
     fetchVisibleEnvelopes(db, ctx.tenantId, appId, ctx.userId),
   ]);
   const visibleIds = new Set(visible.map((e) => e.id));
@@ -172,7 +172,7 @@ async function billCoverageAnswer(
   billName?: string
 ): Promise<AssistantResult> {
   const [fmt, coverage] = await Promise.all([
-    loadTenantFormatting(db, ctx.tenantId),
+    loadTenantFormatting(db, ctx.tenantId, ctx.userId),
     listBillCoverageQuery(ctx.tenantId, appId, db, ctx.userId),
   ]);
   const q = billName?.trim().toLowerCase();

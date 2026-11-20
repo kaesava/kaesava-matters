@@ -3,7 +3,7 @@ import { Tabs, useSegments, useRouter, type Href } from 'expo-router';
 import { View, StyleSheet } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { DESIGN_TOKENS, useMobileToast, usePushNotifications } from '@money-matters/ui/mobile';
-import { t, setLanguage } from '@money-matters/i18n';
+import { t } from '@money-matters/i18n';
 import { Feather } from '@expo/vector-icons';
 import { trpc, getActiveTenantId, switchActiveTenant } from '../../lib/trpc';
 import { authClient } from '../../lib/auth';
@@ -45,11 +45,22 @@ export default function AppLayout() {
   const utils = trpc.useUtils();
   const burstUpcomingEvents = trpc.burstUpcomingEvents.useMutation();
   const lastBurstTenantId = React.useRef<string | null>(null);
+  const router = useRouter();
+  const subQuery = trpc.getSubscriptionStatus.useQuery(undefined, {
+    enabled: !!session?.user,
+  });
 
   // Auto-burst rolling window of scheduled bills and income on authenticated tenant entry
   React.useEffect(() => {
     const activeTenantId = getActiveTenantId() || tenantStatusQuery.data?.tenantId;
-    if (session?.user && activeTenantId && lastBurstTenantId.current !== activeTenantId) {
+    const subStatus = subQuery.data;
+    const hasWriteAccess =
+      !!subStatus &&
+      !subStatus.isTrialExpired &&
+      !subStatus.isGracePeriod &&
+      !subStatus.isPastDue &&
+      !subStatus.isDeactivated;
+    if (session?.user && activeTenantId && !subQuery.isLoading && hasWriteAccess && lastBurstTenantId.current !== activeTenantId) {
       lastBurstTenantId.current = activeTenantId;
       burstUpcomingEvents.mutate(undefined, {
         onSuccess: (res) => {
@@ -64,7 +75,7 @@ export default function AppLayout() {
         },
       });
     }
-  }, [session?.user, tenantStatusQuery.data?.tenantId, burstUpcomingEvents, utils]);
+  }, [session?.user, tenantStatusQuery.data?.tenantId, subQuery.data, subQuery.isLoading, burstUpcomingEvents, utils]);
 
   React.useEffect(() => {
     if (userTenantsQuery.data && userTenantsQuery.data.length > 0) {
@@ -90,25 +101,8 @@ export default function AppLayout() {
     }
   }, [userTenantsQuery.data, tenantStatusQuery.data?.tenantId, utils]);
 
-  const userPrefQuery = trpc.getUserPreferences.useQuery(undefined, {
-    enabled: !!session?.user,
-  });
-  const prefs = userPrefQuery.data?.appPreferences?.[
-    '01908bde-34bb-7b19-a178-574211bc93aa'
-  ] as { locale?: 'en' | 'ja' } | undefined;
-  const userLocale = (prefs?.locale || 'en') as 'en';
-  const router = useRouter();
-  const subQuery = trpc.getSubscriptionStatus.useQuery(undefined, {
-    enabled: !!session?.user,
-  });
   const segments = useSegments();
   const currentScreen = segments[segments.length - 1];
-
-  React.useEffect(() => {
-    if (userLocale) {
-      setLanguage(userLocale);
-    }
-  }, [userLocale]);
 
   // Expired Trial Guard: redirect to settings when trial has ended
   React.useEffect(() => {
@@ -185,7 +179,7 @@ export default function AppLayout() {
           }}
         />
         <Tabs.Screen
-          name="paychecks"
+          name="plan"
           options={{
             title: t('nav.incomeExpenses'),
             tabBarIcon: ({ color, size }) => (
@@ -203,7 +197,7 @@ export default function AppLayout() {
           }}
         />
         <Tabs.Screen
-          name="transactions"
+          name="history"
           options={{
             title: t('nav.transactions'),
             tabBarIcon: ({ color, size }) => (
@@ -214,24 +208,17 @@ export default function AppLayout() {
 
         {/* Hidden push routes — not in tab bar */}
         <Tabs.Screen name="reports" options={{ href: null }} />
-        <Tabs.Screen name="income-split" options={{ href: null }} />
-        <Tabs.Screen name="upcoming" options={{ href: null }} />
+        <Tabs.Screen name="bank-accounts" options={{ href: null }} />
+        <Tabs.Screen name="payday-plan" options={{ href: null }} />
+        <Tabs.Screen name="payday-plan/[id]" options={{ href: null }} />
+        <Tabs.Screen name="plan/schedules" options={{ href: null }} />
         <Tabs.Screen name="settings" options={{ href: null }} />
         <Tabs.Screen name="afford-check" options={{ href: null }} />
         <Tabs.Screen name="envelopes/[id]" options={{ href: null }} />
         <Tabs.Screen name="envelopes/projection" options={{ href: null }} />
-        <Tabs.Screen name="income-split/[id]" options={{ href: null }} />
-        <Tabs.Screen name="paychecks/[id]" options={{ href: null }} />
-        <Tabs.Screen name="paychecks/schedules" options={{ href: null }} />
-        <Tabs.Screen
-          name="paychecks/transfer-instructions"
-          options={{ href: null }}
-        />
-        <Tabs.Screen name="settings/bank-accounts" options={{ href: null }} />
-        <Tabs.Screen name="settings/subscription" options={{ href: null }} />
+        <Tabs.Screen name="settings/allocation-rules" options={{ href: null }} />
         <Tabs.Screen name="settings/notifications" options={{ href: null }} />
         <Tabs.Screen name="settings/archived" options={{ href: null }} />
-        <Tabs.Screen name="settings/history" options={{ href: null }} />
       </Tabs>
 
       {/* Floating Action Button */}

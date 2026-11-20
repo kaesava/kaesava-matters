@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
-import { StyleSheet, ScrollView, RefreshControl } from 'react-native';
+import { StyleSheet, ScrollView, RefreshControl, View } from 'react-native';
 import { useRouter, useLocalSearchParams, type Href } from 'expo-router';
 import { DESIGN_TOKENS } from '@money-matters/ui/mobile';
 import { AppScreenWrapper } from '../../../components/AppScreenWrapper';
+import { useMobileProductTour } from '../../../context/ProductTourContext';
 import { t } from '@money-matters/i18n';
 import { SourceToEdit } from '../../../components/IncomeExpenseFormModal';
 import { RecurringSchedulesTab } from '../../../components/plan/RecurringSchedulesTab';
@@ -17,6 +18,8 @@ import { QuickExpenseModal, QuickActionType } from '../../../components/QuickExp
 
 export default function RecurringSchedulesScreen() {
   const router = useRouter();
+  const { registerTourTarget } = useMobileProductTour();
+  const schedulesRef = React.useRef<View>(null);
   const searchParams = useLocalSearchParams<{
     returnTo?: string;
     editIncomeId?: string;
@@ -195,7 +198,15 @@ export default function RecurringSchedulesScreen() {
           />
         }
       >
-        <RecurringSchedulesTab
+        <View
+          ref={schedulesRef}
+          onLayout={() => {
+            schedulesRef.current?.measureInWindow((x, y, width, height) => {
+              if (width > 0 && height > 0) registerTourTarget('schedules-tab', { x, y, width, height });
+            });
+          }}
+        >
+          <RecurringSchedulesTab
           incomeSources={incomeSources}
           expenseSources={expenseSources}
           bankAccounts={bankAccounts}
@@ -244,6 +255,7 @@ export default function RecurringSchedulesScreen() {
           }}
           onBurstModal={handleOpenBurstModal}
         />
+        </View>
       </ScrollView>
 
       <EnvelopeFormModal

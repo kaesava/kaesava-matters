@@ -29,13 +29,8 @@ export const history = {
     "exportSplitsDialog": "Export Splits CSV",
     "exportHeaders": {
       "amountWithCurrency": "Amount ({currency})",
-      "account": "Account",
-      "note": "Note",
-      "paydayPlanDate": "Payday Plan Date",
-      "incomeDate": "Income Date",
-      "incomeSource": "Income Schedule",
-      "bankAccount": "Bank Account",
-      "totalAmount": "Total Amount"
+      "account": "Bank Account",
+      "note": "Note"
     },
     "title": "History",
     "viewReports": "View Reports",
@@ -104,7 +99,19 @@ export const history = {
     "emptySubtitle": "Your spending and income will show up here once you start recording.",
     "statusConfirmed": "Confirmed ✓",
     "statusDraft": "Draft Saved 💾",
-    "csvExport": "CSV"
+    "csvExport": "CSV",
+    "csvPaydayPlanDate": "Payday Plan Date",
+    "csvIncomeDate": "Income Date",
+    "csvIncomeSource": "Income Source",
+    "csvBankAccount": "Bank Account",
+    "csvTotalIncome": "Total Income",
+    "csvEnvelope": "Envelope",
+    "csvPlannedAmount": "Planned Amount",
+    "csvReasoning": "Reasoning",
+    "filteredToEnvelope": "Filtered to Envelope: {name}",
+    "filteredToAccount": "Filtered to Bank Account: {name}",
+    "filterItemUnavailable": "Filter: Item unavailable",
+    "transferAmountTitle": "Transfer Amount"
   },
   "canIAfford": {
     "title": "Can I Afford It?",
@@ -173,6 +180,39 @@ export const history = {
     "paycyclesAwayLabel": "{n} paycycle(s) away",
     "shortfallLabel": "Shortfall: -{amount}",
     "projectedEverydayLabel": "Projected Everyday: {amount}",
-    "recurringMonthlyImpactLabel": "{amount}/month"
+    "recurringMonthlyImpactLabel": "{amount}/month",
+    "goalDelayCount": "{count} goal(s) pushed back",
+    "horizon12Months": "12-month horizon",
+    "rationale": {
+      "everydayBalance": "Everyday balance: {balance}{personalSuffix}",
+      "upcomingBillsProtected": "Upcoming bills before payday: {bills} (100% protected)",
+      "upcomingBillsRisk": "Upcoming bills before payday: {bills} ({names})",
+      "netSafeToSpendInsufficient": "Net safe-to-spend today after unfunded bills: {spendable} — insufficient for {amount}",
+      "billsNonNegotiable": "Bills are non-negotiable and cannot be spent.",
+      "afterPurchaseRemaining": "After purchase: {remaining} remaining until payday on {date}.",
+      "afterPurchaseTightRemaining": "After purchase: {remaining} remaining for {days} days until payday.",
+      "aboveSafeCushion": "Well above your recommended safe cushion of {cushion} until payday.",
+      "belowSafeCushion": "Drops {shortfall} below your recommended safe cushion of {cushion} until payday.",
+      "shortfallCurrent": "Your current Everyday balance ({spendable}) is short by {shortfall}.",
+      "waitForPaycycleDiscretionary": "By your {paycycleLabel} paycycle ({date}), your incoming paycheck provides enough safe Everyday spending money ({amount}) to cover this purchase while keeping all bills and living essentials 100% protected.",
+      "waitForPaycycleSurplus": "By your {paycycleLabel} paycycle ({date}), your incoming paycheck covers this purchase while protecting all bills and your minimum Everyday living cushion.",
+      "goalAlternativeOption": "Alternative option today: Tap {goalName} ({available} available) to cover the {shortfall} shortfall — delays goal by ~{delayDays} days ({delayDate}).",
+      "hardNoOneOff": "Across the next 12 months of projected income and bills, your Everyday balance does not accumulate enough surplus to safely cover {amount} without starving essential expenses.",
+      "hardNoOneOffAdvice": "Consider reducing the purchase amount, splitting it across smaller milestones, or adjusting your savings goals.",
+      "hardNoRecurringBills": "Adding {monthly}/mo ({amount} {frequency}) causes a projected bill shortfall across your 12-month forecast.",
+      "hardNoRecurringForecastShortfall": "Your projected income cannot cover all existing bills plus this new commitment.",
+      "hardNoRecurringBillsNonNegotiable": "Bills are non-negotiable — this commitment cannot be safely taken on.",
+      "hardNoRecurringEveryday": "Adding {monthly}/mo ({amount} {frequency}) would reduce your Everyday spending allowance to {minProjected} (below the 80% safe minimum of {minSafe}).",
+      "hardNoRecurringEverydayProtected": "Everyday living essentials are protected and cannot be starved below 80%.",
+      "goalDelayedIntro": "Adding {monthly}/mo ({amount} {frequency}) is affordable, but reduces surplus available for your savings goals.",
+      "goalDelayedProtected": "All bills (100%) and Everyday spending (≥80% baseline) remain protected.",
+      "goalDelayedAbsorbedHeader": "What gives (Savings Goals absorbed first):",
+      "goalDelayedItem": "• {goalName} ({tier}): reduced by {reduction} over 12 months (~{delayDays} days delay, new target {newDate})",
+      "goalTierPriority": "Priority Goal",
+      "goalTierStandard": "Flexible Goal",
+      "safeYesRecurringIntro": "Adding {monthly}/mo ({amount} {frequency}) fits comfortably within your 12-month cashflow.",
+      "safeYesRecurringFunded": "All upcoming bills remain 100% funded, Everyday living stays above safe levels, and your savings goals remain on track.",
+      "startAdviceWaitUntilPayday": "Best to start on or after your next payday ({date}) when {amount} is available without dipping below your safe cushion."
+    }
   }
 } as const;

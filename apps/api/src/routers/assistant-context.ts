@@ -7,6 +7,7 @@ import {
   incomeEvents,
   incomeSources,
   tenants,
+  userPreferences,
   type DbOrTx,
 } from "@money-matters/db";
 import {
@@ -35,16 +36,26 @@ export interface VisibleEnvelopeRow {
   isSurplusTarget: boolean;
 }
 
-export async function loadTenantFormatting(db: DbOrTx, tenantId: string): Promise<TenantFormatting> {
+export async function loadTenantFormatting(db: DbOrTx, tenantId: string, userId?: string): Promise<TenantFormatting> {
   const [row] = await db
     .select({ country: tenants.country, currency: tenants.currency, timezone: tenants.timezone })
     .from(tenants)
     .where(eq(tenants.id, tenantId))
     .limit(1);
 
+  let userTz: string | null = null;
+  if (userId) {
+    const [prefRow] = await db
+      .select({ timezone: userPreferences.timezone })
+      .from(userPreferences)
+      .where(eq(userPreferences.userId, userId))
+      .limit(1);
+    userTz = prefRow?.timezone ?? null;
+  }
+
   const country = row?.country ?? "AU";
   const currency = row?.currency ?? "AUD";
-  const timezone = row?.timezone ?? "Australia/Sydney";
+  const timezone = userTz || row?.timezone || "UTC";
   return { country, currency, timezone, locale: getLocaleFromCountry(country) };
 }
 
@@ -168,7 +179,7 @@ export async function buildSafePennyContext(
   appId: string,
   ctx: IntentContext
 ): Promise<SafePennySnapshot> {
-  const fmt = await loadTenantFormatting(db, ctx.tenantId);
+  const fmt = await loadTenantFormatting(db, ctx.tenantId, ctx.userId);
   const todayIso = getTenantDateString(new Date(), fmt);
   const [visibleEnvs, balancesMap] = await Promise.all([
     fetchVisibleEnvelopes(db, ctx.tenantId, appId, ctx.userId),

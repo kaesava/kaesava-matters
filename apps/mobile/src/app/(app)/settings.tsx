@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, ScrollView } from 'react-native';
 import { useRouter, Href } from 'expo-router';
 import { Feather } from '@expo/vector-icons';
+import { usePostHog } from 'posthog-react-native';
 import { t } from '@money-matters/i18n';
 import { SegmentedTabs, DESIGN_TOKENS, showMobileConfirm, useMobileToast } from '@money-matters/ui/mobile';
 import { authClient } from '../../lib/auth';
@@ -18,7 +19,6 @@ import { PrivacyGovernanceSection } from '../../components/settings/PrivacyGover
 import { HouseholdDangerZoneSection } from '../../components/settings/HouseholdDangerZoneSection';
 import { FeedbackFormModal } from '../../components/FeedbackFormModal';
 import { MobileHouseholdSwitcherModal } from '../../components/settings/MobileHouseholdSwitcherModal';
-import { MobileBankAccountsSection } from '../../components/settings/MobileBankAccountsSection';
 import { MobileArchivedSection } from '../../components/settings/MobileArchivedSection';
 import { MobileAllocationStrategySection } from '../../components/settings/MobileAllocationStrategySection';
 import { getMobileVersionInfo } from '../../lib/version';
@@ -34,6 +34,7 @@ export type { SettingsTab };
 export default function SettingsScreen() {
   const router = useRouter();
   const toast = useMobileToast();
+  const posthog = usePostHog();
   const { startTour } = useMobileProductTour();
   const { data: session } = authClient.useSession();
   const utils = trpc.useUtils();
@@ -79,6 +80,7 @@ export default function SettingsScreen() {
         try {
           await unregisterCachedPushToken((input) => removeToken.mutateAsync(input));
           await authClient.signOut();
+          posthog?.reset();
           await SecureStore.deleteItemAsync('money-matters_session_token');
           await SecureStore.deleteItemAsync('money-matters-session-token');
           await SecureStore.deleteItemAsync('money_matters_active_tenant_id').catch(() => {});
@@ -157,29 +159,6 @@ export default function SettingsScreen() {
 
               <HouseholdMemberInviteSection />
 
-              <HouseholdDangerZoneSection />
-            </View>
-          )}
-
-          {/* TAB 3: BANK ACCOUNTS */}
-          {activeTab === 'bank-accounts' && (
-            <View style={styles.tabSection}>
-              <MobileBankAccountsSection />
-            </View>
-          )}
-
-          {/* TAB 4: ARCHIVED DATA */}
-          {activeTab === 'archived' && (
-            <View style={styles.tabSection}>
-              <MobileArchivedSection />
-            </View>
-          )}
-
-          {/* TAB 5: DATA & SUBSCRIPTION */}
-          {activeTab === 'account-data' && (
-            <View style={styles.tabSection}>
-              <MobileSubscriptionSection />
-
               <View style={styles.recalibrateCard}>
                 <View style={styles.recalibrateHeader}>
                   <Feather name="sliders" size={16} color={DESIGN_TOKENS.colors.sereneBlue} />
@@ -194,6 +173,22 @@ export default function SettingsScreen() {
                   <Text style={styles.recalibrateBtnText}>{t('setup.recalibrateTitle')}</Text>
                 </TouchableOpacity>
               </View>
+
+              <HouseholdDangerZoneSection />
+            </View>
+          )}
+
+          {/* TAB 3: ARCHIVED DATA */}
+          {activeTab === 'archived' && (
+            <View style={styles.tabSection}>
+              <MobileArchivedSection />
+            </View>
+          )}
+
+          {/* TAB 4: DATA & SUBSCRIPTION */}
+          {activeTab === 'account-data' && (
+            <View style={styles.tabSection}>
+              <MobileSubscriptionSection />
 
               <PrivacyGovernanceSection />
             </View>

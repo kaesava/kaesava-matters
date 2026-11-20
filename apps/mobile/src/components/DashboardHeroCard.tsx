@@ -85,7 +85,6 @@ export const DashboardHeroCard: React.FC<DashboardHeroCardProps> = ({
 
 const styles = StyleSheet.create({
   container: {
-    paddingHorizontal: 20,
     marginTop: 6,
     marginBottom: 6,
     gap: 10,

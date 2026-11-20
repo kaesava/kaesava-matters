@@ -56,7 +56,7 @@ describe("Bank Sync Balance & Mapping Rules", () => {
     expect(result.success).toBe(true);
     expect(result.tenantId).toBeDefined();
     expect(insertedAccounts).toHaveLength(1);
-    expect(insertedAccounts[0].name).toBe("Other Financial Institution (Everyday)");
+    expect(insertedAccounts[0].name).toBe("Primary Bank Account");
 
     expect(insertedEnvelopes).toHaveLength(1);
     expect(insertedEnvelopes[0].envelopeType).toBe("EVERYDAY");

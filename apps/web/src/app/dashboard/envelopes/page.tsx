@@ -29,6 +29,7 @@ function PoolsPageContent() {
   const categoryIdParam = searchParams.get("categoryId") || "";
   const createParam = searchParams.get("create");
   const editIdParam = searchParams.get("editId");
+  const modeParam = searchParams.get("mode");
 
   const poolsQuery = trpc.listEnvelopes.useQuery();
   const archivedQuery = trpc.listArchivedItems.useQuery();
@@ -42,6 +43,7 @@ function PoolsPageContent() {
     type?: "DEBIT" | "CREDIT" | "TRANSFER";
     name?: string;
     categoryId?: string;
+    isDrawDown?: boolean;
   } | undefined>(undefined);
 
   const [isPoolModalOpen, setIsPoolModalOpen] = useState(false);
@@ -93,6 +95,13 @@ function PoolsPageContent() {
     paramType,
     poolIdParam,
   });
+
+  useEffect(() => {
+    if (modeParam === "projection") {
+      setShowProjectionMatrix(true);
+      if (projectionMonths === 0) setProjectionMonths(1);
+    }
+  }, [modeParam, projectionMonths, setProjectionMonths, setShowProjectionMatrix]);
 
   const handledDeepLinkRef = React.useRef<string>("");
   useEffect(() => {
@@ -151,6 +160,7 @@ function PoolsPageContent() {
       type: "DEBIT",
       name: pool.name ? `${pool.name} draw-down` : "Draw-down",
       categoryId: pool.id,
+      isDrawDown: true,
     });
     setIsQuickDrawerOpen(true);
   };
@@ -278,7 +288,7 @@ function PoolsPageContent() {
           <RecordFilterBadge
             label={
               matchedPool
-                ? `Filtered to Envelope: ${matchedPool.name}`
+                ? t("history.filteredToEnvelope", { name: matchedPool.name })
                 : t("categories.requestedItemNotFound")
             }
             onClear={() => {

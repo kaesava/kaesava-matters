@@ -135,7 +135,7 @@
 | :--- | :--- | :--- | :--- |
 | `id` | uuid | No | Primary Key |
 | `name` | varchar | No | Domain column |
-| `bankProvider` | varchar | No | Domain column |
+| `bankProvider` | varchar | No | Optional free-text bank institution (defaults to `"Other"`) |
 | `accountType` | accountTypeEnum | No | Domain column |
 | `lastKnownBalance` | numeric | No | Domain column |
 | `unbudgetedBuffer` | numeric | No | Domain column |

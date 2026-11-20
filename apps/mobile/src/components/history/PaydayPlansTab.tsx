@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, FlatList, RefreshControl } from 'react-native';
+import { useRouter, type Href } from 'expo-router';
 import { Feather } from '@expo/vector-icons';
 import {
   MobilePaginationBar,
@@ -61,6 +62,7 @@ export function PaydayPlansTab({
   onExportCsv,
   onOpenReports,
 }: PaydayPlansTabProps) {
+  const router = useRouter();
   const [filterSheetVisible, setFilterSheetVisible] = useState(false);
   const [selectedPlan, setSelectedPlan] = useState<MobilePaydayAllocationRecord | null>(null);
 
@@ -176,6 +178,7 @@ export function PaydayPlansTab({
         visible={!!selectedPlan}
         allocation={selectedPlan}
         onClose={() => setSelectedPlan(null)}
+        onOpenSplitStudio={(eventId) => router.push(`/(app)/payday-plan/${eventId}` as Href)}
       />
     </View>
   );

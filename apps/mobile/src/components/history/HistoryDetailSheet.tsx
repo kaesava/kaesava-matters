@@ -1,5 +1,6 @@
 import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import { useRouter, type Href } from 'expo-router';
 import { MobileModalDialog, MobileButton, DESIGN_TOKENS } from '@money-matters/ui/mobile';
 import { t } from '@money-matters/i18n';
 import { formatMobileCurrency, formatDate } from '../../lib/format';
@@ -35,11 +36,12 @@ export function HistoryDetailSheet({
   onClose,
   onNavigateToPool,
 }: HistoryDetailSheetProps) {
+  const router = useRouter();
   if (!transaction) return null;
 
   const isDebit = transaction.rawFlowType === 'DEBIT' || transaction.flowType === 'DEBIT';
   const amountStr = `${isDebit ? '-' : '+'}${formatMobileCurrency(transaction.amount)}`;
-  const displayPool = transaction.poolName || transaction.categoryName || 'Everyday Pool';
+  const displayPool = transaction.poolName || transaction.categoryName || t('categories.mainEnvelope');
 
   return (
     <MobileModalDialog
@@ -101,10 +103,20 @@ export function HistoryDetailSheet({
           {transaction.bankAccountName && (
             <>
               <View style={styles.divider} />
-              <View style={styles.metaRow}>
+              <TouchableOpacity
+                style={styles.metaRow}
+                disabled={!transaction.bankAccountId}
+                onPress={() => {
+                  if (!transaction.bankAccountId) return;
+                  onClose();
+                  router.push(`/(app)/bank-accounts?id=${transaction.bankAccountId}` as Href);
+                }}
+              >
                 <Text style={styles.metaLabel}>{t('bankAccounts.title')}</Text>
-                <Text style={styles.metaValue}>{transaction.bankAccountName}</Text>
-              </View>
+                <Text style={transaction.bankAccountId ? styles.metaValueHighlight : styles.metaValue}>
+                  {transaction.bankAccountName}
+                </Text>
+              </TouchableOpacity>
             </>
           )}
 
@@ -135,23 +147,23 @@ const styles = StyleSheet.create({
     fontWeight: '900',
     fontFamily: 'monospace',
   },
-  debitText: { color: '#ba1a1a' },
-  creditText: { color: '#22c55e' },
+  debitText: { color: DESIGN_TOKENS.colors.critical },
+  creditText: { color: DESIGN_TOKENS.colors.success },
   flowBadge: {
     paddingHorizontal: 12,
     paddingVertical: 4,
     borderRadius: 8,
   },
-  debitBadge: { backgroundColor: '#FEE2E2' },
-  creditBadge: { backgroundColor: '#DCFCE7' },
+  debitBadge: { backgroundColor: DESIGN_TOKENS.colors.criticalLight },
+  creditBadge: { backgroundColor: DESIGN_TOKENS.colors.successLight },
   flowBadgeText: { fontSize: 12, fontWeight: '800' },
-  debitBadgeText: { color: '#ba1a1a' },
-  creditBadgeText: { color: '#166534' },
+  debitBadgeText: { color: DESIGN_TOKENS.colors.critical },
+  creditBadgeText: { color: DESIGN_TOKENS.colors.successDark },
   metaCard: {
-    backgroundColor: '#F8FAFC',
+    backgroundColor: DESIGN_TOKENS.colors.slate[50],
     borderRadius: 14,
     borderWidth: 1,
-    borderColor: '#E2E8F0',
+    borderColor: DESIGN_TOKENS.colors.slate[200],
     padding: 14,
     gap: 10,
   },
@@ -163,7 +175,7 @@ const styles = StyleSheet.create({
   metaLabel: {
     fontSize: 12,
     fontWeight: '600',
-    color: '#64748B',
+    color: DESIGN_TOKENS.colors.subtleText,
   },
   metaValue: {
     fontSize: 13,
@@ -182,11 +194,11 @@ const styles = StyleSheet.create({
   metaValueMono: {
     fontSize: 12,
     fontFamily: 'monospace',
-    color: '#334155',
+    color: DESIGN_TOKENS.colors.slate[700],
   },
   divider: {
     height: 1,
-    backgroundColor: '#EDF2F7',
+    backgroundColor: DESIGN_TOKENS.colors.slate[100],
   },
   footerWrap: {
     paddingTop: 8,

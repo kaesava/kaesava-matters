@@ -78,9 +78,11 @@ export function UpcomingEventsTab({
   const [upcomingPage, setUpcomingPage] = useState(1);
   const UPCOMING_PAGE_SIZE = 10;
 
+  const [upcomingScopeFilter, setUpcomingScopeFilter] = useState<'ALL' | 'SHARED' | 'PRIVATE'>('ALL');
   const activeUpcomingFilterCount =
     (upcomingStatusFilter !== 'ALL' ? 1 : 0) +
     (upcomingKindFilter !== 'ALL' ? 1 : 0) +
+    (upcomingScopeFilter !== 'ALL' ? 1 : 0) +
     (initialPoolId ? 1 : 0) +
     (initialCategoryId ? 1 : 0);
 
@@ -92,7 +94,7 @@ export function UpcomingEventsTab({
     pools,
     incomeSources,
     upcomingKindFilter,
-    upcomingScopeFilter: 'ALL',
+    upcomingScopeFilter,
     upcomingStatusFilter,
     upcomingSearchQuery,
     upcomingSortField,
@@ -219,10 +221,25 @@ export function UpcomingEventsTab({
               { id: 'TRANSFER', label: t('common.transfers') },
             ],
           },
+          {
+            id: 'scope',
+            title: t('categories.filterByPrivacy'),
+            selectedValue: upcomingScopeFilter,
+            onSelect: (val) => {
+              setUpcomingScopeFilter(val as 'ALL' | 'SHARED' | 'PRIVATE');
+              setUpcomingPage(1);
+            },
+            options: [
+              { id: 'ALL', label: t('common.all') },
+              { id: 'SHARED', label: t('common.shared') },
+              { id: 'PRIVATE', label: t('common.private') },
+            ],
+          },
         ]}
         onReset={() => {
           setUpcomingStatusFilter('ALL');
           setUpcomingKindFilter('ALL');
+          setUpcomingScopeFilter('ALL');
           setUpcomingSortField('date');
           setUpcomingSortOrder('asc');
           setUpcomingPage(1);

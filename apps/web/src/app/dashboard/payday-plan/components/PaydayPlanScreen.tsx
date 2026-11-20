@@ -193,7 +193,7 @@ export function PaydayPlanScreen({
         showTransferModal={showTransferModal}
         onCloseTransferModal={() => {
           setShowTransferModal(false);
-          attemptExit();
+          handleDiscardAndExit();
         }}
         celebrationTargets={celebrationTargets}
         receivingAccountId={receivingAccountId}

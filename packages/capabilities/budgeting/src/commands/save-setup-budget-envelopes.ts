@@ -257,6 +257,10 @@ export async function processSetupEnvelopes(
         );
       }
 
+      const destBankAccountId =
+        existingEnvelopes.find((e) => e.id === destEnvId)?.bankAccountId ??
+        primaryBankAccountId ??
+        envToArchive.bankAccountId;
       const sweepAmountStr = currentBalance.toFixed(2);
       const transferGroupId = randomUUID();
       const transferNote = `Archived "${envToArchive.name}" balance sweep`;
@@ -286,7 +290,7 @@ export async function processSetupEnvelopes(
           tenantId,
           appId,
           envelopeId: destEnvId,
-          bankAccountId: envToArchive.bankAccountId,
+          bankAccountId: destBankAccountId,
           amount: sweepAmountStr,
           flowType: "CREDIT",
           transactionType: "TRANSFER_IN",
@@ -311,7 +315,12 @@ export async function processSetupEnvelopes(
       .where(eq(envelopes.id, envId));
   }
 
-  await archivePendingExpenseEvents(tx, tenantId, archivedEnvelopeIds);
+  await archivePendingExpenseEvents(tx, tenantId, archivedEnvelopeIds, userId, now);
+
+  if (archivedEnvelopeIds.some((id) => existingEnvelopes.find((e) => e.id === id)?.isPrivate)) {
+    const { resetContributionsIfNoPrivateEnvelopes } = await import("./reset-contributions-if-no-private.js");
+    await resetContributionsIfNoPrivateEnvelopes(tenantId, appId, userId, tx);
+  }
 
   return { envelopeIdMap, sweptEnvelopesCount, sweptTotalAmount };
 }

@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useRouter, type Href } from 'expo-router';
+import { usePostHog } from 'posthog-react-native';
 import { MobileScreenWrapper, MobileScreenWrapperProps } from '@money-matters/ui/mobile';
 import { t } from '@money-matters/i18n';
 import { authClient } from '../lib/auth';
@@ -36,6 +37,7 @@ export function AppScreenWrapper({
   children,
 }: AppScreenWrapperProps) {
   const router = useRouter();
+  const posthog = usePostHog();
   const { data: session } = authClient.useSession();
   const [tenantSwitcherVisible, setTenantSwitcherVisible] = useState(false);
   const { openCommandPalette } = useCommandPalette();
@@ -62,6 +64,7 @@ export function AppScreenWrapper({
     }
     await unregisterCachedPushToken((input) => removeToken.mutateAsync(input));
     await authClient.signOut();
+    posthog?.reset();
     await SecureStore.deleteItemAsync('money-matters_session_token');
     await SecureStore.deleteItemAsync('money-matters-session-token');
     await SecureStore.deleteItemAsync('money_matters_active_tenant_id');
@@ -82,7 +85,7 @@ export function AppScreenWrapper({
         onNavigateHome={onNavigateHome || (() => router.push('/(app)/home' as Href))}
         onNavigateCategories={onNavigateCategories || (() => router.push('/(app)/envelopes' as Href))}
         onNavigateSettings={onNavigateSettings || (() => router.push('/(app)/settings' as Href))}
-        onNavigateBankAccounts={onNavigateBankAccounts || (() => router.push('/(app)/settings?tab=bank-accounts' as Href))}
+        onNavigateBankAccounts={onNavigateBankAccounts || (() => router.push('/(app)/bank-accounts' as Href))}
         onNavigateHistory={onNavigateHistory || (() => router.push('/(app)/history' as Href))}
         onOpenTenantSwitcher={onOpenTenantSwitcher || (() => setTenantSwitcherVisible(true))}
         hasMultipleTenants={hasMultipleTenants}

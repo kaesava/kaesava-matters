@@ -1,6 +1,6 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
-import { useRouter, Href } from 'expo-router';
+import { useRouter, useLocalSearchParams, Href } from 'expo-router';
 import { Feather } from '@expo/vector-icons';
 import { t } from '@money-matters/i18n';
 import { DESIGN_TOKENS, showMobileConfirm, useMobileToast } from '@money-matters/ui/mobile';
@@ -9,11 +9,14 @@ import { useAppFeatures } from '../../context/useAppFeatures';
 
 export function MobileAllocationStrategySection() {
   const router = useRouter();
+  const params = useLocalSearchParams<{ strategyScope?: string }>();
   const toast = useMobileToast();
   const utils = trpc.useUtils();
   const { hasPrivateMode, hasCustomAllocationRules } = useAppFeatures();
 
-  const [activeTab, setActiveTab] = useState<'household' | 'personal'>('household');
+  const [activeTab, setActiveTab] = useState<'household' | 'personal'>(
+    params.strategyScope === 'personal' ? 'personal' : 'household'
+  );
 
   const govQuery = trpc.getHouseholdGovernanceInfo.useQuery();
   const envelopesQuery = trpc.listEnvelopes.useQuery();
@@ -23,6 +26,18 @@ export function MobileAllocationStrategySection() {
     () => hasPrivateMode && (envelopesQuery.data || []).some((e) => e.isPrivate),
     [envelopesQuery.data, hasPrivateMode]
   );
+
+  useEffect(() => {
+    if (params.strategyScope === 'personal' && hasPrivateEnvelopes) {
+      setActiveTab('personal');
+    }
+  }, [params.strategyScope, hasPrivateEnvelopes]);
+
+  useEffect(() => {
+    if (!envelopesQuery.isLoading && !hasPrivateEnvelopes && activeTab === 'personal') {
+      setActiveTab('household');
+    }
+  }, [envelopesQuery.isLoading, hasPrivateEnvelopes, activeTab]);
 
   const isPersonalScope = activeTab === 'personal';
   const canEdit = isPersonalScope || isOwner;

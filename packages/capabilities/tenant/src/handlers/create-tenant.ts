@@ -3,7 +3,7 @@ import { tenants, tenantUsers, envelopes, bankAccounts, apps, users, userPrefere
 import { CreateTenantCommand, COUNTRY_DEFAULTS } from "@money-matters/types";
 import { eq, and, isNull, or, sql } from "drizzle-orm";
 
-export const DEFAULT_BANK_ACCOUNT_NAME = "Other Financial Institution (Everyday)";
+export const DEFAULT_BANK_ACCOUNT_NAME = "Primary Bank Account";
 export const DEFAULT_EVERYDAY_ENVELOPE_NAME = "Everyday Spending";
 
 /**
@@ -59,7 +59,7 @@ export function createTenantHandler(db: DbOrTx) {
     const trialStartedAt = now;
     const trialEndsAt = new Date(now.getTime() + 60 * 24 * 60 * 60 * 1000);
     const derivedName = input.name.replace(/'s Household$/i, "").trim();
-    const resolvedDisplayName = displayName?.trim() || (derivedName && derivedName !== "My Household" ? derivedName : "User");
+    const resolvedDisplayName = input.displayName?.trim() || displayName?.trim() || (derivedName && derivedName !== "My Household" ? derivedName : "User");
 
     // 0. Guard app and user mirror records
     await db
@@ -79,6 +79,16 @@ export function createTenantHandler(db: DbOrTx) {
         displayName: resolvedDisplayName,
       })
       .onConflictDoNothing();
+
+    if (input.displayName?.trim()) {
+      await db
+        .update(users)
+        .set({
+          displayName: input.displayName.trim(),
+          updatedAt: now,
+        })
+        .where(eq(users.id, userId));
+    }
 
     // 1. Guard against owning more than one active household
     const [existingOwnedTenant] = await db

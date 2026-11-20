@@ -165,6 +165,7 @@ export const expensesRouter = {
       const [evt] = await ctx.db
         .select({
           id: expenseEvents.id,
+          status: expenseEvents.status,
           envelopeIsPrivate: envelopes.isPrivate,
           envelopeUserId: envelopes.userId,
           bankAccountIsPrivate: bankAccounts.isPrivate,
@@ -189,10 +190,13 @@ export const expensesRouter = {
       ) {
         throw new Error("Expense event not found.");
       }
+      if (evt.status === "CONFIRMED") {
+        throw new Error("Confirmed events are locked and cannot be edited or deleted.");
+      }
 
       await ctx.db
         .update(expenseEvents)
-        .set({ archivedAt: new Date(), updatedBy: ctx.userId!, updatedAt: new Date() })
+        .set({ archivedAt: new Date(), archivedBy: ctx.userId!, updatedBy: ctx.userId!, updatedAt: new Date() })
         .where(
           and(
             eq(expenseEvents.id, input.eventId),

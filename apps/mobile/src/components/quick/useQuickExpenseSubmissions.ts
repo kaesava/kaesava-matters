@@ -65,7 +65,6 @@ export function useQuickExpenseSubmissions({
         });
       }
       state.posthog?.capture('expense_recorded', {
-        amount: numAmount,
         pool_id: state.selectedPoolId,
       });
       invalidateAllQueries();
@@ -110,7 +109,7 @@ export function useQuickExpenseSubmissions({
         ...contributionPayload,
       });
 
-      state.posthog?.capture('income_recorded', { amount: numAmount });
+      state.posthog?.capture('income_recorded');
       invalidateAllQueries();
       toast.success(t('toasts.saved'));
       resetAndClose();

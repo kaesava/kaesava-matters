@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useRouter, type Href } from 'expo-router';
 import { showMobileConfirm } from '@money-matters/ui/mobile';
 import { t } from '@money-matters/i18n';
 import { trpc } from '../../lib/trpc';
@@ -80,9 +81,9 @@ export function PaychecksModalManager({
   onRefresh,
   refetchAll,
 }: PaychecksModalManagerProps) {
+  const router = useRouter();
   const [localMarkPaidEvent, setLocalMarkPaidEvent] = useState<MarkPaidEvent | null>(null);
   const effectiveMarkPaidEvent = markPaidEvent || localMarkPaidEvent;
-  const markIncomeReceivedMut = trpc.markIncomeReceived.useMutation();
   const deleteIncomeEventMut = trpc.deleteIncomeEvent.useMutation();
   const deleteExpenseEventMut = trpc.deleteExpenseEvent.useMutation();
   const deleteTransferEventMut = trpc.deleteTransferEvent.useMutation();
@@ -222,12 +223,8 @@ export function PaychecksModalManager({
         }}
         onMarkPaid={async (eventId, amount, date) => {
           if (burstMode === 'INCOME') {
-            await markIncomeReceivedMut.mutateAsync({
-              eventId,
-              actualAmount: amount,
-              recordedAt: date,
-            });
-            await onRefresh();
+            onCloseBurst();
+            router.push(`/(app)/payday-plan/${eventId}` as Href);
           } else {
             const evt = burstEvents.find((e) => e.id === eventId);
             onCloseBurst();

@@ -43,6 +43,7 @@ export function useFileNotes(entityType: 'ENVELOPE' | 'BANK_ACCOUNT', entityId?:
         const uploadResponse = await fetch(presigned.uploadUrl, {
           method: 'PUT',
           body: noteFile,
+          credentials: 'include',
           headers: {
             'Content-Type': noteFile.type || 'application/octet-stream',
           },

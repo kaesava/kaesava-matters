@@ -32,8 +32,8 @@ export function useHomeModals(
   const [markPaidEvent, setMarkPaidEvent] = useState<MarkPaidEvent | null>(null);
   const [reconcileAccount, setReconcileAccount] = useState<MobileSyncBalanceModalProps['account']>(null);
 
-  const openQuickModal = useCallback((type: QuickActionType) => {
-    setQuickModalData(undefined);
+  const openQuickModal = useCallback((type: QuickActionType, initialData?: QuickActionInitialData) => {
+    setQuickModalData(initialData);
     setQuickModalType(type);
     setQuickModalVisible(true);
   }, []);

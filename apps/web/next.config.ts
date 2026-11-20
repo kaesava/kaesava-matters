@@ -99,7 +99,7 @@ const nextConfig: NextConfig = {
       },
       {
         source: "/dashboard/paychecks",
-        destination: "/dashboard/income-and-bills",
+        destination: "/dashboard/plan",
         permanent: false,
       },
       {

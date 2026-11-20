@@ -20,19 +20,22 @@ export function DrawerUpcomingExpensesTable({
   onMarkPaid,
   fmt,
 }: DrawerUpcomingExpensesTableProps) {
-  const { fmtDateMedium } = useLocale();
+  const { fmtDateMedium, timezone } = useLocale();
+  const todayStr = new Intl.DateTimeFormat("en-CA", { timeZone: timezone }).format(new Date());
   return (
     <div className="space-y-4">
-      <div className="flex justify-end">
-        <Link
-          href={`/dashboard/plan?tab=EVENTS&type=EXPENSE&poolId=${poolId || ""}`}
-          onClick={onClose}
-          className="text-xs font-bold text-[#2563eb] hover:underline transition-colors inline-flex items-center gap-1"
-        >
-          <span>{t("categoryDrawer.seeAllUpcomingExpenses")}</span>
-          <span>→</span>
-        </Link>
-      </div>
+      {upcomingExpensesList.length > 0 && (
+        <div className="flex justify-end">
+          <Link
+            href={`/dashboard/plan?tab=EVENTS&type=EXPENSE&poolId=${poolId || ""}`}
+            onClick={onClose}
+            className="text-xs font-bold text-[#2563eb] hover:underline transition-colors inline-flex items-center gap-1"
+          >
+            <span>{t("categoryDrawer.seeAllUpcomingExpenses")}</span>
+            <span>→</span>
+          </Link>
+        </div>
+      )}
 
       {upcomingExpensesList.length === 0 ? (
         <div className="text-center py-12 text-zinc-400 text-xs font-medium">
@@ -56,7 +59,14 @@ export function DrawerUpcomingExpensesTable({
                     {evt.name}
                   </td>
                   <td className="p-3 text-center font-mono text-zinc-500">
-                    {fmtDateMedium(evt.dueDate)}
+                    <div className="inline-flex items-center gap-1.5 flex-wrap justify-center">
+                      <span>{fmtDateMedium(evt.dueDate)}</span>
+                      {!evt.isPaid && evt.dueDate < todayStr && (
+                        <span className="text-[10px] font-bold uppercase px-1.5 py-0.5 rounded bg-rose-50 text-rose-600 border border-rose-200 dark:bg-rose-950/60 dark:text-rose-300 dark:border-rose-800">
+                          {t("expenseStatus.overdueLabel")}
+                        </span>
+                      )}
+                    </div>
                   </td>
                   <td className="p-3 text-right font-mono font-bold text-[#1B2B4B] dark:text-white">
                     {fmt(evt.amount || "0")}

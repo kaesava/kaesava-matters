@@ -12,6 +12,7 @@ async function loadVisibleIncomeEvent(eventId: string, tenantId: string, appId: 
       id: incomeEvents.id,
       incomeSourceId: incomeEvents.incomeSourceId,
       expectedAmount: incomeEvents.expectedAmount,
+      status: incomeEvents.status,
       bankAccountIsPrivate: bankAccounts.isPrivate,
       bankAccountUserId: bankAccounts.userId,
     })
@@ -185,6 +186,9 @@ export async function updateUpcomingIncomeCommand(
   db: DbOrTx
 ) {
   const existing = await loadVisibleIncomeEvent(input.eventId, tenantId, appId, userId, db);
+  if (existing.status === "CONFIRMED") {
+    throw new Error("Confirmed events are locked and cannot be edited or deleted.");
+  }
   const isScheduled = Boolean(existing.incomeSourceId);
   const setPayload: Record<string, unknown> = { updatedAt: new Date(), updatedBy: userId };
 
@@ -196,6 +200,12 @@ export async function updateUpcomingIncomeCommand(
     setPayload.actualDate = input.expectedDate;
     if (!isScheduled) setPayload.expectedDate = input.expectedDate;
   }
+  if (input.contributionMode !== undefined) {
+    setPayload.contributionMode = input.contributionMode;
+  }
+  if (input.contributionValue !== undefined) {
+    setPayload.contributionValue = input.contributionValue;
+  }
 
   const [updated] = await db
     .update(incomeEvents)
@@ -205,26 +215,11 @@ export async function updateUpcomingIncomeCommand(
   return updated;
 }
 
-export async function markIncomeReceivedCommand(
-  input: { eventId: string; actualAmount?: string },
-  tenantId: string,
-  appId: string,
-  userId: string,
-  db: DbOrTx
-) {
-  const evt = await loadVisibleIncomeEvent(input.eventId, tenantId, appId, userId, db);
-  const amountToReceive = input.actualAmount || evt.expectedAmount;
-
-  await db
-    .update(incomeEvents)
-    .set({ status: "CONFIRMED", actualAmount: amountToReceive, updatedAt: new Date(), updatedBy: userId })
-    .where(eq(incomeEvents.id, input.eventId));
-
-  return { success: true, message: "Income marked as received." };
-}
-
 export async function deleteIncomeEventCommand(eventId: string, tenantId: string, appId: string, userId: string, db: DbOrTx) {
-  await loadVisibleIncomeEvent(eventId, tenantId, appId, userId, db);
+  const existing = await loadVisibleIncomeEvent(eventId, tenantId, appId, userId, db);
+  if (existing.status === "CONFIRMED") {
+    throw new Error("Confirmed events are locked and cannot be edited or deleted.");
+  }
   await db
     .update(incomeEvents)
     .set({ archivedAt: new Date(), archivedBy: userId, updatedAt: new Date(), updatedBy: userId })

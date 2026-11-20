@@ -428,6 +428,13 @@
       "when": 1784358500000,
       "tag": "0061_add_telemetry_consent",
       "breakpoints": true
+    },
+    {
+      "idx": 61,
+      "version": "7",
+      "when": 1784358600000,
+      "tag": "0062_bank_provider_default_other",
+      "breakpoints": true
     }
   ]
 }

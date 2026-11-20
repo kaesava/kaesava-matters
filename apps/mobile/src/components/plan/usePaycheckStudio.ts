@@ -4,6 +4,7 @@ import { trpc } from '../../lib/trpc';
 import { authClient } from '../../lib/auth';
 import { formatIsoDate } from '../../lib/format';
 import { t } from '@money-matters/i18n';
+import { computePaydayAllocationSummary } from '@money-matters/types';
 import { useMobileToast, showMobileConfirm } from '@money-matters/ui/mobile';
 import { AllocationLineItem } from './MobilePaydayPlanEnvelopeList';
 import { usePaycheckStudioMutations } from './usePaycheckStudioMutations';
@@ -83,21 +84,18 @@ export function usePaycheckStudio(id: string | undefined, returnTo?: string) {
     return pools.find((p) => p.isSurplusTarget) || pools.find((p) => p.envelopeType === 'EVERYDAY') || pools[0];
   }, [pools]);
 
-  const nonSweepAllocatedSum = useMemo(() => {
-    if (!sweepPool) return 0;
-    return Object.entries(linesMap).reduce((acc, [bId, valStr]) => {
-      if (bId === sweepPool.id) return acc;
-      return acc + (parseFloat(valStr) || 0);
-    }, 0);
-  }, [linesMap, sweepPool]);
+  const linesWithType = useMemo(
+    () => lines.map((l) => ({ ...l, envelopeType: pools.find((p) => p.id === l.bucketId)?.envelopeType })),
+    [lines, pools]
+  );
 
-  const sweepPoolRemainder = useMemo(() => {
-    const raw = Math.round((numericActual - nonSweepAllocatedSum) * 100) / 100;
-    const rounded = Math.abs(raw) < 0.005 || Object.is(raw, -0) ? 0 : raw;
-    return Math.max(-999999, rounded);
-  }, [numericActual, nonSweepAllocatedSum]);
+  const summary = useMemo(
+    () => computePaydayAllocationSummary(numericActual, sweepPool?.id, linesWithType, linesMap),
+    [numericActual, sweepPool?.id, linesWithType, linesMap]
+  );
 
-  const isDeficit = sweepPoolRemainder < -0.01;
+  const sweepPoolRemainder = summary.sweepPoolRemainder;
+  const isDeficit = summary.isDeficit;
 
   const isDirty = useMemo(() => {
     if (!previewQuery.data) return false;

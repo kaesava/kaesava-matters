@@ -1,5 +1,6 @@
 import { DEFAULT_TIMEZONE } from "@money-matters/types";
 import { useState, useMemo } from "react";
+import { Platform } from "react-native";
 import { useRouter } from "expo-router";
 import { usePostHog } from "posthog-react-native";
 import { t } from "@money-matters/i18n";
@@ -154,7 +155,8 @@ export function useSignUpForm() {
         }
         try {
           const pushToken = await registerPushNotificationsAsync();
-          if (pushToken) await registerToken.mutateAsync({ token: pushToken, platform: "android" });
+          const platform = Platform.OS === "ios" ? "ios" : "android";
+          if (pushToken) await registerToken.mutateAsync({ token: pushToken, platform });
         } catch {
           // Push registration fallback
         }

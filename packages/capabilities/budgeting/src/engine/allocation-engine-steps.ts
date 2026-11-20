@@ -1,3 +1,4 @@
+import { t } from "@money-matters/i18n";
 import { EngineBucket, UpcomingExpenseItem } from "./allocation-engine.js";
 import { toCents, toDollars } from "./allocation-engine-utils.js";
 
@@ -60,7 +61,11 @@ export function runStep1ImmediateBills(
   const sym = ctx.currencySymbol;
   if (ctx.remainingCents >= totalShortfall) {
     for (const item of billDemands) {
-      const reasoning = `Immediate bill coverage (${sym}${toDollars(item.dueCents).toFixed(2)} due within cycle + ${ctx.bufferDays}d buffer): ${sym}${toDollars(item.shortfall).toFixed(2)} allocated.`;
+      const reasoning = t("payday.engineReasoning.immediateBill", {
+        due: `${sym}${toDollars(item.dueCents).toFixed(2)}`,
+        bufferDays: ctx.bufferDays,
+        allocated: `${sym}${toDollars(item.shortfall).toFixed(2)}`,
+      });
       const alloc = allocate(ctx, item.bucket, item.shortfall, reasoning);
       if (alloc > 0) {
         ctx.priorBillAllocated.set(item.bucket.id, (ctx.priorBillAllocated.get(item.bucket.id) ?? 0) + alloc);
@@ -86,7 +91,12 @@ export function runStep1ImmediateBills(
     }
 
     for (const { item, alloc } of allocations) {
-      const reasoning = `Immediate bill coverage (${sym}${toDollars(item.dueCents).toFixed(2)} due within cycle + ${ctx.bufferDays}d buffer): ${sym}${toDollars(alloc).toFixed(2)} allocated (${sym}${toDollars(item.shortfall - alloc).toFixed(2)} shortfall).`;
+      const reasoning = t("payday.engineReasoning.immediateBillShortfall", {
+        due: `${sym}${toDollars(item.dueCents).toFixed(2)}`,
+        bufferDays: ctx.bufferDays,
+        allocated: `${sym}${toDollars(alloc).toFixed(2)}`,
+        shortfall: `${sym}${toDollars(item.shortfall - alloc).toFixed(2)}`,
+      });
       const actual = allocate(ctx, item.bucket, alloc, reasoning);
       if (actual > 0) {
         ctx.priorBillAllocated.set(item.bucket.id, (ctx.priorBillAllocated.get(item.bucket.id) ?? 0) + actual);
@@ -105,7 +115,10 @@ export function runStep2DeficitRepair(ctx: StepContext, buckets: EngineBucket[])
         ctx,
         b,
         deficit,
-        `Deficit repair for negative balance (-${sym}${toDollars(deficit).toFixed(2)}): ${sym}${toDollars(Math.min(ctx.remainingCents, deficit)).toFixed(2)} allocated.`
+        t("payday.engineReasoning.deficitRepair", {
+          deficit: `${sym}${toDollars(deficit).toFixed(2)}`,
+          allocated: `${sym}${toDollars(Math.min(ctx.remainingCents, deficit)).toFixed(2)}`,
+        })
       );
     }
   }
@@ -123,7 +136,10 @@ export function runStep3BillsSafetyFloor(ctx: StepContext, billBuckets: EngineBu
         ctx,
         b,
         deficit,
-        `Bills safety buffer cushion (floor ${sym}${toDollars(floorCents).toFixed(2)}): ${sym}${toDollars(Math.min(ctx.remainingCents, deficit)).toFixed(2)} allocated.`
+        t("payday.engineReasoning.billsSafetyFloor", {
+          floor: `${sym}${toDollars(floorCents).toFixed(2)}`,
+          allocated: `${sym}${toDollars(Math.min(ctx.remainingCents, deficit)).toFixed(2)}`,
+        })
       );
       if (alloc > 0) {
         ctx.priorBillAllocated.set(b.id, (ctx.priorBillAllocated.get(b.id) ?? 0) + alloc);
@@ -143,16 +159,24 @@ export function runStep4EverydayAllowance(ctx: StepContext, everydayBuckets: Eng
     const needed = cycleAllowance + floorDeficit;
 
     if (needed > 0) {
-      const floorMsg = floorCents > 0 ? ` (incl ${sym}${toDollars(floorCents).toFixed(2)} safety floor)` : "";
+      const floorMsg = floorCents > 0
+        ? t("payday.engineReasoning.everydayAllowanceFloorSuffix", { floor: `${sym}${toDollars(floorCents).toFixed(2)}` })
+        : "";
       const prefix = ctx.isIrregular ? `[${ctx.regularCycleDays}d runway] ` : "";
       const alloc = allocate(
         ctx,
         b,
         needed,
-        `${prefix}Everyday living allowance (${sym}${toDollars(monthlyAllowance).toFixed(2)}/mo across ${ctx.regularCycleDays} days)${floorMsg}: ${sym}${toDollars(Math.min(ctx.remainingCents, needed)).toFixed(2)} allocated.`
+        t("payday.engineReasoning.everydayAllowance", {
+          prefix,
+          monthly: `${sym}${toDollars(monthlyAllowance).toFixed(2)}`,
+          days: ctx.regularCycleDays,
+          floorMsg,
+          allocated: `${sym}${toDollars(Math.min(ctx.remainingCents, needed)).toFixed(2)}`,
+        })
       );
       if (alloc === 0) {
-        ctx.linesMap.get(b.id)?.reasonings.push(`Everyday living allowance: ${sym}0 allocated.`);
+        ctx.linesMap.get(b.id)?.reasonings.push(t("payday.engineReasoning.everydayAllowanceZero", { symbol: sym }));
       }
     }
   }
@@ -210,7 +234,11 @@ export function runStep5ProRataBills(
         ctx,
         item.bucket,
         item.additional,
-        `${prefix}Pro-rata bill allocation (${sym}${toDollars(item.monthlyCents).toFixed(2)}/mo): ${sym}${toDollars(item.additional).toFixed(2)} allocated.`
+        t("payday.engineReasoning.proRataBill", {
+          prefix,
+          monthly: `${sym}${toDollars(item.monthlyCents).toFixed(2)}`,
+          allocated: `${sym}${toDollars(item.additional).toFixed(2)}`,
+        })
       );
     }
   } else if (ctx.remainingCents > 0) {
@@ -236,13 +264,21 @@ export function runStep5ProRataBills(
         ctx,
         item.bucket,
         alloc,
-        `${prefix}Pro-rata bill allocation (${sym}${toDollars(item.monthlyCents).toFixed(2)}/mo): ${sym}${toDollars(alloc).toFixed(2)} allocated (${sym}${toDollars(item.additional - alloc).toFixed(2)} shortfall).`
+        t("payday.engineReasoning.proRataBillShortfall", {
+          prefix,
+          monthly: `${sym}${toDollars(item.monthlyCents).toFixed(2)}`,
+          allocated: `${sym}${toDollars(alloc).toFixed(2)}`,
+          shortfall: `${sym}${toDollars(item.additional - alloc).toFixed(2)}`,
+        })
       );
     }
   } else {
     for (const item of billDemands) {
       ctx.linesMap.get(item.bucket.id)?.reasonings.push(
-        `Pro-rata bill target (${sym}${toDollars(item.monthlyCents).toFixed(2)}/mo): ${sym}0 allocated (insufficient income).`
+        t("payday.engineReasoning.proRataBillZero", {
+          monthly: `${sym}${toDollars(item.monthlyCents).toFixed(2)}`,
+          symbol: sym,
+        })
       );
     }
   }

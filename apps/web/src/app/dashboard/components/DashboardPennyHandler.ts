@@ -11,7 +11,7 @@ const WEB_SCREEN_ROUTES: Record<string, string> = {
   "afford-check": "/dashboard/afford-check",
   reports: "/dashboard/reports",
   settings: "/dashboard/settings",
-  projection: "/dashboard/projection",
+  projection: "/dashboard/envelopes?mode=projection",
 };
 
 function appendPrefillParams(basePath: string, params: Record<string, string | number | boolean>): string {

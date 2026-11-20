@@ -15,8 +15,8 @@ Money Matters is a forward-looking allocation budget app designed for Australian
 - **Unbudgeted Buffer Constraint (Safety Cushion)**: A Bank Account's Safety Cushion (Keep Unallocated) cannot exceed its Current (Last Known) Balance. Inline validation enforces this limit during creation and edit.
 - **Orthogonal Privacy Flag (`isPrivate: boolean`) & 100% Stealth Privacy**: Privacy is set on the **Bank Account** level (`bank_accounts.isPrivate`) and inherited by all contained Envelopes and Categories via `innerJoin`. PostgreSQL Row-Level Security (RLS) with session variable context injection (`privateTenantProcedure`) guarantees 100% stealth privacy isolation.
 
-- **Everyday Envelopes**: Discretionary spending envelopes linked to transaction accounts.
-- **Regular Bills Envelopes**: Unified envelopes for recurring obligations. Each category IS the schedule (defining recurrence frequency, anchor due date, and monthly target amount). Adding or editing a category automatically creates scheduled expense events into the timeline.
+- **Everyday Envelopes**: Discretionary spending envelopes linked to transaction accounts. Every household has **one and exactly one** active Shared Everyday envelope (cannot be archived), and whenever a user has at least one active Private Bank Account they have **one and exactly one** active Private Everyday envelope (`Personal Spending`, automatically created/restored with their first active Private Bank Account and cascade-archived only when archiving their last active Private Bank Account).
+- **Regular Bills Envelopes**: Unified envelopes for recurring obligations. Each category IS the schedule (defining recurrence frequency, anchor due date, and monthly target amount). Adding or editing a category automatically creates scheduled expense events into the timeline. Archiving an Income Schedule, Recurring Bill Envelope, or Bank Account soft-archives its `PENDING` events with a matching `archivedAt` timestamp; restoring the parent un-archives only the `PENDING` events archived in that batch without re-bursting.
 - **Goal Envelopes**: Target sinking funds supporting dual modes: `TARGET_DATE` (target date and required target amount) or `ONGOING` (fixed continuous monthly contribution). GOAL envelopes operate directly without sub-categories.
 - **3-Tab Income & Expenses Command Center (`/dashboard/income-and-bills`)**:
   1. *Tab 1: Upcoming Timeline (Default Landing)*: Pending/un-actioned scheduled events queue ordered by ascending date with subtle overdue highlighting, clickable event name hyperlinks allowing direct editing of individual events (Name, Date, Amount), single-row actioning (*Allocate Payday* hyperlinked action for Income launching the Income Split screen `/dashboard/income-split`, *Transfer* modal, *Mark Paid*, *Delete*), full-width search bar with `/` keyboard shortcut badge, and 100% header-to-cell alignment parity.
@@ -202,7 +202,7 @@ Money Matters natively supports shared households without compromising personal 
 1. **Universal Household Pooling**: All income sources in the household flow into a single unified waterfall cascade. Joint household bills (rent, power, groceries) are funded collectively based on household cashflow.
 2. **Orthogonal Stealth Privacy**:
    - Individual partners can link private bank accounts and private pools (`isPrivate: true`).
-   - Private pools participate fully in the waterfall according to their configured targets, using the earner's independent Personal Allocation Strategy (`isPrivate: true`) across payday previews, execution, 12-month horizon projections, and simulations (even when income lands in a shared bank account).
+   - Private pools participate fully in the waterfall according to their configured targets, using the earner's independent Personal Allocation Strategy (`isPrivate: true`) across payday previews, execution, 12-month horizon projections, and simulations (even when income lands in a shared bank account). Both Shared and Private bank accounts support explicit Household Contribution split modes (`FULL` 100% to Household, `PERCENTAGE` $0\%–100\%$, or `FIXED_AMOUNT` $\ge \$0.00$), allowing $0\%$ / $\$0.00$ to route $100\%$ of an income event or schedule into the earner's personal private envelopes with scope-aware insufficiency checks and private surplus sweep fallback (`isSurplusTarget` $\rightarrow$ `EVERYDAY` $\rightarrow$ `GOAL`).
    - Saving custom allocation step orders automatically detects if the resulting order matches a canonical preset (`BALANCED`, `BILLS_FORTRESS`, `PAY_YOURSELF_FIRST`) via `detectMatchingAllocationPreset` and persists that `presetKey` rather than `CUSTOM`.
    - In the partner's dashboard view, private pool details, names, and individual allocations are completely masked and aggregated into a single opaque `hiddenAllocationsTotal` figure.
    - This ensures 100% mathematical zero-sum ledger balance without exposing personal financial independence.
@@ -239,19 +239,15 @@ The onboarding flow delivers an engaging interactive estimation experience compl
 1. **Step 1: Income & Earnings (Dynamic Multi-Income Entry)**:
    - Dynamic list of income sources (Primary Income, Side Hustle, Consulting, etc.) allowing users to add as many income sources as needed one at a time.
    - Per-income item details: Name/label, take-home amount ($), and frequency (Weekly / Fortnightly / Monthly). No partner-centric assumptions, supporting both single individuals and multi-income households.
-2. **Step 2: Australian Household Banking Architecture (Archetypes & Routing)**:
-   - **3 Household Archetypes**:
-     1. *The Aussie 2-Account Blueprint (Recommended)*: Everyday Spending Card (tap & go, zero guilt) + Bills & Savings Goals (direct debits, ring-fenced). Eliminates daily budgeting friction.
-     2. *Couples: Yours, Mine & Ours (Popular for Couples)*: Joint Bills + Joint Everyday + Private Personal Accounts with stealth privacy built-in.
-     3. *All-in-One Account (Virtual Tracking)*: 1 Single Account. Money Matters tracks pools virtually on screen with zero barrier to entry. Pro-tip banners in payday transfer plans and bank accounts guide users toward graduating to 2 accounts when ready.
-   - **60-Second Australian Bank Cheat Sheet**: In-app modal drawer detailing how to open a fee-free sub-account directly inside current banking apps (CBA Smart Access/Goal Saver, Up Savers/2Up, Macquarie Transaction, ING Orange Everyday, and Big 4) in under 60 seconds.
+2. **Step 2: Bank Accounts (Initial Setup)**:
+   - Configures household and personal bank accounts with institution providers (`CBA`, `NAB`, `Westpac`, `ANZ`, `Up`, `Macquarie`, `ING`, `Other`), account types (`EVERYDAY`, `SAVINGS`, `LOAN_OFFSET`), current balance, and optional Safety Cushion (`unbudgetedBuffer`).
+   - When only 1 active bank account is configured, the Bank Accounts dashboard displays an educational Household Banking Optimizer banner explaining how separating Everyday spending from Bills & Goals improves direct-debit safety.
 3. **Step 3: Goals & Commitments (Initial Setup)**:
-   - Configures targeted savings goals (Emergency Reserve, Holiday, Car, etc.) with target amounts and due dates.
+   - Configures targeted savings goals (Emergency Reserve, Holiday, Car, etc.) with Target Date or Ongoing Recurring funding modes, target amounts, due dates, and surplus sweep designation (`isSurplusTarget`).
 4. **Step 4: Lifestyle Setup (Initial Setup)**:
    - Housing, transport (per-vehicle configuration), family (dependents), health cover, debt repayments, pets, and giving.
-5. **Step 5: Estimated Budget Review & Category Management**:
-   - Compares Total Monthly Income vs Total Monthly Allocated (Everyday, Bills, Savings Goals).
-   - Allows users to adjust monthly target amounts ($), add custom categories, or remove categories.
+5. **Step 5: Estimated Budget Review & Envelope Management**:
+   - Compares Total Monthly Income vs Total Monthly Allocated (Everyday, Bills, Savings Goals), interactive Payday Sandbox preview (`PaydaySandboxModal` / `MobilePaydaySandboxModal`), and per-envelope target adjustments, schedule frequency, and event generation toggles (`generateEvents`).
 
 ### Safe Forward-Looking Setup Re-calibration (`mode=rerun`)
 - **3-Step Streamlined Draft-Only Flow**:
@@ -355,22 +351,22 @@ The onboarding flow delivers an engaging interactive estimation experience compl
   - Displays the user's avatar image if uploaded, or a clean person icon / initials avatar.
   - Tapping opens the financial profile menu:
     - User Identity Card: Avatar, User Name, Email, Active Household Badge.
-    - **Change Household**: Displayed only if the user belongs to >1 household. Opens `MobileTenantSwitcherModal`, marks the active household with `✓ Active`, and provides 1-tap switching persisted to `SecureStore`.
-    - **Bank Accounts**: Direct link to `/(app)/settings/bank-accounts`.
-    - **History**: Direct link to `/(app)/transactions`.
+    - **Change Household**: Displayed only if the user belongs to >1 household. Opens `MobileHouseholdSwitcherModal`, marks the active household with `✓ Active`, and provides 1-tap switching persisted to `SecureStore`.
+    - **Bank Accounts**: Direct link to standalone `/(app)/bank-accounts`.
+    - **History**: Direct link to `/(app)/history`.
     - **Settings**: Direct link to `/(app)/settings`.
     - **Sign Out**: Guarded by styled `<MobileConfirmDialog />`.
 - **Serene Finance Date Picker (`<DatePickerField />` & `<CalendarModal />`)**:
-  - Standardized across all mobile modals and screens (`QuickExpenseModal`, `CreateIncomeEventModal`, `EventOverrideModal`, `RecurrenceBuilder`, `settings/income.tsx`).
-  - Displays localized AEST/en-AU formatted date with calendar icon.
+  - Standardized across all mobile modals and screens (`QuickExpenseModal`, `IncomeExpenseFormModal`, `EventOverrideModal`, `RecurrenceBuilder`).
+  - Displays localized formatted date in user's presentation timezone with calendar icon.
   - Quick-pick shortcut chips: `[ Today ]`, `[ Yesterday ]`, `[ Tomorrow ]` with active pill indicators.
   - Custom bottom-sheet calendar modal with month/year traversal and circular date selection adhering to Serene Finance tokens.
 - **Settings Screen Reorganization (`/(app)/settings`)**:
-  - Modular 4-tab segmented control eliminating vertical scroll fatigue:
-    1. **🏡 Household**: Active Household Card with switch button, Household Details form, Partner & Member invites, and Quick Hub links.
-    2. **⚙️ Preferences**: User Profile, Presentation Preferences (Locale, Language, Timezone, Icons), Biometric App Lock, and Push Notifications.
-    3. **💳 Plan**: Active Subscription status, trial countdown, feature entitlements, and upgrade link.
-    4. **🛡️ Privacy**: APPs & RLS compliance, 12-table Zipped CSV Export, Data Erasure request, In-App Diagnostics/Feedback, and guarded Danger Zone.
+  - Modular 4-tab segmented control matching Web 100% (`profile`, `household`, `archived`, `account-data`):
+    1. **My Details (`profile`)**: User Profile, Presentation Preferences (Locale, Language, Timezone, Icons), Biometric App Lock, Sign-In Methods, and Notifications.
+    2. **Household (`household`)**: Active Household Card with switch button, Household Details form, Allocation Strategy (`household` / `personal` scopes), Partner & Member invites, and Recalibrate Plan.
+    3. **Archived (`archived`)**: Restorable archived Bank Accounts, Envelopes, and Income Schedules.
+    4. **Account & Data (`account-data`)**: Active Subscription status (`MobileSubscriptionSection` + `MobileSubscriptionModal` with `?session_id=` verification), APPs & RLS compliance, 12-table Zipped CSV Export, In-App Diagnostics/Feedback (`trpc.submitFeedback`), and guarded Danger Zone.
 - **Home & Dashboard (`/(app)/home`)**:
   - Hero card displaying household name, AEST formatted current date, and primary action bar.
   - Linked Bank Account summary strip with provider badges (`BankProviderBadge`) and last known balances.
@@ -476,8 +472,8 @@ The onboarding flow delivers an engaging interactive estimation experience compl
 The "Can I Afford It?" feature is a stateless, pure-simulation forward cashflow evaluation engine (`packages/capabilities/simulation` and `/dashboard/afford-check`). It adheres strictly to the "What Gives" hierarchy: Bills are non-negotiable, Everyday spending is protected to a safe cushion, and Savings Goals give first.
 
 1. **Dual Simulation Modes & Liquidity Rules**:
-   - *One-Off Purchase*: Evaluates immediate balance liquidity against upcoming bill obligations before payday. If affordable today, evaluates remaining cash against a prorated total dollar safe cushion until payday. If short today, presents a dual path: tapping flexible Savings Goals ("What Gives", showing exact goal delay) vs. waiting for future income on payday.
-   - *Recurring Commitment*: Evaluates 12-month budget feasibility. Protects Bills 100% and guarantees Everyday spending allowance does not drop below 80% of expected allowance. Absorbs commitment first via uncommitted goals/surplus, then committed goals (`GOAL_DELAYED`). Provides Day-1 timing advice if ongoing budget is affordable but today's cash is low.
+   - *One-Off Purchase*: Evaluates immediate balance liquidity against upcoming bill obligations due on or before the next payday (`expectedDate >= todayStr && expectedDate <= paydayCutoffStr`). If affordable today, evaluates remaining cash against a prorated total dollar safe cushion until payday. If short today, presents a dual path: tapping flexible Savings Goals ("What Gives", showing exact goal delay) vs. waiting for future income across the 12-month cumulative projection (`runCumulativeProjection`, comparing projected Everyday balance plus accumulated prior-step Everyday surplus against purchase amount + prorated cushion).
+   - *Recurring Commitment*: Evaluates 12-month budget feasibility by injecting a recurring phantom `BILL` envelope (`poolId: "phantom-recurring-bucket"`) into `runCumulativeProjection` and comparing the minimum projected Everyday balance across all 12-month payday steps against 80% of baseline, while comparing terminal 12-month goal balances to compute exact goal delays (`GOAL_DELAYED`). Supports optional `includePersonal` (threading the caller's personal strategy steps and private envelopes alongside household steps, attributed via `currentUserId`) and formats all `rationaleSteps` in the household's configured `currency`.
 2. **6-Verdict Classification**:
    - `SAFE_YES` (Green): Sufficient liquidity and post-spend Everyday cash $\ge$ recommended safe cushion until payday. All bills protected.
    - `PACING_TIGHT` (Amber): Sufficient liquidity but remaining cash drops below the recommended safe cushion until payday. Clearly shows cushion shortfall in dollars.

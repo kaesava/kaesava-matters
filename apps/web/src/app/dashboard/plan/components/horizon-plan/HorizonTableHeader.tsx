@@ -9,6 +9,7 @@ export interface MatrixColumnItem {
   sourceName: string;
   totalIncome: number;
   dateLabel?: string;
+  hiddenAllocationsTotal?: number;
 }
 
 export interface HorizonTableHeaderProps {
@@ -100,14 +101,27 @@ export function HorizonTableHeader({
                 </div>
 
                 {/* Row 3: Date */}
-                <div className="text-xs text-zinc-500 font-medium">
-                  {dateStr}
+                <div className="text-xs text-zinc-500 font-medium flex items-center justify-center gap-1 flex-wrap">
+                  <span>{dateStr}</span>
+                  {!isConfirmed &&
+                    incomeEvt &&
+                    incomeEvt.expectedDate <
+                      new Intl.DateTimeFormat("en-CA", { timeZone: userTimezone }).format(new Date()) && (
+                      <span className="px-1.5 py-0.5 text-[10px] font-bold uppercase rounded bg-rose-50 text-rose-600 border border-rose-200 dark:bg-rose-950/60 dark:text-rose-300 dark:border-rose-800">
+                        {t("expenseStatus.overdueLabel")}
+                      </span>
+                    )}
                 </div>
 
                 {/* Row 4: Total Income */}
                 <div className="text-sm font-extrabold text-emerald-600 dark:text-emerald-400 font-mono mt-0.5">
                   +{fmt(col.totalIncome)}
                 </div>
+                {col.hiddenAllocationsTotal !== undefined && col.hiddenAllocationsTotal > 0 && (
+                  <div className="text-[10px] font-semibold text-slate-500 dark:text-zinc-400 font-mono tabular-nums">
+                    ({fmt(col.hiddenAllocationsTotal)} {t("common.private")})
+                  </div>
+                )}
 
                 {/* Row 5: Actions */}
                 {isConfirmed ? (

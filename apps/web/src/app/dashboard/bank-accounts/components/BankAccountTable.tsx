@@ -1,14 +1,13 @@
 "use client";
 
-import React, { useEffect } from "react";
+import React from "react";
 import Link from "next/link";
 import { FileText } from "lucide-react";
-import { PaginationBar, SkeletonTable } from "@money-matters/ui/web";
+import { PaginationBar, SkeletonTable, ModalDialog, Button } from "@money-matters/ui/web";
 import { t, BANK_ACCOUNT_TYPE_KEYS } from "@money-matters/i18n";
 import { useAppFeatures } from "../../../../hooks/useAppFeatures";
 import type { AccountType } from "@money-matters/types";
 
-export type BankName = "CBA" | "Westpac" | "ANZ" | "NAB" | "ING" | "Macquarie" | "Other";
 export type CategoryType = "EVERYDAY" | "BILL" | "GOAL";
 
 export interface BankAccountItem {
@@ -69,17 +68,6 @@ export function BankAccountTable({
   const [selectedAccForPools, setSelectedAccForPools] = React.useState<BankAccountItem | null>(null);
   const { hasPrivateMode } = useAppFeatures();
 
-  useEffect(() => {
-    if (!selectedAccForPools) return;
-    function handleKeyDown(e: KeyboardEvent) {
-      if (e.key === "Escape") {
-        setSelectedAccForPools(null);
-      }
-    }
-    document.addEventListener("keydown", handleKeyDown);
-    return () => document.removeEventListener("keydown", handleKeyDown);
-  }, [selectedAccForPools]);
-
   return (
     <div className="bg-white rounded-2xl border border-zinc-200 shadow-xs overflow-hidden">
       {isLoading ? (
@@ -138,7 +126,7 @@ export function BankAccountTable({
                           )}
                           {hasPrivateMode && acc.isPrivate && (
                             <span
-                              title="Private"
+                              title={t("bankAccounts.privateBadge")}
                               className="text-[10px] font-extrabold px-1.5 py-0.5 rounded-full bg-slate-100 text-slate-700 border border-slate-200 inline-flex items-center cursor-help"
                             >
                               🔒
@@ -275,74 +263,66 @@ export function BankAccountTable({
 
       {/* Linked Pools Details Modal */}
       {selectedAccForPools && (
-        <div className="fixed inset-0 bg-slate-950/60 backdrop-blur-xs z-50 flex items-center justify-center p-4" role="dialog" aria-modal="true">
-          <div className="bg-white max-w-sm w-full rounded-2xl shadow-xl border border-zinc-200 p-5 space-y-4 animate-in fade-in duration-150">
-            <div className="flex items-center justify-between border-b border-zinc-100 pb-3">
-              <div>
-                <h4 className="font-extrabold text-sm text-[#1B2B4B]">{t("bankAccounts.linkedEnvelopesHeading")}</h4>
-                <p className="text-[11px] text-zinc-500">{selectedAccForPools.name}</p>
-              </div>
-              <button
-                type="button"
-                onClick={() => setSelectedAccForPools(null)}
-                className="text-zinc-400 hover:text-zinc-600 font-bold p-1"
-              >
-                ✕
-              </button>
-            </div>
-
-            <div className="space-y-2 max-h-60 overflow-y-auto pr-1">
-              {!(selectedAccForPools.linkedPools) || selectedAccForPools.linkedPools.length === 0 ? (
-                <p className="text-xs text-zinc-400 italic py-2">{t("bankAccounts.noEnvelopesCurrentlyLinked")}</p>
-              ) : (
-                <>
-                  <div className="flex items-center justify-between text-[10px] font-bold text-zinc-400 uppercase tracking-wider px-1 pb-1 border-b border-zinc-100">
-                    <span>{t("bankAccounts.envelopeNameAndType")}</span>
-                    <span>{t("common.balance")}</span>
-                  </div>
-                  {selectedAccForPools.linkedPools.map((p) => (
-                    <div key={p.id} className="flex items-center justify-between p-2.5 rounded-xl border border-zinc-200 bg-zinc-50/70 text-xs">
-                      <div className="flex items-center gap-2">
-                        <Link
-                          href={`/dashboard/envelopes?poolId=${p.id}`}
-                          onClick={() => setSelectedAccForPools(null)}
-                          className="font-bold text-[#2563eb] hover:underline cursor-pointer"
-                        >
-                          {p.name}
-                        </Link>
-                        {p.isSurplusTarget && (
-                          <span className="text-[9px] font-bold uppercase tracking-wider px-1.5 py-0.5 bg-blue-100 text-blue-700 rounded-md">
-                            {t("bankAccounts.sweepEnvelopeBadge")}
+        <ModalDialog
+          isOpen={Boolean(selectedAccForPools)}
+          onClose={() => setSelectedAccForPools(null)}
+          title={t("bankAccounts.linkedEnvelopesHeading")}
+          subtitle={selectedAccForPools.name}
+          maxWidth="max-w-sm"
+        >
+          <div className="space-y-2 max-h-60 overflow-y-auto pr-1">
+            {!(selectedAccForPools.linkedPools) || selectedAccForPools.linkedPools.length === 0 ? (
+              <p className="text-xs text-zinc-400 italic py-2">{t("bankAccounts.noEnvelopesCurrentlyLinked")}</p>
+            ) : (
+              <>
+                <div className="flex items-center justify-between text-[10px] font-bold text-zinc-400 uppercase tracking-wider px-1 pb-1 border-b border-zinc-100">
+                  <span>{t("bankAccounts.envelopeNameAndType")}</span>
+                  <span>{t("common.balance")}</span>
+                </div>
+                {selectedAccForPools.linkedPools.map((p) => (
+                  <div key={p.id} className="flex items-center justify-between p-2.5 rounded-xl border border-zinc-200 bg-zinc-50/70 text-xs">
+                    <div className="flex items-center gap-2">
+                      <Link
+                        href={`/dashboard/envelopes?poolId=${p.id}`}
+                        onClick={() => setSelectedAccForPools(null)}
+                        className="font-bold text-[#2563eb] hover:underline cursor-pointer"
+                      >
+                        {p.name}
+                      </Link>
+                      {p.isSurplusTarget && (
+                        <span className="text-[9px] font-bold uppercase tracking-wider px-1.5 py-0.5 bg-blue-100 text-blue-700 rounded-md">
+                          {t("bankAccounts.sweepEnvelopeBadge")}
+                        </span>
+                      )}
+                      {(() => {
+                        const isEveryday = p.poolType === "EVERYDAY";
+                        const isBill = p.poolType === "BILL";
+                        return (
+                          <span className={`text-[9px] font-black px-1.5 py-0.5 rounded-md ${
+                            isEveryday ? "bg-emerald-50 text-emerald-700" : isBill ? "bg-blue-50 text-[#2563eb]" : "bg-indigo-50 text-indigo-700"
+                          }`}>
+                            {isEveryday ? t("envelopeTypes.everyday") : isBill ? t("envelopeTypes.bills") : t("envelopeTypes.goals")}
                           </span>
-                        )}
-                        {(() => {
-                          const isEveryday = p.poolType === "EVERYDAY";
-                          const isBill = p.poolType === "BILL";
-                          return (
-                            <span className={`text-[9px] font-black px-1.5 py-0.5 rounded-md ${
-                              isEveryday ? "bg-emerald-50 text-emerald-700" : isBill ? "bg-blue-50 text-[#2563eb]" : "bg-indigo-50 text-indigo-700"
-                            }`}>
-                              {isEveryday ? t("envelopeTypes.everyday") : isBill ? t("envelopeTypes.bills") : t("envelopeTypes.goals")}
-                            </span>
-                          );
-                        })()}
-                      </div>
-                      <span className="font-mono font-bold text-zinc-800">{fmtMoney(p.currentBalance || 0)}</span>
+                        );
+                      })()}
                     </div>
-                  ))}
-                </>
-              )}
-            </div>
-
-            <button
+                    <span className="font-mono font-bold text-zinc-800">{fmtMoney(p.currentBalance || 0)}</span>
+                  </div>
+                ))}
+              </>
+            )}
+          </div>
+          <div className="pt-4">
+            <Button
               type="button"
+              variant="secondary"
               onClick={() => setSelectedAccForPools(null)}
-              className="w-full py-2 bg-zinc-100 hover:bg-zinc-200 text-zinc-700 font-bold text-xs rounded-xl transition-all"
+              className="w-full"
             >
               {t("common.close")}
-            </button>
+            </Button>
           </div>
-        </div>
+        </ModalDialog>
       )}
     </div>
   );

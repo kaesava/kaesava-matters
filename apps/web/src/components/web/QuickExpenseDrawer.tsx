@@ -5,6 +5,9 @@ import {
   InfoTooltip,
   ConfirmDialog,
   Button,
+  Input,
+  DatePickerField,
+  GenericSelectField,
   AmountField,
   FormErrorBanner,
   FormLabel,
@@ -54,6 +57,7 @@ export function QuickActionDrawer({ onClose, initialTab = "DEBIT", initialData }
     isTransfer,
     isFutureDate,
     categories,
+    allEnvelopes,
     bankAccounts,
     quickExpensePresets,
     quickIncomePresets,
@@ -71,7 +75,7 @@ export function QuickActionDrawer({ onClose, initialTab = "DEBIT", initialData }
     handleConfirmShortfallPaid,
   } = useQuickActionState(onClose, initialTab, initialData);
 
-  const isDrawDown = initialData?.name === "Draw down";
+  const isDrawDown = Boolean(initialData?.isDrawDown) || initialData?.name === "Draw down";
 
   const activePresets = isTransfer
     ? quickTransferPresets
@@ -149,20 +153,14 @@ export function QuickActionDrawer({ onClose, initialTab = "DEBIT", initialData }
 
               {isTransfer ? (
                 <>
-                  <div className="flex flex-col gap-1">
-                    <FormLabel required>
-                      {t("drawers.quickExpense.transferName")}
-                    </FormLabel>
-                    <input
-                      type="text"
-                      autoFocus={true}
-                      required
-                      placeholder={t("drawers.quickExpense.transferNamePlaceholder")}
-                      value={name}
-                      onChange={(e) => setName(e.target.value)}
-                      className="px-3.5 py-2.5 text-xs font-medium rounded-xl border border-zinc-200 focus:outline-none focus:ring-2 focus:ring-[#2563eb]"
-                    />
-                  </div>
+                  <Input
+                    label={t("drawers.quickExpense.transferName")}
+                    autoFocus={true}
+                    required
+                    placeholder={t("drawers.quickExpense.transferNamePlaceholder")}
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
+                  />
 
                   <div className="flex flex-col gap-1">
                     <FormLabel required>{t("drawers.quickExpense.fromEnvelope")}</FormLabel>
@@ -202,20 +200,14 @@ export function QuickActionDrawer({ onClose, initialTab = "DEBIT", initialData }
                 </>
               ) : (
                 <>
-                  <div className="flex flex-col gap-1">
-                    <FormLabel required>
-                      {isIncome ? t("drawers.quickExpense.incomeSourceDescription") : t("drawers.quickExpense.expenseNameMerchant")}
-                    </FormLabel>
-                    <input
-                      type="text"
-                      autoFocus={!isDrawDown}
-                      required
-                      placeholder={isIncome ? t("drawers.quickExpense.freelancePlaceholder") : t("drawers.quickExpense.woolworthsPlaceholder")}
-                      value={name}
-                      onChange={(e) => setName(e.target.value)}
-                      className="px-3.5 py-2.5 text-xs font-medium rounded-xl border border-zinc-200 focus:outline-none focus:ring-2 focus:ring-[#2563eb]"
-                    />
-                  </div>
+                  <Input
+                    label={isIncome ? t("drawers.quickExpense.incomeSourceDescription") : t("drawers.quickExpense.expenseNameMerchant")}
+                    autoFocus={!isDrawDown}
+                    required
+                    placeholder={isIncome ? t("drawers.quickExpense.freelancePlaceholder") : t("drawers.quickExpense.woolworthsPlaceholder")}
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
+                  />
 
                   {!isIncome && (
                     <div className="flex flex-col gap-1">
@@ -245,21 +237,17 @@ export function QuickActionDrawer({ onClose, initialTab = "DEBIT", initialData }
                   )}
 
                   {isIncome && (
-                    <div className="flex flex-col gap-1">
-                      <FormLabel required>{t("drawers.quickExpense.receivingAccount")}</FormLabel>
-                      <select
-                        value={receivingAccountId}
-                        onChange={(e) => setReceivingAccountId(e.target.value)}
-                        className="px-3.5 py-2.5 text-xs font-medium rounded-xl border border-zinc-200 focus:outline-none focus:ring-2 focus:ring-[#2563eb]"
-                      >
-                        <option value="">{t("drawers.quickExpense.selectBankAccountPlaceholder")}</option>
-                        {bankAccounts.map((a: { id: string; name: string }) => (
-                          <option key={a.id} value={a.id}>
-                            {a.name}
-                          </option>
-                        ))}
-                      </select>
-                    </div>
+                    <GenericSelectField
+                      label={t("drawers.quickExpense.receivingAccount")}
+                      required
+                      value={receivingAccountId}
+                      onChange={setReceivingAccountId}
+                      placeholder={t("drawers.quickExpense.selectBankAccountPlaceholder")}
+                      options={bankAccounts.map((a: { id: string; name: string }) => ({
+                        value: a.id,
+                        label: a.name,
+                      }))}
+                    />
                   )}
                 </>
               )}
@@ -273,17 +261,13 @@ export function QuickActionDrawer({ onClose, initialTab = "DEBIT", initialData }
                   onChange={setAmount}
                 />
 
-                <div className="flex flex-col gap-1">
-                  <FormLabel required>{t("tables.date")}</FormLabel>
-                  <input
-                    type="date"
-                    required
-                    min={isTransfer ? todayStr : undefined}
-                    value={date}
-                    onChange={(e) => setDate(e.target.value)}
-                    className="px-3.5 py-2.5 text-xs font-medium rounded-xl border border-zinc-200 focus:outline-none focus:ring-2 focus:ring-[#2563eb]"
-                  />
-                </div>
+                <DatePickerField
+                  label={t("tables.date")}
+                  required
+                  min={isTransfer ? todayStr : undefined}
+                  value={date}
+                  onChange={setDate}
+                />
               </div>
 
               {isIncome && (
@@ -377,12 +361,13 @@ export function QuickActionDrawer({ onClose, initialTab = "DEBIT", initialData }
           poolId={shortfallModalData.poolId}
           poolName={shortfallModalData.poolName}
           poolType={shortfallModalData.poolType}
-          availableCategories={categories.map((c) => ({
+          availableCategories={allEnvelopes.map((c) => ({
             id: c.id,
             name: c.name,
             poolType: c.envelopeType,
             currentBalance: c.currentBalance,
             isSurplusTarget: c.isSurplusTarget,
+            isPrivate: c.isPrivate,
           }))}
           onConfirmMarkPaid={handleConfirmShortfallPaid}
         />

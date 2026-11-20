@@ -70,7 +70,12 @@ export function MobilePaydayPlanDetailModal({
           strategyName={activeStrategy?.name}
         />
 
-        <AllocationDetailLinesList lines={allocation.lines} />
+        <AllocationDetailLinesList
+          lines={allocation.lines.filter(
+            (l) => parseFloat(l.confirmedAmount || l.proposedAmount || '0') > 0.001
+          )}
+          onNavigate={onClose}
+        />
 
         {onOpenSplitStudio && !isConfirmed && (
           <TouchableOpacity

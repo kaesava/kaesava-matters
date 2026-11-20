@@ -8,6 +8,7 @@ import {
   Tabs,
   Spinner,
   PoolPicker,
+  SearchInput,
   SpendingOverviewCard,
   InfoTooltip,
 } from "@money-matters/ui/web";
@@ -147,6 +148,12 @@ function ReportsPageContent() {
           {/* Controls Bar & Segmented Filter */}
           <div className="flex flex-col sm:flex-row items-center justify-between gap-3 p-3 bg-slate-50 border border-zinc-200/80 rounded-2xl">
             <div className="flex flex-col sm:flex-row items-center gap-3 flex-1 w-full">
+              <SearchInput
+                value={spendingSearch}
+                onChange={setSpendingSearch}
+                placeholder={t("common.searchPlaceholder")}
+              />
+
               <div className="w-full sm:w-56 text-xs">
                 <PoolPicker
                   pools={pools.map((p) => ({
@@ -235,6 +242,12 @@ function ReportsPageContent() {
           {/* Controls Bar */}
           <div className="flex flex-col sm:flex-row items-center justify-between gap-3 p-3 bg-slate-50 border border-zinc-200/80 rounded-2xl">
             <div className="flex flex-col sm:flex-row items-center gap-3 flex-1 w-full">
+              <SearchInput
+                value={planSearch}
+                onChange={setPlanSearch}
+                placeholder={t("history.searchPaydaysPlaceholder")}
+              />
+
               <select
                 value={planBank}
                 onChange={(e) => setPlanBank(e.target.value)}

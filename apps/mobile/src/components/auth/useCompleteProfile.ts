@@ -92,10 +92,16 @@ export function useCompleteProfile() {
     try {
       const res = await createTenant.mutateAsync({
         name: `${name.trim()}'s Household`,
+        displayName: name.trim(),
         country,
         currency,
         timezone,
       });
+      try {
+        await authClient.updateUser({ name: name.trim() });
+      } catch {
+        // Non-blocking: backend users.displayName is already updated
+      }
       if (res.tenantId) {
         setActiveTenantId(res.tenantId);
         await switchActiveTenant(res.tenantId, utils);

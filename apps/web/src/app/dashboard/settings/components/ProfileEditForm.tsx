@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import React, { useRef } from "react";
+import { User } from "lucide-react";
 import { t } from "@money-matters/i18n";
 import { PhoneInput, Button } from "@money-matters/ui/web";
 import { ProfilePreferencesFields } from "./ProfilePreferencesFields";
@@ -51,7 +52,7 @@ export function ProfileEditForm({
   showIcons,
   setShowIcons,
   avatarUrl,
-  initials,
+  initials: _initials,
   isSaving,
   isDirty,
   onAvatarClick,
@@ -84,8 +85,8 @@ export function ProfileEditForm({
                 />
               </button>
             ) : (
-              <div className="w-14 h-14 rounded-full bg-[#1B2B4B] flex items-center justify-center text-white text-lg font-extrabold shadow-xs">
-                {initials}
+              <div className="w-14 h-14 rounded-full bg-[#1B2B4B] flex items-center justify-center text-white shadow-xs">
+                <User className="w-7 h-7" />
               </div>
             )}
             <button

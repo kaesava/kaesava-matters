@@ -32,6 +32,7 @@ export const simulationRouter = {
       const projectionEngine = ((projInput: Parameters<typeof runCumulativeProjection>[0]) =>
         runCumulativeProjection({
           ...projInput,
+          currentUserId: projInput.currentUserId ?? ctx.userId!,
           strategySteps: activeStrategy?.steps?.map((s) => ({
             stepType: s.stepType,
             targetEnvelopeId: s.targetEnvelopeId,

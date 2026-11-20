@@ -11,12 +11,14 @@ interface MobileSocialAuthButtonsProps {
   mode: "signIn" | "signUp";
   onError: (msg: string) => void;
   onSuccess?: () => void;
+  redirectUrl?: string;
 }
 
 
 export function MobileSocialAuthButtons({
   mode,
   onError,
+  redirectUrl,
 }: MobileSocialAuthButtonsProps) {
   const router = useRouter();
   const [loadingProvider, setLoadingProvider] = useState<"google" | null>(null);
@@ -37,9 +39,11 @@ export function MobileSocialAuthButtons({
     setLoadingProvider("google");
     try {
       const devOrigin = DEFAULT_AUTH_ORIGIN;
+      const redirectSuffix = redirectUrl ? `&redirect=${encodeURIComponent(redirectUrl)}` : "";
+      const devRedirectSuffix = redirectUrl ? `?redirect=${encodeURIComponent(redirectUrl)}` : "";
       const callbackURL = __DEV__
-        ? `${devOrigin}/dev-callback/moneymatters/auth-callback`
-        : "https://moneymatters.kaesava.au/auth-callback?platform=mobile";
+        ? `${devOrigin}/dev-callback/moneymatters/auth-callback${devRedirectSuffix}`
+        : `https://moneymatters.kaesava.au/auth-callback?platform=mobile${redirectSuffix}`;
       const errorCallbackURL = __DEV__
         ? `${devOrigin}/dev-callback/moneymatters/sign-in?error=oauth_failed`
         : "https://moneymatters.kaesava.au/auth-callback?platform=mobile&error=oauth_failed";

@@ -17,8 +17,8 @@ interface BankOption {
 }
 
 interface UseLedgerFilterSectionsProps {
-  flowFilter: 'ALL' | 'DEBIT' | 'CREDIT';
-  onFlowFilterChange: (flow: 'ALL' | 'DEBIT' | 'CREDIT') => void;
+  flowFilter: 'ALL' | 'DEBIT' | 'CREDIT' | 'TRANSFER';
+  onFlowFilterChange: (flow: 'ALL' | 'DEBIT' | 'CREDIT' | 'TRANSFER') => void;
   selectedPoolId: string;
   onPoolChange: (id: string) => void;
   selectedBankAccountId: string;
@@ -46,13 +46,14 @@ export function useLedgerFilterSections({
         title: t('common.type'),
         selectedValue: flowFilter,
         onSelect: (val: string) => {
-          onFlowFilterChange(val as 'ALL' | 'DEBIT' | 'CREDIT');
+          onFlowFilterChange(val as 'ALL' | 'DEBIT' | 'CREDIT' | 'TRANSFER');
           onPageChange(1);
         },
         options: [
           { id: 'ALL', label: t('common.all') },
           { id: 'DEBIT', label: t('history.expenses') },
           { id: 'CREDIT', label: t('history.income') },
+          { id: 'TRANSFER', label: t('common.transfer') },
         ],
       },
       {

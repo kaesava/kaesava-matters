@@ -34,6 +34,7 @@ export function MobileProfileSection({
         phoneError={data.phoneError}
         avatarUri={data.avatarUri}
         onPickAvatar={data.handlePickAvatar}
+        onDeleteAvatar={data.handleDeleteAvatar}
         timezone={data.timezone}
         setTimezone={data.setTimezone}
         language={data.language}
@@ -41,6 +42,7 @@ export function MobileProfileSection({
         showIcons={data.showIcons}
         setShowIcons={data.setShowIcons}
         saving={data.saving}
+        isDirty={data.isDirty}
         onSave={data.handleSave}
         onCancel={data.handleCancel}
       />

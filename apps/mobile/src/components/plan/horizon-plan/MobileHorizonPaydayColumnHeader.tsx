@@ -65,7 +65,18 @@ export const MobileHorizonPaydayColumnHeader: React.FC<MobileHorizonPaydayColumn
       </Text>
 
       {/* Row 3: Date */}
-      <Text style={styles.dateText}>{dateStr}</Text>
+      <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 4, flexWrap: 'wrap' }}>
+        <Text style={styles.dateText}>{dateStr}</Text>
+        {!isConfirmed &&
+          col.date &&
+          col.date < new Date().toISOString().slice(0, 10) && (
+            <View style={{ backgroundColor: DESIGN_TOKENS.colors.criticalLight, borderColor: DESIGN_TOKENS.colors.criticalBorder, borderWidth: 1, borderRadius: 4, paddingHorizontal: 4, paddingVertical: 1 }}>
+              <Text style={{ fontSize: 9, fontWeight: '700', color: DESIGN_TOKENS.colors.burnRed, textTransform: 'uppercase' }}>
+                {t('expenseStatus.overdueLabel')}
+              </Text>
+            </View>
+          )}
+      </View>
 
       {/* Row 4: Total Income */}
       <Text style={styles.incomeAmount}>+{formatMobileCurrency(col.totalIncome)}</Text>

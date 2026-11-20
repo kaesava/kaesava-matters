@@ -14,6 +14,7 @@ import {
   ChipSelect,
   FormLabel,
   FormErrorBanner,
+  useMobileToast,
 } from '@money-matters/ui/mobile';
 import { t } from '@money-matters/i18n';
 import { authClient } from '../lib/auth';
@@ -28,6 +29,7 @@ interface FeedbackFormModalProps {
 }
 
 export function FeedbackFormModal({ visible, onClose }: FeedbackFormModalProps) {
+  const toast = useMobileToast();
   const { data: session } = authClient.useSession();
   const versionInfo = getMobileVersionInfo();
   const submitFeedbackMutation = trpc.submitFeedback.useMutation();
@@ -88,6 +90,7 @@ export function FeedbackFormModal({ visible, onClose }: FeedbackFormModalProps) 
         appVersion: versionInfo?.formattedVersion || 'Money Matters Mobile',
       });
 
+      toast.success(t('feedback.submitSuccess'));
       handleClose();
     } catch (err: unknown) {
       setGeneralError(err instanceof Error ? err.message : t('feedback.openEmailFailed'));

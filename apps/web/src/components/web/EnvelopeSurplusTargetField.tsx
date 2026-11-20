@@ -27,6 +27,11 @@ export function EnvelopeSurplusTargetField({
           <InfoTooltip content={t('categories.shortfallTargetTooltip')} align="left" />
         </span>
       </label>
+      {isSurplusDisabled && (
+        <p className="text-[11px] text-amber-700 dark:text-amber-400 mt-1">
+          {t('categories.shortfallTargetDisabledWarning')}
+        </p>
+      )}
     </div>
   );
 }

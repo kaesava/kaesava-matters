@@ -2,9 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { trpc } from '../../lib/trpc';
 import { useMobileToast, showMobileConfirm } from '@money-matters/ui/mobile';
 import { t } from '@money-matters/i18n';
-import type { BankAccountItemToEdit, SupportedBankProvider } from './bankAccountTypes';
+import type { BankAccountItemToEdit } from './bankAccountTypes';
 import type { MobileSyncBalanceModalProps } from '../envelopes/MobileSyncBalanceModal';
-import { AccountType, getDefaultAccountName, BankProvider } from '@money-matters/types';
+import { AccountType } from '@money-matters/types';
 
 export function useBankAccountForm(
   visible: boolean,
@@ -18,7 +18,7 @@ export function useBankAccountForm(
   const utils = trpc.useUtils();
 
   const [name, setName] = useState('');
-  const [provider, setProvider] = useState<SupportedBankProvider>('CBA');
+  const [provider, setProvider] = useState<string>('Other');
   const [accountType, setAccountType] = useState<AccountType>('EVERYDAY');
   const [balance, setBalance] = useState('0.00');
   const [buffer, setBuffer] = useState('0.00');
@@ -43,7 +43,7 @@ export function useBankAccountForm(
 
   const initialRef = React.useRef({
     name: '',
-    provider: 'CBA' as SupportedBankProvider,
+    provider: 'Other',
     accountType: 'EVERYDAY' as AccountType,
     balance: '0.00',
     buffer: '0.00',
@@ -53,7 +53,7 @@ export function useBankAccountForm(
   useEffect(() => {
     if (accountToEdit) {
       const initName = accountToEdit.name || '';
-      const initProvider = (accountToEdit.bankProvider as SupportedBankProvider) || 'CBA';
+      const initProvider = accountToEdit.bankProvider || 'Other';
       const initType = (accountToEdit.accountType as AccountType) || 'EVERYDAY';
       const initBalance = accountToEdit.lastKnownBalance || '0.00';
       const initBuffer = accountToEdit.unbudgetedBuffer || '0.00';
@@ -95,20 +95,12 @@ export function useBankAccountForm(
     setGeneralError('');
   }, [accountToEdit, visible]);
 
-  const handleProviderChange = (newProvider: SupportedBankProvider) => {
-    setProvider(newProvider);
-    const oldDefault = getDefaultAccountName(provider as BankProvider, accountType);
-    if (!name.trim() || name.trim() === oldDefault) {
-      setName(getDefaultAccountName(newProvider as BankProvider, accountType));
-    }
+  const handleProviderChange = (newProvider: string) => {
+    setProvider(newProvider || 'Other');
   };
 
   const handleAccountTypeChange = (newType: AccountType) => {
     setAccountType(newType);
-    const oldDefault = getDefaultAccountName(provider as BankProvider, accountType);
-    if (!name.trim() || name.trim() === oldDefault) {
-      setName(getDefaultAccountName(provider as BankProvider, newType));
-    }
   };
 
   const isDirty =
@@ -139,10 +131,10 @@ export function useBankAccountForm(
     if (!accountToEdit) return;
     const confirmMessage = isLastPrivateAccount
       ? t('settings.bankAccountForm.archiveConfirmLastPrivateBody', { name: accountToEdit.name })
-      : t('settings.bankAccounts.deleteConfirmBody', { name: accountToEdit.name });
+      : t('settings.bankAccountForm.archiveConfirmBody', { name: accountToEdit.name });
 
     showMobileConfirm({
-      title: t('settings.bankAccounts.deleteConfirmTitle'),
+      title: t('settings.bankAccountForm.archiveConfirmTitle'),
       message: confirmMessage,
       confirmText: t('common.archive'),
       isDestructive: true,

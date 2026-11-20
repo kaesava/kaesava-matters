@@ -19,6 +19,7 @@ import {
   incomeSources,
   expenseEvents,
   tenants,
+  userPreferences,
   getEnvelopeBalancesMap,
   type DbOrTx,
 } from "@money-matters/db";
@@ -28,7 +29,7 @@ import type {
   ProjectionEngineFn,
   ProjectionEngineBucket,
 } from "@money-matters/types";
-import { getTenantDateString } from "@money-matters/core";
+import { getTenantDateString, getLocaleFromCountry } from "@money-matters/core";
 import { simulateRecurringCommitment } from "./simulation-steps/recurring-simulation.js";
 import { simulateOneOffPurchase } from "./simulation-steps/one-off-simulation.js";
 
@@ -56,6 +57,7 @@ export async function canAffordSimulationQuery(
     frequency?: "WEEKLY" | "FORTNIGHTLY" | "MONTHLY" | "ANNUALLY";
     includePersonal?: boolean;
     itemName?: string;
+    locale?: string;
   },
   tenantId: string,
   appId: string,
@@ -71,12 +73,18 @@ export async function canAffordSimulationQuery(
   const includePersonal = input.includePersonal ?? false;
 
   // ── 1. PARALLEL DATA FETCH ──────────────────────────────────────────────
-  const [tenantRecord, dbEnvelopes, envelopeBalancesMap, pendingIncomesRaw, pendingExpensesRaw] =
+  const [tenantRecord, userPrefRecord, dbEnvelopes, envelopeBalancesMap, pendingIncomesRaw, pendingExpensesRaw] =
     await Promise.all([
       dbClient
-        .select({ timezone: tenants.timezone })
+        .select({ timezone: tenants.timezone, currency: tenants.currency, country: tenants.country })
         .from(tenants)
         .where(eq(tenants.id, tenantId))
+        .limit(1),
+
+      dbClient
+        .select({ timezone: userPreferences.timezone })
+        .from(userPreferences)
+        .where(eq(userPreferences.userId, userId))
         .limit(1),
 
       // Envelopes joined with bank account privacy metadata
@@ -122,6 +130,12 @@ export async function canAffordSimulationQuery(
           actualAmount: incomeEvents.actualAmount,
           status: incomeEvents.status,
           rrule: incomeSources.rrule,
+          incomeCreatedBy: incomeEvents.createdBy,
+          sourceCreatedBy: incomeSources.createdBy,
+          incomeContributionMode: incomeEvents.contributionMode,
+          incomeContributionValue: incomeEvents.contributionValue,
+          sourceContributionMode: incomeSources.contributionMode,
+          sourceContributionValue: incomeSources.contributionValue,
           bankAccountIsPrivate: bankAccounts.isPrivate,
           bankAccountUserId: bankAccounts.userId,
         })
@@ -158,7 +172,10 @@ export async function canAffordSimulationQuery(
         ),
     ]);
 
-  const timezone = tenantRecord[0]?.timezone ?? "UTC";
+  const timezone = userPrefRecord[0]?.timezone || tenantRecord[0]?.timezone || "UTC";
+  const currency = tenantRecord[0]?.currency ?? "AUD";
+  const country = tenantRecord[0]?.country ?? "AU";
+  const locale = input.locale && input.locale !== "auto" ? input.locale : getLocaleFromCountry(country);
   const todayStr = getTenantDateString(new Date(), { timezone });
   const today = new Date(todayStr + "T00:00:00Z");
 
@@ -173,8 +190,9 @@ export async function canAffordSimulationQuery(
   const visibleEnvelopeIds = new Set(visibleEnvelopes.map((e) => e.id));
 
   const filteredIncomes = pendingIncomesRaw.filter((inc) => {
+    if (inc.expectedDate < todayStr) return false;
     if (!inc.bankAccountIsPrivate) return true;
-    return inc.bankAccountUserId === userId;
+    return includePersonal && inc.bankAccountUserId === userId;
   });
 
   const filteredExpenses = pendingExpensesRaw.filter(
@@ -298,6 +316,9 @@ export async function canAffordSimulationQuery(
       projectionEngine: deps.projectionEngine,
       today,
       timezone,
+      currency,
+      locale,
+      userId,
     });
   }
 
@@ -323,5 +344,8 @@ export async function canAffordSimulationQuery(
     dailyAllowance,
     projectionEngine: deps.projectionEngine,
     timezone,
+    currency,
+    locale,
+    userId,
   });
 }

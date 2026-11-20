@@ -21,6 +21,7 @@
     "@money-matters/config": "workspace:*",
     "@money-matters/core": "workspace:*",
     "@money-matters/db": "workspace:*",
+    "@money-matters/i18n": "workspace:*",
     "@money-matters/types": "workspace:*",
     "drizzle-orm": "^0.39.0",
     "rrule": "^2.8.1",

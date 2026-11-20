@@ -116,7 +116,7 @@ export function IncomeExpenseFormFields({
           selectedBankId={receivingAccountId}
           onSelectBank={onReceivingAccountIdChange}
           allowAllOption={false}
-          placeholder={t('modals.incomeExpenseForm.defaultMainAccount')}
+          placeholder={t('categories.selectBankAccount')}
         />
       )}
 

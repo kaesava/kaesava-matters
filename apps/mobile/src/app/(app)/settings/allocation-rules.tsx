@@ -21,16 +21,16 @@ type EditableStep = EditableAllocationStep;
 export default function MobileAllocationRulesScreen() {
   const router = useRouter();
   const params = useLocalSearchParams<{ scope?: string }>();
-  const { hasPrivateMode, hasCustomAllocationRules } = useAppFeatures();
+  const { hasPrivateMode, hasCustomAllocationRules, isLoading: isFeaturesLoading } = useAppFeatures();
   const isPersonal = params.scope === 'personal' && hasPrivateMode;
   const toast = useMobileToast();
   const utils = trpc.useUtils();
 
   useEffect(() => {
-    if (!hasCustomAllocationRules) {
+    if (!isFeaturesLoading && !hasCustomAllocationRules) {
       router.replace('/(app)/settings' as Href);
     }
-  }, [hasCustomAllocationRules, router]);
+  }, [isFeaturesLoading, hasCustomAllocationRules, router]);
 
   const govQuery = trpc.getHouseholdGovernanceInfo.useQuery(undefined, {
     enabled: hasCustomAllocationRules,
@@ -175,6 +175,14 @@ export default function MobileAllocationRulesScreen() {
     }
   };
 
+  const navigateBack = () => {
+    if (isPersonal) {
+      router.replace('/(app)/settings?tab=household&strategyScope=personal' as Href);
+    } else {
+      router.back();
+    }
+  };
+
   const handleBackPress = () => {
     if (isDirty) {
       showMobileConfirm({
@@ -183,12 +191,10 @@ export default function MobileAllocationRulesScreen() {
         confirmText: t('modals.discardChanges.discard'),
         cancelText: t('common.keepEditing'),
         isDestructive: true,
-        onConfirm: () => {
-          router.back();
-        },
+        onConfirm: navigateBack,
       });
     } else {
-      router.back();
+      navigateBack();
     }
   };
 
@@ -314,7 +320,7 @@ const styles = StyleSheet.create({
     gap: 16,
   },
   bannerCard: {
-    backgroundColor: '#FFFFFF',
+    backgroundColor: DESIGN_TOKENS.colors.surface,
     borderRadius: 16,
     padding: 16,
     borderWidth: 1,
@@ -354,13 +360,13 @@ const styles = StyleSheet.create({
     color: DESIGN_TOKENS.colors.slate[600],
   },
   presetChipTextActive: {
-    color: '#FFFFFF',
+    color: DESIGN_TOKENS.colors.onAccent,
   },
   customChip: {
     paddingHorizontal: 10,
     paddingVertical: 6,
     borderRadius: 8,
-    backgroundColor: '#EFF6FF',
+    backgroundColor: DESIGN_TOKENS.colors.accentLight,
   },
   customChipText: {
     fontSize: 12,
@@ -372,14 +378,14 @@ const styles = StyleSheet.create({
   },
   readOnlyBanner: {
     padding: 12,
-    backgroundColor: '#FEF3C7',
+    backgroundColor: DESIGN_TOKENS.colors.warningLight,
     borderRadius: 12,
     borderWidth: 1,
-    borderColor: '#FDE68A',
+    borderColor: DESIGN_TOKENS.colors.warningBorder,
   },
   readOnlyBannerText: {
     fontSize: 12,
-    color: '#92400E',
+    color: DESIGN_TOKENS.colors.warningDark,
     lineHeight: 18,
   },
   footerContainer: {

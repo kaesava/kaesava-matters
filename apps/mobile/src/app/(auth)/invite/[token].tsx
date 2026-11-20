@@ -6,12 +6,14 @@ import { Feather } from '@expo/vector-icons';
 import { DESIGN_TOKENS } from '@money-matters/ui/mobile';
 import { t } from '@money-matters/i18n';
 import { trpc } from '../../../lib/trpc';
+import { authClient } from '../../../lib/auth';
 
 export default function AcceptInviteMobileScreen() {
   const insets = useSafeAreaInsets();
   const { token } = useLocalSearchParams<{ token?: string }>();
   const router = useRouter();
-  const [status, setStatus] = useState<'loading' | 'success' | 'error'>('loading');
+  const { data: session, isPending: isSessionPending } = authClient.useSession();
+  const [status, setStatus] = useState<'loading' | 'unauthenticated' | 'success' | 'error'>('loading');
   const [errorMsg, setErrorMsg] = useState('');
 
   const acceptInviteMutation = trpc.acceptInvite.useMutation({
@@ -30,14 +32,22 @@ export default function AcceptInviteMobileScreen() {
   const hasTriggeredRef = useRef(false);
 
   useEffect(() => {
-    if (token && !hasTriggeredRef.current) {
-      hasTriggeredRef.current = true;
-      acceptInviteMutation.mutate({ inviteToken: token });
-    } else if (!token) {
+    if (isSessionPending) return;
+    if (!token) {
       setStatus('error');
       setErrorMsg(t("memberInvite.invalidToken"));
+      return;
     }
-  }, [token, acceptInviteMutation]);
+    if (!session?.user) {
+      setStatus('unauthenticated');
+      return;
+    }
+    if (!hasTriggeredRef.current) {
+      hasTriggeredRef.current = true;
+      setStatus('loading');
+      acceptInviteMutation.mutate({ inviteToken: token });
+    }
+  }, [token, isSessionPending, session?.user, acceptInviteMutation]);
 
   return (
     <View
@@ -65,6 +75,27 @@ export default function AcceptInviteMobileScreen() {
             </View>
             <Text style={styles.title}>{t("memberInvite.acceptSuccessTitle")}</Text>
             <Text style={styles.subtitle}>{t("memberInvite.acceptSuccessMessage")}</Text>
+          </View>
+        )}
+
+        {status === 'unauthenticated' && token && (
+          <View style={styles.stateWrapper}>
+            <Text style={styles.title}>{t("memberInvite.acceptTitle")}</Text>
+            <Text style={styles.subtitle}>{t("memberInvite.acceptSubtitle")}</Text>
+            <TouchableOpacity
+              style={styles.actionBtn}
+              onPress={() => router.replace(`/(auth)/sign-in?redirect=${encodeURIComponent(`/invite/${token}`)}` as Href)}
+              activeOpacity={0.8}
+            >
+              <Text style={styles.actionBtnText}>{t("auth.signIn")}</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={styles.actionBtn}
+              onPress={() => router.replace(`/(auth)/sign-up?redirect=${encodeURIComponent(`/invite/${token}`)}` as Href)}
+              activeOpacity={0.8}
+            >
+              <Text style={styles.actionBtnText}>{t("auth.signUp")}</Text>
+            </TouchableOpacity>
           </View>
         )}
 

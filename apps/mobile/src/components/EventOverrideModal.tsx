@@ -4,8 +4,10 @@ import {
   DESIGN_TOKENS,
   MobileModalDialog,
   MobileDatePickerField,
+  MobileInput,
   AmountInput,
   useMobileToast,
+  showMobileConfirm,
   FormErrorBanner,
   MobileHouseholdContributionSection,
   ContributionMode,
@@ -47,6 +49,7 @@ export function EventOverrideModal({
   onNavigateToSchedule,
 }: EventOverrideModalProps) {
   const toast = useMobileToast();
+  const [eventName, setEventName] = useState('');
   const [expectedDate, setExpectedDate] = useState('');
   const [expectedAmount, setExpectedAmount] = useState('');
   const [contributionMode, setContributionMode] = useState<ContributionMode>('FULL');
@@ -62,6 +65,7 @@ export function EventOverrideModal({
 
   useEffect(() => {
     if (eventToEdit) {
+      setEventName(eventToEdit.name || '');
       setExpectedDate(formatIsoDate(eventToEdit.expectedDate));
       setExpectedAmount(eventToEdit.expectedAmount);
       setContributionMode((eventToEdit.contributionMode as ContributionMode) || 'FULL');
@@ -111,6 +115,7 @@ export function EventOverrideModal({
     overrideEventMut.mutate({
       eventId: eventToEdit.id,
       eventType: eventToEdit.eventType,
+      name: eventName.trim() || undefined,
       amount: parseFloat(expectedAmount).toFixed(2),
       expectedDate,
       ...contributionPayload,
@@ -126,6 +131,7 @@ export function EventOverrideModal({
     (contributionMode !== initialMode || contributionValue !== initialValue);
   const isDirty = Boolean(
     eventToEdit && (
+      eventName.trim() !== (eventToEdit.name || '').trim() ||
       expectedDate !== formatIsoDate(eventToEdit.expectedDate) ||
       expectedAmount !== eventToEdit.expectedAmount ||
       contributionChanged
@@ -184,10 +190,24 @@ export function EventOverrideModal({
           </Text>
           <TouchableOpacity
             onPress={() => {
-              if (eventToEdit?.incomeSourceId) {
-                onClose();
-                onNavigateToSchedule?.('INCOME', eventToEdit.incomeSourceId);
+              const targetId = eventToEdit?.incomeSourceId;
+              if (!targetId) return;
+              if (isDirty) {
+                showMobileConfirm({
+                  title: t('modals.discardChanges.title'),
+                  message: t('modals.discardChanges.description'),
+                  confirmText: t('modals.discardChanges.discard'),
+                  cancelText: t('common.keepEditing'),
+                  isDestructive: true,
+                  onConfirm: () => {
+                    onClose();
+                    onNavigateToSchedule?.('INCOME', targetId);
+                  },
+                });
+                return;
               }
+              onClose();
+              onNavigateToSchedule?.('INCOME', targetId);
             }}
             activeOpacity={0.7}
             style={styles.noticeLinkBtn}
@@ -207,10 +227,23 @@ export function EventOverrideModal({
           <TouchableOpacity
             onPress={() => {
               const targetId = eventToEdit?.envelopeId || eventToEdit?.poolId;
-              if (targetId) {
-                onClose();
-                onNavigateToSchedule?.('EXPENSE', targetId);
+              if (!targetId) return;
+              if (isDirty) {
+                showMobileConfirm({
+                  title: t('modals.discardChanges.title'),
+                  message: t('modals.discardChanges.description'),
+                  confirmText: t('modals.discardChanges.discard'),
+                  cancelText: t('common.keepEditing'),
+                  isDestructive: true,
+                  onConfirm: () => {
+                    onClose();
+                    onNavigateToSchedule?.('EXPENSE', targetId);
+                  },
+                });
+                return;
               }
+              onClose();
+              onNavigateToSchedule?.('EXPENSE', targetId);
             }}
             activeOpacity={0.7}
             style={styles.noticeLinkBtn}
@@ -221,6 +254,15 @@ export function EventOverrideModal({
           </TouchableOpacity>
         </View>
       )}
+
+      <MobileInput
+        label={t('common.name')}
+        value={eventName}
+        onChangeText={(val) => {
+          setEventName(val);
+          if (errorMsg) setErrorMsg('');
+        }}
+      />
 
       <MobileDatePickerField
         label={t('common.date')}

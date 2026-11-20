@@ -2,12 +2,9 @@ import { privateTenantProcedure, requiresWriteAccess } from '../../trpc/trpc.js'
 import {
   createIncomeEventCommand,
   listIncomeEventsQuery,
-  createUpcomingIncomeCommand,
   updateUpcomingIncomeCommand,
-  markIncomeReceivedCommand,
   deleteIncomeEventCommand,
 } from "@money-matters/capability-budgeting";
-import { captureIfConsented } from '../../lib/posthog.js';
 import { CreateIncomeEventCommand } from "@money-matters/types";
 import { z } from 'zod';
 
@@ -24,23 +21,6 @@ export const incomeEventsProcedures = {
       return await listIncomeEventsQuery(ctx.tenantId!, ctx.appId!, ctx.userId!, ctx.db);
     }),
 
-  createUpcomingIncome: privateTenantProcedure
-    .input(
-      z.object({
-        name: z.string().min(1),
-        amount: z.string().regex(/^\d+(\.\d{1,2})?$/),
-        expectedDate: z.string(),
-        receivingAccountId: z.string().uuid().optional(),
-        contributionMode: z.enum(["FULL", "PERCENTAGE", "FIXED_AMOUNT"]).optional(),
-        contributionValue: z.string().regex(/^\d+(\.\d{1,2})?$/).nullable().optional(),
-        note: z.string().optional(),
-      }).strict()
-    )
-    .mutation(async ({ input, ctx }) => {
-      requiresWriteAccess(ctx);
-      return await createUpcomingIncomeCommand(input, ctx.tenantId!, ctx.appId!, ctx.userId!, ctx.db);
-    }),
-
   updateUpcomingIncome: privateTenantProcedure
     .input(
       z.object({
@@ -54,24 +34,6 @@ export const incomeEventsProcedures = {
     .mutation(async ({ input, ctx }) => {
       requiresWriteAccess(ctx);
       return await updateUpcomingIncomeCommand(input, ctx.tenantId!, ctx.appId!, ctx.userId!, ctx.db);
-    }),
-
-  markIncomeReceived: privateTenantProcedure
-    .input(
-      z.object({
-        eventId: z.string().uuid(),
-        actualAmount: z.string().regex(/^\d+(\.\d{1,2})?$/).optional(),
-        note: z.string().optional(),
-        recordedAt: z.string().optional(),
-      }).strict()
-    )
-    .mutation(async ({ input, ctx }) => {
-      requiresWriteAccess(ctx);
-      const result = await markIncomeReceivedCommand(input, ctx.tenantId!, ctx.appId!, ctx.userId!, ctx.db);
-      await captureIfConsented(ctx.db, ctx.userId, 'income_marked_received', {
-        tenant_id: ctx.tenantId,
-      });
-      return result;
     }),
 
   deleteIncomeEvent: privateTenantProcedure

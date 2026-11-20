@@ -1,5 +1,5 @@
 "use client";
-import { DEFAULT_TIMEZONE } from "@money-matters/types";
+import { DEFAULT_CURRENCY, DEFAULT_TIMEZONE } from "@money-matters/types";
 
 
 import React, { useState, useEffect } from "react";
@@ -29,20 +29,22 @@ export function HouseholdDetailsSection({
   
   const [householdName, setHouseholdName] = useState("");
   const [country, setCountry] = useState("AU");
-  const [currency, setCurrency] = useState("AUD");
+  const [currency, setCurrency] = useState(DEFAULT_CURRENCY);
   const [timezone, setTimezone] = useState(DEFAULT_TIMEZONE);
   const [state, setState] = useState("");
   const [postcode, setPostcode] = useState("");
+  const [postcodeError, setPostcodeError] = useState<string | undefined>();
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
     if (gov) {
       setHouseholdName(gov.householdName || "");
       setCountry(gov.country || "AU");
-      setCurrency(gov.currency || "AUD");
+      setCurrency(gov.currency || DEFAULT_CURRENCY);
       setTimezone(gov.timezone || DEFAULT_TIMEZONE);
       setState(gov.state || "");
       setPostcode(gov.postcode || "");
+      setPostcodeError(undefined);
     }
   }, [gov]);
 
@@ -62,7 +64,7 @@ export function HouseholdDetailsSection({
   const initialState = gov ? {
     householdName: gov.householdName || "",
     country: gov.country || "AU",
-    currency: gov.currency || "AUD",
+    currency: gov.currency || DEFAULT_CURRENCY,
     timezone: gov.timezone || DEFAULT_TIMEZONE,
     state: gov.state || "",
     postcode: gov.postcode || "",
@@ -90,10 +92,11 @@ export function HouseholdDetailsSection({
     if (gov) {
       setHouseholdName(gov.householdName || "");
       setCountry(gov.country || "AU");
-      setCurrency(gov.currency || "AUD");
+      setCurrency(gov.currency || DEFAULT_CURRENCY);
       setTimezone(gov.timezone || DEFAULT_TIMEZONE);
       setState(gov.state || "");
       setPostcode(gov.postcode || "");
+      setPostcodeError(undefined);
     }
     setShowDiscardDialog(false);
     setIsEditing(false);
@@ -117,9 +120,11 @@ export function HouseholdDetailsSection({
     }
 
     if (country === "AU" && postcode.trim() && !validateAustralianPostcode(postcode)) {
+      setPostcodeError(t("validation.postcodeDigits"));
       toast.error(t("validation.postcodeDigits"));
       return;
     }
+    setPostcodeError(undefined);
     
     setIsSubmitting(true);
     try {
@@ -149,7 +154,11 @@ export function HouseholdDetailsSection({
           state={state}
           setState={setState}
           postcode={postcode}
-          setPostcode={setPostcode}
+          setPostcode={(v) => {
+            setPostcode(v);
+            if (postcodeError) setPostcodeError(undefined);
+          }}
+          postcodeError={postcodeError}
           isDirty={isDirty}
           isSubmitting={isSubmitting}
           onSave={handleSave}

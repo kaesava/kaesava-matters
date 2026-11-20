@@ -170,7 +170,7 @@ export function usePaycheckStudioMutations({
           const res = await confirmPaydayMut.mutateAsync({
             incomeEventId: id!,
             actualAmount: numericActual.toFixed(2),
-            markAsReceivedToday: false,
+            markAsReceivedToday: true,
             lines: payload,
           });
 
@@ -179,6 +179,9 @@ export function usePaycheckStudioMutations({
           await Promise.all([
             utils.listIncomeEvents.invalidate(),
             utils.listEnvelopes.invalidate(),
+            utils.previewPayday.invalidate(),
+            utils.listAllAllocationPlans.invalidate(),
+            utils.getHorizonProjectionData.invalidate(),
             utils.listTransactions.invalidate(),
             utils.getMonthlySummary.invalidate(),
           ]);

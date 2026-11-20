@@ -98,6 +98,13 @@ export async function updateEnvelopeCommand(
       : null;
 
     const rawEnvelopeType = input.envelopeType ?? existing.envelopeType;
+    if (
+      input.envelopeType !== undefined &&
+      input.envelopeType !== existing.envelopeType &&
+      (input.envelopeType === "EVERYDAY" || existing.envelopeType === "EVERYDAY")
+    ) {
+      throw new Error("Envelope type cannot be changed to or from Everyday.");
+    }
     const effectiveEnvelopeType = rawEnvelopeType ?? existing.envelopeType;
     const willBeSurplusTarget = input.isSurplusTarget !== undefined ? input.isSurplusTarget : existing.isSurplusTarget;
 

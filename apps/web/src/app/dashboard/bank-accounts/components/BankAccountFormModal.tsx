@@ -10,19 +10,15 @@ import {
   ACCOUNT_TYPES,
   AccountType,
   ACCOUNT_TYPE_LABELS,
-  getDefaultAccountName,
-  BankProvider,
 } from "@money-matters/types";
-
-type BankName = "CBA" | "Westpac" | "ANZ" | "NAB" | "ING" | "Macquarie" | "Other";
 
 export interface BankAccountFormModalProps {
   readonly isOpen: boolean;
   readonly editingAccount: { id: string; name: string } | null;
   readonly accName: string;
   readonly setAccName: (val: string) => void;
-  readonly accBankProvider: BankName;
-  readonly setAccBankProvider: (val: BankName) => void;
+  readonly accBankProvider: string;
+  readonly setAccBankProvider: (val: string) => void;
   readonly accAccountType?: AccountType;
   readonly setAccAccountType?: (val: AccountType) => void;
   readonly accBalance: string;
@@ -33,7 +29,6 @@ export interface BankAccountFormModalProps {
   readonly setAccIsPrivate: (val: boolean) => void;
   readonly isTrialExpired: boolean;
   readonly isSaving: boolean;
-  readonly bankOptions: Array<{ key: BankName; label: string; logoBg: string; textColor: string }>;
   readonly onClose: () => void;
   readonly onSubmit: (e: React.FormEvent) => void;
   readonly onArchive?: () => void;
@@ -63,7 +58,6 @@ export function BankAccountFormModal({
   setAccIsPrivate,
   isTrialExpired,
   isSaving,
-  bankOptions,
   onClose,
   onSubmit,
   fmtMoney,
@@ -81,7 +75,7 @@ export function BankAccountFormModal({
   const initialAccountType = (editingAccount as unknown as { accountType?: string })?.accountType || "EVERYDAY";
   const initialState = editingAccount ? {
     name: editingAccount.name,
-    bankProvider: (editingAccount as unknown as { bankProvider?: string }).bankProvider || "CBA",
+    bankProvider: (editingAccount as unknown as { bankProvider?: string }).bankProvider || "Other",
     accountType: initialAccountType,
     balance: (editingAccount as unknown as { lastKnownBalance?: string }).lastKnownBalance || "0",
     buffer: (editingAccount as unknown as { unbudgetedBuffer?: string }).unbudgetedBuffer || "0",
@@ -101,20 +95,8 @@ export function BankAccountFormModal({
   const { actualBalance, buffer, available } = computeAccountAvailability(accBalance, accBuffer);
   const isBufferInvalid = buffer > actualBalance;
 
-  const handleProviderSelect = (key: BankName) => {
-    setAccBankProvider(key);
-    const oldDefault = getDefaultAccountName(accBankProvider as BankProvider, accAccountType as AccountType);
-    if (!accName.trim() || accName.trim() === oldDefault) {
-      setAccName(getDefaultAccountName(key as BankProvider, accAccountType as AccountType));
-    }
-  };
-
   const handleAccountTypeSelect = (type: AccountType) => {
     setAccAccountType?.(type);
-    const oldDefault = getDefaultAccountName(accBankProvider as BankProvider, accAccountType as AccountType);
-    if (!accName.trim() || accName.trim() === oldDefault) {
-      setAccName(getDefaultAccountName(accBankProvider as BankProvider, type));
-    }
   };
 
   const handlePrivateCheckboxChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -148,31 +130,14 @@ export function BankAccountFormModal({
           </div>
         )}
 
-        {/* Bank Institution Chips */}
-        <div className="flex flex-col gap-2">
-          <label className="text-xs font-bold text-zinc-700">
-            {t("settings.bankAccountForm.bankProviderLabel")} <span className="text-rose-500">*</span>
-          </label>
-          <div className="flex flex-wrap gap-2">
-            {bankOptions.map((b) => {
-              const isSelected = accBankProvider === b.key;
-              return (
-                <button
-                  key={b.key}
-                  type="button"
-                  onClick={() => handleProviderSelect(b.key)}
-                  className={`px-3 py-1.5 rounded-xl text-xs font-bold border transition-all cursor-pointer ${
-                    isSelected
-                      ? "bg-[#2563eb] text-white border-[#2563eb] shadow-xs"
-                      : "bg-white text-zinc-700 border-zinc-200 hover:border-zinc-300"
-                  }`}
-                >
-                  {b.label}
-                </button>
-              );
-            })}
-          </div>
-        </div>
+        {/* Bank Institution (Optional free-text) */}
+        <Input
+          label={t("settings.bankAccountForm.bankProviderLabel")}
+          value={accBankProvider === "Other" ? "" : accBankProvider}
+          onChange={(e) => setAccBankProvider(e.target.value || "Other")}
+          placeholder={t("settings.bankAccountForm.bankProviderPlaceholder")}
+          maxLength={50}
+        />
 
         {/* Account Type Chips */}
         <div className="flex flex-col gap-2">

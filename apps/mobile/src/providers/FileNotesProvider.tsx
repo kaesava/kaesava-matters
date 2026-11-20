@@ -1,9 +1,16 @@
 import React, { useMemo } from 'react';
-import { trpc } from '../lib/trpc';
+import { trpc, API_BASE_URL } from '../lib/trpc';
 import {
   FileNotesServiceProvider,
   type FileNotesService,
 } from '@money-matters/capability-file-notes';
+
+function resolveMobileFileUrl(rawUrl: string): string {
+  if (rawUrl.startsWith('/')) {
+    return `${API_BASE_URL.replace(/\/$/, '')}${rawUrl}`;
+  }
+  return rawUrl;
+}
 
 export function MobileFileNotesProvider({ children }: { children: React.ReactNode }) {
   const trpcUtils = trpc.useUtils();
@@ -21,12 +28,16 @@ export function MobileFileNotesProvider({ children }: { children: React.ReactNod
         };
       },
       getDownloadUrl: async (id: string) => {
-        return trpcUtils.fileNotes.getDownloadUrl.fetch({ id });
+        const res = await trpcUtils.fileNotes.getDownloadUrl.fetch({ id });
+        return { downloadUrl: resolveMobileFileUrl(res.downloadUrl) };
       },
       useCreatePreSignedUrlMutation: () => {
         const mut = trpc.fileNotes.createPreSignedUrl.useMutation();
         return {
-          mutateAsync: mut.mutateAsync,
+          mutateAsync: async (input) => {
+            const res = await mut.mutateAsync(input);
+            return { fileKey: res.fileKey, uploadUrl: resolveMobileFileUrl(res.uploadUrl) };
+          },
           isPending: mut.isPending,
         };
       },

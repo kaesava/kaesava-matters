@@ -14,6 +14,7 @@ export interface CategoryOption {
   poolType?: "EVERYDAY" | "BILL" | "GOAL" | string;
   currentBalance: number | string;
   isSurplusTarget?: boolean;
+  isPrivate?: boolean;
 }
 
 export interface ShortfallTransferItem {
@@ -111,10 +112,13 @@ export function MarkPaidModal({
     });
   }, [availableCategories, poolId]);
 
-  // Identify surplus target pool
+  // Identify same-privacy-tier surplus target pool only (never auto-pick a random fallback envelope)
+  const targetIsPrivate = Boolean(targetPool?.isPrivate);
   const surplusCategory = useMemo(() => {
-    return validCategories.find((c) => c.isSurplusTarget) || validCategories[0];
-  }, [validCategories]);
+    return validCategories.find(
+      (c) => Boolean(c.isPrivate) === targetIsPrivate && Boolean(c.isSurplusTarget)
+    );
+  }, [validCategories, targetIsPrivate]);
 
   // Initialize transfer amounts when shortfall changes
   useEffect(() => {

@@ -1,4 +1,5 @@
 import { ConfirmDialog } from "@money-matters/ui/web";
+import { t } from "@money-matters/i18n";
 import { MarkPaidModal } from "../MarkPaidModal";
 import { TransferModal } from "../../../../../components/web/TransferModal";
 import { EditUpcomingEventModal } from "../../../../../components/web/EditUpcomingEventModal";
@@ -79,19 +80,17 @@ export function TimelineModals({
         onConfirm={onConfirmDelete}
         title={
           eventToDelete?.kind === "INCOME"
-            ? "Delete Income"
+            ? t("common.deleteIncomeTitle")
             : eventToDelete?.kind === "TRANSFER"
-            ? "Delete Transfer"
-            : "Delete Expense"
+            ? t("modals.transfer.deleteConfirmTitle")
+            : t("common.deleteExpenseTitle")
         }
         description={
           eventToDelete?.kind === "INCOME"
-            ? "Are you sure you want to Delete this Income?"
-            : eventToDelete?.kind === "TRANSFER"
-            ? "Are you sure you want to Delete this Transfer?"
-            : "Are you sure you want to Delete this Expense?"
+            ? t("common.deleteIncomePrompt")
+            : t("common.deleteExpensePrompt")
         }
-        confirmLabel="Delete"
+        confirmLabel={t("common.delete")}
         variant="danger"
       />
 

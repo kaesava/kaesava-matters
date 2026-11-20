@@ -34,6 +34,7 @@ interface HouseholdEditViewProps {
   setPostcode: (val: string) => void;
   postcodeError?: string;
   saving: boolean;
+  isDirty?: boolean;
   onSave: () => void;
   onCancel: () => void;
 }
@@ -52,6 +53,7 @@ export function HouseholdEditView({
   setPostcode,
   postcodeError,
   saving,
+  isDirty = true,
   onSave,
   onCancel,
 }: HouseholdEditViewProps) {
@@ -136,7 +138,7 @@ export function HouseholdEditView({
           label={t('settings.saveHouseholdCta')}
           onPress={onSave}
           loading={saving}
-          disabled={saving || !householdName.trim()}
+          disabled={saving || !isDirty || !householdName.trim()}
         />
       </View>
     </View>

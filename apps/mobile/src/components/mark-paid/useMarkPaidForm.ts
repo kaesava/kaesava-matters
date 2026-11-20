@@ -31,7 +31,6 @@ export function useMarkPaidForm(
   const { data: pools = [] } = trpc.listEnvelopes.useQuery(undefined, { enabled: visible });
   const { data: expenseEvents = [] } = trpc.listExpenseEvents.useQuery(undefined, { enabled: visible });
   const markExpensePaidMut = trpc.markExpensePaid.useMutation();
-  const moveMoneyMut = trpc.moveMoney.useMutation();
   const recordExpenseMut = trpc.recordExpense.useMutation();
 
   useEffect(() => {
@@ -71,7 +70,14 @@ export function useMarkPaidForm(
       .sort((a, b) => (a.isSurplusTarget ? -1 : b.isSurplusTarget ? 1 : 0));
   }, [pools, targetPoolId]);
 
-  const surplusPool = useMemo(() => validFundingPools.find((p) => p.isSurplusTarget) || validFundingPools[0], [validFundingPools]);
+  const targetIsPrivate = Boolean(currentPool?.isPrivate);
+  const surplusPool = useMemo(
+    () =>
+      validFundingPools.find(
+        (p) => Boolean(p.isPrivate) === targetIsPrivate && Boolean(p.isSurplusTarget)
+      ),
+    [validFundingPools, targetIsPrivate]
+  );
 
   const groupedPools = useMemo(() => {
     const map: Record<string, FundingPoolItem[]> = {};
@@ -97,7 +103,7 @@ export function useMarkPaidForm(
       const prefill = Math.min(shortfallAmount, b);
       if (prefill > 0) initAmounts[surplusPool.id] = prefill.toFixed(2);
     }
-    setTransferAmounts((prev) => Object.keys(prev).length === Object.keys(initAmounts).length ? prev : initAmounts);
+    setTransferAmounts(initAmounts);
     const initExp: Record<string, boolean> = {};
     Object.keys(groupedPools).forEach((k) => { initExp[k] = true; });
     setExpandedGroups((prev) => Object.keys(prev).length === Object.keys(initExp).length ? prev : initExp);
@@ -118,7 +124,7 @@ export function useMarkPaidForm(
       setTransferAmounts((prev) => ({ ...prev, [pId]: '0.00' }));
       return;
     }
-    setTransferAmounts((prev) => ({ ...prev, [pId]: Math.min(parsed, maxBal).toFixed(2) }));
+    setTransferAmounts((prev) => ({ ...prev, [pId]: Math.min(parsed, maxBal).toString() }));
   }, []);
 
   const totalAllocated = useMemo(() => {
@@ -154,23 +160,12 @@ export function useMarkPaidForm(
             .filter((t) => parseFloat(t.amount) > 0)
         : [];
       if (event.id === 'temp-quick' && currentPool) {
-        if (shortfallTransfers.length > 0) {
-          await Promise.all(
-            shortfallTransfers.map((t) =>
-              moveMoneyMut.mutateAsync({
-                sourceEnvelopeId: t.sourceEnvelopeId,
-                destinationEnvelopeId: currentPool.id,
-                amount: t.amount,
-                note: 'Shortfall Top Up',
-              })
-            )
-          );
-        }
         await recordExpenseMut.mutateAsync({
           envelopeId: currentPool.id,
           amount: numAmount.toFixed(2),
           date: actualDate,
           note: note.trim() || event.name,
+          ...(shortfallTransfers.length > 0 ? { shortfallTransfers } : {}),
         });
       } else {
         await markExpensePaidMut.mutateAsync({

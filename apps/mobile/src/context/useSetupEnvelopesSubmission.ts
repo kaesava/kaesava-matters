@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useRouter } from 'expo-router';
+import { usePostHog } from 'posthog-react-native';
 import { t } from '@money-matters/i18n';
 import { useMobileToast, buildRecurrenceRule } from '@money-matters/ui/mobile';
 import { trpc } from '../lib/trpc';
@@ -8,6 +9,7 @@ import { useSetupWizard } from './SetupWizardContext';
 
 export function useSetupEnvelopesSubmission() {
   const router = useRouter();
+  const posthog = usePostHog();
   const toast = useMobileToast();
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -282,6 +284,13 @@ export function useSetupEnvelopesSubmission() {
       );
       await utils.getTenantStatus.refetch();
       await utils.invalidate();
+
+      posthog?.capture('setup_completed', {
+        is_rerun: isRerun,
+        envelope_count: envelopesPayload.length,
+        bank_account_count: accountsPayload.length,
+        income_count: incomesPayload.length,
+      });
 
       const sweptTotal = result.persistedCounts?.sweptTotalAmount ?? 0;
       if (sweptTotal > 0.005) {

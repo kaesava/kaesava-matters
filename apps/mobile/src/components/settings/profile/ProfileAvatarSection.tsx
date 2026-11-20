@@ -8,22 +8,14 @@ export interface ProfileAvatarSectionProps {
   avatarUri: string | null;
   name: string;
   onPickAvatar: () => void;
+  onDeleteAvatar?: () => void;
 }
 
 export function ProfileAvatarSection({
   avatarUri,
-  name,
   onPickAvatar,
+  onDeleteAvatar,
 }: ProfileAvatarSectionProps) {
-  const initials = name
-    ? name
-        .split(' ')
-        .map((w) => w[0])
-        .join('')
-        .toUpperCase()
-        .slice(0, 2)
-    : '?';
-
   return (
     <View style={styles.avatarRow}>
       <TouchableOpacity
@@ -37,7 +29,7 @@ export function ProfileAvatarSection({
           <Image source={{ uri: avatarUri }} style={styles.avatarImg} />
         ) : (
           <View style={styles.avatarPlaceholder}>
-            <Text style={styles.avatarInitials}>{initials}</Text>
+            <Feather name="user" size={24} color={DESIGN_TOKENS.colors.accentDark} />
           </View>
         )}
         <View style={styles.cameraPill}>
@@ -48,6 +40,14 @@ export function ProfileAvatarSection({
       <TouchableOpacity onPress={onPickAvatar} style={styles.changePhotoBtn}>
         <Text style={styles.changePhotoText}>{t('settings.avatarUploadLabel')}</Text>
       </TouchableOpacity>
+
+      {Boolean(avatarUri) && Boolean(onDeleteAvatar) && (
+        <TouchableOpacity onPress={onDeleteAvatar} style={styles.changePhotoBtn}>
+          <Text style={[styles.changePhotoText, { color: DESIGN_TOKENS.colors.critical }]}>
+            {t('settings.deleteAvatar')}
+          </Text>
+        </TouchableOpacity>
+      )}
     </View>
   );
 }

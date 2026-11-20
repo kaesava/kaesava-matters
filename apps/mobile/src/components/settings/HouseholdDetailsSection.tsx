@@ -1,4 +1,4 @@
-import { DEFAULT_TIMEZONE } from "@money-matters/types";
+import { DEFAULT_CURRENCY, DEFAULT_TIMEZONE } from "@money-matters/types";
 import React, { useState, useEffect, useRef } from 'react';
 import { View, ActivityIndicator, StyleSheet } from 'react-native';
 import { useMobileToast, showMobileConfirm, DESIGN_TOKENS } from '@money-matters/ui/mobile';
@@ -24,7 +24,7 @@ export function HouseholdDetailsSection({
   const [isEditing, setIsEditing] = useState(false);
   const [householdName, setHouseholdName] = useState('');
   const [country, setCountry] = useState('AU');
-  const [currency, setCurrency] = useState('AUD');
+  const [currency, setCurrency] = useState(DEFAULT_CURRENCY);
   const [timezone, setTimezone] = useState(DEFAULT_TIMEZONE);
   const [state, setState] = useState('');
   const [postcode, setPostcode] = useState('');
@@ -34,7 +34,7 @@ export function HouseholdDetailsSection({
   const initialDataRef = useRef({
     householdName: '',
     country: 'AU',
-    currency: 'AUD',
+    currency: DEFAULT_CURRENCY,
     timezone: DEFAULT_TIMEZONE,
     state: '',
     postcode: '',
@@ -45,7 +45,7 @@ export function HouseholdDetailsSection({
       const data = {
         householdName: gov.householdName || '',
         country: gov.country || 'AU',
-        currency: gov.currency || 'AUD',
+        currency: gov.currency || DEFAULT_CURRENCY,
         timezone: gov.timezone || DEFAULT_TIMEZONE,
         state: gov.state || '',
         postcode: gov.postcode || '',
@@ -185,6 +185,7 @@ export function HouseholdDetailsSection({
         setPostcode={setPostcode}
         postcodeError={postcodeError}
         saving={saving}
+        isDirty={isDirty}
         onSave={handleSave}
         onCancel={handleCancel}
       />
@@ -207,10 +208,10 @@ export function HouseholdDetailsSection({
 
 const styles = StyleSheet.create({
   loadingCard: {
-    backgroundColor: '#FFFFFF',
+    backgroundColor: DESIGN_TOKENS.colors.surface,
     borderRadius: 18,
     borderWidth: 1,
-    borderColor: '#E2E8F0',
+    borderColor: DESIGN_TOKENS.colors.slate[200],
     padding: 24,
     alignItems: 'center',
     justifyContent: 'center',

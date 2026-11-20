@@ -128,16 +128,18 @@ export function PaydayCelebrationCard({
             </div>
 
             {/* Row 2: Discard Edits and Save Draft in this order (right aligned under Row 1) */}
-            {isDirty && (
+            {(isDirty || !isLocked) && (
               <div className="flex items-center gap-2.5 justify-end">
-                <button
-                  type="button"
-                  onClick={onDiscardEdits}
-                  disabled={submitting}
-                  className="text-xs font-semibold text-blue-200 hover:text-white underline cursor-pointer transition-colors px-2 py-2"
-                >
-                  {t("paydayDrawer.discardEdits")}
-                </button>
+                {isDirty && (
+                  <button
+                    type="button"
+                    onClick={onDiscardEdits}
+                    disabled={submitting}
+                    className="text-xs font-semibold text-blue-200 hover:text-white underline cursor-pointer transition-colors px-2 py-2"
+                  >
+                    {t("paydayDrawer.discardEdits")}
+                  </button>
+                )}
 
                 <Button
                   type="button"

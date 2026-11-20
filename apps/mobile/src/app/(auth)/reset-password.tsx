@@ -19,7 +19,9 @@ import {
   FormFieldError,
   FormErrorBanner,
 } from "@money-matters/ui/mobile";
+import { evaluatePasswordStrength } from "@money-matters/types";
 import { authClient } from "../../lib/auth";
+import { MobilePasswordStrength } from "../../components/auth/MobilePasswordStrength";
 
 export default function ResetPasswordScreen() {
   const insets = useSafeAreaInsets();
@@ -41,7 +43,7 @@ export default function ResetPasswordScreen() {
       return;
     }
 
-    if (password.length < 8) {
+    if (evaluatePasswordStrength(password).score < 4) {
       setError(t("auth.passwordTooShort"));
       return;
     }
@@ -76,8 +78,7 @@ export default function ResetPasswordScreen() {
 
   const isFormValid =
     token.length > 0 &&
-    password.length >= 8 &&
-    confirmPassword.length >= 8 &&
+    evaluatePasswordStrength(password).score === 4 &&
     password === confirmPassword;
 
   return (
@@ -131,9 +132,7 @@ export default function ResetPasswordScreen() {
                   autoCapitalize="none"
                   editable={Boolean(token) && !isSubmitting}
                 />
-                {password.length > 0 && password.length < 8 && (
-                  <FormFieldError error={t("auth.passwordTooShort")} />
-                )}
+                {password.length > 0 && <MobilePasswordStrength password={password} />}
               </View>
 
               <View style={styles.field}>

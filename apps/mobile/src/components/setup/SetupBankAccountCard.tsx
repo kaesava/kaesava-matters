@@ -3,13 +3,9 @@ import { View, Text, TextInput, TouchableOpacity, ScrollView, StyleSheet, Switch
 import { t } from '@money-matters/i18n';
 import { DESIGN_TOKENS, InfoTooltip, AmountInput } from '@money-matters/ui/mobile';
 import {
-  BANK_PROVIDERS,
   ACCOUNT_TYPES,
   ACCOUNT_TYPE_LABELS,
-  BANK_PROVIDER_LABELS,
-  BankProvider,
   AccountType,
-  getDefaultAccountName,
   computeAccountAvailability,
 } from '@money-matters/types';
 import { MobileBankAccountItem } from '../../context/setup-wizard-types';
@@ -29,7 +25,7 @@ interface SetupBankAccountCardProps {
 
 export function SetupBankAccountCard({
   acc,
-  index,
+  index: _index,
   totalCount,
   onFieldChange,
   onRemove,
@@ -41,23 +37,19 @@ export function SetupBankAccountCard({
   const isBufferInvalid = buffer > actualBalance;
   const isSoleAccount = totalCount <= 1;
 
-  const handleProviderChange = (newProvider: BankProvider) => {
-    onFieldChange(acc, 'bankProvider', newProvider);
-    const newName = getDefaultAccountName(newProvider, (acc.accountType as AccountType) || 'EVERYDAY');
-    onFieldChange(acc, 'name', newName);
+  const handleProviderChange = (newProvider: string) => {
+    onFieldChange(acc, 'bankProvider', newProvider || 'Other');
   };
 
   const handleTypeChange = (newType: AccountType) => {
     onFieldChange(acc, 'accountType', newType);
-    const newName = getDefaultAccountName((acc.bankProvider as BankProvider) || 'Other', newType);
-    onFieldChange(acc, 'name', newName);
   };
 
   return (
     <View style={styles.accountCard}>
       <View style={styles.accountCardHeader}>
         <Text style={styles.accountIndexLabel}>
-          {t('setup.bankAccountsStep.accountNumber', { number: index + 1 })}
+          {acc.name.trim() || t('settings.bankAccounts.addAccount')}
         </Text>
         {!isSoleAccount && (
           <TouchableOpacity onPress={() => onRemove(acc.id, acc.name)}>
@@ -68,22 +60,13 @@ export function SetupBankAccountCard({
 
       <View style={styles.fieldGroup}>
         <Text style={styles.fieldLabel}>{t('settings.bankAccountForm.bankProviderLabel')}</Text>
-        <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.chipsRow}>
-          {BANK_PROVIDERS.map((bp) => {
-            const isSelected = (acc.bankProvider || 'Other') === bp;
-            return (
-              <TouchableOpacity
-                key={bp}
-                onPress={() => handleProviderChange(bp)}
-                style={[styles.chip, isSelected && styles.chipActive]}
-              >
-                <Text style={[styles.chipText, isSelected && styles.chipTextActive]}>
-                  {BANK_PROVIDER_LABELS[bp]}
-                </Text>
-              </TouchableOpacity>
-            );
-          })}
-        </ScrollView>
+        <TextInput
+          value={acc.bankProvider === 'Other' ? '' : acc.bankProvider || ''}
+          onChangeText={handleProviderChange}
+          placeholder={t('settings.bankAccountForm.bankProviderPlaceholder')}
+          maxLength={50}
+          style={styles.textInput}
+        />
       </View>
 
       <View style={styles.fieldGroup}>

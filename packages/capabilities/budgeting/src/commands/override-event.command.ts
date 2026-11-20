@@ -16,6 +16,13 @@ export async function overrideEventCommand(
 
   return await dbClient.transaction(async (tx) => {
     if (input.eventType === "INCOME") {
+      const [existingEvt] = await tx
+        .select({ status: incomeEvents.status })
+        .from(incomeEvents)
+        .where(and(eq(incomeEvents.id, input.eventId), eq(incomeEvents.tenantId, tenantId), eq(incomeEvents.appId, appId)));
+      if (existingEvt?.status === "CONFIRMED") {
+        throw new Error("Confirmed events are locked and cannot be edited or deleted.");
+      }
       const setPayload: Record<string, unknown> = {
         updatedBy: userId,
         updatedAt: new Date(),
@@ -106,6 +113,14 @@ export async function overrideEventCommand(
 
       return updatedEvent;
     } else {
+      const [existingEvt] = await tx
+        .select({ status: expenseEvents.status })
+        .from(expenseEvents)
+        .where(and(eq(expenseEvents.id, input.eventId), eq(expenseEvents.tenantId, tenantId), eq(expenseEvents.appId, appId)));
+      if (existingEvt?.status === "CONFIRMED") {
+        throw new Error("Confirmed events are locked and cannot be edited or deleted.");
+      }
+
       const setPayload: Record<string, unknown> = {
         updatedBy: userId,
         updatedAt: new Date(),

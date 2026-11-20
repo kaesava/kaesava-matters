@@ -154,21 +154,26 @@ export async function getUserProfileHandler(userId: string, tenantId: string | n
 }
 
 export async function updateUserProfileHandler(
-  input: { displayName: string; notificationEmail: string; phoneCountryCode?: string; phoneNumber?: string; avatarUrl?: string },
+  input: { displayName: string; notificationEmail: string; phoneCountryCode?: string; phoneNumber?: string; avatarUrl?: string | null },
   userId: string,
   db: DbOrTx
 ) {
+  const normalizedAvatar = input.avatarUrl !== undefined ? (input.avatarUrl || null) : undefined;
   await db
     .update(users)
     .set({
       displayName: input.displayName,
-      avatarUrl: input.avatarUrl !== undefined ? input.avatarUrl : undefined,
+      avatarUrl: normalizedAvatar,
       updatedAt: new Date(),
     })
     .where(eq(users.id, userId));
 
   try {
-    await db.execute(sql`UPDATE neon_auth.user SET name = ${input.displayName}, image = ${input.avatarUrl || null} WHERE id = ${userId}`);
+    if (normalizedAvatar !== undefined) {
+      await db.execute(sql`UPDATE neon_auth.user SET name = ${input.displayName}, image = ${normalizedAvatar} WHERE id = ${userId}`);
+    } else {
+      await db.execute(sql`UPDATE neon_auth.user SET name = ${input.displayName} WHERE id = ${userId}`);
+    }
   } catch {
     // Non-blocking: neon_auth.user table may not exist in mock DB or test environments
   }

@@ -12,6 +12,13 @@ export async function deleteUpcomingEventCommand(
 ) {
   return await dbClient.transaction(async (tx) => {
     if (input.eventType === "INCOME") {
+      const [existingEvt] = await tx
+        .select({ status: incomeEvents.status })
+        .from(incomeEvents)
+        .where(and(eq(incomeEvents.id, input.eventId), eq(incomeEvents.tenantId, tenantId), eq(incomeEvents.appId, appId)));
+      if (existingEvt?.status === "CONFIRMED") {
+        throw new Error("Confirmed events are locked and cannot be edited or deleted.");
+      }
       const [deleted] = await tx
         .update(incomeEvents)
         .set({
@@ -31,6 +38,13 @@ export async function deleteUpcomingEventCommand(
       if (!deleted) throw new Error("Income event not found or unauthorized.");
       return { success: true, id: deleted.id };
     } else {
+      const [existingEvt] = await tx
+        .select({ status: expenseEvents.status })
+        .from(expenseEvents)
+        .where(and(eq(expenseEvents.id, input.eventId), eq(expenseEvents.tenantId, tenantId), eq(expenseEvents.appId, appId)));
+      if (existingEvt?.status === "CONFIRMED") {
+        throw new Error("Confirmed events are locked and cannot be edited or deleted.");
+      }
       const [deleted] = await tx
         .update(expenseEvents)
         .set({

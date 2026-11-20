@@ -164,7 +164,7 @@ export const settingsSections = {
     "sweepEnvelopeBadge": "Sweep Envelope",
     "noAccountsFound": "No Bank Accounts Linked",
     "noAccountsDescription": "Link your checking or savings account to start allocating money into envelopes.",
-    "accountDetails": "Account Details",
+    "accountDetails": "Bank Account Details",
     "availableBalance": "Available Balance",
     "noAccountsFoundMatching": "No bank accounts found matching your search."
   }

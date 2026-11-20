@@ -30,12 +30,16 @@ export interface ProjectionIncomeEvent {
   actualAmount?: number | null;
   status: "PENDING" | "CONFIRMED" | "DRAFT" | "REVIEWED";
   rrule?: string | null;
+  incomeType?: "SALARIED" | "IRREGULAR" | null;
   userId?: string;
   isPrivate?: boolean;
+  contributionMode?: "FULL" | "PERCENTAGE" | "FIXED_AMOUNT";
+  contributionValue?: number | null;
 }
 
 export interface ProjectionExpenseEvent {
   categoryId?: string | null;
+  poolId?: string | null;
   envelopeId?: string | null;
   amount: number;
   dueDate: string; // YYYY-MM-DD
@@ -66,6 +70,7 @@ export type ProjectionEngineFn = (input: {
   expenseEvents?: ProjectionExpenseEvent[];
   cellOverrides?: Record<string, number>;
   currentUserId?: string;
+  timezone?: string;
 }) => ProjectionOutput;
 
 /**

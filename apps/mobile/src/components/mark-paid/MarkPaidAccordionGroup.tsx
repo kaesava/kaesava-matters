@@ -100,7 +100,7 @@ export function MarkPaidAccordionGroup({
                     style={styles.maxBtn}
                     activeOpacity={0.7}
                   >
-                    <Text style={styles.maxBtnText}>{t('planTabs.max')}</Text>
+                    <Text style={styles.maxBtnText}>{t('planTabs.use')}</Text>
                   </TouchableOpacity>
                 </View>
               </View>

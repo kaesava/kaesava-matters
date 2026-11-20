@@ -42,11 +42,18 @@ export const incomeLifecycleProcedures = {
           );
 
         const confirmedEvents = events.filter((e) => e.status !== "PENDING");
-        const unperformedEvents = events.filter((e) => e.status === "PENDING");
+        const unperformedEvents = events.filter((e) => e.status === "PENDING" && !e.archivedAt);
+        const archiveTimestamp = new Date();
 
         if (unperformedEvents.length > 0) {
           await tx
-            .delete(incomeEvents)
+            .update(incomeEvents)
+            .set({
+              archivedAt: archiveTimestamp,
+              archivedBy: ctx.userId!,
+              updatedBy: ctx.userId!,
+              updatedAt: archiveTimestamp,
+            })
             .where(
               and(
                 inArray(incomeEvents.id, unperformedEvents.map((e) => e.id)),
@@ -59,10 +66,10 @@ export const incomeLifecycleProcedures = {
         const [archived] = await tx
           .update(incomeSources)
           .set({
-            archivedAt: new Date(),
+            archivedAt: archiveTimestamp,
             archivedBy: ctx.userId!,
             updatedBy: ctx.userId!,
-            updatedAt: new Date(),
+            updatedAt: archiveTimestamp,
           })
           .where(
             and(

@@ -85,13 +85,13 @@ export function MobileSignInMethodsCard() {
 }
 
 const styles = StyleSheet.create({
-  subtitle: { fontSize: 12, color: "#64748B", marginBottom: 12 },
+  subtitle: { fontSize: 12, color: DESIGN_TOKENS.colors.subtleText, marginBottom: 12 },
   list: { gap: 10 },
   row: { flexDirection: "row", alignItems: "center", justifyContent: "space-between", gap: 10 },
-  googleBlock: { gap: 6, paddingTop: 10, borderTopWidth: 1, borderTopColor: "#F1F5F9" },
+  googleBlock: { gap: 6, paddingTop: 10, borderTopWidth: 1, borderTopColor: DESIGN_TOKENS.colors.divider },
   labelGroup: { flexDirection: "column", alignItems: "flex-start", gap: 2, flex: 1 },
   rowLabel: { fontSize: 13, fontWeight: "700", color: DESIGN_TOKENS.colors.primary },
-  statusActive: { fontSize: 11, fontWeight: "500", color: "#64748B" },
-  statusInactive: { fontSize: 11, fontWeight: "500", color: "#94A3B8" },
-  hint: { fontSize: 11, color: "#64748B" },
+  statusActive: { fontSize: 11, fontWeight: "500", color: DESIGN_TOKENS.colors.subtleText },
+  statusInactive: { fontSize: 11, fontWeight: "500", color: DESIGN_TOKENS.colors.subtleText },
+  hint: { fontSize: 11, color: DESIGN_TOKENS.colors.subtleText },
 });

@@ -25,7 +25,7 @@ function SetupWizardContent() {
   const totalSteps = getTotalSetupSteps(state.isRerun);
   const isReviewStep = state.step === 5 || (state.isRerun && state.step === 3);
 
-  if (state.isRerun && state.isLoading) {
+  if (state.isRouteChecking || (state.isRerun && state.isLoading)) {
     return (
       <div className="min-h-screen bg-[#F7F8FA] py-10 px-4">
         <div className="max-w-4xl mx-auto space-y-6">

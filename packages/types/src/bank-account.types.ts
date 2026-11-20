@@ -2,18 +2,6 @@ import { z } from "zod";
 import { BaseSchema } from "./tenant.types.js";
 
 
-export const BANK_PROVIDERS = [
-  "CBA",
-  "NAB",
-  "ANZ",
-  "Westpac",
-  "ING",
-  "Macquarie",
-  "Other",
-] as const;
-
-export type BankProvider = (typeof BANK_PROVIDERS)[number];
-
 export const ACCOUNT_TYPES = [
   "EVERYDAY",
   "SAVINGS",
@@ -21,6 +9,7 @@ export const ACCOUNT_TYPES = [
 ] as const;
 
 export type AccountType = (typeof ACCOUNT_TYPES)[number];
+export type BankProvider = string;
 
 export const ACCOUNT_TYPE_LABELS: Record<AccountType, string> = {
   EVERYDAY: "Everyday",
@@ -28,29 +17,17 @@ export const ACCOUNT_TYPE_LABELS: Record<AccountType, string> = {
   LOAN_OFFSET: "Loan Offset",
 };
 
-export const BANK_PROVIDER_LABELS: Record<BankProvider, string> = {
-  CBA: "Commonwealth Bank",
-  NAB: "National Australia Bank",
-  ANZ: "ANZ Bank",
-  Westpac: "Westpac",
-  ING: "ING Australia",
-  Macquarie: "Macquarie Bank",
-  Other: "Other Financial Institution",
-};
-
-export function getDefaultAccountName(provider?: BankProvider | null, type?: AccountType | null): string {
-  const pLabel = provider ? (BANK_PROVIDER_LABELS[provider] || provider) : "Other Financial Institution";
-  if (!type) return pLabel;
-  const tLabel = ACCOUNT_TYPE_LABELS[type] || "Everyday";
-  return `${pLabel} (${tLabel})`;
-}
-
 const moneyRegex = /^\d{1,12}(\.\d{1,2})?$/;
 
 export const BankAccountFormSchema = z
   .object({
-    name: z.string().trim().min(1, "Account name is required").max(100, "Account name cannot exceed 100 characters"),
-    bankProvider: z.enum(BANK_PROVIDERS).default("Other"),
+    name: z.string().trim().min(1, "Bank account name is required").max(100, "Bank account name cannot exceed 100 characters"),
+    bankProvider: z
+      .string()
+      .trim()
+      .max(50, "Bank institution cannot exceed 50 characters")
+      .optional()
+      .transform((val) => (val && val.length > 0 ? val : "Other")),
     accountType: z.enum(ACCOUNT_TYPES).default("EVERYDAY"),
     currentBalance: z
       .string()
@@ -107,7 +84,7 @@ export function computeAccountAvailability(
 export const BankAccountSchema = BaseSchema.extend({
   tenantId: z.string().uuid(),
   name: z.string().min(1),
-  bankProvider: z.string().default("CBA"),
+  bankProvider: z.string().default("Other"),
   lastKnownBalance: z.string().default("0.00"),
   unbudgetedBuffer: z.string().default("0.00"),
   isPrivate: z.boolean().default(false),

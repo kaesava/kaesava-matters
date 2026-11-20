@@ -10,7 +10,32 @@ export const payday = {
     "deleteExpenseEvent": "Delete Expense Event",
     "deleteTransferEvent": "Delete Transfer",
     "deleteTransferEventConfirm": "Are you sure you want to delete this upcoming transfer?",
-    "addIncomeSchedule": "Add Income Schedule"
+    "addIncomeSchedule": "Add Income Schedule",
+    "celebration": {
+      "billsRingFenced": "Bills Ring-Fenced"
+    },
+    "engineReasoning": {
+      "immediateBill": "Immediate bill coverage ({due} due within cycle + {bufferDays}d buffer): {allocated} allocated.",
+      "immediateBillShortfall": "Immediate bill coverage ({due} due within cycle + {bufferDays}d buffer): {allocated} allocated ({shortfall} shortfall).",
+      "deficitRepair": "Cover shortfalls for negative balance (-{deficit}): {allocated} allocated.",
+      "billsSafetyFloor": "Bills safety buffer cushion (floor {floor}): {allocated} allocated.",
+      "everydayAllowance": "{prefix}Everyday living allowance ({monthly}/mo across {days} days){floorMsg}: {allocated} allocated.",
+      "everydayAllowanceFloorSuffix": " (incl {floor} safety floor)",
+      "everydayAllowanceZero": "Everyday living allowance: {symbol}0 allocated.",
+      "proRataBill": "{prefix}Pro-rata bill allocation ({monthly}/mo): {allocated} allocated.",
+      "proRataBillShortfall": "{prefix}Pro-rata bill allocation ({monthly}/mo): {allocated} allocated ({shortfall} shortfall).",
+      "proRataBillZero": "Pro-rata bill target ({monthly}/mo): {symbol}0 allocated (insufficient income).",
+      "ongoingGoalDesc": "Ongoing goal contribution ({monthly}/mo)",
+      "targetGoalDesc": "Target {target} by {date}",
+      "goalAllocated": "{description}: {allocated} allocated.",
+      "goalShortfall": "{description}: {allocated} allocated ({shortfall} shortfall).",
+      "goalZero": "{description}: {symbol}0 allocated (insufficient income).",
+      "fixedRule": "Fixed allocation rule: {allocated} allocated to {name}.",
+      "percentageRule": "Percentage split rule ({pct}% of remaining funds): {allocated} allocated to {name}.",
+      "surplusSweep": "Swept residual excess surplus of {allocated} to designated surplus envelope ({name}).",
+      "personalSingleEnvelope": "Personal payday plan: {allocated} allocated to personal envelope ({name}).",
+      "noAllocationNeeded": "No allocation needed."
+    }
   },
   "paydayDrawer": {
     "title": "Payday Plan",
@@ -91,10 +116,5 @@ export const payday = {
     "recalculateUnlockedConfirmTitle": "Reset to Recommended?",
     "recalculateUnlockedConfirmDescription": "Resetting will discard your custom adjustments and restore the algorithm's suggested payday plan. Continue?",
     "activeStrategyBadge": "Strategy: {name}"
-  },
-  "paychecks": {
-    "transfer": {
-      "allDone": "All done! 🙌"
-    }
   }
 } as const;

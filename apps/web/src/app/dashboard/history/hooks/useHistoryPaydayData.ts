@@ -177,14 +177,14 @@ export function useHistoryPaydayData({
   const handleExportAuditCSV = () => {
     if (!paydayPlansQuery.data) return;
     const headers = [
-      "Payday Plan Date",
-      "Income Date",
-      "Income Source",
-      "Receiving Bank Account",
-      "Total Income Amount",
-      "Envelope",
-      "Planned Amount",
-      "Reasoning",
+      t("history.csvPaydayPlanDate"),
+      t("history.csvIncomeDate"),
+      t("history.csvIncomeSource"),
+      t("history.csvBankAccount"),
+      t("history.csvTotalIncome"),
+      t("history.csvEnvelope"),
+      t("history.csvPlannedAmount"),
+      t("history.csvReasoning"),
     ];
     const rows: unknown[][] = [];
 

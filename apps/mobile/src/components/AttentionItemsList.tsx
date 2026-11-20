@@ -31,6 +31,7 @@ export interface AttentionItemsListProps {
   readonly onExecuteTransfer?: (item: AttentionItem) => void;
   readonly onDeleteTransfer?: (item: AttentionItem) => void;
   readonly onTopUpShortfall?: (item: AttentionItem) => void;
+  readonly onOpenSyncBalance?: () => void;
   readonly needsBankReconciliation?: boolean;
 }
 
@@ -69,6 +70,7 @@ export const AttentionItemsList: React.FC<AttentionItemsListProps> = ({
   onExecuteTransfer,
   onDeleteTransfer,
   onTopUpShortfall,
+  onOpenSyncBalance,
   needsBankReconciliation,
 }) => {
   const router = useRouter();
@@ -97,7 +99,7 @@ export const AttentionItemsList: React.FC<AttentionItemsListProps> = ({
 
   return (
     <View style={styles.wrapper}>
-      {needsBankReconciliation && <SyncBalanceNudgeCard />}
+      {needsBankReconciliation && <SyncBalanceNudgeCard onPress={onOpenSyncBalance} />}
 
       {itemsToShow.length > 0 && (
         <View style={styles.cardContainer}>
@@ -111,7 +113,7 @@ export const AttentionItemsList: React.FC<AttentionItemsListProps> = ({
 
             {items.length > 3 && (
               <TouchableOpacity
-                onPress={() => router.push('/(app)/upcoming' as Href)}
+                onPress={() => router.push('/(app)/plan' as Href)}
                 style={styles.showMoreBtn}
                 activeOpacity={0.7}
               >
@@ -161,7 +163,6 @@ const styles = StyleSheet.create({
   wrapper: {
     gap: 8,
     marginVertical: 6,
-    paddingHorizontal: 20,
   },
   cardContainer: {
     backgroundColor: DESIGN_TOKENS.colors.surface,

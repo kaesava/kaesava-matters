@@ -49,7 +49,7 @@ function cleanAmount(val: string): string {
   return isNaN(num) ? "0.00" : num.toFixed(2);
 }
 export function IncomeFormModal({ isOpen, onClose, sourceToEdit, initialPrefill }: IncomeFormModalProps) {
-  const { currency, currencySymbol, minorUnits } = useLocale();
+  const { currency, currencySymbol, minorUnits, fmtDate } = useLocale();
   const toast = useToast();
   const utils = trpc.useUtils();
 
@@ -283,7 +283,7 @@ export function IncomeFormModal({ isOpen, onClose, sourceToEdit, initialPrefill 
           label={t("modals.incomeExpenseForm.receivingBankAccount")}
           value={receivingAccountId}
           onChange={setReceivingAccountId}
-          placeholder={t("modals.incomeExpenseForm.defaultMainAccount")}
+          placeholder={t("categories.selectBankAccount")}
           options={bankAccounts.map((acct) => ({ value: acct.id, label: acct.name }))}
         />
 
@@ -339,7 +339,7 @@ export function IncomeFormModal({ isOpen, onClose, sourceToEdit, initialPrefill 
         onClose={() => setShowRuleChangeConfirm(false)}
         onConfirm={executeSave}
         title={t("modals.updateSchedule.confirmTitleIncome")}
-        description={t("modals.updateSchedule.confirmDescRuleChange", { startDate: startDate || "" })}
+        description={t("modals.updateSchedule.confirmDescRuleChange", { startDate: startDate ? fmtDate(startDate) : "" })}
         confirmLabel={t("modals.updateSchedule.confirmCta")}
         variant="warning"
         isLoading={submitting}

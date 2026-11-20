@@ -10,7 +10,7 @@ export const accountTypeEnum = pgEnum("account_type_enum", [
 export const bankAccounts = pgTable("bank_accounts", {
   id: uuid("id").primaryKey().defaultRandom(),
   name: varchar("name", { length: 255 }).notNull(),
-  bankProvider: varchar("bank_provider", { length: 50 }).notNull().default("CBA"),
+  bankProvider: varchar("bank_provider", { length: 50 }).notNull().default("Other"),
   accountType: accountTypeEnum("account_type").notNull().default("EVERYDAY"),
   lastKnownBalance: numeric("last_known_balance", { precision: 12, scale: 2 }).notNull().default("0.00"),
   unbudgetedBuffer: numeric("unbudgeted_buffer", { precision: 12, scale: 2 }).notNull().default("0.00"),

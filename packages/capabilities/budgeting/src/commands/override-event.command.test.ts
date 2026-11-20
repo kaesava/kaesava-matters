@@ -32,6 +32,11 @@ describe("overrideEventCommand", () => {
     };
 
     const mockTx = {
+      select: vi.fn().mockReturnValue({
+        from: vi.fn().mockReturnValue({
+          where: vi.fn().mockResolvedValue([{ status: "PENDING" }]),
+        }),
+      }),
       update: vi.fn().mockReturnValue({
         set: vi.fn().mockReturnValue({
           where: vi.fn().mockReturnValue({
@@ -65,6 +70,11 @@ describe("overrideEventCommand", () => {
 
   it("throws when INCOME event is not found", async () => {
     const mockTx = {
+      select: vi.fn().mockReturnValue({
+        from: vi.fn().mockReturnValue({
+          where: vi.fn().mockResolvedValue([]),
+        }),
+      }),
       update: vi.fn().mockReturnValue({
         set: vi.fn().mockReturnValue({
           where: vi.fn().mockReturnValue({
