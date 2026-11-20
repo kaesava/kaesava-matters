@@ -62,8 +62,15 @@ export function useLocale(): LocaleContextValue {
 
 export function LocaleProvider({ children }: { children: React.ReactNode }) {
   const { data: session } = authClient.useSession();
-  const userPrefQuery = trpc.getUserPreferences.useQuery(undefined, {
+  const tenantStatusQuery = trpc.getTenantStatus.useQuery(undefined, {
     enabled: !!session?.user,
+    retry: false,
+    staleTime: 60_000,
+  });
+  const hasTenant = tenantStatusQuery.data?.hasTenant ?? false;
+  const userPrefQuery = trpc.getUserPreferences.useQuery(undefined, {
+    enabled: !!session?.user && hasTenant,
+    retry: false,
     staleTime: 60_000,
   });
 

@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import posthog from '../../lib/posthog-client';
 import { Button } from '@money-matters/ui/web';
 import { t } from '@money-matters/i18n';
@@ -24,9 +24,18 @@ export function AnalyticsConsentBanner() {
     retry: false,
     staleTime: 60_000,
   });
-  const { mutate: updateTelemetryConsent, isPending: isUpdatingConsent } = trpc.updateUserPreferences.useMutation();
+  const utils = trpc.useUtils();
+  const hasSyncedConsentRef = useRef(false);
+  const { mutate: updateTelemetryConsent } = trpc.updateUserPreferences.useMutation({
+    onSuccess: () => {
+      void utils.getUserPreferences.invalidate();
+    },
+  });
 
   useEffect(() => {
+    if (!isAuthenticated || !hasTenant) {
+      hasSyncedConsentRef.current = false;
+    }
     try {
       const localConsent = localStorage.getItem(ANALYTICS_CONSENT_KEY);
       const dbConsent = userPrefQuery.data?.telemetryConsent ?? null;
@@ -47,13 +56,21 @@ export function AnalyticsConsentBanner() {
         }
       }
 
-      if (dbConsent === null && (localConsent === 'granted' || localConsent === 'denied') && isAuthenticated && hasTenant && userPrefQuery.isFetched && !isUpdatingConsent) {
+      if (
+        dbConsent === null &&
+        (localConsent === 'granted' || localConsent === 'denied') &&
+        isAuthenticated &&
+        hasTenant &&
+        userPrefQuery.isFetched &&
+        !hasSyncedConsentRef.current
+      ) {
+        hasSyncedConsentRef.current = true;
         updateTelemetryConsent({ telemetryConsent: localConsent });
       }
     } catch {
       // In private browsing mode or local storage disabled
     }
-  }, [isAuthenticated, hasTenant, userPrefQuery.data?.telemetryConsent, userPrefQuery.isFetched, isUpdatingConsent, updateTelemetryConsent]);
+  }, [isAuthenticated, hasTenant, userPrefQuery.data?.telemetryConsent, userPrefQuery.isFetched, updateTelemetryConsent]);
 
   const handleConsent = (granted: boolean) => {
     const value = granted ? 'granted' : 'denied';

@@ -105,11 +105,15 @@ export function MobileProductTourProvider({ children }: { children: ReactNode })
   const utils = trpc.useUtils();
 
   const { data: session } = authClient.useSession();
-  const userPrefQuery = trpc.getUserPreferences.useQuery(undefined, {
-    enabled: !!session?.user,
-  });
   const tenantStatusQuery = trpc.getTenantStatus.useQuery(undefined, {
     enabled: !!session?.user,
+    retry: false,
+    staleTime: 60_000,
+  });
+  const hasTenant = tenantStatusQuery.data?.hasTenant ?? false;
+  const userPrefQuery = trpc.getUserPreferences.useQuery(undefined, {
+    enabled: !!session?.user && hasTenant,
+    retry: false,
   });
   const updatePrefMutation = trpc.updateUserPreferences.useMutation();
 

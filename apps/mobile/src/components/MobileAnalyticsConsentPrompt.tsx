@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Text, View, StyleSheet } from 'react-native';
 import * as SecureStore from 'expo-secure-store';
 import { usePostHog } from 'posthog-react-native';
@@ -25,9 +25,18 @@ export function MobileAnalyticsConsentPrompt() {
     retry: false,
     staleTime: 60_000,
   });
-  const updatePrefs = trpc.updateUserPreferences.useMutation();
+  const utils = trpc.useUtils();
+  const hasSyncedConsentRef = useRef(false);
+  const { mutate: updateTelemetryConsent } = trpc.updateUserPreferences.useMutation({
+    onSuccess: () => {
+      void utils.getUserPreferences.invalidate();
+    },
+  });
 
   useEffect(() => {
+    if (!isAuthenticated || !hasTenant) {
+      hasSyncedConsentRef.current = false;
+    }
     let isMounted = true;
     SecureStore.getItemAsync(ANALYTICS_CONSENT_KEY)
       .then((localConsent) => {
@@ -57,9 +66,10 @@ export function MobileAnalyticsConsentPrompt() {
           isAuthenticated &&
           hasTenant &&
           userPrefQuery.isFetched &&
-          !updatePrefs.isPending
+          !hasSyncedConsentRef.current
         ) {
-          updatePrefs.mutate({ telemetryConsent: localConsent });
+          hasSyncedConsentRef.current = true;
+          updateTelemetryConsent({ telemetryConsent: localConsent });
         }
       })
       .catch(() => {});
@@ -67,7 +77,7 @@ export function MobileAnalyticsConsentPrompt() {
     return () => {
       isMounted = false;
     };
-  }, [posthog, isAuthenticated, hasTenant, userPrefQuery.data?.telemetryConsent, userPrefQuery.isFetched]);
+  }, [posthog, isAuthenticated, hasTenant, userPrefQuery.data?.telemetryConsent, userPrefQuery.isFetched, updateTelemetryConsent]);
 
   const handleConsent = async (granted: boolean) => {
     const value = granted ? 'granted' : 'denied';
@@ -79,7 +89,7 @@ export function MobileAnalyticsConsentPrompt() {
         posthog?.optOut();
       }
       if (isAuthenticated && hasTenant) {
-        updatePrefs.mutate({ telemetryConsent: value });
+        updateTelemetryConsent({ telemetryConsent: value });
       }
     } catch {
       // Ignore storage errors
