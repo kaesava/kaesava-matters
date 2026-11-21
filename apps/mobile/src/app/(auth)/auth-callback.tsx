@@ -29,10 +29,15 @@ export default function MobileAuthCallbackScreen() {
         await SecureStore.setItemAsync("auth_session_token", token);
       }
 
-      const session = await authClient.getSession();
+      // The OAuth round-trip lands in the system browser, so the expo cookie jar is empty;
+      // authenticate this check with the returned bearer token instead.
+      const session = await authClient
+        .getSession(token ? { fetchOptions: { headers: { Authorization: `Bearer ${token}` } } } : undefined)
+        .catch(() => null);
       if (!active) return;
 
-      if (!session?.data?.user) {
+      // With a token, tRPC (Bearer-authenticated) below is the authoritative validity check.
+      if (!token && !session?.data?.user) {
         router.replace("/(auth)/sign-in?error=oauth_failed" as Href);
         return;
       }
