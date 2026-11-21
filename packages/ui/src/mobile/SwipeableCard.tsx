@@ -17,6 +17,9 @@ export interface SwipeableCardProps {
   enabled?: boolean;
   style?: StyleProp<ViewStyle>;
   deleteThreshold?: number;
+  actionIcon?: keyof typeof Feather.glyphMap;
+  actionColor?: string;
+  actionLabel?: string;
 }
 
 export function SwipeableCard({
@@ -25,6 +28,9 @@ export function SwipeableCard({
   enabled = true,
   style,
   deleteThreshold = 80,
+  actionIcon = 'trash-2',
+  actionColor = DESIGN_TOKENS.colors.critical,
+  actionLabel = 'Delete',
 }: SwipeableCardProps) {
   const panX = useRef(new Animated.Value(0)).current;
 
@@ -67,16 +73,16 @@ export function SwipeableCard({
 
   return (
     <View style={[styles.wrapper, style]}>
-      {/* Background Delete Action Layer */}
-      <View style={styles.backgroundLayer}>
+      {/* Background Swipe Action Layer */}
+      <View style={[styles.backgroundLayer, { backgroundColor: actionColor }]}>
         <TouchableOpacity
           style={styles.deleteButton}
           activeOpacity={0.8}
           onPress={onSwipeDelete}
-          accessibilityLabel="Delete"
+          accessibilityLabel={actionLabel}
           accessibilityRole="button"
         >
-          <Feather name="trash-2" size={20} color="#FFFFFF" />
+          <Feather name={actionIcon} size={20} color="#FFFFFF" />
         </TouchableOpacity>
       </View>
 

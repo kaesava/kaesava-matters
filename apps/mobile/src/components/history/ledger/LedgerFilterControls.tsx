@@ -1,12 +1,16 @@
 import React from 'react';
-import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import { View, Text, TouchableOpacity, ScrollView, StyleSheet } from 'react-native';
 import { Feather } from '@expo/vector-icons';
 import { SearchInput, RecordFilterBadge, DESIGN_TOKENS } from '@money-matters/ui/mobile';
 import { t } from '@money-matters/i18n';
 
+export type LedgerFlowFilter = 'ALL' | 'DEBIT' | 'CREDIT' | 'TRANSFER';
+
 export interface LedgerFilterControlsProps {
   searchQuery: string;
   onSearchChange: (q: string) => void;
+  flowFilter: LedgerFlowFilter;
+  onFlowFilterChange: (f: LedgerFlowFilter) => void;
   activeCount: number;
   onOpenFilterSheet: () => void;
   onExportCsv: () => void;
@@ -23,6 +27,8 @@ export interface LedgerFilterControlsProps {
 export function LedgerFilterControls({
   searchQuery,
   onSearchChange,
+  flowFilter,
+  onFlowFilterChange,
   activeCount,
   onOpenFilterSheet,
   onExportCsv,
@@ -81,6 +87,37 @@ export function LedgerFilterControls({
           <Feather name="download" size={14} color={DESIGN_TOKENS.colors.sereneBlue} />
         </TouchableOpacity>
       </View>
+
+      <ScrollView
+        horizontal
+        showsHorizontalScrollIndicator={false}
+        contentContainerStyle={styles.flowChipsRow}
+      >
+        {(
+          [
+            { key: 'ALL', label: t('common.all') },
+            { key: 'DEBIT', label: t('common.expense') },
+            { key: 'CREDIT', label: t('common.income') },
+            { key: 'TRANSFER', label: t('common.transfer') },
+          ] as const
+        ).map((chip) => {
+          const active = flowFilter === chip.key;
+          return (
+            <TouchableOpacity
+              key={chip.key}
+              onPress={() => onFlowFilterChange(chip.key)}
+              activeOpacity={0.75}
+              accessibilityRole="button"
+              accessibilityState={{ selected: active }}
+              style={[styles.flowChip, active && styles.flowChipActive]}
+            >
+              <Text style={[styles.flowChipText, active && styles.flowChipTextActive]}>
+                {chip.label}
+              </Text>
+            </TouchableOpacity>
+          );
+        })}
+      </ScrollView>
 
       {(selectedPoolId !== 'ALL' || selectedBankAccountId !== 'ALL') && (
         <View style={styles.badgeRow}>
@@ -164,5 +201,32 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     flexWrap: 'wrap',
     gap: 6,
+  },
+  flowChipsRow: {
+    flexDirection: 'row',
+    gap: 8,
+    paddingVertical: 2,
+  },
+  flowChip: {
+    minHeight: 36,
+    paddingHorizontal: 14,
+    borderRadius: 18,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: DESIGN_TOKENS.colors.slate[100],
+    borderWidth: 1,
+    borderColor: DESIGN_TOKENS.colors.slate[200],
+  },
+  flowChipActive: {
+    backgroundColor: DESIGN_TOKENS.colors.accentLight,
+    borderColor: DESIGN_TOKENS.colors.accent,
+  },
+  flowChipText: {
+    fontSize: 12,
+    fontWeight: '700',
+    color: DESIGN_TOKENS.colors.textMuted,
+  },
+  flowChipTextActive: {
+    color: DESIGN_TOKENS.colors.accent,
   },
 });

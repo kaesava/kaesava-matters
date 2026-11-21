@@ -2,7 +2,7 @@ import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import { Feather } from '@expo/vector-icons';
 import { t } from '@money-matters/i18n';
-import { DESIGN_TOKENS, CardDrawerIndicator, InfoTooltip, formatRecurrenceSuffix } from '@money-matters/ui/mobile';
+import { DESIGN_TOKENS, CardDrawerIndicator, InfoTooltip, SwipeableCard, formatRecurrenceSuffix } from '@money-matters/ui/mobile';
 import { formatMobileCurrency } from '../../lib/format';
 import { useRouter, type Href } from 'expo-router';
 
@@ -53,7 +53,7 @@ export function EnvelopeItemCard({
     ? t('categories.everydayBadge')
     : null;
 
-  return (
+  const cardBody = (
     <View style={styles.card}>
       <TouchableOpacity
         activeOpacity={0.8}
@@ -159,6 +159,18 @@ export function EnvelopeItemCard({
         </View>
       )}
     </View>
+  );
+
+  if (!onOpenActions) return cardBody;
+  return (
+    <SwipeableCard
+      onSwipeDelete={onOpenActions}
+      actionIcon="more-horizontal"
+      actionColor={DESIGN_TOKENS.colors.accent}
+      actionLabel={t('common.manage')}
+    >
+      {cardBody}
+    </SwipeableCard>
   );
 }
 

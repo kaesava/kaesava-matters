@@ -117,6 +117,11 @@ export function LedgerHistoryTab({
       <LedgerFilterControls
         searchQuery={searchQuery}
         onSearchChange={onSearchChange}
+        flowFilter={flowFilter}
+        onFlowFilterChange={(next) => {
+          onFlowFilterChange(next);
+          onPageChange(1);
+        }}
         activeCount={activeCount}
         onOpenFilterSheet={() => setFilterSheetVisible(true)}
         onExportCsv={onExportCsv}
