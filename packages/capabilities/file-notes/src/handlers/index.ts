@@ -1,6 +1,6 @@
 import { TRPCError } from "@trpc/server";
 import { eq, and, or, isNull, isNotNull, desc, sql } from "drizzle-orm";
-import { fileNotes, bankAccounts, envelopes, users, apps, DbOrTx } from "@money-matters/db";
+import { fileNotes, users, apps, type DbOrTx } from "@money-matters/db";
 import {
   CreatePreSignedUrlInput,
   CreateFileNoteInput,
@@ -9,7 +9,9 @@ import {
   FileNoteDto,
   StorageQuotaDto,
   DEFAULT_APP_FEATURE_FLAGS,
-  AppFeatureFlags,
+  type AppFeatureFlags,
+  type EntityPrivacyResolverMap,
+  type EntityPrivacyResolution,
 } from "@money-matters/types";
 import { getPresignedUploadUrl, getPresignedDownloadUrl } from "../storage.js";
 
@@ -21,6 +23,7 @@ export interface FileNotesContext {
   tenantId: string;
   userId: string;
   appId: string;
+  entityResolvers?: EntityPrivacyResolverMap<DbOrTx>;
 }
 
 async function getAppFlags(db: DbOrTx, appId: string): Promise<AppFeatureFlags> {
@@ -36,28 +39,14 @@ async function getAppFlags(db: DbOrTx, appId: string): Promise<AppFeatureFlags> 
 async function resolveEntityPrivacy(
   db: DbOrTx,
   ctx: FileNotesContext,
-  entityType: "ENVELOPE" | "BANK_ACCOUNT",
+  entityType: string,
   entityId: string
-): Promise<{ exists: boolean; isPrivate: boolean; ownerUserId: string | null }> {
-  if (entityType === "BANK_ACCOUNT") {
-    const [acc] = await db
-      .select({ id: bankAccounts.id, isPrivate: bankAccounts.isPrivate, userId: bankAccounts.userId })
-      .from(bankAccounts)
-      .where(and(eq(bankAccounts.id, entityId), eq(bankAccounts.tenantId, ctx.tenantId), isNull(bankAccounts.archivedAt)))
-      .limit(1);
-
-    if (!acc) return { exists: false, isPrivate: false, ownerUserId: null };
-    return { exists: true, isPrivate: acc.isPrivate, ownerUserId: acc.userId };
-  } else {
-    const [env] = await db
-      .select({ id: envelopes.id, isPrivate: envelopes.isPrivate, userId: envelopes.userId })
-      .from(envelopes)
-      .where(and(eq(envelopes.id, entityId), eq(envelopes.tenantId, ctx.tenantId), isNull(envelopes.archivedAt)))
-      .limit(1);
-
-    if (!env) return { exists: false, isPrivate: false, ownerUserId: null };
-    return { exists: true, isPrivate: env.isPrivate, ownerUserId: env.userId };
+): Promise<EntityPrivacyResolution> {
+  const resolver = ctx.entityResolvers?.[entityType];
+  if (!resolver) {
+    return { exists: true, isPrivate: false, ownerUserId: null };
   }
+  return resolver(db, { tenantId: ctx.tenantId, userId: ctx.userId, appId: ctx.appId }, entityId);
 }
 
 export async function createPreSignedUrlHandler(

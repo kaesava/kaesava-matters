@@ -1,7 +1,9 @@
 import Stripe from "stripe";
 import { z } from "zod";
-import { type DbOrTx, billingInvoices } from "@money-matters/db";
-import { getCachedDateFormat, sendNotificationEmail } from "@money-matters/core";
+import { type DbOrTx, billingInvoices, tenants } from "@money-matters/db";
+import { getCachedDateFormat, sendNotificationEmail, formatCurrency } from "@money-matters/core";
+import { resolveAppConfigOrDefault } from "@money-matters/config";
+import { eq } from "drizzle-orm";
 import { DEFAULT_LOCALE, DEFAULT_TIMEZONE } from "@money-matters/types";
 import { activateSubscriptionCommand } from "../../commands/activate-subscription.js";
 import { deactivateTenantCommand } from "../../commands/deactivate-tenant.js";
@@ -63,12 +65,16 @@ export async function handleInvoicePaymentSucceeded(
       : null);
 
   if (customerEmail) {
-    const formattedAmount = `$${((invoice.amount_paid || 0) / 100).toFixed(2)} AUD`;
+    const [tenantRow] = await db.select({ appId: tenants.appId }).from(tenants).where(eq(tenants.id, tenantId)).limit(1);
+    const app = resolveAppConfigOrDefault(tenantRow?.appId);
+    const currencyCode = (invoice.currency || "aud").toUpperCase();
+    const formattedAmount = formatCurrency((invoice.amount_paid || 0) / 100, { currency: currencyCode });
     const formattedEndDate = getCachedDateFormat(DEFAULT_LOCALE, { dateStyle: "medium", timeZone: DEFAULT_TIMEZONE }).format(currentPeriodEnd);
     await sendNotificationEmail(
       customerEmail,
-      "Your Money Matters Subscription Receipt",
-      `Thank you for your payment of ${formattedAmount} for Money Matters Household.\n\nYour subscription is active until ${formattedEndDate}.\n\nYou can view and download your invoice receipt here:\n${invoice.hosted_invoice_url || "https://moneymatters.kaesava.au/dashboard/settings?tab=subscription"}\n\nIf you have any questions, contact our Australian support team at info@moneymatters.kaesava.au.`
+      `Your ${app.name} Subscription Receipt`,
+      `Thank you for your payment of ${formattedAmount} for ${app.name} ${app.terminology.tenantSingular}.\n\nYour subscription is active until ${formattedEndDate}.\n\nYou can view and download your invoice receipt here:\n${invoice.hosted_invoice_url || `${app.branding.appUrl}/dashboard/settings?tab=subscription`}\n\nIf you have any questions, contact our support team at ${app.branding.supportEmail}.`,
+      tenantRow?.appId
     ).catch(() => {});
   }
 }
@@ -115,10 +121,13 @@ export async function handleInvoicePaymentFailed(
       : null);
 
   if (customerEmail) {
+    const [tenantRow] = await db.select({ appId: tenants.appId }).from(tenants).where(eq(tenants.id, tenantId)).limit(1);
+    const app = resolveAppConfigOrDefault(tenantRow?.appId);
     await sendNotificationEmail(
       customerEmail,
-      "⚠️ Payment Action Required — Money Matters Household",
-      `We were unable to process your recurring subscription payment for Money Matters Household.\n\nTo prevent interruption to your household budget and data access, please update your payment method via the customer portal:\nhttps://moneymatters.kaesava.au/subscription/manage\n\nNeed assistance? Contact info@moneymatters.kaesava.au.`
+      `⚠️ Payment Action Required — ${app.name} ${app.terminology.tenantSingular}`,
+      `We were unable to process your recurring subscription payment for ${app.name} ${app.terminology.tenantSingular}.\n\nTo prevent interruption to your data access, please update your payment method via the customer portal:\n${app.branding.appUrl}/subscription/manage\n\nNeed assistance? Contact ${app.branding.supportEmail}.`,
+      tenantRow?.appId
     ).catch(() => {});
   }
 }

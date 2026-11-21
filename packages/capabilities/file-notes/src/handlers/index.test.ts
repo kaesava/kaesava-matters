@@ -22,7 +22,14 @@ describe("file-notes handlers", () => {
     await expect(
       createFileNoteHandler(
         mockDb as unknown as DbOrTx,
-        { tenantId: "t-1", userId: "user-alice", appId: "money-matters" },
+        {
+          tenantId: "t-1",
+          userId: "user-alice",
+          appId: "money-matters",
+          entityResolvers: {
+            ENVELOPE: async () => ({ exists: true, isPrivate: true, ownerUserId: "user-bob" }),
+          },
+        },
         { entityType: "ENVELOPE", entityId: "env-bob", comment: "Test" }
       )
     ).rejects.toThrow("private_entity_unauthorized");

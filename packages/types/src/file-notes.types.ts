@@ -15,7 +15,9 @@ export const StorageQuotaDto = z.object({
 
 export type StorageQuotaDto = z.infer<typeof StorageQuotaDto>;
 
-const FileNoteEntityTypeEnum = z.enum(["ENVELOPE", "BANK_ACCOUNT"]);
+export const MoneyMattersFileNoteEntityTypeEnum = z.enum(["ENVELOPE", "BANK_ACCOUNT"]);
+
+const FileNoteEntityTypeEnum = z.string().trim().min(1).max(64).regex(/^[A-Z0-9_]+$/);
 
 export const CreatePreSignedUrlInput = z.object({
   entityType: FileNoteEntityTypeEnum,

@@ -528,6 +528,9 @@ importers:
 
   packages/capabilities/bug-reports:
     dependencies:
+      '@money-matters/config':
+        specifier: workspace:*
+        version: link:../../config
       '@money-matters/core':
         specifier: workspace:*
         version: link:../../core

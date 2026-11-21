@@ -5,19 +5,17 @@
 import Stripe from "stripe";
 import { eq } from "drizzle-orm";
 import { tenants, type DbOrTx } from "@money-matters/db";
-import { validateEnv } from "@money-matters/config";
+import { validateEnv, resolveAppConfigOrDefault } from "@money-matters/config";
 
-function isWhitelistedUrl(target: string): boolean {
+function isWhitelistedUrl(target: string, appId?: string | null): boolean {
   if (!target) return false;
-  if (target.startsWith("moneymatters://")) return true;
+  const app = resolveAppConfigOrDefault(appId);
+  if (target.startsWith(app.branding.deepLinkScheme)) return true;
   try {
     const parsed = new URL(target);
     const host = parsed.hostname;
-    return (
-      host === "kaesava.au" ||
-      host.endsWith(".kaesava.au") ||
-      host === "localhost" ||
-      host === "127.0.0.1"
+    return app.allowedRedirectHosts.some((h) =>
+      h.startsWith(".") ? host.endsWith(h) : host === h
     );
   } catch {
     return false;

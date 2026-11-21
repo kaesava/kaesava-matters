@@ -13,6 +13,7 @@
     }
   },
   "dependencies": {
+    "@money-matters/config": "workspace:*",
     "@money-matters/core": "workspace:*",
     "@money-matters/types": "workspace:*",
     "zod": "^3.23.8"

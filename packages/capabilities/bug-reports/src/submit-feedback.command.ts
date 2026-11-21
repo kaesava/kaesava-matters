@@ -1,5 +1,6 @@
 import { z } from "zod";
 import { checkRateLimit, sendEmail, logger, buildBrandEmailHeader } from "@money-matters/core";
+import { resolveAppConfigOrDefault } from "@money-matters/config";
 
 export const SubmitFeedbackInputSchema = z
   .object({
@@ -20,6 +21,7 @@ export type SubmitFeedbackInput = z.infer<typeof SubmitFeedbackInputSchema>;
 export interface SubmitFeedbackContext {
   userId?: string | null;
   tenantId?: string | null;
+  appId?: string | null;
   userEmail?: string | null;
   env?: {
     UPSTASH_REDIS_REST_URL?: string;
@@ -102,8 +104,9 @@ export async function submitFeedbackCommand(
   const plainText = `${diagnostics}\n\nDescription:\n${input.description}`;
   const html = buildHtmlEmail(input.title, diagnostics, input.description);
 
+  const app = resolveAppConfigOrDefault(ctx.appId);
   const result = await sendEmail({
-    to: "info@moneymatters.kaesava.au",
+    to: app.branding.supportEmail,
     subject,
     text: plainText,
     html,

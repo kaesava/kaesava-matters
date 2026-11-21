@@ -17,6 +17,7 @@ import {
   archiveFileNoteHandler,
   getStorageQuotaHandler,
 } from "@money-matters/capability-file-notes";
+import { moneyMattersFileNotePrivacyResolvers } from "@money-matters/capability-budgeting";
 
 export const fileNotesRouter = router({
   createPreSignedUrl: privateTenantProcedure
@@ -26,6 +27,7 @@ export const fileNotesRouter = router({
         tenantId: ctx.tenantId,
         userId: ctx.userId,
         appId: ctx.appId,
+        entityResolvers: moneyMattersFileNotePrivacyResolvers,
       }, input);
     }),
 
@@ -37,6 +39,7 @@ export const fileNotesRouter = router({
         tenantId: ctx.tenantId,
         userId: ctx.userId,
         appId: ctx.appId,
+        entityResolvers: moneyMattersFileNotePrivacyResolvers,
       }, input);
     }),
 
@@ -48,6 +51,7 @@ export const fileNotesRouter = router({
         tenantId: ctx.tenantId,
         userId: ctx.userId,
         appId: ctx.appId,
+        entityResolvers: moneyMattersFileNotePrivacyResolvers,
       }, input);
     }),
 
