@@ -11,7 +11,7 @@ import {
   getCurrencySymbol,
   fmtDate as uiFmtDate,
   fmtDateIso as uiFmtDateIso,
-} from '@money-matters/ui/mobile';
+} from '@money-matters/ui/format';
 
 import {
   setMobileLocaleConfig,
@@ -166,8 +166,6 @@ const mobileDateFormatCache = new Map<string, Intl.DateTimeFormat>();
 
 export { formatScheduleDetail } from './schedule-format';
 export type { ScheduleDetail } from './schedule-format';
-
-
 
 const dateStringCache = new Map<string, Intl.DateTimeFormat>();
 export function getTenantDateString(date: Date = new Date(), tenant?: { timezone?: string | null }): string {

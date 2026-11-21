@@ -24,6 +24,11 @@
       "types": "./src/tokens.ts",
       "import": "./src/tokens.ts",
       "require": "./src/tokens.ts"
+    },
+    "./format": {
+      "types": "./src/format.ts",
+      "import": "./src/format.ts",
+      "require": "./src/format.ts"
     }
   },
   "dependencies": {

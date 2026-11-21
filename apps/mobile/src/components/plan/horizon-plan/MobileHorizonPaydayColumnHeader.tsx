@@ -91,44 +91,34 @@ export const MobileHorizonPaydayColumnHeader: React.FC<MobileHorizonPaydayColumn
       {/* Row 4: Total Income */}
       <Text style={styles.incomeAmount}>+{formatMobileCurrency(col.totalIncome)}</Text>
 
-      {/* Row 5: Actions */}
-      {isConfirmed ? (
-        <View style={styles.actionRow}>
-          <TouchableOpacity onPress={() => onReview(col.id)} style={styles.reviewBtn}>
-            <Text style={styles.reviewText}>{t('paydaySchedule.review')}</Text>
-          </TouchableOpacity>
-        </View>
-      ) : (
-        <View style={styles.actionRow}>
-          {isSaved && onReset && (
-            <>
-              <TouchableOpacity onPress={() => onReset(col.id)} style={styles.resetBtn}>
-                <Text style={styles.resetText}>{t('common.reset')}</Text>
-              </TouchableOpacity>
-              <Text style={styles.separator}>|</Text>
-            </>
-          )}
+      {/* Row 5: Primary action is a full-width button so the plan studio is easy to find */}
+      <TouchableOpacity
+        onPress={() => onReview(col.id)}
+        style={[styles.primaryBtn, isConfirmed && styles.primaryBtnConfirmed]}
+        activeOpacity={0.8}
+      >
+        <Text style={[styles.primaryBtnText, isConfirmed && styles.primaryBtnTextConfirmed]}>
+          {isConfirmed ? t('paydaySchedule.review') : t('paydaySchedule.plan')}
+        </Text>
+      </TouchableOpacity>
 
+      {!isConfirmed && (
+        <View style={styles.actionRow}>
           {!isSaved && (
-            <>
-              <TouchableOpacity
-                onPress={() => onSave(col.id, col.totalIncome)}
-                disabled={isSaving}
-                style={styles.saveBtn}
-              >
-                <Text style={styles.saveText}>{isSaving ? '…' : t('common.save')}</Text>
-              </TouchableOpacity>
-              <Text style={styles.separator}>|</Text>
-            </>
+            <TouchableOpacity
+              onPress={() => onSave(col.id, col.totalIncome)}
+              disabled={isSaving}
+              style={styles.secondaryBtn}
+            >
+              <Text style={styles.saveText}>{isSaving ? '…' : t('common.save')}</Text>
+            </TouchableOpacity>
           )}
-
-          <TouchableOpacity onPress={() => onReview(col.id)} style={styles.reviewBtn}>
-            <Text style={styles.reviewText}>{t('paydaySchedule.plan')}</Text>
-          </TouchableOpacity>
-
-          <Text style={styles.separator}>|</Text>
-
-          <TouchableOpacity onPress={() => onDelete(col.id)} style={styles.deleteBtn}>
+          {isSaved && onReset && (
+            <TouchableOpacity onPress={() => onReset(col.id)} style={styles.secondaryBtn}>
+              <Text style={styles.resetText}>{t('common.reset')}</Text>
+            </TouchableOpacity>
+          )}
+          <TouchableOpacity onPress={() => onDelete(col.id)} style={styles.secondaryBtn}>
             <Text style={styles.deleteText}>{t('common.delete')}</Text>
           </TouchableOpacity>
         </View>
@@ -192,8 +182,8 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    gap: 4,
-    marginTop: 4,
+    gap: 2,
+    marginTop: 2,
     flexWrap: 'wrap',
   },
   confirmedBadge: {
@@ -229,45 +219,49 @@ const styles = StyleSheet.create({
     fontWeight: '800',
     color: DESIGN_TOKENS.colors.slate[700],
   },
-  reviewBtn: {
-    paddingVertical: 2,
-    paddingHorizontal: 2,
+  primaryBtn: {
+    alignSelf: 'stretch',
+    minHeight: 40,
+    marginTop: 6,
+    borderRadius: DESIGN_TOKENS.radius.md,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: DESIGN_TOKENS.colors.sereneBlue,
   },
-  reviewText: {
-    fontSize: 11,
+  primaryBtnConfirmed: {
+    backgroundColor: DESIGN_TOKENS.colors.surface,
+    borderWidth: 1,
+    borderColor: DESIGN_TOKENS.colors.successBorder,
+  },
+  primaryBtnText: {
+    fontSize: 13,
     fontWeight: '800',
-    color: DESIGN_TOKENS.colors.sereneBlue,
+    color: DESIGN_TOKENS.colors.onAccent,
   },
-  resetBtn: {
-    paddingVertical: 2,
-    paddingHorizontal: 2,
+  primaryBtnTextConfirmed: {
+    color: DESIGN_TOKENS.colors.successDark,
+  },
+  secondaryBtn: {
+    minHeight: 36,
+    minWidth: 56,
+    paddingHorizontal: 8,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   resetText: {
-    fontSize: 11,
+    fontSize: 12,
     fontWeight: '700',
     color: DESIGN_TOKENS.colors.sereneBlue,
-  },
-  saveBtn: {
-    paddingVertical: 2,
-    paddingHorizontal: 2,
   },
   saveText: {
     fontSize: 11,
     fontWeight: '700',
     color: DESIGN_TOKENS.colors.slate[600],
   },
-  deleteBtn: {
-    paddingVertical: 2,
-    paddingHorizontal: 2,
-  },
   deleteText: {
     fontSize: 11,
     fontWeight: '600',
     color: DESIGN_TOKENS.colors.burnRed,
-  },
-  separator: {
-    fontSize: 10,
-    color: DESIGN_TOKENS.colors.slate[300],
   },
   privateFootnote: {
     fontSize: 9,
