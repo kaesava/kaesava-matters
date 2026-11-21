@@ -1,7 +1,7 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { View, StyleSheet, TouchableOpacity, Text } from 'react-native';
 import { Feather } from '@expo/vector-icons';
-import { DESIGN_TOKENS } from '@money-matters/ui/mobile';
+import { DESIGN_TOKENS, PLATFORM_STYLE, MobileModalDialog, MobileDetailLinkRow } from '@money-matters/ui/mobile';
 import { t } from '@money-matters/i18n';
 
 interface AddScheduleButtonRowProps {
@@ -15,34 +15,53 @@ export const AddScheduleButtonRow: React.FC<AddScheduleButtonRowProps> = ({
   onAddSchedule,
   onAddOneOff,
 }) => {
+  const [menuOpen, setMenuOpen] = useState(false);
+  const scheduleLabel =
+    setupSubSegment === 'INCOME' ? t('payday.addIncomeSchedule') : t('planTabs.addBillSchedule');
+  const oneOffLabel =
+    setupSubSegment === 'INCOME' ? t('planTabs.oneOffIncome') : t('planTabs.oneOffExpense');
+
   return (
     <View style={styles.addScheduleRow}>
       <TouchableOpacity
         style={styles.addScheduleBtn}
-        onPress={() => onAddSchedule(setupSubSegment)}
+        onPress={() => (onAddOneOff ? setMenuOpen(true) : onAddSchedule(setupSubSegment))}
         activeOpacity={0.8}
+        accessibilityRole="button"
+        accessibilityLabel={scheduleLabel}
       >
-        <Feather name="plus" size={14} color={DESIGN_TOKENS.colors.onAccent} />
+        <Feather name="plus" size={16} color={DESIGN_TOKENS.colors.onAccent} />
         <Text style={styles.addScheduleBtnText} numberOfLines={1}>
-          {setupSubSegment === 'INCOME'
-            ? t('payday.addIncomeSchedule')
-            : t('planTabs.addBillSchedule')}
+          {onAddOneOff ? t('common.add') : scheduleLabel}
         </Text>
       </TouchableOpacity>
 
       {onAddOneOff && (
-        <TouchableOpacity
-          style={styles.oneOffBtn}
-          onPress={() => onAddOneOff(setupSubSegment)}
-          activeOpacity={0.8}
+        <MobileModalDialog
+          visible={menuOpen}
+          onClose={() => setMenuOpen(false)}
+          title={t('common.add')}
         >
-          <Feather name="plus" size={14} color={DESIGN_TOKENS.colors.primary} />
-          <Text style={styles.oneOffBtnText} numberOfLines={1}>
-            {setupSubSegment === 'INCOME'
-              ? t('planTabs.oneOffIncome')
-              : t('planTabs.oneOffExpense')}
-          </Text>
-        </TouchableOpacity>
+          <View style={styles.sheetList}>
+            <MobileDetailLinkRow
+              label={t('common.add')}
+              value={scheduleLabel}
+              onPress={() => {
+                setMenuOpen(false);
+                onAddSchedule(setupSubSegment);
+              }}
+            />
+            <View style={styles.divider} />
+            <MobileDetailLinkRow
+              label={t('common.add')}
+              value={oneOffLabel}
+              onPress={() => {
+                setMenuOpen(false);
+                onAddOneOff(setupSubSegment);
+              }}
+            />
+          </View>
+        </MobileModalDialog>
       )}
     </View>
   );
@@ -50,42 +69,28 @@ export const AddScheduleButtonRow: React.FC<AddScheduleButtonRowProps> = ({
 
 const styles = StyleSheet.create({
   addScheduleRow: {
-    flexDirection: 'row',
-    gap: 8,
     marginBottom: 14,
   },
   addScheduleBtn: {
-    flex: 1,
+    minHeight: PLATFORM_STYLE.minTouch,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    gap: 6,
+    gap: 8,
     backgroundColor: DESIGN_TOKENS.colors.accent,
-    borderRadius: 12,
-    paddingVertical: 11,
-    paddingHorizontal: 12,
+    borderRadius: DESIGN_TOKENS.radius.md,
+    paddingHorizontal: 16,
   },
   addScheduleBtnText: {
-    fontSize: 12,
+    fontSize: 14,
     fontWeight: '700',
     color: DESIGN_TOKENS.colors.onAccent,
   },
-  oneOffBtn: {
-    flex: 1,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    gap: 6,
-    backgroundColor: DESIGN_TOKENS.colors.slate[100],
-    borderWidth: 1,
-    borderColor: DESIGN_TOKENS.colors.slate[200],
-    borderRadius: 12,
-    paddingVertical: 11,
-    paddingHorizontal: 12,
+  sheetList: {
+    gap: 4,
   },
-  oneOffBtnText: {
-    fontSize: 12,
-    fontWeight: '700',
-    color: DESIGN_TOKENS.colors.primary,
+  divider: {
+    height: 1,
+    backgroundColor: DESIGN_TOKENS.colors.slate[100],
   },
 });

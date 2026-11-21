@@ -3,8 +3,8 @@ export const tour = {
     "welcome": {
       "title": "Welcome to Money Matters, {name}!",
       "subtitle": "Your forward-looking household budget is ready. Take a quick 60-second guided tour to discover how to spend guilt-free with zero daily receipt tracking.",
-      "startAction": "Take 60-Second Tour",
-      "dismissAction": "Explore on My Own"
+      "startAction": "Tour",
+      "dismissAction": "Skip"
     },
     "steps": {
       "stepCount": "{current} of {total}",
