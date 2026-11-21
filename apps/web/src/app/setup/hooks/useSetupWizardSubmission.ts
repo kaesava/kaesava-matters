@@ -26,6 +26,7 @@ interface SubmissionProps {
   archivedGoalIds: Set<string>;
   archivedAccountIds: Set<string>;
   archivedIncomeIds: Set<string>;
+  onBeforeExit?: () => void;
   existingPools?: Array<{
     id: string;
     name?: string;
@@ -63,6 +64,7 @@ export function useSetupWizardSubmission({
   archivedGoalIds,
   archivedAccountIds,
   archivedIncomeIds,
+  onBeforeExit,
   existingPools = [],
 }: SubmissionProps) {
   const router = useRouter();
@@ -306,7 +308,9 @@ export function useSetupWizardSubmission({
         archivedIncomeIds: Array.from(archivedIncomeIds),
       });
 
+      onBeforeExit?.();
       utils.getTenantStatus.setData(undefined, (old) => (old ? { ...old, setupCompleted: true, setupStatus: "COMPLETED" } : undefined));
+      utils.getUserPreferences.setData(undefined, (old) => (old ? { ...old, setupCompleted: true, setupStatus: "COMPLETED" } : undefined));
       void utils.getTenantStatus.refetch();
       void utils.invalidate();
 

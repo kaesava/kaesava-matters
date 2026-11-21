@@ -2,8 +2,10 @@
 import { DEFAULT_CURRENCY, DEFAULT_TIMEZONE } from "@money-matters/types";
 
 
-import { useState, useMemo, useEffect } from "react";
+import { useState, useMemo, useEffect, useRef } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
+import { useToast } from "@money-matters/ui/web";
+import { t } from "@money-matters/i18n";
 import { authClient } from "../../../lib/auth";
 import { trpc } from "../../../lib/trpc";
 import {
@@ -46,6 +48,8 @@ export function useSetupWizardState() {
   const [step, setStep] = useState(1);
   const [showDiscardModal, setShowDiscardModal] = useState(false);
   const [isDiscarding, setIsDiscarding] = useState(false);
+  const isExitingRef = useRef(false);
+  const toast = useToast();
 
   // Re-run mode & strict pre-load redirect guard:
   // COMPLETED or CANCELLED => must use /setup?mode=rerun; otherwise => must use /setup
@@ -56,11 +60,14 @@ export function useSetupWizardState() {
     !session?.user ||
     tenantStatusQuery.isLoading ||
     (hasTenant && userPrefQuery.isLoading) ||
-    (hasTenant && userPrefQuery.data !== undefined && ((setupDone && !isRerunParam) || (!setupDone && isRerunParam)));
+    (!isExitingRef.current &&
+      hasTenant &&
+      userPrefQuery.data !== undefined &&
+      ((setupDone && !isRerunParam) || (!setupDone && isRerunParam)));
   const isRerun = isRerunParam && setupDone;
 
   useEffect(() => {
-    if (!hasTenant || userPrefQuery.data === undefined) return;
+    if (isExitingRef.current || !hasTenant || userPrefQuery.data === undefined) return;
     if (setupDone && !isRerunParam) {
       router.replace("/setup?mode=rerun");
     } else if (!setupDone && isRerunParam) {
@@ -209,6 +216,9 @@ export function useSetupWizardState() {
     archivedAccountIds,
     archivedIncomeIds: incomeState.archivedIncomeIds,
     existingPools: prepopulation.pools,
+    onBeforeExit: () => {
+      isExitingRef.current = true;
+    },
   });
 
   const handleDiscard = async () => {
@@ -225,25 +235,29 @@ export function useSetupWizardState() {
         }
         await cancelSetupMut.mutateAsync();
       }
+      // Prevent the setup-route guard useEffect from redirecting back to /setup?mode=rerun mid-transition
+      isExitingRef.current = true;
       utils.getTenantStatus.setData(undefined, (old) =>
         old ? { ...old, setupCompleted: true, setupStatus: isRerun ? old.setupStatus : "CANCELLED" } : undefined
       );
-      void utils.getTenantStatus.refetch();
-      void utils.invalidate();
-    } catch (_e) {
-      // Non-blocking fallback
+      utils.getUserPreferences.setData(undefined, (old) =>
+        old ? { ...old, setupCompleted: true, setupStatus: isRerun ? old.setupStatus : "CANCELLED" } : undefined
+      );
+      setShowDiscardModal(false);
+      router.replace("/dashboard");
+      setTimeout(() => {
+        if (typeof window !== "undefined" && window.location.pathname.startsWith("/setup")) {
+          // Hard fallback if client router navigation stalls leaving /setup
+          // eslint-disable-next-line @next/next/no-location-assign-relative-destination
+          window.location.assign("/dashboard");
+        }
+      }, 150);
+    } catch (err: unknown) {
+      isExitingRef.current = false;
+      toast.error(err instanceof Error ? err.message : t("setup.saveError"));
     } finally {
       setIsDiscarding(false);
-      setShowDiscardModal(false);
     }
-    router.replace("/dashboard");
-    setTimeout(() => {
-      if (typeof window !== "undefined" && window.location.pathname.startsWith("/setup")) {
-        // Hard fallback if client router navigation stalls leaving /setup
-        // eslint-disable-next-line @next/next/no-location-assign-relative-destination
-        window.location.assign("/dashboard");
-      }
-    }, 150);
   };
 
   return {
