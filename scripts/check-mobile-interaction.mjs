@@ -32,6 +32,9 @@ for (const root of ROOTS) {
       if (/textDecorationLine:\s*['"]underline['"]/.test(line)) {
         violations.push(`${at} underlined text; use MobileLinkButton / MobileDetailLinkRow`);
       }
+      if (file.startsWith('apps/mobile/src') && /<Switch\b/.test(line)) {
+        violations.push(`${at} raw <Switch>; use centralized SwitchRow from @money-matters/ui/mobile`);
+      }
       const size = line.match(/fontSize:\s*(\d+(?:\.\d+)?)/);
       if (size) {
         const n = Number(size[1]);

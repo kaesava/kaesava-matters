@@ -1,7 +1,7 @@
 import React from 'react';
-import { View, Text, TextInput, TouchableOpacity, Switch, StyleSheet } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet } from 'react-native';
 import { Feather } from '@expo/vector-icons';
-import { DESIGN_TOKENS, AmountInput } from '@money-matters/ui/mobile';
+import { DESIGN_TOKENS, AmountInput, SwitchRow } from '@money-matters/ui/mobile';
 import { t } from '@money-matters/i18n';
 
 interface AffordCheckInputControlsProps {
@@ -107,19 +107,13 @@ export function AffordCheckInputControls({
         autoFocus
       />
 
-      <View style={styles.switchRow}>
-        <View style={styles.flex1}>
-          <Text style={styles.switchLabel}>{t('canIAfford.includePersonal')}</Text>
-          <Text style={styles.switchSubtext}>
-            {t('canIAfford.includePersonalSubtext')}
-          </Text>
-        </View>
-        <Switch
-          value={includePersonal}
-          onValueChange={setIncludePersonal}
-          trackColor={{ false: DESIGN_TOKENS.colors.slate[200], true: DESIGN_TOKENS.colors.sereneBlue }}
-        />
-      </View>
+      <SwitchRow
+        label={t('canIAfford.includePersonal')}
+        hint={t('canIAfford.includePersonalSubtext')}
+        value={includePersonal}
+        onValueChange={setIncludePersonal}
+        noBorder
+      />
     </>
   );
 }

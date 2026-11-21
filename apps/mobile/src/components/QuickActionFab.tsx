@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import { View, TouchableOpacity, StyleSheet, Platform } from 'react-native';
+import { View, TouchableOpacity, StyleSheet } from 'react-native';
 import { Feather } from '@expo/vector-icons';
-import { DESIGN_TOKENS } from '@money-matters/ui/mobile';
+import { DESIGN_TOKENS, PLATFORM_STYLE } from '@money-matters/ui/mobile';
 import { QuickExpenseModal } from './QuickExpenseModal';
 
 import { triggerHaptic } from '../lib/haptics';
@@ -63,7 +63,7 @@ export function QuickActionFab({ visible = true, onCustomPress }: QuickActionFab
 const styles = StyleSheet.create({
   container: {
     position: 'absolute',
-    bottom: Platform.OS === 'ios' ? 76 : 72,
+    bottom: PLATFORM_STYLE.isAndroid ? 72 : 76,
     right: 20,
     zIndex: 99,
   },

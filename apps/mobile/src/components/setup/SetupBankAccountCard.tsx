@@ -1,7 +1,7 @@
 import React from 'react';
-import { View, Text, TextInput, TouchableOpacity, ScrollView, StyleSheet, Switch } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, ScrollView, StyleSheet } from 'react-native';
 import { t } from '@money-matters/i18n';
-import { DESIGN_TOKENS, InfoTooltip, AmountInput } from '@money-matters/ui/mobile';
+import { DESIGN_TOKENS, InfoTooltip, AmountInput, SwitchRow } from '@money-matters/ui/mobile';
 import {
   ACCOUNT_TYPES,
   ACCOUNT_TYPE_LABELS,
@@ -141,24 +141,18 @@ export function SetupBankAccountCard({
           </Text>
         </View>
 
-        <View style={styles.privacyRow}>
-          <Text style={[styles.privacyLabel, isSoleAccount && styles.textMuted]}>
-            {t('settings.bankAccountForm.privacyLabel')}
-          </Text>
-          <InfoTooltip
-            content={
-              isSoleAccount
-                ? t('setup.bankAccountsStep.singleAccountPrivateDisabledTooltip')
-                : t('settings.bankAccountForm.privacyHint')
-            }
-          />
-          <Switch
-            value={Boolean(acc.isPrivate) && !isSoleAccount}
-            disabled={isSoleAccount}
-            onValueChange={(val) => onFieldChange(acc, 'isPrivate', val)}
-            trackColor={{ false: '#E2E8F0', true: DESIGN_TOKENS.colors.sereneBlue }}
-          />
-        </View>
+        <SwitchRow
+          label={t('settings.bankAccountForm.privacyLabel')}
+          infoTooltip={
+            isSoleAccount
+              ? t('setup.bankAccountsStep.singleAccountPrivateDisabledTooltip')
+              : t('settings.bankAccountForm.privacyHint')
+          }
+          value={Boolean(acc.isPrivate) && !isSoleAccount}
+          disabled={isSoleAccount}
+          onValueChange={(val) => onFieldChange(acc, 'isPrivate', val)}
+          noBorder
+        />
       </View>
     </View>
   );

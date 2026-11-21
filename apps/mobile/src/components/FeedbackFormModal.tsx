@@ -1,9 +1,7 @@
 import React, { useState, useMemo } from 'react';
 import {
   View,
-  Text,
   ScrollView,
-  Switch,
   StyleSheet,
 } from 'react-native';
 import {
@@ -14,7 +12,7 @@ import {
   ChipSelect,
   FormLabel,
   FormErrorBanner,
-  useMobileToast,
+  useMobileToast,  SwitchRow,
 } from '@money-matters/ui/mobile';
 import { t } from '@money-matters/i18n';
 import { authClient } from '../lib/auth';
@@ -193,17 +191,12 @@ export function FeedbackFormModal({ visible, onClose }: FeedbackFormModalProps) 
           autoCapitalize="none"
         />
 
-        <View style={styles.consentRow}>
-          <Switch
-            value={consent}
-            onValueChange={setConsent}
-            trackColor={{ false: DESIGN_TOKENS.colors.slate[200], true: DESIGN_TOKENS.colors.sereneBlue }}
-            thumbColor={consent ? DESIGN_TOKENS.colors.sereneBlue : DESIGN_TOKENS.colors.surface}
-          />
-          <Text style={styles.consentText}>
-            {t("feedback.emailUpdatesConsent")}
-          </Text>
-        </View>
+        <SwitchRow
+          label={t("feedback.emailUpdatesConsent")}
+          value={consent}
+          onValueChange={setConsent}
+          noBorder
+        />
 
         <FeedbackDiagnosticsBox
           formattedVersion={versionInfo.formattedVersion}

@@ -202,7 +202,7 @@
 ### 6.1 Package Entrypoints (`packages/ui/package.json`)
 - `@money-matters/ui` (`.`) → `packages/ui/src/index.ts` (re-exports `DESIGN_TOKENS`, shared hooks/formatters/dates, and `./web/index`).
 - `@money-matters/ui/web` (`./web`) → `packages/ui/src/web/index.ts` (73 exported symbols across modals, drawers, form inputs, tables, charts, `HouseholdContributionSection`, and providers).
-- `@money-matters/ui/mobile` (`./mobile`) → `packages/ui/src/mobile/index.ts` (119 exported symbols across native bottom-sheet modals (Android-tuned via `PLATFORM_STYLE`), `MobileText`, `MobileLinkButton`, `MobileDetailLinkRow`, `useKeyboardInset`, inputs, pickers, charts, `MobileHouseholdContributionSection`, and providers).
+- `@money-matters/ui/mobile` (`./mobile`) → `packages/ui/src/mobile/index.ts` (118 exported symbols across native bottom-sheet modals (Android-tuned via `PLATFORM_STYLE`), `MobileText`, `MobileLinkButton`, `MobileDetailLinkRow`, `useKeyboardInset`, native `DatePickerField`, bottom-sheet `InfoTooltip`, inputs, pickers, charts, `MobileHouseholdContributionSection`, and providers).
 - `@money-matters/ui/tokens` (`./tokens`) → `packages/ui/src/tokens.ts` (`DESIGN_TOKENS`).
 
 ---

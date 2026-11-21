@@ -6,7 +6,6 @@ import {
   ScrollView,
   StyleSheet,
   KeyboardAvoidingView,
-  Platform,
 } from "react-native";
 import { useRouter, useLocalSearchParams } from "expo-router";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
@@ -17,7 +16,7 @@ import {
   MobileInput,
   FormLabel,
   FormFieldError,
-  FormErrorBanner,
+  FormErrorBanner,  PLATFORM_STYLE,
 } from "@money-matters/ui/mobile";
 import { evaluatePasswordStrength } from "@money-matters/types";
 import { authClient } from "../../lib/auth";
@@ -84,7 +83,7 @@ export default function ResetPasswordScreen() {
   return (
     <KeyboardAvoidingView
       style={styles.flex}
-      behavior={Platform.OS === "ios" ? "padding" : "height"}
+      behavior={PLATFORM_STYLE.keyboardBehavior}
     >
       <ScrollView
         contentContainerStyle={[

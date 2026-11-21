@@ -6,12 +6,11 @@ import {
   ScrollView,
   StyleSheet,
   KeyboardAvoidingView,
-  Platform,
 } from "react-native";
 import { useRouter } from "expo-router";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { t } from "@money-matters/i18n";
-import { DESIGN_TOKENS } from "@money-matters/ui/mobile";
+import { DESIGN_TOKENS, PLATFORM_STYLE } from "@money-matters/ui/mobile";
 import { ForgotPasswordEmailStep } from "../../components/auth/ForgotPasswordEmailStep";
 import { ForgotPasswordOtpStep } from "../../components/auth/ForgotPasswordOtpStep";
 import { ForgotPasswordSuccessStep } from "../../components/auth/ForgotPasswordSuccessStep";
@@ -50,7 +49,7 @@ export default function ForgotPasswordScreen() {
   return (
     <KeyboardAvoidingView
       style={styles.flex}
-      behavior={Platform.OS === "ios" ? "padding" : "height"}
+      behavior={PLATFORM_STYLE.keyboardBehavior}
     >
       <ScrollView
         contentContainerStyle={[

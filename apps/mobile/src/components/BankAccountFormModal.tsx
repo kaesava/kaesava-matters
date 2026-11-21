@@ -5,7 +5,6 @@ import {
   TouchableOpacity,
   StyleSheet,
   ScrollView,
-  Switch,
 } from 'react-native';
 import {
   DESIGN_TOKENS,
@@ -13,8 +12,8 @@ import {
   MobileInput,
   MobileButton,
   FormErrorBanner,
+  SwitchRow,
   showMobileConfirm,
-  InfoTooltip,
 } from '@money-matters/ui/mobile';
 import { t } from '@money-matters/i18n';
 import { useAppFeatures } from '../context/useAppFeatures';
@@ -149,18 +148,14 @@ export function BankAccountFormModal({
 
         {/* Privacy Toggle with Single Tooltip */}
         {hasPrivateMode && (
-          <View style={styles.switchRow}>
-            <View style={{ flex: 1, flexDirection: 'row', alignItems: 'center', gap: 6 }}>
-              <Text style={styles.switchLabel}>{t('settings.bankAccountForm.privacyLabel')}</Text>
-              <InfoTooltip content={t('settings.bankAccountForm.privacyHint')} />
-            </View>
-            <Switch
-              value={isPrivate}
-              onValueChange={handleTogglePrivate}
-              disabled={isEdit}
-              trackColor={{ false: DESIGN_TOKENS.colors.border, true: DESIGN_TOKENS.colors.sereneBlue }}
-            />
-          </View>
+          <SwitchRow
+            label={t('settings.bankAccountForm.privacyLabel')}
+            infoTooltip={t('settings.bankAccountForm.privacyHint')}
+            value={isPrivate}
+            onValueChange={handleTogglePrivate}
+            disabled={isEdit}
+            noBorder
+          />
         )}
       </ScrollView>
     </MobileModalDialog>

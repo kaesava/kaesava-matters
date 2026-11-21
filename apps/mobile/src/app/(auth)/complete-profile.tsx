@@ -1,5 +1,5 @@
 import React from "react";
-import { View, Text, ScrollView, TouchableOpacity, StyleSheet, KeyboardAvoidingView, Platform } from "react-native";
+import { View, Text, ScrollView, TouchableOpacity, StyleSheet, KeyboardAvoidingView } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { t } from "@money-matters/i18n";
 import { SUPPORTED_COUNTRIES } from "@money-matters/types";
@@ -9,7 +9,7 @@ import {
   MobileButton,
   MobileInput,
   FormLabel,
-  FormErrorBanner,
+  FormErrorBanner,  PLATFORM_STYLE,
 } from "@money-matters/ui/mobile";
 import { SignUpTermsCheckbox } from "../../components/auth/SignUpTermsCheckbox";
 import { useCompleteProfile } from "../../components/auth/useCompleteProfile";
@@ -21,7 +21,7 @@ export default function CompleteProfileScreen() {
   return (
     <KeyboardAvoidingView
       style={styles.flex}
-      behavior={Platform.OS === "ios" ? "padding" : "height"}
+      behavior={PLATFORM_STYLE.keyboardBehavior}
     >
       <ScrollView
         contentContainerStyle={[

@@ -6,7 +6,6 @@ import {
   ScrollView,
   StyleSheet,
   KeyboardAvoidingView,
-  Platform,
 } from "react-native";
 import { useRouter } from "expo-router";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
@@ -15,7 +14,7 @@ import {
   DESIGN_TOKENS,
   MobileLogo,
   MobileButton,
-  FormErrorBanner,
+  FormErrorBanner,  PLATFORM_STYLE,
 } from "@money-matters/ui/mobile";
 import { MobileSocialAuthButtons } from "../../components/auth/MobileSocialAuthButtons";
 import { MobileOtpVerificationView } from "../../components/auth/MobileOtpVerificationView";
@@ -30,7 +29,7 @@ export default function SignInScreen() {
   return (
     <KeyboardAvoidingView
       style={styles.flex}
-      behavior={Platform.OS === "ios" ? "padding" : "height"}
+      behavior={PLATFORM_STYLE.keyboardBehavior}
     >
       <ScrollView
         contentContainerStyle={[
