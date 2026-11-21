@@ -11,7 +11,7 @@ import {
   getCurrencySymbol,
   fmtDate as uiFmtDate,
   fmtDateIso as uiFmtDateIso,
-} from '@money-matters/ui';
+} from '@money-matters/ui/mobile';
 
 import {
   setMobileLocaleConfig,

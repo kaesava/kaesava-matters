@@ -17,4 +17,20 @@ config.resolver.nodeModulesPaths = [
   path.resolve(monorepoRoot, 'node_modules'),
 ];
 
+// Workspace packages export raw TypeScript source with ESM-style `.js` relative
+// imports (e.g. `./NotesFeedModal.js` -> `./NotesFeedModal.tsx`). Fall back to
+// extensionless resolution so Metro's `sourceExts` resolves `.ts`/`.tsx` files.
+const defaultResolveRequest = config.resolver.resolveRequest;
+config.resolver.resolveRequest = (context, moduleName, platform) => {
+  const resolve = defaultResolveRequest ?? context.resolveRequest;
+  try {
+    return resolve(context, moduleName, platform);
+  } catch (err) {
+    if (moduleName.startsWith('.') && moduleName.endsWith('.js')) {
+      return resolve(context, moduleName.slice(0, -3), platform);
+    }
+    throw err;
+  }
+};
+
 module.exports = config;

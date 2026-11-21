@@ -31,7 +31,7 @@ export * from './fields/RecurrenceBuilder';
 export * from '../hooks/useRecurrenceBuilder';
 export * from '../dates/recurrence';
 export * from '../dates/date-formatting';
-export { fmtDateTime } from '../lib/format';
+export { fmtDateTime, formatCurrency, getCurrencySymbol } from '../lib/format';
 
 export { default as FormLabel, FormLabel as MobileFormLabel } from './FormLabel';
 export type { FormLabelProps as MobileFormLabelProps } from './FormLabel';
