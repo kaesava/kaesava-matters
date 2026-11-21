@@ -3,7 +3,6 @@ import { AppState, AppStateStatus, Platform } from 'react-native';
 import { Stack, usePathname, useGlobalSearchParams, router, type Href } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import * as NavigationBar from 'expo-navigation-bar';
-import * as ScreenCapture from 'expo-screen-capture';
 import { initPushNotificationHandlers } from '../lib/push';
 import { AppProviders } from '../providers/AppProviders';
 import { DESIGN_TOKENS } from '@money-matters/ui/mobile';
@@ -50,9 +49,6 @@ function RootLayout() {
       try {
         if (typeof NavigationBar.setButtonStyleAsync === 'function') {
           NavigationBar.setButtonStyleAsync('dark').catch(() => {});
-        }
-        if (typeof ScreenCapture.preventScreenCaptureAsync === 'function') {
-          ScreenCapture.preventScreenCaptureAsync().catch(() => {});
         }
       } catch {
         // ignore

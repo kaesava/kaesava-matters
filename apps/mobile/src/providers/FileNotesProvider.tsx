@@ -1,5 +1,5 @@
 import React, { useMemo } from 'react';
-import { trpc, API_BASE_URL } from '../lib/trpc';
+import { trpc, API_BASE_URL, getStoredTokenAndCookie, getActiveTenantId } from '../lib/trpc';
 import {
   FileNotesServiceProvider,
   type FileNotesService,
@@ -30,6 +30,15 @@ export function MobileFileNotesProvider({ children }: { children: React.ReactNod
       getDownloadUrl: async (id: string) => {
         const res = await trpcUtils.fileNotes.getDownloadUrl.fetch({ id });
         return { downloadUrl: resolveMobileFileUrl(res.downloadUrl) };
+      },
+      getAuthHeaders: async () => {
+        const { token, cookie } = await getStoredTokenAndCookie();
+        const tenantId = await getActiveTenantId();
+        const headers: Record<string, string> = {};
+        if (cookie) headers['Cookie'] = cookie;
+        if (token) headers['Authorization'] = `Bearer ${token}`;
+        if (tenantId) headers['x-tenant-id'] = tenantId;
+        return headers;
       },
       useCreatePreSignedUrlMutation: () => {
         const mut = trpc.fileNotes.createPreSignedUrl.useMutation();

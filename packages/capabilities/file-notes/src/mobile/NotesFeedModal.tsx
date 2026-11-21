@@ -136,10 +136,12 @@ export function NotesFeedModal({
         const fileBlobResponse = await fetch(pickedFile.uri);
         const blob = await fileBlobResponse.blob();
 
+        const authHeaders = (await service.getAuthHeaders?.()) ?? {};
         const uploadRes = await fetch(presigned.uploadUrl, {
           method: 'PUT',
           body: blob,
           headers: {
+            ...authHeaders,
             'Content-Type': pickedFile.mimeType || 'application/octet-stream',
           },
         });

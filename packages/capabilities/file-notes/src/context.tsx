@@ -14,6 +14,7 @@ export interface FileNotesService {
     refetch: () => void;
   };
   getDownloadUrl: (id: string) => Promise<{ downloadUrl: string }>;
+  getAuthHeaders?: () => Promise<Record<string, string>>;
   useCreatePreSignedUrlMutation: () => {
     mutateAsync: (input: CreatePreSignedUrlInput) => Promise<{ fileKey: string; uploadUrl: string }>;
     isPending: boolean;
