@@ -50,7 +50,11 @@ export async function previewAllocationQuery(
       if (row.bankAccountIsPrivate && row.bankAccountUserId !== userId) return false;
       return true;
     })
-    .map((row) => row.envelope);
+    .map((row) => ({
+      ...row.envelope,
+      isPrivate: Boolean(row.envelope.isPrivate || row.bankAccountIsPrivate),
+      userId: row.envelope.userId || row.bankAccountUserId,
+    }));
 
   // 2. Compute balances using DB-side aggregate SUM(CASE WHEN...)
   const balancesMap = await getEnvelopeBalancesMap(tenantId, appId, dbClient);
@@ -123,17 +127,26 @@ export async function previewAllocationQuery(
 
   const { mapEnvelopeToEngineBucket } = await import("../engine/envelope-engine-mapper.js");
   const { getActiveAllocationStrategyQuery } = await import("./get-active-allocation-strategy.query.js");
-  const activeStrategy = await getActiveAllocationStrategyQuery(tenantId, appId, userId, dbClient);
+  const [activeStrategy, personalStrategy] = await Promise.all([
+    getActiveAllocationStrategyQuery(tenantId, appId, userId, dbClient, false),
+    getActiveAllocationStrategyQuery(tenantId, appId, userId, dbClient, true),
+  ]);
 
   const isPrivateAccount = Boolean(event?.bankAccountIsPrivate);
+  const hasPersonalSplit = isPrivateAccount || Boolean(event?.contributionMode && event.contributionMode !== "FULL");
   const allVisibleEngineBuckets: EngineBucket[] = dbEnvelopes.map((env) =>
     mapEnvelopeToEngineBucket(env, balancesMap[env.id] || 0)
   );
-  const engineBuckets: EngineBucket[] = isPrivateAccount
+  const engineBuckets: EngineBucket[] = hasPersonalSplit
     ? allVisibleEngineBuckets
     : allVisibleEngineBuckets.filter((env) => !env.isPrivate);
 
   const strategySteps = activeStrategy?.steps?.map((s) => ({
+    stepType: s.stepType,
+    targetEnvelopeId: s.targetEnvelopeId,
+    config: s.config as Record<string, unknown> | null,
+  }));
+  const personalStrategySteps = personalStrategy?.steps?.map((s) => ({
     stepType: s.stepType,
     targetEnvelopeId: s.targetEnvelopeId,
     config: s.config as Record<string, unknown> | null,
@@ -238,6 +251,7 @@ export async function previewAllocationQuery(
         timezone: tenantTz,
         currencySymbol,
         strategySteps,
+        personalStrategySteps,
         runwayDays: runwayDays ?? 30,
         dueBufferDays: bufferDays,
       });
@@ -266,9 +280,10 @@ export async function previewAllocationQuery(
     incomeAmount,
     incomeType: event?.incomeType || "SALARIED",
     incomeUserId,
-    contributionMode: isPrivateAccount ? (event?.contributionMode || "FULL") : "FULL",
-    contributionValue: isPrivateAccount && event?.contributionValue ? parseFloat(event.contributionValue) : null,
+    contributionMode: event?.contributionMode || "FULL",
+    contributionValue: event?.contributionValue ? parseFloat(event.contributionValue) : null,
     strategySteps,
+    personalStrategySteps,
     runwayDays: runwayDays ?? 30,
     buckets: engineBuckets,
     paycheckDate: event ? new Date(event.expectedDate + "T00:00:00Z") : new Date(),

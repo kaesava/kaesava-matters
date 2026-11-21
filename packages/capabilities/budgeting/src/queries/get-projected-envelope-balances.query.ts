@@ -11,6 +11,7 @@ import {
   DbOrTx,
 } from "@money-matters/db";
 import { eq, and, sql } from "drizzle-orm";
+import { getTenantDateString } from "@money-matters/core";
 import { computeMatrixProjection, MatrixIncomeEvent, ScheduledExpenseEvent } from "../engine/horizon-projection-engine.js";
 import { EngineBucket } from "../engine/allocation-engine.js";
 
@@ -84,10 +85,20 @@ export async function getProjectedPoolBalancesQuery(
   const visibleEnvelopeIds = new Set(visibleEnvelopes.map((e) => e.id));
 
   const tenantTimezone = tenantRecord[0]?.timezone || "UTC";
+  const futureDate = new Date();
+  futureDate.setMonth(futureDate.getMonth() + 12);
+  const futureStr = getTenantDateString(futureDate, { timezone: tenantTimezone });
 
   const { mapEnvelopeToEngineBucket } = await import("../engine/envelope-engine-mapper.js");
   const engineBuckets: EngineBucket[] = visibleEnvelopes.map((env) =>
-    mapEnvelopeToEngineBucket(env as unknown as Parameters<typeof mapEnvelopeToEngineBucket>[0], envBalancesMap[env.id] || 0)
+    mapEnvelopeToEngineBucket(
+      {
+        ...env,
+        isPrivate: Boolean(env.isPrivate || env.bankAccountIsPrivate),
+        userId: env.userId || env.bankAccountUserId,
+      } as unknown as Parameters<typeof mapEnvelopeToEngineBucket>[0],
+      envBalancesMap[env.id] || 0
+    )
   );
 
   // 2. Fetch pending income events
@@ -116,6 +127,7 @@ export async function getProjectedPoolBalancesQuery(
         eq(incomeEvents.tenantId, tenantId),
         eq(incomeEvents.appId, appId),
         sql`${incomeEvents.status} != 'CONFIRMED'`,
+        sql`${incomeEvents.expectedDate} <= ${futureStr}`,
         sql`${incomeEvents.archivedAt} IS NULL`
       )
     );
@@ -162,6 +174,7 @@ export async function getProjectedPoolBalancesQuery(
         eq(expenseEvents.tenantId, tenantId),
         eq(expenseEvents.appId, appId),
         eq(expenseEvents.status, "PENDING"),
+        sql`${expenseEvents.expectedDate} <= ${futureStr}`,
         sql`${expenseEvents.archivedAt} IS NULL`
       )
     );
@@ -201,14 +214,22 @@ export async function getProjectedPoolBalancesQuery(
     }
   }
 
-  // 5. Compute matrix projection using active household strategy
+  // 5. Compute matrix projection using active household and personal strategies
   const { getActiveAllocationStrategyQuery } = await import("./get-active-allocation-strategy.query.js");
-  const activeStrategy = await getActiveAllocationStrategyQuery(tenantId, appId, userId, dbClient);
+  const [activeStrategy, personalStrategy] = await Promise.all([
+    getActiveAllocationStrategyQuery(tenantId, appId, userId, dbClient, false),
+    getActiveAllocationStrategyQuery(tenantId, appId, userId, dbClient, true),
+  ]);
 
   const projection = computeMatrixProjection({
     currentUserId: userId,
     categories: engineBuckets,
     strategySteps: activeStrategy?.steps?.map((s) => ({
+      stepType: s.stepType,
+      targetEnvelopeId: s.targetEnvelopeId,
+      config: s.config as Record<string, unknown> | null,
+    })),
+    personalStrategySteps: personalStrategy?.steps?.map((s) => ({
       stepType: s.stepType,
       targetEnvelopeId: s.targetEnvelopeId,
       config: s.config as Record<string, unknown> | null,

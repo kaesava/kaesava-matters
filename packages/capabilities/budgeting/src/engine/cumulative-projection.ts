@@ -42,6 +42,7 @@ export interface CumulativeProjectionInput {
   timezone?: string;
   currencySymbol?: string;
   strategySteps?: AllocationStrategyStepItem[];
+  personalStrategySteps?: AllocationStrategyStepItem[];
   runwayDays?: number;
   dueBufferDays?: number;
 }
@@ -176,9 +177,10 @@ export function runCumulativeProjection(input: CumulativeProjectionInput): Cumul
         incomeAmount: totalIncome,
         incomeType: evt.incomeType || "SALARIED",
         incomeUserId: evt.userId || input.currentUserId,
-        contributionMode: evt.isPrivate ? evt.contributionMode : "FULL",
-        contributionValue: evt.isPrivate ? evt.contributionValue : null,
+        contributionMode: evt.contributionMode ?? "FULL",
+        contributionValue: evt.contributionValue ?? null,
         strategySteps: input.strategySteps,
+        personalStrategySteps: input.personalStrategySteps,
         runwayDays: input.runwayDays ?? 30,
         dueBufferDays: input.dueBufferDays,
         buckets: currentBuckets,
@@ -218,7 +220,8 @@ export function runCumulativeProjection(input: CumulativeProjectionInput): Cumul
     for (const cat of input.categories) {
       const startBal = runningBalances.get(cat.id) ?? 0;
       const alloc = allocations.get(cat.id)?.proposedAmount ?? 0;
-      const afterAlloc = Number((startBal + alloc).toFixed(2));
+      // Confirmed income ledger entries are already reflected in initial currentBalance
+      const afterAlloc = isConfirmed ? startBal : Number((startBal + alloc).toFixed(2));
       balancesAfterAlloc.set(cat.id, afterAlloc);
       runningBalances.set(cat.id, afterAlloc);
     }

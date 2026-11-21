@@ -1,8 +1,38 @@
-import { describe, it, expect } from "vitest";
-import { toMonthlyAmount } from "./can-afford-simulation.query.js";
+import { describe, it, expect, vi } from "vitest";
+import type { DbOrTx } from "@money-matters/db";
+import * as dbModule from "@money-matters/db";
+import { toMonthlyAmount, canAffordSimulationQuery } from "./can-afford-simulation.query.js";
 import { simulateOneOffPurchase } from "./simulation-steps/one-off-simulation.js";
 import { simulateRecurringCommitment } from "./simulation-steps/recurring-simulation.js";
 import type { ProjectionEngineFn } from "@money-matters/types";
+
+vi.mock("@money-matters/db", async (importOriginal) => {
+  const actual = await importOriginal<typeof dbModule>();
+  return {
+    ...actual,
+    getEnvelopeBalancesMap: vi.fn(),
+  };
+});
+
+function makeMockDb(selectResults: unknown[][]): DbOrTx {
+  let callIdx = 0;
+  return {
+    select: vi.fn().mockImplementation(() => {
+      const rows = selectResults[callIdx++] ?? [];
+      const thenable = Promise.resolve(rows) as Promise<unknown[]> & {
+        from: ReturnType<typeof vi.fn>;
+        leftJoin: ReturnType<typeof vi.fn>;
+        where: ReturnType<typeof vi.fn>;
+        limit: ReturnType<typeof vi.fn>;
+      };
+      thenable.from = vi.fn().mockReturnValue(thenable);
+      thenable.leftJoin = vi.fn().mockReturnValue(thenable);
+      thenable.where = vi.fn().mockReturnValue(thenable);
+      thenable.limit = vi.fn().mockResolvedValue(rows);
+      return thenable;
+    }),
+  } as unknown as DbOrTx;
+}
 
 /**
  * Unit tests for canAffordSimulationQuery verdict logic.
@@ -271,6 +301,112 @@ describe("canAffordSimulationQuery — verdict logic", () => {
     expect(capturedPhantomHasPoolId).toBe(true);
     expect(res.verdict).toBe("HARD_NO");
     expect(res.rationaleSteps.join(" ")).toContain("€");
+  });
+
+  it("excludes CONFIRMED incomes from future projection and inherits bankAccountIsPrivate on buckets", async () => {
+    const todayStr = new Date().toISOString().slice(0, 10);
+    const futureDate = new Date(Date.now() + 7 * 86400000).toISOString().slice(0, 10);
+    let capturedInput: Parameters<ProjectionEngineFn>[0] | null = null;
+    const spyEngine: ProjectionEngineFn = (input) => {
+      capturedInput = input;
+      return { steps: [], finalBalances: new Map(), getStepForEvent: () => undefined };
+    };
+
+    const mockDb = makeMockDb([
+      [{ timezone: "UTC", currency: "AUD", country: "AU" }],
+      [{ timezone: "UTC" }],
+      [
+        {
+          id: "env-ed",
+          name: "Everyday",
+          envelopeType: "EVERYDAY",
+          fundingMode: "TARGET_BALANCE",
+          bankAccountId: "ba-1",
+          safetyBufferFloor: "0",
+          enteredAmount: "600",
+          monthlyAmount: "600",
+          targetAmount: null,
+          endDate: null,
+          isPriority: false,
+          isSurplusTarget: true,
+          isPrivate: false,
+          userId: null,
+          bankAccountIsPrivate: false,
+          bankAccountUserId: null,
+        },
+        {
+          id: "env-priv-bank",
+          name: "Personal Savings",
+          envelopeType: "GOAL",
+          fundingMode: "TARGET_BALANCE",
+          bankAccountId: "ba-priv",
+          safetyBufferFloor: "0",
+          enteredAmount: "200",
+          monthlyAmount: "200",
+          targetAmount: "2000",
+          endDate: null,
+          isPriority: false,
+          isSurplusTarget: false,
+          isPrivate: false,
+          userId: null,
+          bankAccountIsPrivate: true,
+          bankAccountUserId: "user-1",
+        },
+      ],
+      [
+        {
+          id: "inc-confirmed",
+          sourceName: "Pay",
+          expectedDate: todayStr,
+          expectedAmount: "2000",
+          actualAmount: "2000",
+          status: "CONFIRMED",
+          rrule: null,
+          incomeCreatedBy: "user-1",
+          sourceCreatedBy: "user-1",
+          incomeContributionMode: "FULL",
+          incomeContributionValue: null,
+          sourceContributionMode: "FULL",
+          sourceContributionValue: null,
+          bankAccountIsPrivate: false,
+          bankAccountUserId: null,
+        },
+        {
+          id: "inc-pending",
+          sourceName: "Pay",
+          expectedDate: futureDate,
+          expectedAmount: "2000",
+          actualAmount: null,
+          status: "PENDING",
+          rrule: null,
+          incomeCreatedBy: "user-1",
+          sourceCreatedBy: "user-1",
+          incomeContributionMode: "FULL",
+          incomeContributionValue: null,
+          sourceContributionMode: "FULL",
+          sourceContributionValue: null,
+          bankAccountIsPrivate: false,
+          bankAccountUserId: null,
+        },
+      ],
+      [],
+    ]);
+    vi.mocked(dbModule.getEnvelopeBalancesMap).mockResolvedValue({ "env-ed": 100, "env-priv-bank": 500 });
+
+    await canAffordSimulationQuery(
+      { amount: "500", mode: "ONE_OFF", includePersonal: true },
+      "tenant-1",
+      "app-1",
+      "user-1",
+      mockDb,
+      { projectionEngine: spyEngine }
+    );
+
+    expect(capturedInput).not.toBeNull();
+    expect(capturedInput!.incomeEvents.map((i) => i.id)).toEqual(["inc-pending"]);
+    const privBucket = capturedInput!.categories.find((c) => c.id === "env-priv-bank");
+    expect(privBucket?.isPrivate).toBe(true);
+    expect(privBucket?.userId).toBe("user-1");
   });
 });
 

@@ -325,4 +325,64 @@ describe("cumulative-projection engine", () => {
       2
     );
   });
+
+  it("should apply personalStrategySteps to private funds even on shared-account income with contributionMode", () => {
+    const result = runCumulativeProjection({
+      currentUserId: "user-1",
+      categories: [
+        ...mockCategories,
+        { id: "priv-bill", name: "Private Bill", type: "BILL", monthlyAmount: 260, currentBalance: 0, isPrivate: true, userId: "user-1" },
+        { id: "priv-everyday", name: "Private Spend", type: "EVERYDAY", monthlyAmount: 260, currentBalance: 0, isPrivate: true, userId: "user-1" },
+      ],
+      incomeEvents: [
+        {
+          id: "evt-shared-split",
+          expectedDate: "2026-09-01",
+          expectedAmount: 1000,
+          status: "PENDING",
+          isPrivate: false,
+          userId: "user-1",
+          contributionMode: "PERCENTAGE",
+          contributionValue: 50,
+        },
+      ],
+      personalStrategySteps: [
+        { stepType: "STANDARD_BILLS" },
+        { stepType: "EVERYDAY_ALLOWANCE" },
+        { stepType: "SURPLUS_SWEEP" },
+      ],
+    });
+
+    const step = result.steps[0];
+    // 50% of 1000 = 500 private: 120 to priv-bill (260 * 12/26), 120 to priv-everyday, 260 swept to priv-everyday = 380
+    expect(step.allocations.get("priv-bill")?.proposedAmount).toBeCloseTo(120, 2);
+    expect(step.allocations.get("priv-everyday")?.proposedAmount).toBeCloseTo(380, 2);
+  });
+
+  it("should not double-count CONFIRMED income allocations into carried-forward balances", () => {
+    const result = runCumulativeProjection({
+      categories: [
+        { id: "pool-bills", name: "Bills", type: "BILL", monthlyAmount: 500, currentBalance: 800 },
+        { id: "pool-surplus", name: "Surplus", type: "GOAL", isSurplusTarget: true, currentBalance: 200 },
+      ],
+      incomeEvents: [
+        { id: "evt-confirmed", expectedDate: "2026-09-01", expectedAmount: 1000, status: "CONFIRMED" },
+        { id: "evt-pending", expectedDate: "2026-09-15", expectedAmount: 1000, status: "PENDING" },
+      ],
+      savedPlans: {
+        "evt-confirmed": [
+          { poolId: "pool-bills", proposedAmount: 500 },
+          { poolId: "pool-surplus", proposedAmount: 500 },
+        ],
+      },
+    });
+
+    const confirmedStep = result.getStepForEvent("evt-confirmed")!;
+    const pendingStep = result.getStepForEvent("evt-pending")!;
+    // Confirmed step displays its saved allocations, but does not re-add them to currentBalance (800 / 200)
+    expect(confirmedStep.allocations.get("pool-bills")?.proposedAmount).toBe(500);
+    expect(confirmedStep.balancesAfterAlloc.get("pool-bills")).toBe(800);
+    expect(pendingStep.balancesBeforeAlloc.get("pool-bills")).toBe(800);
+    expect(pendingStep.balancesBeforeAlloc.get("pool-surplus")).toBe(200);
+  });
 });

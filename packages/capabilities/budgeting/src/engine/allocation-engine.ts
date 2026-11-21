@@ -72,6 +72,7 @@ export interface AllocationEngineInput {
   contributionMode?: "FULL" | "PERCENTAGE" | "FIXED_AMOUNT";
   contributionValue?: number | string | null;
   strategySteps?: AllocationStrategyStepItem[];
+  personalStrategySteps?: AllocationStrategyStepItem[];
   runwayDays?: number;
   buckets: EngineBucket[];
   paycheckDate: Date;
@@ -255,26 +256,50 @@ export function runAllocationEngine(input: AllocationEngineInput): AllocationEng
     ? executePipeline(sharedCents, sharedBuckets, false, sharedSteps)
     : 0;
 
-  // 2. Rule 0: Route 100% of privateCents to the earner's Private Everyday envelope (fallback: first private envelope)
+  // 2. Run Personal Allocation Strategy (if provided), else route 100% of privateCents to earner's Private Everyday envelope
   if (privateCents > 0 && hasPrivateEnvelopes) {
     const earnerPrivateBuckets = input.buckets.filter(
       (b) => b.isPrivate && (!input.incomeUserId || b.userId === input.incomeUserId)
     );
-    const privateTarget =
-      earnerPrivateBuckets.find((b) => isEverydayBucket(b)) ?? earnerPrivateBuckets[0];
+    if (input.personalStrategySteps && input.personalStrategySteps.length > 0) {
+      const leftoverPrivateCents = executePipeline(privateCents, earnerPrivateBuckets, true, input.personalStrategySteps);
+      if (leftoverPrivateCents > 0) {
+        const fallbackTarget =
+          earnerPrivateBuckets.find((b) => b.isSurplusTarget) ??
+          earnerPrivateBuckets.find((b) => isEverydayBucket(b)) ??
+          earnerPrivateBuckets.find((b) => isGoalBucket(b)) ??
+          earnerPrivateBuckets[0];
+        if (fallbackTarget) {
+          const sym = input.currencySymbol || "$";
+          const line = linesMap.get(fallbackTarget.id)!;
+          line.amountCents += leftoverPrivateCents;
+          line.sweptCents = (line.sweptCents ?? 0) + leftoverPrivateCents;
+          line.reasonings.push(
+            t("payday.engineReasoning.surplusSweep", {
+              allocated: `${sym}${toDollars(leftoverPrivateCents).toFixed(2)}`,
+              name: fallbackTarget.name,
+            })
+          );
+          runningBalances.set(fallbackTarget.id, (runningBalances.get(fallbackTarget.id) ?? 0) + leftoverPrivateCents);
+        }
+      }
+    } else {
+      const privateTarget =
+        earnerPrivateBuckets.find((b) => isEverydayBucket(b)) ?? earnerPrivateBuckets[0];
 
-    if (privateTarget) {
-      const sym = input.currencySymbol || "$";
-      const line = linesMap.get(privateTarget.id)!;
-      line.amountCents += privateCents;
-      line.reasonings.push(
-        t("payday.engineReasoning.personalSingleEnvelope", {
-          allocated: `${sym}${toDollars(privateCents).toFixed(2)}`,
-          name: privateTarget.name,
-        })
-      );
-      const curBal = runningBalances.get(privateTarget.id) ?? 0;
-      runningBalances.set(privateTarget.id, curBal + privateCents);
+      if (privateTarget) {
+        const sym = input.currencySymbol || "$";
+        const line = linesMap.get(privateTarget.id)!;
+        line.amountCents += privateCents;
+        line.reasonings.push(
+          t("payday.engineReasoning.personalSingleEnvelope", {
+            allocated: `${sym}${toDollars(privateCents).toFixed(2)}`,
+            name: privateTarget.name,
+          })
+        );
+        const curBal = runningBalances.get(privateTarget.id) ?? 0;
+        runningBalances.set(privateTarget.id, curBal + privateCents);
+      }
     }
   }
 

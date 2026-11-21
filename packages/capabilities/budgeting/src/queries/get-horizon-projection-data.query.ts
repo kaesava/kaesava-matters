@@ -38,7 +38,11 @@ export async function getHorizonProjectionDataQuery(
 
   const activeEnvelopes = rawEnvelopes
     .filter((r) => !(r.envelope.isPrivate && r.envelope.userId !== userId) && !(r.bankAccountIsPrivate && r.bankAccountUserId !== userId))
-    .map((r) => r.envelope);
+    .map((r) => ({
+      ...r.envelope,
+      isPrivate: Boolean(r.envelope.isPrivate || r.bankAccountIsPrivate),
+      userId: r.envelope.userId || r.bankAccountUserId,
+    }));
   const visibleEnvelopeIds = new Set(activeEnvelopes.map((e) => e.id));
 
   const [tenantRecord] = await db.select({ timezone: tenants.timezone }).from(tenants).where(eq(tenants.id, tenantId)).limit(1);
@@ -152,12 +156,20 @@ export async function getHorizonProjectionDataQuery(
   }
 
   const { getActiveAllocationStrategyQuery } = await import("./get-active-allocation-strategy.query.js");
-  const activeStrategy = await getActiveAllocationStrategyQuery(tenantId, appId, userId, db);
+  const [activeStrategy, personalStrategy] = await Promise.all([
+    getActiveAllocationStrategyQuery(tenantId, appId, userId, db, false),
+    getActiveAllocationStrategyQuery(tenantId, appId, userId, db, true),
+  ]);
 
   const projection = computeMatrixProjection({
     currentUserId: userId,
     categories: engineBuckets,
     strategySteps: activeStrategy?.steps?.map((s) => ({
+      stepType: s.stepType,
+      targetEnvelopeId: s.targetEnvelopeId,
+      config: s.config as Record<string, unknown> | null,
+    })),
+    personalStrategySteps: personalStrategy?.steps?.map((s) => ({
       stepType: s.stepType,
       targetEnvelopeId: s.targetEnvelopeId,
       config: s.config as Record<string, unknown> | null,
@@ -179,8 +191,8 @@ export async function getHorizonProjectionDataQuery(
         incomeType: evt.incomeType,
         userId: incomeUserId,
         isPrivate: Boolean(evt.bankAccountIsPrivate),
-        contributionMode: evt.bankAccountIsPrivate ? (evt.contributionMode || "FULL") : "FULL",
-        contributionValue: evt.bankAccountIsPrivate && evt.contributionValue ? parseFloat(evt.contributionValue) : null,
+        contributionMode: evt.contributionMode || "FULL",
+        contributionValue: evt.contributionValue ? parseFloat(evt.contributionValue) : null,
       };
     }),
     expenseEvents: dbExpenseEvents

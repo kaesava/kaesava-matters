@@ -57,7 +57,11 @@ export async function runAllocationCommand(
       if (row.bankAccountIsPrivate && row.bankAccountUserId !== userId) return false;
       return true;
     })
-    .map((row) => row.envelope);
+    .map((row) => ({
+      ...row.envelope,
+      isPrivate: Boolean(row.envelope.isPrivate || row.bankAccountIsPrivate),
+      userId: row.envelope.userId || row.bankAccountUserId,
+    }));
 
   // 2. Compute balances using DB-side aggregate SUM(CASE WHEN...)
   const balancesMap = await getEnvelopeBalancesMap(tenantId, appId, dbClient);
@@ -150,20 +154,29 @@ export async function runAllocationCommand(
 
   const { mapEnvelopeToEngineBucket } = await import("../engine/envelope-engine-mapper.js");
   const { getActiveAllocationStrategyQuery } = await import("../queries/get-active-allocation-strategy.query.js");
-  const activeStrategy = await getActiveAllocationStrategyQuery(tenantId, appId, userId, dbClient);
+  const [activeStrategy, personalStrategy] = await Promise.all([
+    getActiveAllocationStrategyQuery(tenantId, appId, userId, dbClient, false),
+    getActiveAllocationStrategyQuery(tenantId, appId, userId, dbClient, true),
+  ]);
 
   const isPrivateAccount = Boolean(eventWithSource?.bankAccountIsPrivate);
+  const hasPersonalSplit = isPrivateAccount || Boolean(eventWithSource?.contributionMode && eventWithSource.contributionMode !== "FULL");
   const engineBuckets: EngineBucket[] = dbEnvelopes
-    .filter((env) => isPrivateAccount || !env.isPrivate)
+    .filter((env) => hasPersonalSplit || !env.isPrivate)
     .map((env) => mapEnvelopeToEngineBucket(env, balancesMap[env.id] || 0));
 
   const engineOutput = runAllocationEngine({
     incomeAmount,
     incomeType: eventWithSource?.incomeType || "SALARIED",
     incomeUserId,
-    contributionMode: isPrivateAccount ? (eventWithSource?.contributionMode || "FULL") : "FULL",
-    contributionValue: isPrivateAccount && eventWithSource?.contributionValue ? parseFloat(eventWithSource.contributionValue) : null,
+    contributionMode: eventWithSource?.contributionMode || "FULL",
+    contributionValue: eventWithSource?.contributionValue ? parseFloat(eventWithSource.contributionValue) : null,
     strategySteps: activeStrategy?.steps?.map((s) => ({
+      stepType: s.stepType,
+      targetEnvelopeId: s.targetEnvelopeId,
+      config: s.config as Record<string, unknown> | null,
+    })),
+    personalStrategySteps: personalStrategy?.steps?.map((s) => ({
       stepType: s.stepType,
       targetEnvelopeId: s.targetEnvelopeId,
       config: s.config as Record<string, unknown> | null,

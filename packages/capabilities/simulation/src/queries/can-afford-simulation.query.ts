@@ -190,6 +190,7 @@ export async function canAffordSimulationQuery(
   const visibleEnvelopeIds = new Set(visibleEnvelopes.map((e) => e.id));
 
   const filteredIncomes = pendingIncomesRaw.filter((inc) => {
+    if (inc.status === "CONFIRMED") return false;
     if (inc.expectedDate < todayStr) return false;
     if (!inc.bankAccountIsPrivate) return true;
     return includePersonal && inc.bankAccountUserId === userId;
@@ -289,8 +290,8 @@ export async function canAffordSimulationQuery(
         : null,
       targetDate: env.endDate ?? null,
       currentBalance: balance,
-      isPrivate: env.isPrivate ?? false,
-      userId: env.userId ?? undefined,
+      isPrivate: Boolean(env.isPrivate || env.bankAccountIsPrivate),
+      userId: env.userId || env.bankAccountUserId || undefined,
     };
   });
 
