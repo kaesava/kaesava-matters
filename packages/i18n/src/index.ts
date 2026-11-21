@@ -27,6 +27,36 @@ export function getLanguage(): SupportedLanguage {
   return currentLanguage;
 }
 
+/**
+ * Creates a scoped app translator that inherits all platform keys from `en`
+ * while allowing an app to supply its own domain namespaces or label overrides.
+ */
+export function createAppI18n(overrides: Record<string, unknown>) {
+  return function appT(
+    key: string,
+    params?: { defaultValue?: string; [key: string]: unknown }
+  ): string {
+    const parts = key.split(".");
+    let current: unknown = overrides;
+    for (const part of parts) {
+      if (current && typeof current === "object" && part in current) {
+        current = (current as Record<string, unknown>)[part];
+      } else {
+        current = undefined;
+        break;
+      }
+    }
+    if (typeof current === "string") {
+      if (!params) return current;
+      return Object.entries(params).reduce(
+        (acc, [k, v]) => (k === "defaultValue" ? acc : acc.replaceAll(`{${k}}`, String(v))),
+        current
+      );
+    }
+    return t(key as TranslationKey, params);
+  };
+}
+
 type NestedKeyOf<ObjectType extends object> = {
   [Key in keyof ObjectType & (string | number)]: ObjectType[Key] extends object
     ? `${Key}.${NestedKeyOf<ObjectType[Key]>}`

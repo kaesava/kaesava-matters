@@ -14,7 +14,7 @@ import {
 import { eq, and, sql, inArray } from "drizzle-orm";
 import { sendNotificationEmail, todayInZone, getLocalHourInZone, formatCurrency } from "@money-matters/core";
 import { t } from "@money-matters/i18n";
-import { isChannelEnabled, readNotificationPrefs, resolveNotificationRecipient } from "../helpers.js";
+import { isChannelEnabled, readNotificationPrefs, resolveNotificationRecipient } from "@money-matters/capability-notifications";
 
 function addDaysToIsoDate(isoDate: string, days: number): string {
   const dt = new Date(`${isoDate}T12:00:00Z`);

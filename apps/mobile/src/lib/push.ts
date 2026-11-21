@@ -1,5 +1,6 @@
 import { Platform } from 'react-native';
 import Constants, { ExecutionEnvironment } from 'expo-constants';
+import { resolveAppConfigOrDefault } from '@money-matters/config';
 
 export function getPushPlatform(): 'ios' | 'android' {
   return Platform.OS === 'ios' ? 'ios' : 'android';
@@ -48,7 +49,7 @@ export async function registerPushNotificationsAsync(): Promise<string | null> {
     const projectId =
       Constants.expoConfig?.extra?.eas?.projectId ??
       Constants.easConfig?.projectId ??
-      '5cf01baf-7dc6-43bf-aa23-a72da2de4aaf';
+      resolveAppConfigOrDefault().easProjectId;
 
     const expoToken = await Notifications.getExpoPushTokenAsync({ projectId });
     const token = expoToken.data;

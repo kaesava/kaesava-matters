@@ -3,7 +3,7 @@ import { db, envelopes, getEnvelopeBalancesMap, tenants, tenantUsers, users, use
 import { eq, and, sql, inArray } from "drizzle-orm";
 import { sendNotificationEmail, formatCurrency, logger } from "@money-matters/core";
 import { t } from "@money-matters/i18n";
-import { isChannelEnabled, isLocalScheduleMatch, readNotificationPrefs, resolveNotificationRecipient } from "../helpers.js";
+import { isChannelEnabled, isLocalScheduleMatch, readNotificationPrefs, resolveNotificationRecipient } from "@money-matters/capability-notifications";
 
 export function createWeeklyDigestWorkflow(inngest: Inngest) {
   return inngest.createFunction(

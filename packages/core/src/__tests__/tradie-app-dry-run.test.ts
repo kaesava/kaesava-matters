@@ -15,6 +15,8 @@ import {
   planSeriesEditScope,
   canRolePerform,
   buildCorsHeaders,
+  evaluateAuthEdgeProxy,
+  createConsentGatedTelemetry,
 } from "../index.js";
 
 /**
@@ -33,6 +35,9 @@ describe("Dry Run: TradiePro Multi-Tenant App Assembly", () => {
       name: "TradiePro",
       slug: "tradie-pro",
       trialDays: 14,
+      maxOwnedTenantsPerUser: 5,
+      storageKeyPrefix: "tradie_pro",
+      easProjectId: "tradie-eas-project-id",
       branding: {
         companyName: "Kaesava AU",
         primaryDomain: "tradiepro.kaesava.au",
@@ -70,6 +75,34 @@ describe("Dry Run: TradiePro Multi-Tenant App Assembly", () => {
     expect(manifest.terminology.tenantSingular).toBe("Company");
     expect(manifest.terminology.memberSingular).toBe("Tradie");
     expect(manifest.trialDays).toBe(14);
+    expect(manifest.maxOwnedTenantsPerUser).toBe(5);
+    expect(manifest.storageKeyPrefix).toBe("tradie_pro");
+    expect(manifest.easProjectId).toBe("tradie-eas-project-id");
+
+    // 1b. Auth Edge Proxy & Consent-Gated Telemetry
+    const proxyUnauth = evaluateAuthEdgeProxy("/dashboard/jobs", () => false, {
+      publicPrefixes: ["/sign-in", "/invite/"],
+    });
+    expect(proxyUnauth).toEqual({
+      action: "redirect",
+      redirectPath: "/sign-in?redirect=%2Fdashboard%2Fjobs",
+    });
+    const proxyAuth = evaluateAuthEdgeProxy(
+      "/dashboard/jobs",
+      (name) => name === "__Secure-neon-auth.session_token",
+      { publicPrefixes: ["/sign-in"] }
+    );
+    expect(proxyAuth).toEqual({ action: "next" });
+
+    const captureMock = vi.fn();
+    const flushMock = vi.fn().mockResolvedValue(undefined);
+    const telemetry = createConsentGatedTelemetry({
+      client: { capture: captureMock, identify: vi.fn(), flush: flushMock },
+      isUserTelemetryGranted: async (_db, uid) => uid === "tradie-1",
+    });
+    await telemetry.captureIfConsented({}, "tradie-1", "job_completed", { app_id: TRADIE_APP_ID });
+    await telemetry.captureIfConsented({}, "tradie-2", "job_completed", { app_id: TRADIE_APP_ID });
+    expect(captureMock).toHaveBeenCalledTimes(1);
 
     // 2. Unified Feature Flags
     const flags = resolveEffectiveAppFlags(TRADIE_APP_ID, { fileNotes: true });

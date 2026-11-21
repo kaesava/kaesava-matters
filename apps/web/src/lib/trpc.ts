@@ -11,6 +11,7 @@
  */
 import { createTRPCReact } from "@trpc/react-query";
 import { httpBatchLink } from "@trpc/client";
+import { resolveAppConfigOrDefault } from "@money-matters/config";
 import type { AppRouter } from "../../../api/src/routers/_app";
 
 export const trpc: ReturnType<typeof createTRPCReact<AppRouter>> = createTRPCReact<AppRouter>();
@@ -41,13 +42,18 @@ export function buildTrpcClient(): ReturnType<typeof trpc.createClient> {
       httpBatchLink({
         url: `${getBaseUrl()}/trpc`,
         headers() {
+          const appConfig = resolveAppConfigOrDefault(process.env.NEXT_PUBLIC_APP_ID);
+          const headers: Record<string, string> = {
+            "x-app-id": appConfig.id,
+          };
           if (typeof window !== "undefined") {
-            const activeTenantId = localStorage.getItem("money_matters_active_tenant_id");
+            const storageKey = `${appConfig.storageKeyPrefix ?? "money_matters"}_active_tenant_id`;
+            const activeTenantId = localStorage.getItem(storageKey);
             if (activeTenantId) {
-              return { "x-tenant-id": activeTenantId };
+              headers["x-tenant-id"] = activeTenantId;
             }
           }
-          return {};
+          return headers;
         },
         // credentials: "include" sends cookies on same-origin /api/trpc requests
         fetch: (url, options) =>

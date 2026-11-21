@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
+import { evaluateAuthEdgeProxy } from "@money-matters/core";
 
-// Paths that are accessible without authentication
 const PUBLIC_PREFIXES = [
   "/sign-in",
   "/sign-up",
@@ -13,49 +13,22 @@ const PUBLIC_PREFIXES = [
 ];
 
 export function proxy(request: NextRequest) {
-  const { pathname } = request.nextUrl;
+  const decision = evaluateAuthEdgeProxy(
+    request.nextUrl.pathname,
+    (name) => Boolean(request.cookies.get(name)),
+    {
+      publicPrefixes: PUBLIC_PREFIXES,
+      isAuthEnabled: process.env.NEXT_PUBLIC_ENABLE_AUTH !== "false",
+    }
+  );
 
-  // Global feature flag check: block auth and app access when auth is disabled
-  const isAuthEnabled = process.env.NEXT_PUBLIC_ENABLE_AUTH !== "false";
-
-  if (!isAuthEnabled && pathname !== "/" && !pathname.startsWith("/blog")) {
-    const landingUrl = new URL("/", request.url);
-    landingUrl.searchParams.set("early_access", "true");
-    return NextResponse.redirect(landingUrl);
-  }
-
-  // Allow root landing page
-  if (pathname === "/") {
-    return NextResponse.next();
-  }
-
-  // Allow all public paths
-  if (PUBLIC_PREFIXES.some((prefix) => pathname.startsWith(prefix))) {
-    return NextResponse.next();
-  }
-
-  // Check for Neon Auth / Better Auth session cookies
-  const sessionCookie =
-    request.cookies.get("__Secure-neon-auth.session_token") ??
-    request.cookies.get("neon-auth.session_token") ??
-    request.cookies.get("better-auth.session_token") ??
-    request.cookies.get("__Secure-better-auth.session_token") ??
-    request.cookies.get("session_token") ??
-    request.cookies.get("__Secure-session_token") ??
-    request.cookies.get("neon_auth_session") ??
-    request.cookies.get("session") ??
-    request.cookies.get("__Secure-session");
-
-  if (!sessionCookie) {
-    const signInUrl = new URL("/sign-in", request.url);
-    signInUrl.searchParams.set("redirect", pathname);
-    return NextResponse.redirect(signInUrl);
+  if (decision.action === "redirect" && decision.redirectPath) {
+    return NextResponse.redirect(new URL(decision.redirectPath, request.url));
   }
 
   return NextResponse.next();
 }
 
 export const config = {
-  // Apply proxy strictly to protected routes; public pages (/sign-in, /sign-up, etc.) are served statically from edge cache
   matcher: ["/dashboard/:path*", "/setup/:path*", "/complete-profile/:path*", "/subscription/:path*"],
 };

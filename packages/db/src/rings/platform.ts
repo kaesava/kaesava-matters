@@ -1,4 +1,5 @@
 export * from "../schema/base.js";
+export * from "../schema/audit-columns.js";
 export * from "../schema/app.js";
 export * from "../schema/user.js";
 export * from "../schema/user_preference.js";

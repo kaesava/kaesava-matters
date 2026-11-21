@@ -27,6 +27,9 @@ export interface AppConfig {
   name: string;
   slug: string;
   trialDays: number;
+  maxOwnedTenantsPerUser?: number;
+  storageKeyPrefix?: string;
+  easProjectId?: string;
   branding: AppBrandingConfig;
   terminology: AppTerminologyConfig;
   allowedRedirectHosts: readonly string[];
@@ -56,6 +59,9 @@ const REGISTRY: Record<string, AppConfig> = {
     name: "Money Matters",
     slug: "money-matters",
     trialDays: 60,
+    maxOwnedTenantsPerUser: 1,
+    storageKeyPrefix: "money_matters",
+    easProjectId: "5cf01baf-7dc6-43bf-aa23-a72da2de4aaf",
     branding: {
       companyName: "Kaesava AU",
       primaryDomain: "moneymatters.kaesava.au",

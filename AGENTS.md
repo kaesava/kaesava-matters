@@ -15,7 +15,11 @@ Refuse or redesign any request that violates tenant isolation, data security, or
 ## 2. Monorepo Topology & Vertical Slice Boundaries
 - **Stack:** pnpm workspaces, Turborepo, Next.js App Router on Cloudflare Workers (`@opennextjs/cloudflare`), Expo React Native (Android target, Expo SDK 54 / RN 0.81.5), Cloudflare Worker API (`apps/api`), tRPC, Drizzle ORM, Neon PostgreSQL (with RLS), Expo SQLite, Neon Auth, Upstash Redis, Zod `.strict()`, Resend, Inngest, Vitest.
 - **`apps/*` (`web`, `mobile`, `api`):** Thin composition and routing layers only. NEVER place domain business logic in apps or pages.
-- **`packages/capabilities/*` (`assistant`, `billing`, `budgeting`, `bug-reports`, `file-notes`, `notifications`, `simulation`, `tenant`, `transactions`):** Decoupled vertical slices. Capabilities MUST NEVER import other capabilities directly; use dependency injection (`DbOrTx`).
+- **`packages/capabilities/*` (`assistant`, `bank-accounts`, `billing`, `budgeting`, `bug-reports`, `file-notes`, `notifications`, `simulation`, `tenant`, `transactions`):** Decoupled vertical slices. Capabilities MUST NEVER import other capabilities directly; use dependency injection (`DbOrTx`).
+- **Platform vs. App-Specific Governance ("Rule of Two" & Hybrid Settings):**
+  - Default new domain features to **app-specific** capabilities; promote to **central platform** (`core`, `ui`, `config`, Ring 2 capabilities) only when it has zero app-specific nouns/tables or when a 2nd app genuinely needs it.
+  - **Hybrid Settings Extension Rule:** Store simple app-specific preference toggles in `tenant_user_preferences.appPreferences[appId]` (validated by an app-owned Zod schema, zero migrations); store relational/FK config in app-owned tables. Both plug into `PlatformSettingsShell` via UI slot tabs.
+  - **Blast-Radius Guardrail:** Ring 1 (`config`, `core`) and Ring 2 (`capability-tenant`, `bank-accounts`, `billing`, `bug-reports`, `file-notes`, `notifications`) MUST NEVER import Ring 3 (`capability-budgeting` or `rings/money-matters`), enforced automatically by `pnpm check:boundaries` in `pnpm validate`.
 - **`packages/core`:** Server infrastructure only (logger with automatic PII redaction, Upstash rate limiter, auth context, `correlationIdHook`).
 - **`packages/db`:** Drizzle schemas, deterministic migrations, RLS policies, seeds.
 - **`packages/types`:** Pure domain contracts, setup presets, Zod `.strict()` DTOs.

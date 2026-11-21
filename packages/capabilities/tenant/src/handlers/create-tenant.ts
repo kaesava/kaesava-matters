@@ -63,23 +63,34 @@ export function createTenantHandler(db: DbOrTx, hooks?: TenantLifecycleHooks<DbO
         .where(eq(users.id, userId));
     }
 
-    const [existingOwnedTenant] = await db
-      .select({ id: tenantUsers.tenantId })
-      .from(tenantUsers)
-      .innerJoin(tenants, eq(tenantUsers.tenantId, tenants.id))
-      .where(
-        and(
-          eq(tenantUsers.userId, userId),
-          eq(tenantUsers.role, "OWNER"),
-          eq(tenants.appId, appId),
-          isNull(tenantUsers.archivedAt),
-          isNull(tenants.archivedAt)
+    const maxOwnedTenants = appConfig.maxOwnedTenantsPerUser ?? 1;
+    if (Number.isFinite(maxOwnedTenants)) {
+      const ownedTenants = await db
+        .select({ id: tenantUsers.tenantId })
+        .from(tenantUsers)
+        .innerJoin(tenants, eq(tenantUsers.tenantId, tenants.id))
+        .where(
+          and(
+            eq(tenantUsers.userId, userId),
+            eq(tenantUsers.role, "OWNER"),
+            eq(tenants.appId, appId),
+            isNull(tenantUsers.archivedAt),
+            isNull(tenants.archivedAt)
+          )
         )
-      )
-      .limit(1);
+        .limit(maxOwnedTenants);
 
-    if (existingOwnedTenant) {
-      throw new Error("You already have an active household. An account can only own one active household at a time.");
+      if (ownedTenants.length >= maxOwnedTenants) {
+        const tenantLabel = appConfig.terminology.tenantSingular.toLowerCase();
+        if (maxOwnedTenants === 1) {
+          throw new Error(
+            `You already have an active ${tenantLabel}. An account can only own one active ${tenantLabel} at a time.`
+          );
+        }
+        throw new Error(
+          `You already have the maximum number of active ${tenantLabel}s (${maxOwnedTenants}).`
+        );
+      }
     }
 
     const normalizedEmail = userEmail?.trim().toLowerCase();

@@ -1,19 +1,10 @@
 import { Inngest } from "inngest";
-import { createWeeklyDigestWorkflow } from "./workflows/weekly-digest.workflow.js";
-import { createPaydayAlertWorkflow } from "./workflows/payday-alert.workflow.js";
-import { createBillAlertWorkflow } from "./workflows/bill-alert.workflow.js";
 
 /**
- * Creates and registers scheduled notification workflows for Inngest.
+ * Platform-level scheduled notification hook.
+ * App-specific scheduled notification crons (e.g., Money Matters weekly digest,
+ * payday alert, bill alert) are registered by each app via `createTimezoneAwareNotificationCron`.
  */
-export function createScheduledNotificationFunctions(inngest: Inngest) {
-  if (!inngest) {
-    return [];
-  }
-
-  return [
-    createWeeklyDigestWorkflow(inngest),
-    createPaydayAlertWorkflow(inngest),
-    createBillAlertWorkflow(inngest),
-  ];
+export function createScheduledNotificationFunctions(_inngest: Inngest) {
+  return [];
 }

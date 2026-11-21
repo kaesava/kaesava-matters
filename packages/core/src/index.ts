@@ -11,3 +11,6 @@ export * from "./archive-registry.js";
 export * from "./schedule-burst.js";
 export * from "./formatters.js";
 export * from "./security-headers.js";
+export * from "./rate-limit-middleware.js";
+export * from "./posthog.js";
+export * from "./next/auth-proxy.js";

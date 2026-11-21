@@ -1,5 +1,6 @@
 import { Inngest } from 'inngest';
 import { db, deviceTokens } from '@money-matters/db';
+import { resolveAppConfigOrDefault } from '@money-matters/config';
 import { sendEmail, logAuditEvent, buildBrandEmailHeader } from '@money-matters/core';
 import { t } from '@money-matters/i18n';
 import { eq, and, isNull } from 'drizzle-orm';
@@ -17,12 +18,14 @@ const partnerInvitePayloadSchema = z.object({
   email: z.string().email(),
   inviteToken: z.string().uuid(),
   tenantId: z.string(),
+  appId: z.string().optional(),
   senderUserId: z.string().optional(),
 }).strict();
 
 const welcomePayloadSchema = z.object({
   userId: z.string(),
   email: z.string().email(),
+  appId: z.string().optional(),
   displayName: z.string().optional(),
 }).strict();
 
@@ -110,18 +113,19 @@ export function createNotificationFunctions(inngest: Inngest) {
     { id: 'send-welcome-email', retries: 3 },
     { event: 'auth/user.signup' },
     async ({ event, step }) => {
-      const { email, displayName } = welcomePayloadSchema.parse(event.data);
+      const { email, displayName, appId } = welcomePayloadSchema.parse(event.data);
+      const appConfig = resolveAppConfigOrDefault(appId);
 
       const result = await step.run('send-resend-welcome', async () => {
         const nameGreeting = displayName ? `Hi ${displayName},` : 'Hello,';
         const html = `
           <div style="font-family: sans-serif; background-color: #0b132b; color: #ffffff; padding: 40px; border-radius: 16px;">
-            ${buildBrandEmailHeader('dark')}
-            <h1 style="color: #2563eb; margin-bottom: 16px;">Money Matters</h1>
+            ${buildBrandEmailHeader('dark', appId)}
+            <h1 style="color: #2563eb; margin-bottom: 16px;">${appConfig.name}</h1>
             <p style="font-size: 16px; line-height: 1.6;">${nameGreeting}</p>
             <p style="font-size: 16px; line-height: 1.6;">${t('notifications.inngest.trialActiveBody')}</p>
             <div style="margin-top: 30px;">
-              <a href="https://moneymatters.kaesava.au/dashboard" style="background-color: #2563eb; color: #ffffff; padding: 14px 28px; text-decoration: none; border-radius: 10px; font-weight: 600; display: inline-block;">${t('notifications.inngest.openDashboardCta')}</a>
+              <a href="${appConfig.branding.appUrl}/dashboard" style="background-color: #2563eb; color: #ffffff; padding: 14px 28px; text-decoration: none; border-radius: 10px; font-weight: 600; display: inline-block;">${t('notifications.inngest.openDashboardCta')}</a>
             </div>
           </div>
         `;
@@ -130,6 +134,7 @@ export function createNotificationFunctions(inngest: Inngest) {
           to: email,
           subject: t('notifications.inngest.trialActiveSubject'),
           html,
+          from: appConfig.branding.fromEmail,
         });
       });
 
@@ -141,13 +146,14 @@ export function createNotificationFunctions(inngest: Inngest) {
     { id: 'send-partner-invite-email', retries: 3 },
     { event: 'partner/invited' },
     async ({ event, step }) => {
-      const { email, inviteToken } = partnerInvitePayloadSchema.parse(event.data);
+      const { email, inviteToken, appId } = partnerInvitePayloadSchema.parse(event.data);
+      const appConfig = resolveAppConfigOrDefault(appId);
 
       const result = await step.run('send-resend-invite', async () => {
-        const inviteUrl = `https://moneymatters.kaesava.au/invite/${inviteToken}`;
+        const inviteUrl = `${appConfig.branding.appUrl}/invite/${inviteToken}`;
         const html = `
           <div style="font-family: sans-serif; background-color: #0b132b; color: #ffffff; padding: 40px; border-radius: 16px;">
-            ${buildBrandEmailHeader('dark')}
+            ${buildBrandEmailHeader('dark', appId)}
             <h2 style="color: #ffffff;">${t('notifications.inngest.inviteSubject')}</h2>
             <p style="font-size: 16px; line-height: 1.6;">${t('notifications.inngest.inviteBody')}</p>
             <div style="margin-top: 30px;">
@@ -160,6 +166,7 @@ export function createNotificationFunctions(inngest: Inngest) {
           to: email,
           subject: t('notifications.inngest.inviteSubject'),
           html,
+          from: appConfig.branding.fromEmail,
         });
       });
 
