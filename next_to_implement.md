@@ -27,26 +27,36 @@ pnpm app:set-flag --flag=customAllocationRules --value=true --env=prod
 * Ensure parity between mobile and web - UI & functionality. So, when you write address a new/change/fix for the Web app, also ensure that the mobile app is in parity and address it there too. When you write address a new/change/fix for the Mobile app, also ensure that the web app is in parity and address it there too. Do this even if not explicitly asked, unless I explicitly state the app (Mobile: or Web:). Re-use code as much as possible while keeping native UI experiences.
 * As you build code, you decide whether you want to run pnpm typecheck/lint/test/test coverage/i8ln-check/install/ and any other scripts/checks as you complete changes. However, at the end, ensure pnpm validate:prod runs successfully. Once successful, commit code, but ask me before pushing the code.
 
-# DEEP DIVES
 
-## Allocation Rules
-You are now going to do a full critical pass of the entire codebase to ensure that:
-* All capabilities in the .md files in root are implemented across web and mobile, fully and consistently,
-* There are no logical gaps or contradictions in the behaviour of key items like envelopes, envelope types, bank accounts, income schedules, expense schedules, income events, expense events, 
-* Currency format, date formats and other locale follow setting across every field across web and mobile
-* Archival and Un-archival of all elements is done consistently, cleanly
-* All critical calculations (payday allocation, matrix allocation projection, envelope projection, can I afford, can I afford - recurring, Ask Penny, etc) 
-* Creation of History and Allocation History across confirmed actions (like transfers, mark spent, confirm income split, one-off expense/income confirmed, bank reconciliation etc.) - anything that changes an envelope's balance - are all the fields set correctly and immutable
-* Important: Absolutely aggressive culling of un-used or redundant code
-* 100% mobile/web parity
-* 100% user-facing literals NOT hard-coded (optimised with maximal re-use within and across web and mobile apps)
-* No hardocding and 100% re-use of centralised UI elements and UI modules (like modals, badges, input fields, date fields, etc), fonts, colours, themes and styles unless absolutely needed and by exception (in which case it must be documented) - mobile and web can be separate and native to them but within web and within mobile, need consistency.
-* Right now, we have a ruleset that for Shared and ruleset for Private. However, when income comes in, it is either linked to a shared or private bank account. Critically audit the allocation rules in relation to the rule-sets - are they designed consistently? Do they conflict? Has the code been written correctly? Are there logical inconsistencies or errors or edge-case issues to fix? Be thorough. Be critical.
-* General confirmation of 100% alignment and consistency of business rules and logic within and across the web and mobile apps
+# Current State
 
 
+# Mobile tests
+
+I' now testing the mobile app  on a Google Pixel 10 (which I downloaded off the Play store - internal testing). While this applies to ios too, if there are android specific improvements, let's make them with an is android check and default to something reasonable otherwise.
 
 
+## Audit permissions
+
+It seems to request these - audit - do we really need all of these?
+
+android.permission.ACCESS_NETWORK_STATE, android.permission.ACCESS_WIFI_STATE, android.permission.CAMERA, android.permission.DETECT_SCREEN_CAPTURE, android.permission.INTERNET, android.permission.POST_NOTIFICATIONS, android.permission.READ_APP_BADGE, android.permission.READ_EXTERNAL_STORAGE, android.permission.READ_MEDIA_IMAGES, android.permission.RECEIVE_BOOT_COMPLETED, android.permission.RECORD_AUDIO, android.permission.SYSTEM_ALERT_WINDOW, android.permission.USE_BIOMETRIC, android.permission.USE_FINGERPRINT, android.permission.VIBRATE, android.permission.WAKE_LOCK, android.permission.WRITE_EXTERNAL_STORAGE, au.kaesava.moneymatters.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION, com.anddoes.launcher.permission.UPDATE_COUNT, com.android.vending.CHECK_LICENSE, com.google.android.c2dm.permission.RECEIVE, com.google.android.finsky.permission.BIND_GET_INSTALL_REFERRER_SERVICE, com.htc.launcher.permission.READ_SETTINGS, com.htc.launcher.permission.UPDATE_SHORTCUT, com.huawei.android.launcher.permission.CHANGE_BADGE, com.huawei.android.launcher.permission.READ_SETTINGS, com.huawei.android.launcher.permission.WRITE_SETTINGS, com.majeur.launcher.permission.UPDATE_BADGE, com.oppo.launcher.permission.READ_SETTINGS, com.oppo.launcher.permission.WRITE_SETTINGS, com.sec.android.provider.badge.permission.READ, com.sec.android.provider.badge.permission.WRITE, com.sonyericsson.home.permission.BROADCAST_BADGE, com.sonymobile.home.permission.PROVIDER_INSERT_BADGE, me.everything.badger.permission.BADGE_COUNT_READ, me.everything.badger.permission.BADGE_COUNT_WRITE
+
+* When I login, it asks me if I want to Allow Notifications. If I select No, it asked me again! The second time, it didn't ask. Also, The Notifications page only shows Email. That makes sens for the web app, but shouldn't we also have a Mobile app yes/no toggle - which should defult to no, and turn to yes if user accepts? And what if user didn't accept notifications and tries to turn them on? What's best practice?
+* Allow taking screenshots in the app
+
+## General UI
+
+* Some button text is too long for mobile - shorten (this may work for web app as well - so literals can be re-used) - example: "Take 60-Second Tour" to "Tour" and "Explore on My Own" to "Skip". This is just one example. Consider more widely.
+* Re-design table/list cards to feel more mobile-native. For example, History cards - look quite unintuitive. They don't allow swipe left or right (in this instance, that makes sense since History is immutable, but in other tables with cards, maybe it does)? Maybe pagination doesn't make sense for mobile and we use infinite scroll and sort? I feel the filter settings are clumsy too? Try to make change centrally
+
+## History
+
+
+* File Upload fails
+
+
+* Test Google Authentication
 
 ############# IGNORE BELOW ##########################
 
