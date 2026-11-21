@@ -1,7 +1,7 @@
 import React from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import { VehicleConfig, CarSize } from '@money-matters/types';
-import { DESIGN_TOKENS } from '@money-matters/ui/mobile';
+import { DESIGN_TOKENS, MobileInput } from '@money-matters/ui/mobile';
 import { t } from '@money-matters/i18n';
 
 interface LifestyleVehicleSubCardProps {
@@ -35,7 +35,7 @@ export function LifestyleVehicleSubCard({
           </TouchableOpacity>
         )}
       </View>
-      <TextInput
+      <MobileInput containerStyle={{ marginBottom: 0 }}
         style={styles.input}
         value={vehicle.name}
         onChangeText={(txt) => onUpdate(vehicle.id, 'name', txt)}

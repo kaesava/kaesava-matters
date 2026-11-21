@@ -3,7 +3,6 @@ import React from 'react';
 import {
   View,
   Text,
-  TextInput,
   TouchableOpacity,
   ScrollView,
   StyleSheet,
@@ -18,6 +17,7 @@ import {
   MobileDatePickerField,
   showMobileConfirm,
   SkeletonCard,
+  MobileInput,
 } from '@money-matters/ui/mobile';
 import { useSetupWizard } from '../../context/SetupWizardContext';
 import { IncomeItem } from '@money-matters/types';
@@ -159,7 +159,7 @@ export default function SetupIncomeScreen() {
             </View>
 
             <Text style={styles.label}>{t('setup.income.nameLabel')}</Text>
-            <TextInput
+            <MobileInput containerStyle={{ marginBottom: 0 }}
               style={styles.input}
               placeholder={t('setup.income.namePlaceholder')}
               placeholderTextColor={DESIGN_TOKENS.colors.textMuted}
@@ -177,7 +177,7 @@ export default function SetupIncomeScreen() {
 
             <Text style={[styles.label, styles.labelGap]}>{t('setup.everyLabel')}</Text>
             <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8, marginBottom: 8 }}>
-              <TextInput
+              <MobileInput containerStyle={{ marginBottom: 0 }}
                 style={[styles.input, { width: 48, textAlign: 'center', marginBottom: 0 }]}
                 keyboardType="number-pad"
                 value={String(inc.interval ?? 1)}

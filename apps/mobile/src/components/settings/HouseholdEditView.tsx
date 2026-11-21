@@ -2,7 +2,6 @@ import React from 'react';
 import {
   View,
   Text,
-  TextInput,
   TouchableOpacity,
   ScrollView,
   StyleSheet,
@@ -13,6 +12,7 @@ import {
   FormFieldError,
   InfoTooltip,
   DESIGN_TOKENS,
+  MobileInput,
 } from '@money-matters/ui/mobile';
 import { t } from '@money-matters/i18n';
 import {
@@ -75,7 +75,7 @@ export function HouseholdEditView({
       {/* Household Name */}
       <View style={styles.inputGroup}>
         <FormLabel label={t('auth.householdNameLabel')} required />
-        <TextInput
+        <MobileInput containerStyle={{ marginBottom: 0 }}
           style={styles.textInput}
           value={householdName}
           onChangeText={setHouseholdName}

@@ -1,6 +1,6 @@
 import React from 'react';
-import { View, Text, TextInput, StyleSheet } from 'react-native';
-import { MobileButton, FormLabel, DESIGN_TOKENS } from '@money-matters/ui/mobile';
+import { View, Text, StyleSheet } from 'react-native';
+import { MobileButton, FormLabel, DESIGN_TOKENS, MobileInput } from '@money-matters/ui/mobile';
 import { t } from '@money-matters/i18n';
 import { trpc } from '../../../lib/trpc';
 
@@ -45,7 +45,7 @@ export function HouseholdMemberInviteForm({
         <View style={styles.inviteForm}>
           <View style={styles.inputGroup}>
             <FormLabel label={t('settings.members.emailAddressLabel')} required />
-            <TextInput
+            <MobileInput containerStyle={{ marginBottom: 0 }}
               style={styles.textInput}
               placeholder="housemate@example.com"
               placeholderTextColor={DESIGN_TOKENS.colors.subtleText}

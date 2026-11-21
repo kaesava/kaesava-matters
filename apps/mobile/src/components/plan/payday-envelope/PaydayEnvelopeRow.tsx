@@ -1,7 +1,7 @@
 import React from 'react';
-import { View, Text, TouchableOpacity, TextInput, StyleSheet } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import { Feather } from '@expo/vector-icons';
-import { DESIGN_TOKENS } from '@money-matters/ui/mobile';
+import { DESIGN_TOKENS, MobileInput } from '@money-matters/ui/mobile';
 import { t } from '@money-matters/i18n';
 import { formatMobileCurrency, formatDate, getMobileCurrencySymbol } from '../../../lib/format';
 import type { AllocationLineItem, PoolRecord } from '../MobilePaydayPlanEnvelopeList';
@@ -104,7 +104,7 @@ export const PaydayEnvelopeRow: React.FC<PaydayEnvelopeRowProps> = ({
         <View style={styles.amountInputCol}>
           <View style={styles.amountInputWrap}>
             <Text style={styles.currencyPrefix}>{getMobileCurrencySymbol()}</Text>
-            <TextInput
+            <MobileInput compact
               style={[styles.amountInput, isSweep && styles.sweepAmountInput]}
               keyboardType="decimal-pad"
               value={currentValStr}

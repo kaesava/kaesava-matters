@@ -24,6 +24,7 @@ export interface InputProps extends TextInputProps {
   containerStyle?: StyleProp<ViewStyle>;
   labelStyle?: StyleProp<TextStyle>;
   showClear?: boolean;
+  compact?: boolean;
 }
 
 export const Input = React.forwardRef<TextInput, InputProps>(
@@ -37,6 +38,7 @@ export const Input = React.forwardRef<TextInput, InputProps>(
       labelStyle,
       style,
       showClear = false,
+      compact = false,
       value,
       onChangeText,
       onFocus,
@@ -50,7 +52,7 @@ export const Input = React.forwardRef<TextInput, InputProps>(
     const canClear = showClear && editable !== false && Boolean(value) && Boolean(onChangeText);
 
     return (
-      <View style={[styles.container, containerStyle]}>
+      <View style={[styles.container, compact && styles.containerCompact, containerStyle]}>
         {label && (
           <FormLabel required={required} style={labelStyle}>
             {label}
@@ -60,6 +62,7 @@ export const Input = React.forwardRef<TextInput, InputProps>(
         <View
           style={[
             styles.inputWrap,
+            compact && styles.inputWrapCompact,
             focused && styles.inputFocused,
             error ? styles.inputError : null,
             editable === false && styles.inputDisabled,
@@ -109,6 +112,10 @@ const styles = StyleSheet.create({
     width: '100%',
     marginBottom: 12,
   },
+  containerCompact: {
+    width: 'auto',
+    marginBottom: 0,
+  },
   hint: {
     fontSize: 12,
     color: D.colors.textMuted,
@@ -124,6 +131,11 @@ const styles = StyleSheet.create({
     borderRadius: D.radius.md,
     minHeight: PLATFORM_STYLE.fieldHeight,
     paddingHorizontal: 14,
+  },
+  inputWrapCompact: {
+    minHeight: 40,
+    paddingHorizontal: 10,
+    borderRadius: D.radius.default,
   },
   inputFocused: {
     borderColor: D.colors.accent,

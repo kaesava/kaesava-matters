@@ -1,9 +1,9 @@
 import { getTenantDateString } from "../../lib/format";
 import React from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, ScrollView } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, ScrollView } from 'react-native';
 import { Feather } from '@expo/vector-icons';
 import { UserGoalItem } from '@money-matters/types';
-import { DESIGN_TOKENS, AmountInput, MobileDatePickerField, InfoTooltip } from '@money-matters/ui/mobile';
+import { DESIGN_TOKENS, AmountInput, MobileDatePickerField, InfoTooltip, MobileInput } from '@money-matters/ui/mobile';
 import { t } from '@money-matters/i18n';
 import { getMobileLocaleConfig } from '../../lib/format';
 
@@ -84,7 +84,7 @@ export function SetupGoalCard({
         <View style={styles.titleRow}>
           <View style={styles.iconBox}>{renderGoalIcon(goal.icon)}</View>
           <View style={{ flex: 1 }}>
-            <TextInput
+            <MobileInput compact
               style={styles.nameInput}
               value={goal.name}
               onChangeText={(txt) => onUpdate(goal.id, 'name', txt)}

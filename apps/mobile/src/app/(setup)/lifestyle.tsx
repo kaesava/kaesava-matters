@@ -1,9 +1,9 @@
 import React from 'react';
-import { View, Text, TouchableOpacity, ScrollView, StyleSheet, TextInput } from 'react-native';
+import { View, Text, TouchableOpacity, ScrollView, StyleSheet } from 'react-native';
 import { useRouter } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { t } from '@money-matters/i18n';
-import { DESIGN_TOKENS, InfoTooltip, AmountInput, MobileDiscretionarySliders } from '@money-matters/ui/mobile';
+import { DESIGN_TOKENS, InfoTooltip, AmountInput, MobileDiscretionarySliders, MobileInput } from '@money-matters/ui/mobile';
 import { useSetupWizard } from '../../context/SetupWizardContext';
 import { HousingType } from '@money-matters/types';
 import { LifestyleVehicleSubCard } from '../../components/setup/LifestyleVehicleSubCard';
@@ -267,7 +267,7 @@ export default function SetupLifestyleScreen() {
         {hasPets && (
           <View style={[styles.rowWithGap, styles.marginTop8]}>
             <Text style={styles.petCountLabel}>{t('setup.lifestyle.petsCountLabel')}:</Text>
-            <TextInput
+            <MobileInput compact
               style={styles.petCountInput}
               keyboardType="number-pad"
               value={String(petsCount || 1)}

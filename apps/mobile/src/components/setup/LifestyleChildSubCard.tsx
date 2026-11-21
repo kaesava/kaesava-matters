@@ -1,7 +1,7 @@
 import React from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import { ChildConfig, SchoolStage, SchoolType } from '@money-matters/types';
-import { DESIGN_TOKENS } from '@money-matters/ui/mobile';
+import { DESIGN_TOKENS, MobileInput } from '@money-matters/ui/mobile';
 import { t } from '@money-matters/i18n';
 
 interface LifestyleChildSubCardProps {
@@ -41,7 +41,7 @@ export function LifestyleChildSubCard({
           </TouchableOpacity>
         )}
       </View>
-      <TextInput
+      <MobileInput containerStyle={{ marginBottom: 0 }}
         style={styles.input}
         value={child.name}
         onChangeText={(txt) => onUpdate(child.id, 'name', txt)}

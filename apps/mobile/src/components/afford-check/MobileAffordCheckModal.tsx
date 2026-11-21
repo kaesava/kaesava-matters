@@ -1,7 +1,7 @@
 import React, { useState, useDeferredValue } from 'react';
-import { View, Text, TextInput, StyleSheet, TouchableOpacity, ScrollView, ActivityIndicator } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, ScrollView, ActivityIndicator } from 'react-native';
 import { Feather } from '@expo/vector-icons';
-import { DESIGN_TOKENS, MobileModalDialog, AmountInput, SwitchRow } from '@money-matters/ui/mobile';
+import { DESIGN_TOKENS, MobileModalDialog, AmountInput, SwitchRow, MobileInput } from '@money-matters/ui/mobile';
 import { t } from '@money-matters/i18n';
 import { trpc } from '../../lib/trpc';
 import { getMobileLocaleConfig } from '../../lib/format';
@@ -124,7 +124,7 @@ export function MobileAffordCheckModal({ visible, onClose, initialAmount }: Mobi
 
           <View style={styles.inputGroup}>
             <Text style={styles.inputLabel}>{t('canIAfford.itemNameLabel')}</Text>
-            <TextInput
+            <MobileInput containerStyle={{ marginBottom: 0 }}
               style={styles.textInput}
               placeholder={t('canIAfford.itemNamePlaceholder')}
               value={itemName}

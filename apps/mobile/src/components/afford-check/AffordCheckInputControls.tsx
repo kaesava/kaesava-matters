@@ -1,7 +1,7 @@
 import React from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import { Feather } from '@expo/vector-icons';
-import { DESIGN_TOKENS, AmountInput, SwitchRow } from '@money-matters/ui/mobile';
+import { DESIGN_TOKENS, AmountInput, SwitchRow, MobileInput } from '@money-matters/ui/mobile';
 import { t } from '@money-matters/i18n';
 
 interface AffordCheckInputControlsProps {
@@ -89,7 +89,7 @@ export function AffordCheckInputControls({
 
       <View style={styles.inputGroup}>
         <Text style={styles.label}>{t('canIAfford.itemNameLabel')}</Text>
-        <TextInput
+        <MobileInput containerStyle={{ marginBottom: 0 }}
           style={styles.textInput}
           placeholder={t('canIAfford.itemNamePlaceholder')}
           value={itemName}

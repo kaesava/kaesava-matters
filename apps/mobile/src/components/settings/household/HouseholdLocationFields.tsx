@@ -1,6 +1,6 @@
 import React from 'react';
-import { View, Text, TextInput, TouchableOpacity, ScrollView, StyleSheet } from 'react-native';
-import { FormLabel, FormFieldError, DESIGN_TOKENS } from '@money-matters/ui/mobile';
+import { View, Text, TouchableOpacity, ScrollView, StyleSheet } from 'react-native';
+import { FormLabel, FormFieldError, DESIGN_TOKENS, MobileInput } from '@money-matters/ui/mobile';
 import { t } from '@money-matters/i18n';
 import { SUPPORTED_COUNTRIES, AU_STATES } from '@money-matters/types';
 
@@ -85,7 +85,7 @@ export function HouseholdLocationFields({
               ))}
             </ScrollView>
           ) : (
-            <TextInput
+            <MobileInput containerStyle={{ marginBottom: 0 }}
               style={styles.textInput}
               value={state}
               onChangeText={setState}
@@ -97,7 +97,7 @@ export function HouseholdLocationFields({
 
         <View style={[styles.inputGroup, { flex: 1 }]}>
           <FormLabel label={t('settings.household.postcodeLabel')} />
-          <TextInput
+          <MobileInput containerStyle={{ marginBottom: 0 }}
             style={styles.textInput}
             value={postcode}
             onChangeText={setPostcode}

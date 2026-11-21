@@ -1,6 +1,6 @@
 import React from 'react';
-import { View, Text, TextInput, StyleSheet } from 'react-native';
-import { DESIGN_TOKENS } from '@money-matters/ui/mobile';
+import { View, Text, StyleSheet } from 'react-native';
+import { DESIGN_TOKENS, MobileInput } from '@money-matters/ui/mobile';
 import { t } from '@money-matters/i18n';
 
 interface PaydayEnvelopeReasoningFieldProps {
@@ -21,7 +21,7 @@ export const PaydayEnvelopeReasoningField: React.FC<PaydayEnvelopeReasoningField
       <Text style={styles.reasoningLabel}>
         {t('paydayDrawer.reasoningLabel')}
       </Text>
-      <TextInput
+      <MobileInput compact
         style={[
           styles.reasoningInput,
           isZeroAllocation && styles.reasoningInputDisabled,

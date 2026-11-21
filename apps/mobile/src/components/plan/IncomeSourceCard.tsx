@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { useRouter, type Href } from 'expo-router';
-import { CardDrawerIndicator, EntityLinkChip, DESIGN_TOKENS } from '@money-matters/ui/mobile';
+import { CardDrawerIndicator, EntityLinkChip, SwipeableCard, DESIGN_TOKENS } from '@money-matters/ui/mobile';
 import { formatMobileCurrency, formatScheduleDetail } from '../../lib/format';
 
 export interface IncomeSourceItem {
@@ -24,10 +24,11 @@ interface IncomeSourceCardProps {
 export const IncomeSourceCard: React.FC<IncomeSourceCardProps> = ({
   inc,
   onEdit,
+  onOccurrences,
 }) => {
   const router = useRouter();
 
-  return (
+  const card = (
     <TouchableOpacity
       style={styles.card}
       onPress={() => onEdit(inc)}
@@ -65,6 +66,18 @@ export const IncomeSourceCard: React.FC<IncomeSourceCardProps> = ({
         <Text style={styles.amount}>+{formatMobileCurrency(inc.amount)}</Text>
       </View>
     </TouchableOpacity>
+  );
+
+  if (!onOccurrences) return card;
+  return (
+    <SwipeableCard
+      onSwipeDelete={() => onOccurrences(inc)}
+      actionIcon="calendar"
+      actionColor={DESIGN_TOKENS.colors.accent}
+      actionLabel={inc.name}
+    >
+      {card}
+    </SwipeableCard>
   );
 };
 

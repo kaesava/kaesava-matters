@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, TextInput, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet } from 'react-native';
 import {
   DESIGN_TOKENS,
   FormLabel,
@@ -8,6 +8,7 @@ import {
   DatePickerField,
   useCurrencyLocale,
   RecurrenceFrequency,
+  MobileInput,
 } from '@money-matters/ui/mobile';
 import { t } from '@money-matters/i18n';
 
@@ -75,7 +76,7 @@ export const EnvelopeRecurrenceFields: React.FC<EnvelopeRecurrenceFieldsProps> =
         <View style={styles.everyCol}>
           <FormLabel required>{t('forms.every')}</FormLabel>
           <View style={styles.intervalRow}>
-            <TextInput
+            <MobileInput compact
               style={styles.intervalInput}
               keyboardType="numeric"
               value={interval === 0 ? '' : String(interval)}

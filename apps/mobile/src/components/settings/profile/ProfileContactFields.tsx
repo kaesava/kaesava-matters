@@ -1,6 +1,6 @@
 import React from 'react';
-import { View, Text, TextInput, StyleSheet } from 'react-native';
-import { FormLabel, FormFieldError, DESIGN_TOKENS } from '@money-matters/ui/mobile';
+import { View, Text, StyleSheet } from 'react-native';
+import { FormLabel, FormFieldError, DESIGN_TOKENS, MobileInput } from '@money-matters/ui/mobile';
 import { t } from '@money-matters/i18n';
 
 export interface ProfileContactFieldsProps {
@@ -33,7 +33,7 @@ export function ProfileContactFields({
       {/* Name (Mandatory) */}
       <View style={styles.inputGroup}>
         <FormLabel label={t('common.name')} required />
-        <TextInput
+        <MobileInput compact
           style={styles.textInput}
           value={name}
           onChangeText={setName}
@@ -48,7 +48,7 @@ export function ProfileContactFields({
       {/* Login Email (Primary Auth - Read Only) */}
       <View style={styles.inputGroup}>
         <FormLabel label={t('settings.loginEmailLabel')} />
-        <TextInput
+        <MobileInput compact
           style={[styles.textInput, styles.readOnlyInput]}
           value={loginEmail || ''}
           editable={false}
@@ -60,7 +60,7 @@ export function ProfileContactFields({
       {/* Notification Email (Mandatory) */}
       <View style={styles.inputGroup}>
         <FormLabel label={t('settings.notificationEmailLabel')} required />
-        <TextInput
+        <MobileInput compact
           style={styles.textInput}
           value={notificationEmail}
           onChangeText={setNotificationEmail}
@@ -76,14 +76,14 @@ export function ProfileContactFields({
       <View style={styles.inputGroup}>
         <FormLabel label={t('settings.phoneNumberLabel')} />
         <View style={styles.phoneRow}>
-          <TextInput
+          <MobileInput compact
             style={styles.phoneCodeInput}
             value={phoneCountryCode}
             onChangeText={setPhoneCountryCode}
             placeholder="+61"
             placeholderTextColor={DESIGN_TOKENS.colors.subtleText}
           />
-          <TextInput
+          <MobileInput compact
             style={styles.phoneNumberInput}
             value={phoneNumber}
             onChangeText={setPhoneNumber}

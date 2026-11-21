@@ -1,10 +1,10 @@
 import { getTenantDateString } from "../../lib/format";
 import React, { useState } from 'react';
-import { View, Text, TouchableOpacity, ScrollView, TextInput, StyleSheet } from 'react-native';
+import { View, Text, TouchableOpacity, ScrollView, StyleSheet } from 'react-native';
 import { useRouter } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { t } from '@money-matters/i18n';
-import { DESIGN_TOKENS, AmountInput, MobileEnvelopeModeToggle, MobileDatePickerField, showMobileConfirm, InfoTooltip } from '@money-matters/ui/mobile';
+import { DESIGN_TOKENS, AmountInput, MobileEnvelopeModeToggle, MobileDatePickerField, showMobileConfirm, InfoTooltip, MobileInput } from '@money-matters/ui/mobile';
 import { useSetupWizard } from '../../context/SetupWizardContext';
 import { SetupGoalCard } from '../../components/setup/SetupGoalCard';
 import { getMobileLocaleConfig } from '../../lib/format';
@@ -202,7 +202,7 @@ export default function SetupGoalsScreen() {
           <Text style={styles.customHeading}>{t('setup.goals.addCustomGoal')}</Text>
           <InfoTooltip title={t('setup.goals.modeTooltipTitle')} content={t('setup.goals.modeTooltipContent')} />
         </View>
-        <TextInput
+        <MobileInput containerStyle={{ marginBottom: 0 }}
           style={styles.customInput}
           placeholder={t('setup.goals.customGoalPlaceholder')}
           placeholderTextColor={DESIGN_TOKENS.colors.textMuted}

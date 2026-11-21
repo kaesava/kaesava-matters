@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { useRouter, type Href } from 'expo-router';
-import { CardDrawerIndicator, EntityLinkChip, DESIGN_TOKENS } from '@money-matters/ui/mobile';
+import { CardDrawerIndicator, EntityLinkChip, SwipeableCard, DESIGN_TOKENS } from '@money-matters/ui/mobile';
 import { t } from '@money-matters/i18n';
 import { formatMobileCurrency, formatScheduleDetail } from '../../lib/format';
 
@@ -31,12 +31,13 @@ export const ExpenseBillCard: React.FC<ExpenseBillCardProps> = ({
   exp,
   categoryName,
   onEdit,
+  onOccurrences,
 }) => {
   const router = useRouter();
   const displayBucket = categoryName || exp.poolName || exp.categoryName;
   const targetPoolId = exp.poolId || exp.categoryId;
 
-  return (
+  const card = (
     <TouchableOpacity
       style={styles.card}
       onPress={() => onEdit(exp)}
@@ -88,6 +89,18 @@ export const ExpenseBillCard: React.FC<ExpenseBillCardProps> = ({
         <Text style={styles.amount}>−{formatMobileCurrency(exp.amount)}</Text>
       </View>
     </TouchableOpacity>
+  );
+
+  if (!onOccurrences) return card;
+  return (
+    <SwipeableCard
+      onSwipeDelete={() => onOccurrences(exp)}
+      actionIcon="calendar"
+      actionColor={DESIGN_TOKENS.colors.accent}
+      actionLabel={exp.name}
+    >
+      {card}
+    </SwipeableCard>
   );
 };
 

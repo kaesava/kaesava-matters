@@ -1,7 +1,7 @@
 import React from 'react';
-import { View, Text, TextInput, TouchableOpacity, ScrollView, StyleSheet } from 'react-native';
+import { View, Text, TouchableOpacity, ScrollView, StyleSheet } from 'react-native';
 import { t } from '@money-matters/i18n';
-import { DESIGN_TOKENS, InfoTooltip, AmountInput, SwitchRow } from '@money-matters/ui/mobile';
+import { DESIGN_TOKENS, InfoTooltip, AmountInput, SwitchRow, MobileInput } from '@money-matters/ui/mobile';
 import {
   ACCOUNT_TYPES,
   ACCOUNT_TYPE_LABELS,
@@ -60,7 +60,7 @@ export function SetupBankAccountCard({
 
       <View style={styles.fieldGroup}>
         <Text style={styles.fieldLabel}>{t('settings.bankAccountForm.bankProviderLabel')}</Text>
-        <TextInput
+        <MobileInput containerStyle={{ marginBottom: 0 }}
           value={acc.bankProvider === 'Other' ? '' : acc.bankProvider || ''}
           onChangeText={handleProviderChange}
           placeholder={t('settings.bankAccountForm.bankProviderPlaceholder')}
@@ -91,7 +91,7 @@ export function SetupBankAccountCard({
 
       <View style={styles.fieldGroup}>
         <Text style={styles.fieldLabel}>{t('settings.bankAccountForm.accountNameLabel')}</Text>
-        <TextInput
+        <MobileInput containerStyle={{ marginBottom: 0 }}
           value={acc.name}
           onChangeText={(val) => onFieldChange(acc, 'name', val)}
           placeholder={t('setup.bankAccountsStep.accountNamePlaceholder')}
