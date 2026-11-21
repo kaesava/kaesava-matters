@@ -1,7 +1,7 @@
 import React from 'react';
-import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet } from 'react-native';
 import { useRouter, type Href } from 'expo-router';
-import { MobileModalDialog, MobileButton, DESIGN_TOKENS } from '@money-matters/ui/mobile';
+import { MobileModalDialog, MobileButton, MobileDetailLinkRow, DESIGN_TOKENS } from '@money-matters/ui/mobile';
 import { t } from '@money-matters/i18n';
 import { formatMobileCurrency, formatDate } from '../../lib/format';
 
@@ -103,20 +103,18 @@ export function HistoryDetailSheet({
           {transaction.bankAccountName && (
             <>
               <View style={styles.divider} />
-              <TouchableOpacity
-                style={styles.metaRow}
-                disabled={!transaction.bankAccountId}
-                onPress={() => {
-                  if (!transaction.bankAccountId) return;
-                  onClose();
-                  router.push(`/(app)/bank-accounts?id=${transaction.bankAccountId}` as Href);
-                }}
-              >
-                <Text style={styles.metaLabel}>{t('bankAccounts.title')}</Text>
-                <Text style={transaction.bankAccountId ? styles.metaValueHighlight : styles.metaValue}>
-                  {transaction.bankAccountName}
-                </Text>
-              </TouchableOpacity>
+              <MobileDetailLinkRow
+                label={t('bankAccounts.title')}
+                value={transaction.bankAccountName}
+                onPress={
+                  transaction.bankAccountId
+                    ? () => {
+                        onClose();
+                        router.push(`/(app)/bank-accounts?id=${transaction.bankAccountId}` as Href);
+                      }
+                    : undefined
+                }
+              />
             </>
           )}
 

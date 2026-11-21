@@ -20,6 +20,8 @@ export type { SpinnerProps as MobileSpinnerProps } from './Spinner';
 export { default as MobileLogo } from './Logo';
 export type { MobileLogoProps } from './Logo';
 export { PLATFORM_STYLE, getRipple } from './platform-style';
+export { MobileDetailLinkRow } from './MobileDetailLinkRow';
+export type { MobileDetailLinkRowProps } from './MobileDetailLinkRow';
 export { MobileLinkButton } from './MobileLinkButton';
 export type { MobileLinkButtonProps } from './MobileLinkButton';
 export { MobileText } from './MobileText';

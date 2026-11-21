@@ -56,9 +56,6 @@ export function TransactionRow({
             <Text style={styles.description} numberOfLines={1}>
               {primaryDescription}
             </Text>
-            {onPress && (
-              <Feather name="arrow-up-right" size={12} color={DESIGN_TOKENS.colors.sereneBlue} style={styles.linkIcon} />
-            )}
           </View>
         </View>
 
@@ -72,6 +69,7 @@ export function TransactionRow({
             {isDebit ? '-' : '+'}
             {formatMobileCurrency(amount)}
           </Text>
+          {onPress && <Feather name="chevron-right" size={18} color={DESIGN_TOKENS.colors.slate[400]} />}
         </View>
       </View>
 
@@ -99,10 +97,11 @@ export function TransactionRow({
 
 const styles = StyleSheet.create({
   card: {
-    backgroundColor: '#FFFFFF',
+    minHeight: 56,
+    backgroundColor: DESIGN_TOKENS.colors.surface,
     borderRadius: 14,
     borderWidth: 1,
-    borderColor: '#E2E8F0',
+    borderColor: DESIGN_TOKENS.colors.slate[200],
     padding: 14,
     gap: 8,
   },
@@ -116,9 +115,9 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   date: {
-    fontSize: 11,
+    fontSize: 12,
     fontWeight: '600',
-    color: '#94A3B8',
+    color: DESIGN_TOKENS.colors.slate[400],
     marginBottom: 3,
   },
   descriptionRow: {
@@ -131,11 +130,10 @@ const styles = StyleSheet.create({
     fontWeight: '800',
     color: DESIGN_TOKENS.colors.primary,
   },
-  linkIcon: {
-    marginTop: 1,
-  },
   right: {
-    alignItems: 'flex-end',
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
   },
   amount: {
     fontSize: 15,
@@ -143,16 +141,16 @@ const styles = StyleSheet.create({
     fontFamily: 'monospace',
   },
   debitAmount: {
-    color: '#ba1a1a',
+    color: DESIGN_TOKENS.colors.burnRed,
   },
   creditAmount: {
-    color: '#22c55e',
+    color: DESIGN_TOKENS.colors.success,
   },
   cardFooter: {
     flexDirection: 'row',
     alignItems: 'center',
     borderTopWidth: 1,
-    borderTopColor: '#F8FAFC',
+    borderTopColor: DESIGN_TOKENS.colors.slate[50],
     paddingTop: 8,
   },
   poolWrap: {
@@ -164,16 +162,16 @@ const styles = StyleSheet.create({
     width: 20,
     height: 20,
     borderRadius: 6,
-    backgroundColor: '#F8FAFC',
+    backgroundColor: DESIGN_TOKENS.colors.slate[50],
     alignItems: 'center',
     justifyContent: 'center',
     borderWidth: 1,
-    borderColor: '#E2E8F0',
+    borderColor: DESIGN_TOKENS.colors.slate[200],
   },
   poolName: {
     fontSize: 12,
     fontWeight: '600',
-    color: '#64748B',
+    color: DESIGN_TOKENS.colors.textMuted,
   },
 });
 
