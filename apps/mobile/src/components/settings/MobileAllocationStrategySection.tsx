@@ -312,17 +312,17 @@ const styles = StyleSheet.create({
     gap: 4,
   },
   activeCheckText: {
-    fontSize: 11,
+    fontSize: 12,
     fontWeight: '700',
     color: DESIGN_TOKENS.colors.sereneBlue,
   },
   customiseHintText: {
-    fontSize: 10,
+    fontSize: 12,
     fontWeight: '500',
     color: DESIGN_TOKENS.colors.slate[400],
   },
   presetDesc: {
-    fontSize: 11,
+    fontSize: 12,
     color: DESIGN_TOKENS.colors.slate[500],
     lineHeight: 15,
   },

@@ -160,7 +160,7 @@ const styles = StyleSheet.create({
     borderRadius: 4,
   },
   paidBadgeText: {
-    fontSize: 9,
+    fontSize: 11,
     fontWeight: '800',
     color: DESIGN_TOKENS.colors.successDark,
     textTransform: 'uppercase',
@@ -188,7 +188,7 @@ const styles = StyleSheet.create({
     borderRadius: 8,
   },
   actionBtnPrimaryText: {
-    fontSize: 11,
+    fontSize: 12,
     fontWeight: '700',
     color: DESIGN_TOKENS.colors.onPrimary,
   },
@@ -202,7 +202,7 @@ const styles = StyleSheet.create({
     borderRadius: 8,
   },
   actionBtnOutlineText: {
-    fontSize: 11,
+    fontSize: 12,
     fontWeight: '600',
     color: DESIGN_TOKENS.colors.slate[600],
   },
@@ -216,7 +216,7 @@ const styles = StyleSheet.create({
     borderRadius: 8,
   },
   actionBtnDangerText: {
-    fontSize: 11,
+    fontSize: 12,
     fontWeight: '600',
     color: DESIGN_TOKENS.colors.critical,
   },

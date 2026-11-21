@@ -108,7 +108,7 @@ const styles = StyleSheet.create({
     flexShrink: 1,
   },
   accountText: {
-    fontSize: 11,
+    fontSize: 12,
     fontWeight: '600',
     color: DESIGN_TOKENS.colors.slate[500],
     flexShrink: 1,

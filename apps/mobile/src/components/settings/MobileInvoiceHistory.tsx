@@ -221,7 +221,7 @@ const styles = StyleSheet.create({
     borderColor: DESIGN_TOKENS.colors.criticalBorder,
   },
   invoiceStatusText: {
-    fontSize: 10,
+    fontSize: 12,
     fontWeight: '800',
     textTransform: 'uppercase',
   },
@@ -261,7 +261,7 @@ const styles = StyleSheet.create({
     borderColor: DESIGN_TOKENS.colors.warningBorder,
   },
   receiptBtnText: {
-    fontSize: 11,
+    fontSize: 12,
     fontWeight: '800',
     color: DESIGN_TOKENS.colors.accent,
   },
@@ -269,7 +269,7 @@ const styles = StyleSheet.create({
     color: DESIGN_TOKENS.colors.warningDark,
   },
   noReceiptText: {
-    fontSize: 11,
+    fontSize: 12,
     color: DESIGN_TOKENS.colors.subtleText,
   },
 });

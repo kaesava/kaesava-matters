@@ -20,7 +20,7 @@ export function InfoTooltip({ content, title }: InfoTooltipProps) {
         onPress={() => setVisible(true)}
         style={styles.iconButton}
         activeOpacity={0.7}
-        hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
+        hitSlop={{ top: 13, bottom: 13, left: 13, right: 13 }}
       >
         <Text style={styles.iconText}>ℹ</Text>
       </TouchableOpacity>
@@ -50,8 +50,8 @@ export function InfoTooltip({ content, title }: InfoTooltipProps) {
 
 const styles = StyleSheet.create({
   iconButton: {
-    width: 18,
-    height: 18,
+    width: 18, // mm-allow-interaction: 18dp glyph with hitSlop
+    height: 18, // mm-allow-interaction: 18dp glyph with hitSlop
     borderRadius: 9,
     backgroundColor: '#F1F5F9',
     borderColor: '#CBD5E1',
@@ -61,7 +61,7 @@ const styles = StyleSheet.create({
     marginLeft: 6,
   },
   iconText: {
-    fontSize: 10,
+    fontSize: 12,
     fontWeight: 'bold',
     color: '#64748B',
   },

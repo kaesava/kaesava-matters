@@ -102,7 +102,7 @@ const styles = StyleSheet.create({
     borderColor: '#BFDBFE',
   },
   typeText: {
-    fontSize: 10,
+    fontSize: 12,
     fontWeight: '800',
     color: '#1D4ED8',
     textTransform: 'uppercase',
@@ -114,7 +114,7 @@ const styles = StyleSheet.create({
     borderRadius: 6,
   },
   privateText: {
-    fontSize: 10,
+    fontSize: 12,
     fontWeight: '700',
     color: DESIGN_TOKENS.colors.textMuted,
   },
@@ -132,7 +132,7 @@ const styles = StyleSheet.create({
     color: DESIGN_TOKENS.colors.primary,
   },
   actualBalance: {
-    fontSize: 11,
+    fontSize: 12,
     color: '#94A3B8',
     fontFamily: 'monospace',
     fontWeight: '500',

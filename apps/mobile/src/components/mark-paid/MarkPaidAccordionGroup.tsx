@@ -145,7 +145,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
   },
   accordionCountText: {
-    fontSize: 10,
+    fontSize: 12,
     fontWeight: '800',
     color: DESIGN_TOKENS.colors.slate[600],
   },
@@ -182,12 +182,12 @@ const styles = StyleSheet.create({
     borderRadius: 4,
   },
   surplusBadgeText: {
-    fontSize: 9,
+    fontSize: 11,
     fontWeight: '800',
     color: DESIGN_TOKENS.colors.successDark,
   },
   poolItemBal: {
-    fontSize: 11,
+    fontSize: 12,
     fontFamily: 'monospace',
     color: DESIGN_TOKENS.colors.slate[500],
     marginTop: 1,
@@ -219,7 +219,7 @@ const styles = StyleSheet.create({
     borderLeftColor: DESIGN_TOKENS.colors.slate[200],
   },
   maxBtnText: {
-    fontSize: 10,
+    fontSize: 12,
     fontWeight: '800',
     color: DESIGN_TOKENS.colors.slate[600],
   },

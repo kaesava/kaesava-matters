@@ -112,7 +112,7 @@ const styles = StyleSheet.create({
     elevation: 1,
   },
   modeBtnText: {
-    fontSize: 11,
+    fontSize: 12,
     fontWeight: '600',
     color: DESIGN_TOKENS.colors.slate[600],
   },
@@ -124,7 +124,7 @@ const styles = StyleSheet.create({
     gap: 4,
   },
   remainderNoteText: {
-    fontSize: 11,
+    fontSize: 12,
     color: DESIGN_TOKENS.colors.slate[500],
   },
 });

@@ -106,7 +106,7 @@ const styles = StyleSheet.create({
     borderRadius: 12,
   },
   countBadgeText: {
-    fontSize: 10,
+    fontSize: 11,
     fontWeight: '800',
     color: '#047857',
   },
@@ -135,7 +135,7 @@ const styles = StyleSheet.create({
     color: DESIGN_TOKENS.colors.primary,
   },
   itemSubtitle: {
-    fontSize: 11,
+    fontSize: 12,
     fontWeight: '600',
     color: '#047857',
     marginTop: 1,

@@ -312,7 +312,7 @@ const styles = StyleSheet.create({
   stepLabel: { fontSize: 12, fontWeight: '700', color: DESIGN_TOKENS.colors.accent, textTransform: 'uppercase', letterSpacing: 0.5, marginBottom: 4 },
   titleRow: { flexDirection: 'row', alignItems: 'center', gap: 6, marginBottom: 16 },
   title: { fontSize: 20, fontWeight: '900', color: DESIGN_TOKENS.colors.primary, flex: 1 },
-  pastDateWarning: { fontSize: 11, fontWeight: '700', color: DESIGN_TOKENS.colors.warning, marginTop: 8 },
+  pastDateWarning: { fontSize: 12, fontWeight: '700', color: DESIGN_TOKENS.colors.warning, marginTop: 8 },
   sectionHeading: { fontSize: 13, fontWeight: '700', color: DESIGN_TOKENS.colors.textPrimary, marginBottom: 8 },
   marginTop16: { marginTop: 16 },
   rerunSection: { marginBottom: 16 },
@@ -345,7 +345,7 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   freqSectionLabel: {
-    fontSize: 11,
+    fontSize: 12,
     fontWeight: '600',
     color: DESIGN_TOKENS.colors.textMuted,
     marginBottom: 4,
@@ -380,13 +380,13 @@ const styles = StyleSheet.create({
     marginBottom: 8,
   },
   fieldLabel: {
-    fontSize: 11,
+    fontSize: 12,
     fontWeight: '600',
     color: DESIGN_TOKENS.colors.textMuted,
     marginBottom: 4,
   },
   recurringMonthlyNote: {
-    fontSize: 11,
+    fontSize: 12,
     fontWeight: '500',
     color: DESIGN_TOKENS.colors.slate[500],
     marginBottom: 8,

@@ -170,7 +170,7 @@ const styles = StyleSheet.create({
     color: DESIGN_TOKENS.colors.slate[800],
   },
   subtitle: {
-    fontSize: 10,
+    fontSize: 11,
     color: DESIGN_TOKENS.colors.slate[500],
     marginTop: 1,
   },
@@ -194,7 +194,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#FFFFFF',
   },
   tfText: {
-    fontSize: 10,
+    fontSize: 11,
     fontWeight: '700',
     color: DESIGN_TOKENS.colors.slate[500],
   },

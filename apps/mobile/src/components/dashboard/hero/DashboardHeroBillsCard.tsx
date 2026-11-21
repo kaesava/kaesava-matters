@@ -128,7 +128,7 @@ const styles = StyleSheet.create({
     color: DESIGN_TOKENS.colors.primary,
   },
   billsSubtitle: {
-    fontSize: 11,
+    fontSize: 12,
     color: DESIGN_TOKENS.colors.textMuted,
     fontWeight: '500',
   },
@@ -153,7 +153,7 @@ const styles = StyleSheet.create({
     color: DESIGN_TOKENS.colors.criticalDark,
   },
   shortfallDetail: {
-    fontSize: 10,
+    fontSize: 12,
     color: DESIGN_TOKENS.colors.criticalDark,
     fontWeight: '500',
   },
@@ -165,7 +165,7 @@ const styles = StyleSheet.create({
   },
   coverButtonText: {
     color: DESIGN_TOKENS.colors.onAccent,
-    fontSize: 11,
+    fontSize: 12,
     fontWeight: '800',
   },
   calmNotice: {
@@ -177,7 +177,7 @@ const styles = StyleSheet.create({
     paddingVertical: 8,
   },
   calmNoticeText: {
-    fontSize: 11,
+    fontSize: 12,
     fontWeight: '600',
     color: DESIGN_TOKENS.colors.accent,
   },
@@ -193,7 +193,7 @@ const styles = StyleSheet.create({
     gap: 6,
   },
   coveredText: {
-    fontSize: 11,
+    fontSize: 12,
     fontWeight: '700',
     color: DESIGN_TOKENS.colors.successDark,
   },
@@ -206,11 +206,11 @@ const styles = StyleSheet.create({
     paddingTop: 6,
   },
   billsCapLabel: {
-    fontSize: 11,
+    fontSize: 12,
     color: DESIGN_TOKENS.colors.textMuted,
   },
   billsCapValue: {
-    fontSize: 11,
+    fontSize: 12,
     fontWeight: '700',
     fontFamily: 'monospace',
     color: DESIGN_TOKENS.colors.primary,

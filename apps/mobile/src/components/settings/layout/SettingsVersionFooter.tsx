@@ -32,7 +32,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   versionText: {
-    fontSize: 11,
+    fontSize: 12,
     fontWeight: '500',
     color: DESIGN_TOKENS.colors.slate[500],
   },

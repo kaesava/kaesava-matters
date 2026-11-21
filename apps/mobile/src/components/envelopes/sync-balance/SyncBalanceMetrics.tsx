@@ -63,7 +63,7 @@ const styles = StyleSheet.create({
     gap: 4,
   },
   metricLabel: {
-    fontSize: 10,
+    fontSize: 12,
     fontWeight: '700',
     color: DESIGN_TOKENS.colors.textMuted,
     textTransform: 'uppercase',

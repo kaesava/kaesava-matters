@@ -236,7 +236,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   centerSubtitle: {
-    fontSize: 9,
+    fontSize: 11,
     fontWeight: '700',
     color: DESIGN_TOKENS.colors.slate[400],
     textTransform: 'uppercase',
@@ -270,7 +270,7 @@ const styles = StyleSheet.create({
     color: DESIGN_TOKENS.colors.slate[600],
   },
   legendPct: {
-    fontSize: 10,
+    fontSize: 11,
     color: DESIGN_TOKENS.colors.slate[400],
   },
   emptyContainer: {

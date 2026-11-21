@@ -199,7 +199,7 @@ const styles = StyleSheet.create({
     paddingVertical: 3,
   },
   badgeText: {
-    fontSize: 10,
+    fontSize: 11,
     fontWeight: '800',
     color: DESIGN_TOKENS.colors.accent,
     textTransform: 'uppercase',
@@ -214,7 +214,7 @@ const styles = StyleSheet.create({
     gap: 8,
   },
   sectionHeader: {
-    fontSize: 11,
+    fontSize: 12,
     fontWeight: '800',
     color: DESIGN_TOKENS.colors.slate[400],
     textTransform: 'uppercase',
@@ -242,7 +242,7 @@ const styles = StyleSheet.create({
     color: DESIGN_TOKENS.colors.accentDark,
   },
   singleAccountTipDesc: {
-    fontSize: 11,
+    fontSize: 12,
     color: DESIGN_TOKENS.colors.accentDark,
     lineHeight: 16,
   },

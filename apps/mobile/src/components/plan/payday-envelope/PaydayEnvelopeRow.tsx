@@ -195,7 +195,7 @@ const styles = StyleSheet.create({
     paddingVertical: 1,
   },
   autoSurplusBadgeText: {
-    fontSize: 9,
+    fontSize: 11,
     fontWeight: '800',
     color: DESIGN_TOKENS.colors.successDark,
   },
@@ -208,7 +208,7 @@ const styles = StyleSheet.create({
     paddingVertical: 1,
   },
   leftoverChipText: {
-    fontSize: 9,
+    fontSize: 11,
     fontWeight: '800',
     color: DESIGN_TOKENS.colors.successDark,
   },
@@ -218,7 +218,7 @@ const styles = StyleSheet.create({
     flexWrap: 'wrap',
   },
   statMetaText: {
-    fontSize: 10,
+    fontSize: 12,
     fontWeight: '500',
     color: DESIGN_TOKENS.colors.textMuted,
   },
@@ -266,7 +266,7 @@ const styles = StyleSheet.create({
     paddingVertical: 2,
   },
   zeroChipText: {
-    fontSize: 9,
+    fontSize: 11,
     fontWeight: '700',
     color: DESIGN_TOKENS.colors.textMuted,
   },

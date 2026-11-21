@@ -241,7 +241,7 @@ const styles = StyleSheet.create({
     gap: 8,
   },
   sectionEyebrow: {
-    fontSize: 11,
+    fontSize: 12,
     fontWeight: '800',
     color: DESIGN_TOKENS.colors.subtleText,
     textTransform: 'uppercase',

@@ -187,7 +187,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   equivLabel: {
-    fontSize: 11,
+    fontSize: 12,
     fontWeight: '700',
     color: DESIGN_TOKENS.colors.primary,
   },

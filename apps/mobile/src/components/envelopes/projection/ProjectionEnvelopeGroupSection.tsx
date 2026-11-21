@@ -72,7 +72,7 @@ const styles = StyleSheet.create({
     color: DESIGN_TOKENS.colors.primary,
   },
   groupCount: {
-    fontSize: 11,
+    fontSize: 12,
     fontWeight: '700',
     color: DESIGN_TOKENS.colors.subtleText,
     backgroundColor: DESIGN_TOKENS.colors.slate[100],

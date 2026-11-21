@@ -84,7 +84,7 @@ const styles = StyleSheet.create({
     borderColor: 'rgba(244, 63, 94, 0.3)',
   },
   metricLabel: {
-    fontSize: 10,
+    fontSize: 12,
     fontWeight: '700',
     color: '#94A3B8',
     textAlign: 'center',
@@ -96,7 +96,7 @@ const styles = StyleSheet.create({
     fontFamily: 'monospace',
   },
   metricHighlightLabel: {
-    fontSize: 10,
+    fontSize: 12,
     fontWeight: '700',
     color: '#86EFAC',
     textAlign: 'center',
@@ -108,7 +108,7 @@ const styles = StyleSheet.create({
     fontFamily: 'monospace',
   },
   metricDeficitHighlightLabel: {
-    fontSize: 10,
+    fontSize: 12,
     fontWeight: '700',
     color: '#FDA4AF',
     textAlign: 'center',

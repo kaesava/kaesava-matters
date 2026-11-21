@@ -73,7 +73,7 @@ const styles = StyleSheet.create({
     backgroundColor: DESIGN_TOKENS.colors.success,
   },
   balancedText: {
-    fontSize: 11,
+    fontSize: 12,
     color: DESIGN_TOKENS.colors.successDark,
     fontWeight: '600',
   },
@@ -85,7 +85,7 @@ const styles = StyleSheet.create({
     flexWrap: 'wrap',
   },
   expectedText: {
-    fontSize: 11,
+    fontSize: 12,
     color: DESIGN_TOKENS.colors.textMuted,
     fontWeight: '500',
   },
@@ -124,12 +124,12 @@ const styles = StyleSheet.create({
     backgroundColor: DESIGN_TOKENS.colors.critical,
   },
   alignBtnTextSurplus: {
-    fontSize: 11,
+    fontSize: 12,
     fontWeight: '700',
     color: DESIGN_TOKENS.colors.successDark,
   },
   alignBtnTextShortfall: {
-    fontSize: 11,
+    fontSize: 12,
     fontWeight: '700',
     color: DESIGN_TOKENS.colors.criticalDark,
   },

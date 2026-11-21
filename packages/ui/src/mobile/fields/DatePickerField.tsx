@@ -164,7 +164,7 @@ const styles = StyleSheet.create({
     color: '#1E293B',
   },
   dateTextCompact: {
-    fontSize: 11,
+    fontSize: 12,
     fontWeight: '500',
   },
   datePlaceholder: {

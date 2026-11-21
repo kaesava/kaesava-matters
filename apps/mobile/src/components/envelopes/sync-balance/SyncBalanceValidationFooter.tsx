@@ -74,7 +74,7 @@ const styles = StyleSheet.create({
     fontFamily: 'monospace',
   },
   validationBadge: {
-    fontSize: 10,
+    fontSize: 11,
     fontWeight: '700',
     marginTop: 2,
   },

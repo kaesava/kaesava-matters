@@ -334,7 +334,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     gap: 6,
     paddingHorizontal: 12,
-    height: 40,
+    height: 44,
     borderRadius: 8,
     borderWidth: 1,
     borderColor: DESIGN_TOKENS.colors.border,

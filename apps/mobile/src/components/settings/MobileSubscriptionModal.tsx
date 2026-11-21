@@ -191,7 +191,7 @@ const styles = StyleSheet.create({
     backgroundColor: DESIGN_TOKENS.colors.accent,
   },
   toggleText: {
-    fontSize: 11,
+    fontSize: 12,
     fontWeight: '800',
     color: DESIGN_TOKENS.colors.textMuted,
   },
@@ -224,7 +224,7 @@ const styles = StyleSheet.create({
     borderRadius: DESIGN_TOKENS.radius.sm,
   },
   discountBadgeText: {
-    fontSize: 10,
+    fontSize: 11,
     fontWeight: '800',
     color: DESIGN_TOKENS.colors.accent,
   },
@@ -245,7 +245,7 @@ const styles = StyleSheet.create({
     color: DESIGN_TOKENS.colors.primary,
   },
   pricePeriod: {
-    fontSize: 11,
+    fontSize: 12,
     fontWeight: '600',
     color: DESIGN_TOKENS.colors.textMuted,
   },
@@ -257,7 +257,7 @@ const styles = StyleSheet.create({
     borderColor: DESIGN_TOKENS.colors.successBorder,
   },
   foundingOfferText: {
-    fontSize: 11,
+    fontSize: 12,
     fontWeight: '700',
     color: DESIGN_TOKENS.colors.successDark,
   },
@@ -266,7 +266,7 @@ const styles = StyleSheet.create({
     marginTop: 4,
   },
   featuresHeading: {
-    fontSize: 11,
+    fontSize: 12,
     fontWeight: '800',
     color: DESIGN_TOKENS.colors.subtleText,
     textTransform: 'uppercase',
@@ -301,7 +301,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   guaranteeText: {
-    fontSize: 10,
+    fontSize: 12,
     color: DESIGN_TOKENS.colors.textMuted,
     fontWeight: '600',
     textAlign: 'center',
@@ -311,7 +311,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   supportText: {
-    fontSize: 10,
+    fontSize: 12,
     color: DESIGN_TOKENS.colors.subtleText,
     textAlign: 'center',
   },

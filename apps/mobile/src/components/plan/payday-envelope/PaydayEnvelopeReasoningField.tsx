@@ -45,12 +45,12 @@ const styles = StyleSheet.create({
     gap: 4,
   },
   reasoningLabel: {
-    fontSize: 10,
+    fontSize: 12,
     fontWeight: '700',
     color: DESIGN_TOKENS.colors.textMuted,
   },
   reasoningInput: {
-    fontSize: 11,
+    fontSize: 12,
     color: DESIGN_TOKENS.colors.primary,
     backgroundColor: DESIGN_TOKENS.colors.surface,
     borderWidth: 1,

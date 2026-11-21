@@ -184,7 +184,7 @@ const styles = StyleSheet.create({
     gap: 2,
   },
   watermarkLabel: {
-    fontSize: 10,
+    fontSize: 12,
     fontWeight: '800',
     letterSpacing: 0.8,
     color: DESIGN_TOKENS.colors.accent,

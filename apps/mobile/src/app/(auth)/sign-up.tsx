@@ -171,7 +171,7 @@ const styles = StyleSheet.create({
     letterSpacing: 0.5,
   },
   noCardNote: {
-    fontSize: 11,
+    fontSize: 12,
     color: DESIGN_TOKENS.colors.textMuted,
     textAlign: "center",
     marginTop: 2,
@@ -194,7 +194,7 @@ const styles = StyleSheet.create({
   },
   dividerText: {
     marginHorizontal: 12,
-    fontSize: 11,
+    fontSize: 12,
     color: DESIGN_TOKENS.colors.textMuted,
     fontWeight: "700",
   },

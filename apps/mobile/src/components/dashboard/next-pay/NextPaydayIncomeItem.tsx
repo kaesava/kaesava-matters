@@ -122,7 +122,7 @@ const styles = StyleSheet.create({
     borderRadius: DESIGN_TOKENS.radius.sm,
   },
   nextBadgeText: {
-    fontSize: 9,
+    fontSize: 11,
     fontWeight: '800',
     color: DESIGN_TOKENS.colors.successDark,
     textTransform: 'uppercase',
@@ -136,13 +136,13 @@ const styles = StyleSheet.create({
     borderColor: DESIGN_TOKENS.colors.accentBorder,
   },
   savedBadgeText: {
-    fontSize: 9,
+    fontSize: 11,
     fontWeight: '800',
     color: DESIGN_TOKENS.colors.accentDark,
     textTransform: 'uppercase',
   },
   incomeMeta: {
-    fontSize: 11,
+    fontSize: 12,
     color: DESIGN_TOKENS.colors.textMuted,
   },
   incomeAmount: {
@@ -159,7 +159,7 @@ const styles = StyleSheet.create({
     color: DESIGN_TOKENS.colors.burnRed,
   },
   bankAccountText: {
-    fontSize: 11,
+    fontSize: 12,
     color: DESIGN_TOKENS.colors.textMuted,
   },
   budgetAmount: {
@@ -180,7 +180,7 @@ const styles = StyleSheet.create({
     paddingVertical: 5,
   },
   splitBtnText: {
-    fontSize: 11,
+    fontSize: 12,
     fontWeight: '800',
     color: DESIGN_TOKENS.colors.accent,
   },
@@ -189,7 +189,7 @@ const styles = StyleSheet.create({
     paddingVertical: 2,
   },
   deleteBtnText: {
-    fontSize: 10,
+    fontSize: 12,
     fontWeight: '600',
     color: DESIGN_TOKENS.colors.slate[400],
   },

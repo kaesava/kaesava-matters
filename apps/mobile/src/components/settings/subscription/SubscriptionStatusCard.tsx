@@ -135,7 +135,7 @@ const styles = StyleSheet.create({
     gap: 8,
   },
   eyebrowText: {
-    fontSize: 11,
+    fontSize: 12,
     fontWeight: '800',
     color: DESIGN_TOKENS.colors.subtleText,
     textTransform: 'uppercase',
@@ -164,7 +164,7 @@ const styles = StyleSheet.create({
     borderRadius: DESIGN_TOKENS.radius.full,
   },
   activeBadgeText: {
-    fontSize: 10,
+    fontSize: 11,
     fontWeight: '800',
     color: DESIGN_TOKENS.colors.successDark,
   },
@@ -177,7 +177,7 @@ const styles = StyleSheet.create({
     borderRadius: DESIGN_TOKENS.radius.full,
   },
   cancelingBadgeText: {
-    fontSize: 10,
+    fontSize: 11,
     fontWeight: '800',
     color: DESIGN_TOKENS.colors.warningDark,
   },
@@ -190,7 +190,7 @@ const styles = StyleSheet.create({
     borderRadius: DESIGN_TOKENS.radius.full,
   },
   trialBadgeText: {
-    fontSize: 10,
+    fontSize: 11,
     fontWeight: '800',
     color: DESIGN_TOKENS.colors.accentDark,
   },
@@ -219,7 +219,7 @@ const styles = StyleSheet.create({
     borderTopColor: DESIGN_TOKENS.colors.divider,
   },
   supportHelpText: {
-    fontSize: 11,
+    fontSize: 12,
     color: DESIGN_TOKENS.colors.subtleText,
     fontWeight: '500',
     lineHeight: 15,

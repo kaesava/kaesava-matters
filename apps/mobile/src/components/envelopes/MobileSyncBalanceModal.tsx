@@ -379,7 +379,7 @@ const styles = StyleSheet.create({
     paddingVertical: 12,
   },
   hiddenNoticeText: {
-    fontSize: 11,
+    fontSize: 12,
     color: DESIGN_TOKENS.colors.subtleText,
     fontStyle: 'italic',
     marginTop: 2,

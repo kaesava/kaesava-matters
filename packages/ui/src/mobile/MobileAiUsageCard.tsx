@@ -127,7 +127,7 @@ const styles = StyleSheet.create({
     backgroundColor: DESIGN_TOKENS.colors.critical,
   },
   footerText: {
-    fontSize: 11,
+    fontSize: 12,
     color: DESIGN_TOKENS.colors.slate[400],
   },
 });

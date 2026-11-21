@@ -91,7 +91,7 @@ const styles = StyleSheet.create({
   googleBlock: { gap: 6, paddingTop: 10, borderTopWidth: 1, borderTopColor: DESIGN_TOKENS.colors.divider },
   labelGroup: { flexDirection: "column", alignItems: "flex-start", gap: 2, flex: 1 },
   rowLabel: { fontSize: 13, fontWeight: "700", color: DESIGN_TOKENS.colors.primary },
-  statusActive: { fontSize: 11, fontWeight: "500", color: DESIGN_TOKENS.colors.subtleText },
-  statusInactive: { fontSize: 11, fontWeight: "500", color: DESIGN_TOKENS.colors.subtleText },
-  hint: { fontSize: 11, color: DESIGN_TOKENS.colors.subtleText },
+  statusActive: { fontSize: 12, fontWeight: "500", color: DESIGN_TOKENS.colors.subtleText },
+  statusInactive: { fontSize: 12, fontWeight: "500", color: DESIGN_TOKENS.colors.subtleText },
+  hint: { fontSize: 12, color: DESIGN_TOKENS.colors.subtleText },
 });

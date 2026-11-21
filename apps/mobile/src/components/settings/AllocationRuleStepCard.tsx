@@ -155,7 +155,7 @@ const styles = StyleSheet.create({
     color: DESIGN_TOKENS.colors.textPrimary,
   },
   stepTypeDesc: {
-    fontSize: 11,
+    fontSize: 12,
     color: DESIGN_TOKENS.colors.slate[500],
     lineHeight: 15,
   },
@@ -165,8 +165,8 @@ const styles = StyleSheet.create({
     gap: 4,
   },
   moveBtn: {
-    width: 28,
-    height: 28,
+    width: 44,
+    height: 44,
     borderRadius: 8,
     backgroundColor: DESIGN_TOKENS.colors.slate[100],
     alignItems: 'center',

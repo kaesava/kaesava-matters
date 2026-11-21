@@ -105,7 +105,7 @@ const styles = StyleSheet.create({
     marginTop: 4,
   },
   bankNameText: {
-    fontSize: 11,
+    fontSize: 12,
     color: DESIGN_TOKENS.colors.textMuted,
   },
   balWrap: {
@@ -123,7 +123,7 @@ const styles = StyleSheet.create({
     color: DESIGN_TOKENS.colors.primary,
   },
   balSub: {
-    fontSize: 10,
+    fontSize: 12,
     color: DESIGN_TOKENS.colors.subtleText,
     marginTop: 2,
   },

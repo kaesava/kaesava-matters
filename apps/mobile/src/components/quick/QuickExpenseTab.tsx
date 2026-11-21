@@ -217,7 +217,7 @@ const styles = StyleSheet.create({
     gap: 6,
   },
   overdraftWarning: {
-    fontSize: 11,
+    fontSize: 12,
     color: DESIGN_TOKENS.colors.critical,
     fontWeight: '600',
     marginTop: 2,

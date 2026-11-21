@@ -243,7 +243,7 @@ const styles = StyleSheet.create({
     fontWeight: '600',
   },
   helperText: {
-    fontSize: 11,
+    fontSize: 12,
     color: DESIGN_TOKENS.colors.slate[500],
     lineHeight: 15,
   },

@@ -43,7 +43,7 @@ const styles = StyleSheet.create({
     padding: 12,
   },
   poolCardLabel: {
-    fontSize: 10,
+    fontSize: 12,
     fontWeight: '800',
     textTransform: 'uppercase',
     color: DESIGN_TOKENS.colors.slate[500],

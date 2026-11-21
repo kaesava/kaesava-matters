@@ -89,7 +89,7 @@ export const MobileHorizonPaydayColumnHeader: React.FC<MobileHorizonPaydayColumn
           col.date &&
           col.date < new Date().toISOString().slice(0, 10) && (
             <View style={{ backgroundColor: DESIGN_TOKENS.colors.criticalLight, borderColor: DESIGN_TOKENS.colors.criticalBorder, borderWidth: 1, borderRadius: 4, paddingHorizontal: 4, paddingVertical: 1 }}>
-              <Text style={{ fontSize: 9, fontWeight: '700', color: DESIGN_TOKENS.colors.burnRed, textTransform: 'uppercase' }}>
+              <Text style={{ fontSize: 12, fontWeight: '700', color: DESIGN_TOKENS.colors.burnRed, textTransform: 'uppercase' }}>
                 {t('expenseStatus.overdueLabel')}
               </Text>
             </View>
@@ -174,18 +174,17 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   sourceNameButton: {
-    minHeight: 36,
+    minHeight: 44,
     justifyContent: 'center',
   },
   sourceNameLink: {
     fontSize: 12,
     fontWeight: '800',
     color: DESIGN_TOKENS.colors.sereneBlue,
-    textDecorationLine: 'underline',
     textAlign: 'center',
   },
   dateText: {
-    fontSize: 11,
+    fontSize: 12,
     fontWeight: '500',
     color: DESIGN_TOKENS.colors.textMuted,
     textAlign: 'center',
@@ -213,7 +212,7 @@ const styles = StyleSheet.create({
     backgroundColor: DESIGN_TOKENS.colors.successBorder,
   },
   confirmedBadgeText: {
-    fontSize: 9,
+    fontSize: 11,
     fontWeight: '800',
     color: DESIGN_TOKENS.colors.successDark,
   },
@@ -224,7 +223,7 @@ const styles = StyleSheet.create({
     backgroundColor: DESIGN_TOKENS.colors.slate[200],
   },
   savedBadgeText: {
-    fontSize: 9,
+    fontSize: 11,
     fontWeight: '800',
     color: DESIGN_TOKENS.colors.slate[800],
   },
@@ -235,7 +234,7 @@ const styles = StyleSheet.create({
     backgroundColor: DESIGN_TOKENS.colors.slate[200],
   },
   autoBadgeText: {
-    fontSize: 9,
+    fontSize: 11,
     fontWeight: '800',
     color: DESIGN_TOKENS.colors.slate[700],
   },
@@ -274,17 +273,17 @@ const styles = StyleSheet.create({
     color: DESIGN_TOKENS.colors.sereneBlue,
   },
   saveText: {
-    fontSize: 11,
+    fontSize: 12,
     fontWeight: '700',
     color: DESIGN_TOKENS.colors.slate[600],
   },
   deleteText: {
-    fontSize: 11,
+    fontSize: 12,
     fontWeight: '600',
     color: DESIGN_TOKENS.colors.burnRed,
   },
   privateFootnote: {
-    fontSize: 9,
+    fontSize: 11,
     color: DESIGN_TOKENS.colors.slate[400],
     marginTop: 2,
   },

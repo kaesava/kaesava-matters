@@ -171,7 +171,7 @@ const styles = StyleSheet.create({
     borderRadius: 4,
   },
   overdueBadgeText: {
-    fontSize: 10,
+    fontSize: 11,
     fontWeight: '800',
     color: DESIGN_TOKENS.colors.criticalDark,
     textTransform: 'uppercase',
@@ -199,7 +199,7 @@ const styles = StyleSheet.create({
     borderRadius: 4,
   },
   lockedBadgeText: {
-    fontSize: 10,
+    fontSize: 11,
     fontWeight: '800',
     color: DESIGN_TOKENS.colors.sereneBlue,
     textTransform: 'uppercase',

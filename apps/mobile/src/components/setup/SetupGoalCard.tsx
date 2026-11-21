@@ -220,13 +220,13 @@ const styles = StyleSheet.create({
     color: DESIGN_TOKENS.colors.primary,
   },
   surplusBadgeText: {
-    fontSize: 10,
+    fontSize: 11,
     fontWeight: '700',
     color: DESIGN_TOKENS.colors.successDark,
     marginTop: 2,
   },
   pastDateText: {
-    fontSize: 10,
+    fontSize: 12,
     fontWeight: '700',
     color: DESIGN_TOKENS.colors.warning,
     marginTop: 2,
@@ -249,7 +249,7 @@ const styles = StyleSheet.create({
     flex: 1.1,
   },
   fieldLabel: {
-    fontSize: 11,
+    fontSize: 12,
     fontWeight: '600',
     color: DESIGN_TOKENS.colors.textMuted,
     marginBottom: 4,
@@ -284,7 +284,7 @@ const styles = StyleSheet.create({
     borderColor: '#93C5FD',
   },
   freqChipText: {
-    fontSize: 10,
+    fontSize: 11,
     fontWeight: '700',
     color: DESIGN_TOKENS.colors.slate[600],
   },

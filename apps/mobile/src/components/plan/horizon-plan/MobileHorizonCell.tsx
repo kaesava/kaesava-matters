@@ -83,13 +83,13 @@ const styles = StyleSheet.create({
     color: DESIGN_TOKENS.colors.burnRed,
   },
   regularAmountText: {
-    fontSize: 11,
+    fontSize: 12,
     fontWeight: '700',
     fontFamily: 'monospace',
     color: DESIGN_TOKENS.colors.primary,
   },
   projectedText: {
-    fontSize: 9,
+    fontSize: 12,
     fontFamily: 'monospace',
     color: DESIGN_TOKENS.colors.textMuted,
     fontWeight: '500',

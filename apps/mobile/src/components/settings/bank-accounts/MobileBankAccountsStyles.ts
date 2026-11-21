@@ -19,7 +19,7 @@ export const styles = StyleSheet.create({
     color: DESIGN_TOKENS.colors.slate[900],
   },
   tipCardBody: {
-    fontSize: 11,
+    fontSize: 12,
     color: DESIGN_TOKENS.colors.slate[600],
     lineHeight: 16,
   },
@@ -71,7 +71,7 @@ export const styles = StyleSheet.create({
     color: DESIGN_TOKENS.colors.primary,
   },
   optimizerDesc: {
-    fontSize: 11,
+    fontSize: 12,
     color: DESIGN_TOKENS.colors.slate[600],
     lineHeight: 16,
   },
@@ -83,7 +83,7 @@ export const styles = StyleSheet.create({
     paddingVertical: 7,
   },
   optimizerActionText: {
-    fontSize: 11,
+    fontSize: 12,
     fontWeight: "800",
     color: "#FFFFFF",
   },
@@ -192,7 +192,7 @@ export const styles = StyleSheet.create({
     borderColor: DESIGN_TOKENS.colors.accentBorder,
   },
   clearFilterText: {
-    fontSize: 11,
+    fontSize: 12,
     fontWeight: "700",
     color: DESIGN_TOKENS.colors.sereneBlue,
   },

@@ -200,7 +200,7 @@ const styles = StyleSheet.create({
     borderColor: DESIGN_TOKENS.colors.successBorder,
   },
   metricLabel: {
-    fontSize: 9,
+    fontSize: 12,
     fontWeight: '700',
     color: DESIGN_TOKENS.colors.slate[500],
     textAlign: 'center',
@@ -212,7 +212,7 @@ const styles = StyleSheet.create({
     fontFamily: 'monospace',
   },
   safeLabel: {
-    fontSize: 9,
+    fontSize: 12,
     fontWeight: '700',
     color: DESIGN_TOKENS.colors.successDark,
     textAlign: 'center',

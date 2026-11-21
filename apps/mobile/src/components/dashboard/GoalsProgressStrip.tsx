@@ -269,7 +269,7 @@ const styles = StyleSheet.create({
     flexWrap: 'wrap',
   },
   cardTitle: {
-    fontSize: 11,
+    fontSize: 12,
     fontWeight: '800',
     color: DESIGN_TOKENS.colors.slate[500],
     textTransform: 'uppercase',
@@ -338,7 +338,7 @@ const styles = StyleSheet.create({
     color: DESIGN_TOKENS.colors.slate[700],
   },
   milestoneMetric: {
-    fontSize: 11,
+    fontSize: 12,
     color: DESIGN_TOKENS.colors.slate[500],
     fontFamily: DESIGN_TOKENS.fonts.mono,
   },
@@ -373,7 +373,7 @@ const styles = StyleSheet.create({
     borderRadius: 6,
   },
   recurringAmount: {
-    fontSize: 11,
+    fontSize: 12,
     fontWeight: '700',
     color: '#16A34A',
     fontFamily: DESIGN_TOKENS.fonts.mono,
@@ -413,7 +413,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   previewVal: {
-    fontSize: 11,
+    fontSize: 12,
     fontWeight: '600',
     color: DESIGN_TOKENS.colors.slate[500],
     fontFamily: DESIGN_TOKENS.fonts.mono,

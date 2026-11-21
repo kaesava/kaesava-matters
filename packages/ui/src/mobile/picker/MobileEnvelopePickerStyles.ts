@@ -62,7 +62,7 @@ export const styles = StyleSheet.create({
     fontWeight: '400',
   },
   fieldBalText: {
-    fontSize: 11,
+    fontSize: 12,
     fontFamily: 'monospace',
     fontWeight: '700',
     color: '#64748B',
@@ -138,7 +138,7 @@ export const styles = StyleSheet.create({
     color: '#1B2B4B',
   },
   subtitle: {
-    fontSize: 11,
+    fontSize: 12,
     color: '#64748B',
     marginTop: 2,
   },
@@ -211,7 +211,7 @@ export const styles = StyleSheet.create({
     borderWidth: 1,
   },
   itemBadgeText: {
-    fontSize: 9,
+    fontSize: 11,
     fontWeight: '700',
     textTransform: 'uppercase',
     letterSpacing: 0.5,

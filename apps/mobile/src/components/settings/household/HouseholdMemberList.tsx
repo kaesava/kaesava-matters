@@ -144,7 +144,7 @@ const styles = StyleSheet.create({
     color: DESIGN_TOKENS.colors.primary,
   },
   cardSubtitle: {
-    fontSize: 11,
+    fontSize: 12,
     color: DESIGN_TOKENS.colors.textMuted,
     lineHeight: 16,
   },
@@ -211,7 +211,7 @@ const styles = StyleSheet.create({
     borderRadius: 8,
   },
   ownerBadgeText: {
-    fontSize: 9,
+    fontSize: 11,
     fontWeight: '700',
     color: DESIGN_TOKENS.colors.successDark,
   },
@@ -222,7 +222,7 @@ const styles = StyleSheet.create({
     borderRadius: 8,
   },
   memberBadgeText: {
-    fontSize: 9,
+    fontSize: 11,
     fontWeight: '700',
     color: DESIGN_TOKENS.colors.slate[600],
   },
@@ -233,12 +233,12 @@ const styles = StyleSheet.create({
     borderRadius: 8,
   },
   pendingBadgeText: {
-    fontSize: 9,
+    fontSize: 11,
     fontWeight: '700',
     color: DESIGN_TOKENS.colors.warningDark,
   },
   memberEmail: {
-    fontSize: 11,
+    fontSize: 12,
     color: DESIGN_TOKENS.colors.textMuted,
     marginTop: 2,
   },
@@ -249,7 +249,7 @@ const styles = StyleSheet.create({
     backgroundColor: DESIGN_TOKENS.colors.criticalLight,
   },
   removeBtnText: {
-    fontSize: 11,
+    fontSize: 12,
     fontWeight: '700',
     color: DESIGN_TOKENS.colors.criticalDark,
   },

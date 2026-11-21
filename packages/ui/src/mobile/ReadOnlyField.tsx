@@ -29,7 +29,7 @@ const styles = StyleSheet.create({
     borderBottomColor: DESIGN_TOKENS.colors.border,
   },
   label: {
-    fontSize: 11,
+    fontSize: 12,
     fontWeight: '700',
     color: DESIGN_TOKENS.colors.textMuted,
     textTransform: 'uppercase',

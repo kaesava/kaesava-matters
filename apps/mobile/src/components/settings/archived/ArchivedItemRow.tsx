@@ -107,7 +107,7 @@ const styles = StyleSheet.create({
     borderRadius: 4,
   },
   typeBadgeText: {
-    fontSize: 10,
+    fontSize: 11,
     fontWeight: '700',
     color: DESIGN_TOKENS.colors.slate[600],
     textTransform: 'uppercase',

@@ -176,7 +176,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
   },
   poolTypeTag: {
-    fontSize: 10,
+    fontSize: 11,
     fontWeight: '800',
     letterSpacing: 0.3,
     textTransform: 'uppercase',
@@ -196,11 +196,11 @@ const styles = StyleSheet.create({
   committedBadge: { backgroundColor: '#EEF2FF', borderColor: '#C7D2FE' },
   committedBadgeText: { color: '#4338CA' },
   surplusPill: { backgroundColor: DESIGN_TOKENS.colors.successLight, paddingHorizontal: 6, paddingVertical: 2, borderRadius: 6 },
-  surplusPillText: { fontSize: 10, fontWeight: '700', color: DESIGN_TOKENS.colors.successDark },
+  surplusPillText: { fontSize: 11, fontWeight: '700', color: DESIGN_TOKENS.colors.successDark },
   name: { fontSize: 18, fontWeight: '900', color: DESIGN_TOKENS.colors.primary },
   bankNameMeta: { fontSize: 12, color: DESIGN_TOKENS.colors.textMuted, marginTop: 2 },
   balanceCol: { alignItems: 'flex-end' },
-  balanceLabel: { fontSize: 10, fontWeight: '700', color: DESIGN_TOKENS.colors.slate[400], textTransform: 'uppercase' },
+  balanceLabel: { fontSize: 12, fontWeight: '700', color: DESIGN_TOKENS.colors.slate[400], textTransform: 'uppercase' },
   balanceAmount: { fontSize: 20, fontWeight: '900', fontFamily: 'monospace', color: DESIGN_TOKENS.colors.accent },
   actionRow: { flexDirection: 'row', gap: 8, borderTopWidth: 1, borderTopColor: DESIGN_TOKENS.colors.slate[100], paddingTop: 12 },
   primaryActionBtn: {

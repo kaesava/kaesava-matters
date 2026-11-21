@@ -182,7 +182,7 @@ const styles = StyleSheet.create({
     borderTopRightRadius: 3,
   },
   monthLabel: {
-    fontSize: 9,
+    fontSize: 11,
     fontWeight: '700',
     color: DESIGN_TOKENS.colors.slate[500],
     marginTop: 6,

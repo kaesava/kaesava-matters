@@ -115,9 +115,9 @@ const styles = StyleSheet.create({
   },
   presetCardActive: { borderColor: DESIGN_TOKENS.colors.accent, backgroundColor: DESIGN_TOKENS.colors.accentLight },
   badgeRow: { marginBottom: 4 },
-  badgeText: { fontSize: 9, fontWeight: '800', textTransform: 'uppercase', paddingHorizontal: 6, paddingVertical: 2, borderRadius: 4, alignSelf: 'flex-start' },
+  badgeText: { fontSize: 11, fontWeight: '800', textTransform: 'uppercase', paddingHorizontal: 6, paddingVertical: 2, borderRadius: 4, alignSelf: 'flex-start' },
   badgeOngoing: { backgroundColor: '#DBEAFE', color: '#1D4ED8' },
   badgeTarget: { backgroundColor: '#FEF3C7', color: '#92400E' },
   presetName: { fontSize: 12, fontWeight: '700', color: DESIGN_TOKENS.colors.primary },
-  presetMeta: { fontSize: 11, color: DESIGN_TOKENS.colors.textMuted, marginTop: 2, fontFamily: 'monospace' },
+  presetMeta: { fontSize: 12, color: DESIGN_TOKENS.colors.textMuted, marginTop: 2, fontFamily: 'monospace' },
 });

@@ -7,6 +7,7 @@ import {
 } from 'react-native';
 import { Feather } from '@expo/vector-icons';
 import { DESIGN_TOKENS } from '../tokens';
+import { PLATFORM_STYLE } from './platform-style';
 
 export interface EntityLinkChipProps {
   label: string;
@@ -32,25 +33,24 @@ export function EntityLinkChip({
         e.stopPropagation();
         onPress();
       }}
-      hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
-      style={[styles.chip, style]}
+            style={[styles.chip, style]}
       testID={testID}
       accessibilityRole="button"
       accessibilityLabel={label}
     >
       {isPrivate && (
-        <Feather name="lock" size={10} color="#64748B" style={styles.lockIcon} />
+        <Feather name="lock" size={12} color={DESIGN_TOKENS.colors.textMuted} style={styles.lockIcon} />
       )}
       {icon === 'folder' && (
-        <Feather name="folder" size={11} color={DESIGN_TOKENS.colors.sereneBlue} />
+        <Feather name="folder" size={14} color={DESIGN_TOKENS.colors.sereneBlue} />
       )}
       {icon === 'credit-card' && (
-        <Feather name="credit-card" size={11} color={DESIGN_TOKENS.colors.sereneBlue} />
+        <Feather name="credit-card" size={14} color={DESIGN_TOKENS.colors.sereneBlue} />
       )}
       <Text style={styles.label} numberOfLines={1}>
         {label}
       </Text>
-      <Feather name="arrow-up-right" size={11} color={DESIGN_TOKENS.colors.sereneBlue} />
+      <Feather name="chevron-right" size={16} color={DESIGN_TOKENS.colors.sereneBlue} />
     </TouchableOpacity>
   );
 }
@@ -59,12 +59,13 @@ const styles = StyleSheet.create({
   chip: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#EFF6FF',
-    paddingHorizontal: 10,
+    backgroundColor: DESIGN_TOKENS.colors.accentLight,
+    paddingHorizontal: 12,
     paddingVertical: 6,
-    borderRadius: 8,
-    gap: 4,
-    minHeight: 34,
+    borderRadius: 12,
+    gap: 6,
+    // Why: this is a navigation target inside cards; it must meet the platform touch minimum.
+    minHeight: PLATFORM_STYLE.minTouch,
     alignSelf: 'flex-start',
     maxWidth: '85%',
   },
@@ -72,7 +73,7 @@ const styles = StyleSheet.create({
     marginRight: 1,
   },
   label: {
-    fontSize: 11,
+    fontSize: 13,
     fontWeight: '700',
     color: DESIGN_TOKENS.colors.sereneBlue,
     flexShrink: 1,

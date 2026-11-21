@@ -131,7 +131,7 @@ const styles = StyleSheet.create({
     flexShrink: 1,
   },
   poolText: {
-    fontSize: 11,
+    fontSize: 12,
     fontWeight: '600',
     color: DESIGN_TOKENS.colors.slate[500],
     flexShrink: 1,
@@ -174,7 +174,7 @@ const styles = StyleSheet.create({
     borderColor: DESIGN_TOKENS.colors.accentBorder,
   },
   pillText: {
-    fontSize: 9,
+    fontSize: 11,
     fontWeight: '700',
     textTransform: 'uppercase',
   },

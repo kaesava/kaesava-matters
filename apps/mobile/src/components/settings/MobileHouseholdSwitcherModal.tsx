@@ -153,7 +153,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#E2E8F0',
   },
   roleBadgeText: {
-    fontSize: 10,
+    fontSize: 11,
     fontWeight: '700',
     color: '#475569',
     textTransform: 'uppercase',

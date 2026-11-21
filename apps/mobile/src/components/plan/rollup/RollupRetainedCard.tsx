@@ -84,7 +84,7 @@ const styles = StyleSheet.create({
     flexWrap: 'wrap',
   },
   retainedDesc: {
-    fontSize: 11,
+    fontSize: 12,
     color: DESIGN_TOKENS.colors.successDark,
     lineHeight: 16,
   },

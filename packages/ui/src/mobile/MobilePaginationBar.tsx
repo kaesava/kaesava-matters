@@ -119,7 +119,7 @@ const styles = StyleSheet.create({
     backgroundColor: DESIGN_TOKENS.colors.sereneBlue,
   },
   pageSizeText: {
-    fontSize: 11,
+    fontSize: 12,
     fontWeight: '700',
     color: '#3F3F46',
   },

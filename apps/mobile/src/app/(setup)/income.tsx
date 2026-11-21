@@ -253,14 +253,14 @@ const styles = StyleSheet.create({
     marginBottom: 8,
   },
   heroBadge: {
-    fontSize: 10,
+    fontSize: 11,
     fontWeight: '800',
     color: '#5EEAD4',
     textTransform: 'uppercase',
     letterSpacing: 0.5,
   },
   heroStepText: {
-    fontSize: 11,
+    fontSize: 12,
     color: DESIGN_TOKENS.colors.slate[300],
     fontWeight: '600',
   },

@@ -181,7 +181,7 @@ const styles = StyleSheet.create({
     borderColor: '#BFDBFE',
   },
   badgeText: {
-    fontSize: 10,
+    fontSize: 11,
     fontWeight: '800',
   },
   badgeTextRed: {
@@ -204,7 +204,7 @@ const styles = StyleSheet.create({
     color: DESIGN_TOKENS.colors.primary,
   },
   safeToSpendSub: {
-    fontSize: 11,
+    fontSize: 12,
     fontWeight: '700',
     color: DESIGN_TOKENS.colors.textMuted,
     textTransform: 'uppercase',
@@ -241,7 +241,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   cycleAllowanceText: {
-    fontSize: 11,
+    fontSize: 12,
     fontWeight: '700',
     color: DESIGN_TOKENS.colors.textMuted,
   },
@@ -260,12 +260,12 @@ const styles = StyleSheet.create({
     borderTopColor: DESIGN_TOKENS.colors.slate[100],
   },
   bufferProtectedText: {
-    fontSize: 11,
+    fontSize: 12,
     fontWeight: '800',
     color: DESIGN_TOKENS.colors.successDark,
   },
   bufferDippedText: {
-    fontSize: 11,
+    fontSize: 12,
     fontWeight: '800',
     color: DESIGN_TOKENS.colors.warningDark,
   },

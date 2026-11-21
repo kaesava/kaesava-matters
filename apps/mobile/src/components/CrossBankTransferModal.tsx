@@ -141,7 +141,7 @@ const styles = StyleSheet.create({
     alignItems: 'flex-end',
   },
   subDetail: {
-    fontSize: 10,
+    fontSize: 12,
     fontFamily: 'monospace',
     color: DESIGN_TOKENS.colors.textMuted,
     marginTop: 2,
@@ -157,7 +157,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   amountLabel: {
-    fontSize: 10,
+    fontSize: 12,
     fontWeight: '700',
     textTransform: 'uppercase',
     letterSpacing: 0.5,

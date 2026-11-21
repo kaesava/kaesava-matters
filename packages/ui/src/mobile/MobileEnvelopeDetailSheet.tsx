@@ -226,7 +226,7 @@ const styles = StyleSheet.create({
     borderColor: DESIGN_TOKENS.colors.slate[200],
   },
   statLabel: {
-    fontSize: 11,
+    fontSize: 12,
     color: DESIGN_TOKENS.colors.slate[500],
     marginBottom: 4,
   },
@@ -237,7 +237,7 @@ const styles = StyleSheet.create({
     fontFamily: 'monospace',
   },
   targetDateText: {
-    fontSize: 10,
+    fontSize: 12,
     color: DESIGN_TOKENS.colors.slate[400],
     marginTop: 2,
   },
@@ -281,7 +281,7 @@ const styles = StyleSheet.create({
     color: DESIGN_TOKENS.colors.primary,
   },
   itemSubtitle: {
-    fontSize: 11,
+    fontSize: 12,
     color: DESIGN_TOKENS.colors.slate[400],
   },
   itemAmount: {
@@ -306,7 +306,7 @@ const styles = StyleSheet.create({
     backgroundColor: DESIGN_TOKENS.colors.sereneBlue,
   },
   markPaidText: {
-    fontSize: 10,
+    fontSize: 12,
     fontWeight: '700',
     color: '#FFFFFF',
   },

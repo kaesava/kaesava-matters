@@ -181,5 +181,5 @@ const styles = StyleSheet.create({
   form: { width: '100%', gap: 10 },
   dividerRow: { flexDirection: 'row', alignItems: 'center', gap: 8, marginVertical: 4 },
   dividerLine: { flex: 1, height: 1, backgroundColor: DESIGN_TOKENS.colors.border },
-  dividerText: { fontSize: 11, fontWeight: '600', color: DESIGN_TOKENS.colors.textMuted },
+  dividerText: { fontSize: 12, fontWeight: '600', color: DESIGN_TOKENS.colors.textMuted },
 });

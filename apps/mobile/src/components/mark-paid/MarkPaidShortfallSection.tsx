@@ -208,7 +208,7 @@ const styles = StyleSheet.create({
     color: DESIGN_TOKENS.colors.primary,
   },
   fundingHeaderSub: {
-    fontSize: 11,
+    fontSize: 12,
     color: DESIGN_TOKENS.colors.slate[500],
   },
   accordionContainer: {
@@ -245,7 +245,7 @@ const styles = StyleSheet.create({
     color: DESIGN_TOKENS.colors.primary,
   },
   progressStatus: {
-    fontSize: 11,
+    fontSize: 12,
     fontWeight: '800',
   },
   progressCovered: {

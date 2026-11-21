@@ -219,7 +219,7 @@ const styles = StyleSheet.create({
     color: DESIGN_TOKENS.colors.slate[600],
   },
   pct: {
-    fontSize: 10,
+    fontSize: 11,
     color: DESIGN_TOKENS.colors.slate[400],
   },
   track: {

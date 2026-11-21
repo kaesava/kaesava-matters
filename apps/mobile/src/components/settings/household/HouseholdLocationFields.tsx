@@ -36,7 +36,7 @@ export function HouseholdLocationFields({
         <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
           <FormLabel label={t('auth.countryLabel')} />
           {countryTooltip && (
-            <Text style={{ fontSize: 11, color: DESIGN_TOKENS.colors.slate[500], fontStyle: 'italic' }}>
+            <Text style={{ fontSize: 12, color: DESIGN_TOKENS.colors.slate[500], fontStyle: 'italic' }}>
               {countryTooltip}
             </Text>
           )}

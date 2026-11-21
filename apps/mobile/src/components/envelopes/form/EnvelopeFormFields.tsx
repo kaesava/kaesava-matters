@@ -260,7 +260,7 @@ const styles = StyleSheet.create({
     borderColor: DESIGN_TOKENS.colors.warningBorder,
   },
   warningText: {
-    fontSize: 11,
+    fontSize: 12,
     fontWeight: '700',
     color: DESIGN_TOKENS.colors.warningDark,
     lineHeight: 16,
@@ -276,7 +276,7 @@ const styles = StyleSheet.create({
     gap: 2,
   },
   checkboxHint: {
-    fontSize: 11,
+    fontSize: 12,
     color: DESIGN_TOKENS.colors.subtleText,
     paddingLeft: 30,
   },

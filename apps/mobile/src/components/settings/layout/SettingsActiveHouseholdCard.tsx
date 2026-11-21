@@ -73,7 +73,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   label: {
-    fontSize: 11,
+    fontSize: 12,
     fontWeight: '600',
     color: DESIGN_TOKENS.colors.slate[500],
     textTransform: 'uppercase',
@@ -86,7 +86,7 @@ const styles = StyleSheet.create({
     marginTop: 1,
   },
   role: {
-    fontSize: 11,
+    fontSize: 12,
     fontWeight: '600',
     color: DESIGN_TOKENS.colors.accent,
     marginTop: 2,

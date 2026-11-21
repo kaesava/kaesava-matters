@@ -139,7 +139,7 @@ const styles = StyleSheet.create({
     backgroundColor: DESIGN_TOKENS.colors.slate[100],
   },
   groupTitleText: {
-    fontSize: 11,
+    fontSize: 12,
     fontWeight: '800',
     color: DESIGN_TOKENS.colors.primary,
     flex: 1,
@@ -155,12 +155,12 @@ const styles = StyleSheet.create({
     paddingVertical: 1,
   },
   categoryNameText: {
-    fontSize: 11,
+    fontSize: 12,
     fontWeight: '800',
     color: DESIGN_TOKENS.colors.sereneBlue,
   },
   categoryMetaText: {
-    fontSize: 9,
+    fontSize: 12,
     fontFamily: 'monospace',
     color: DESIGN_TOKENS.colors.textMuted,
     marginTop: 1,

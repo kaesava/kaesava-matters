@@ -135,7 +135,7 @@ const styles = StyleSheet.create({
     marginTop: 8,
   },
   horizonNote: {
-    fontSize: 11,
+    fontSize: 12,
     color: DESIGN_TOKENS.colors.slate[500],
     textAlign: 'center',
     marginTop: 4,

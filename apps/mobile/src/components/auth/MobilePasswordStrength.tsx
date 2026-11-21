@@ -87,7 +87,7 @@ const styles = StyleSheet.create({
     gap: 2,
   },
   reqText: {
-    fontSize: 11,
+    fontSize: 12,
     color: DESIGN_TOKENS.colors.textMuted,
     fontWeight: "500",
   },

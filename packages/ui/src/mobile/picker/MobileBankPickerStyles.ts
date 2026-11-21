@@ -32,7 +32,7 @@ export const styles = StyleSheet.create({
     color: '#1B2B4B',
   },
   subtitle: {
-    fontSize: 11,
+    fontSize: 12,
     color: '#64748B',
     marginTop: 2,
   },
@@ -97,7 +97,7 @@ export const styles = StyleSheet.create({
     color: '#1D4ED8',
   },
   itemBadge: {
-    fontSize: 9,
+    fontSize: 11,
     fontWeight: '700',
     color: '#64748B',
     backgroundColor: '#F1F5F9',

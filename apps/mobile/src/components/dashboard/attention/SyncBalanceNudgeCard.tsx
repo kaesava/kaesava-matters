@@ -48,7 +48,7 @@ const styles = StyleSheet.create({
     color: DESIGN_TOKENS.colors.warningDark,
   },
   desc: {
-    fontSize: 11,
+    fontSize: 12,
     color: DESIGN_TOKENS.colors.warningDark,
     marginTop: 2,
   },

@@ -286,7 +286,7 @@ const styles = StyleSheet.create({
     color: DESIGN_TOKENS.colors.textPrimary,
   },
   menuProfileEmail: {
-    fontSize: 11,
+    fontSize: 12,
     color: DESIGN_TOKENS.colors.textMuted,
     marginTop: 1,
   },

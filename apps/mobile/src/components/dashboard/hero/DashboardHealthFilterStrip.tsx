@@ -101,7 +101,7 @@ const styles = StyleSheet.create({
     borderRadius: 3,
   },
   statusText: {
-    fontSize: 10,
+    fontSize: 12,
     fontWeight: '700',
   },
   countPill: {
@@ -110,7 +110,7 @@ const styles = StyleSheet.create({
     borderRadius: 8,
   },
   countText: {
-    fontSize: 10,
+    fontSize: 12,
     fontWeight: '800',
   },
 });

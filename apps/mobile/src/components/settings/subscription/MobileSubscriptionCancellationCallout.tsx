@@ -127,7 +127,7 @@ const styles = StyleSheet.create({
     color: DESIGN_TOKENS.colors.warningDark,
   },
   cancelingDesc: {
-    fontSize: 11,
+    fontSize: 12,
     color: DESIGN_TOKENS.colors.warningDark,
     lineHeight: 16,
     fontWeight: '500',
@@ -138,7 +138,7 @@ const styles = StyleSheet.create({
     color: DESIGN_TOKENS.colors.accentDark,
   },
   renewalDesc: {
-    fontSize: 11,
+    fontSize: 12,
     color: DESIGN_TOKENS.colors.accentDark,
     lineHeight: 16,
     fontWeight: '500',

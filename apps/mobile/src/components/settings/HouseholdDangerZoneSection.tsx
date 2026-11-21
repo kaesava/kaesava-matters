@@ -175,7 +175,7 @@ const styles = StyleSheet.create({
     textTransform: 'uppercase',
   },
   cardSubtitle: {
-    fontSize: 11,
+    fontSize: 12,
     color: '#991B1B',
     lineHeight: 16,
   },

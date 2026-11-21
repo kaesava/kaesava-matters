@@ -91,7 +91,7 @@ const styles = StyleSheet.create({
   },
   row: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 6 },
   title: { fontSize: 12, fontWeight: '700', color: DESIGN_TOKENS.colors.primary },
-  removeText: { fontSize: 11, fontWeight: '600', color: '#EF4444' },
+  removeText: { fontSize: 12, fontWeight: '600', color: '#EF4444' },
   input: {
     backgroundColor: DESIGN_TOKENS.colors.surfaceVariant,
     borderWidth: 1,

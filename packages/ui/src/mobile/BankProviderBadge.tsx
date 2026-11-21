@@ -63,7 +63,7 @@ const styles = StyleSheet.create({
     color: '#334155',
   },
   textSm: {
-    fontSize: 10,
+    fontSize: 12,
     letterSpacing: 0.3,
   },
   textMd: {

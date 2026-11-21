@@ -66,9 +66,9 @@ export function ScreenMenuModal({
               </Text>
               {activeTenantName ? (
                 <View style={{ flexDirection: "row", alignItems: "center", gap: 4, marginTop: 4 }}>
-                  <Text style={{ fontSize: 11 }}>🏡</Text>
+                  <Text style={{ fontSize: 12 }}>🏡</Text>
                   <Text
-                    style={{ fontSize: 11, fontWeight: "600", color: D.colors.primary }}
+                    style={{ fontSize: 12, fontWeight: "600", color: D.colors.primary }}
                     numberOfLines={1}
                   >
                     {activeTenantName}

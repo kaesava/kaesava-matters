@@ -143,7 +143,7 @@ const styles = StyleSheet.create({
     color: '#FFFFFF',
   },
   subLabel: {
-    fontSize: 10,
+    fontSize: 12,
     fontWeight: '600',
     color: D.colors.textMuted,
   },

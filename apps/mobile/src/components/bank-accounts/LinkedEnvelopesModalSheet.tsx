@@ -136,7 +136,7 @@ const styles = StyleSheet.create({
     borderRadius: 4,
   },
   sweepBadgeText: {
-    fontSize: 9,
+    fontSize: 11,
     fontWeight: '800',
     color: DESIGN_TOKENS.colors.accentDark,
   },
@@ -148,7 +148,7 @@ const styles = StyleSheet.create({
     alignSelf: 'flex-start',
   },
   typeBadgeText: {
-    fontSize: 10,
+    fontSize: 11,
     fontWeight: '700',
     color: DESIGN_TOKENS.colors.textMuted,
   },

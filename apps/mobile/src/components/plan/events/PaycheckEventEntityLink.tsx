@@ -89,7 +89,7 @@ const styles = StyleSheet.create({
     flexWrap: 'wrap',
   },
   transferArrow: {
-    fontSize: 10,
+    fontSize: 12,
     color: DESIGN_TOKENS.colors.slate[400],
   },
   entityFallbackText: {

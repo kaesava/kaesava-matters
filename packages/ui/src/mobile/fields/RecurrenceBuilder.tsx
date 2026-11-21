@@ -56,7 +56,7 @@ export function RecurrenceBuilder({ builder }: RecurrenceBuilderProps) {
                   }}
                   style={[styles.typeBtn, frequency === freq && styles.typeBtnActive, { flex: 1, paddingVertical: 6 }]}
                 >
-                  <RNText style={[styles.typeBtnText, { fontSize: 10 }, frequency === freq && styles.typeBtnTextActive]}>
+                  <RNText style={[styles.typeBtnText, { fontSize: 12 }, frequency === freq && styles.typeBtnTextActive]}>
                     {freq === 'WEEKLY'
                       ? t("forms.weekly")
                       : freq === 'FORTNIGHTLY'
@@ -181,7 +181,7 @@ const styles = RNStyleSheet.create({
     marginTop: 6,
   },
   oneOffNoticeText: {
-    fontSize: 11,
+    fontSize: 12,
     fontWeight: '600',
     color: '#1E40AF',
     lineHeight: 16,

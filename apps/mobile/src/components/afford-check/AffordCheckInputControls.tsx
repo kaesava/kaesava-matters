@@ -189,5 +189,5 @@ const styles = StyleSheet.create({
     gap: 12,
   },
   switchLabel: { fontSize: 13, fontWeight: '700', color: DESIGN_TOKENS.colors.primary },
-  switchSubtext: { fontSize: 11, color: DESIGN_TOKENS.colors.slate[400], marginTop: 2 },
+  switchSubtext: { fontSize: 12, color: DESIGN_TOKENS.colors.slate[400], marginTop: 2 },
 });

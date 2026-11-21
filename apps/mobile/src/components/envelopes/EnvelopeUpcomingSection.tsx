@@ -86,7 +86,7 @@ export function EnvelopeUpcomingSection({
                         ? exp.expectedDate.slice(0, 10)
                         : exp.expectedDate.toISOString().slice(0, 10)) < todayStr && (
                         <View style={{ backgroundColor: '#FFF1F2', borderColor: '#FECDD3', borderWidth: 1, borderRadius: 4, paddingHorizontal: 4, paddingVertical: 1 }}>
-                          <Text style={{ fontSize: 9, fontWeight: '700', color: '#E11D48', textTransform: 'uppercase' }}>
+                          <Text style={{ fontSize: 12, fontWeight: '700', color: '#E11D48', textTransform: 'uppercase' }}>
                             {t('expenseStatus.overdueLabel')}
                           </Text>
                         </View>
@@ -145,7 +145,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
   },
   upcomingName: { fontSize: 14, fontWeight: '700', color: DESIGN_TOKENS.colors.primary },
-  upcomingDate: { fontSize: 11, color: DESIGN_TOKENS.colors.textMuted, marginTop: 2 },
+  upcomingDate: { fontSize: 12, color: DESIGN_TOKENS.colors.textMuted, marginTop: 2 },
   upcomingRightCol: { alignItems: 'flex-end', gap: 6 },
   upcomingAmount: { fontSize: 14, fontWeight: '800', fontFamily: 'monospace', color: DESIGN_TOKENS.colors.critical },
   payBtn: {
@@ -157,7 +157,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 8,
     paddingVertical: 4,
   },
-  payBtnText: { fontSize: 11, fontWeight: '700', color: DESIGN_TOKENS.colors.onAccent },
+  payBtnText: { fontSize: 12, fontWeight: '700', color: DESIGN_TOKENS.colors.onAccent },
   emptyBox: { backgroundColor: DESIGN_TOKENS.colors.surfaceVariant, borderRadius: 14, borderWidth: 1, borderColor: DESIGN_TOKENS.colors.border, padding: 20, alignItems: 'center', marginTop: 10 },
   emptyText: { fontSize: 12, color: DESIGN_TOKENS.colors.textMuted, textAlign: 'center' },
 });

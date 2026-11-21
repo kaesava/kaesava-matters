@@ -73,7 +73,7 @@ export const styles = StyleSheet.create({
     color: DESIGN_TOKENS.colors.sereneBlue,
   },
   aiAskSubtitle: {
-    fontSize: 11,
+    fontSize: 12,
     color: DESIGN_TOKENS.colors.slate[500],
     marginTop: 2,
   },
@@ -137,7 +137,7 @@ export const styles = StyleSheet.create({
     gap: 6,
   },
   sectionTitle: {
-    fontSize: 11,
+    fontSize: 12,
     fontWeight: "700",
     color: DESIGN_TOKENS.colors.slate[400],
     textTransform: "uppercase",
@@ -171,7 +171,7 @@ export const styles = StyleSheet.create({
     color: DESIGN_TOKENS.colors.slate[800],
   },
   rowSubtitle: {
-    fontSize: 11,
+    fontSize: 12,
     color: DESIGN_TOKENS.colors.slate[400],
     marginTop: 1,
   },
@@ -211,7 +211,7 @@ export const styles = StyleSheet.create({
     gap: 8,
   },
   suggestedHeader: {
-    fontSize: 11,
+    fontSize: 12,
     fontWeight: "700",
     color: DESIGN_TOKENS.colors.slate[400],
     textTransform: "uppercase",
@@ -238,7 +238,7 @@ export const styles = StyleSheet.create({
     alignItems: "flex-end",
   },
   footerCallsText: {
-    fontSize: 11,
+    fontSize: 12,
     color: DESIGN_TOKENS.colors.slate[500],
   },
 });

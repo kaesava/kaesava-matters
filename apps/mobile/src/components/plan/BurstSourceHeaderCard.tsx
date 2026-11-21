@@ -102,7 +102,7 @@ const styles = StyleSheet.create({
     flexWrap: 'wrap',
   },
   metaSubtext: {
-    fontSize: 11,
+    fontSize: 12,
     color: DESIGN_TOKENS.colors.slate[500],
     fontWeight: '500',
   },
@@ -120,7 +120,7 @@ const styles = StyleSheet.create({
     marginTop: 4,
   },
   editScheduleText: {
-    fontSize: 11,
+    fontSize: 12,
     fontWeight: '700',
     color: DESIGN_TOKENS.colors.sereneBlue,
   },

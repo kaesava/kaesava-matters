@@ -122,7 +122,7 @@ const styles = StyleSheet.create({
     borderRadius: 4,
   },
   sweepBadgeText: {
-    fontSize: 9,
+    fontSize: 11,
     fontWeight: '800',
     color: DESIGN_TOKENS.colors.accentDark,
   },
@@ -146,12 +146,12 @@ const styles = StyleSheet.create({
     backgroundColor: DESIGN_TOKENS.colors.slate[100],
   },
   typeText: {
-    fontSize: 10,
+    fontSize: 12,
     fontWeight: '700',
     color: DESIGN_TOKENS.colors.slate[600],
   },
   availText: {
-    fontSize: 11,
+    fontSize: 12,
     fontFamily: 'monospace',
     color: DESIGN_TOKENS.colors.textMuted,
   },

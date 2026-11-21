@@ -217,7 +217,7 @@ const styles = StyleSheet.create({
     gap: 6,
   },
   freqLabel: {
-    fontSize: 11,
+    fontSize: 12,
     fontWeight: '700',
     color: DESIGN_TOKENS.colors.slate[600],
   },
@@ -240,7 +240,7 @@ const styles = StyleSheet.create({
     borderColor: '#93C5FD',
   },
   freqChipText: {
-    fontSize: 10,
+    fontSize: 11,
     fontWeight: '700',
     color: DESIGN_TOKENS.colors.slate[600],
   },
@@ -254,7 +254,7 @@ const styles = StyleSheet.create({
     gap: 6,
   },
   inputLabel: {
-    fontSize: 11,
+    fontSize: 12,
     fontWeight: '700',
     color: DESIGN_TOKENS.colors.slate[600],
   },
@@ -281,7 +281,7 @@ const styles = StyleSheet.create({
     color: DESIGN_TOKENS.colors.primary,
   },
   switchSubtext: {
-    fontSize: 11,
+    fontSize: 12,
     color: DESIGN_TOKENS.colors.slate[400],
     marginTop: 1,
   },

@@ -124,7 +124,7 @@ const styles = StyleSheet.create({
     backgroundColor: DESIGN_TOKENS.colors.warningLight,
   },
   committedBadgeText: {
-    fontSize: 10,
+    fontSize: 11,
     fontWeight: '700',
     color: DESIGN_TOKENS.colors.warningDark,
   },
@@ -138,7 +138,7 @@ const styles = StyleSheet.create({
     backgroundColor: DESIGN_TOKENS.colors.slate[100],
   },
   optionalBadgeText: {
-    fontSize: 10,
+    fontSize: 11,
     fontWeight: '600',
     color: DESIGN_TOKENS.colors.slate[600],
   },
@@ -165,24 +165,24 @@ const styles = StyleSheet.create({
     backgroundColor: DESIGN_TOKENS.colors.surface,
   },
   dateLabel: {
-    fontSize: 10,
+    fontSize: 12,
     color: DESIGN_TOKENS.colors.slate[500],
     marginBottom: 2,
   },
   dateLabelDelayed: {
-    fontSize: 10,
+    fontSize: 12,
     color: DESIGN_TOKENS.colors.warningDark,
     fontWeight: '600',
     marginBottom: 2,
   },
   dateValue: {
-    fontSize: 11,
+    fontSize: 12,
     fontWeight: '600',
     color: DESIGN_TOKENS.colors.slate[800],
     fontFamily: 'monospace',
   },
   dateValueDelayed: {
-    fontSize: 11,
+    fontSize: 12,
     fontWeight: '700',
     color: DESIGN_TOKENS.colors.warningDark,
     fontFamily: 'monospace',

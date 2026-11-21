@@ -113,7 +113,7 @@ const styles = StyleSheet.create({
     marginBottom: 4,
   },
   statusText: {
-    fontSize: 10,
+    fontSize: 12,
     fontWeight: '700',
   },
   confirmedBadge: {
@@ -153,12 +153,12 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   dateMetaLabel: {
-    fontSize: 11,
+    fontSize: 12,
     fontWeight: '600',
     color: DESIGN_TOKENS.colors.textMuted,
   },
   dateMetaValue: {
-    fontSize: 11,
+    fontSize: 12,
     fontWeight: '700',
     fontFamily: 'monospace',
     color: DESIGN_TOKENS.colors.primary,

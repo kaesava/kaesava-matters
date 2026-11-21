@@ -91,7 +91,7 @@ const styles = StyleSheet.create({
     borderRadius: DESIGN_TOKENS.radius.sm,
   },
   ctaText: {
-    fontSize: 11,
+    fontSize: 12,
     fontWeight: '800',
     color: DESIGN_TOKENS.colors.primary,
   },

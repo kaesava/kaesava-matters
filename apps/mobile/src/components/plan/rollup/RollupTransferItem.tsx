@@ -106,7 +106,7 @@ const styles = StyleSheet.create({
     color: DESIGN_TOKENS.colors.primary,
   },
   arrowIcon: {
-    fontSize: 11,
+    fontSize: 12,
     color: DESIGN_TOKENS.colors.slate[400],
   },
   destName: {
@@ -115,7 +115,7 @@ const styles = StyleSheet.create({
     color: DESIGN_TOKENS.colors.accent,
   },
   payIdText: {
-    fontSize: 10,
+    fontSize: 12,
     fontFamily: 'monospace',
     color: DESIGN_TOKENS.colors.slate[400],
     marginTop: 2,
@@ -143,7 +143,7 @@ const styles = StyleSheet.create({
     borderColor: DESIGN_TOKENS.colors.successBorder,
   },
   copyText: {
-    fontSize: 10,
+    fontSize: 12,
     fontWeight: '700',
     color: DESIGN_TOKENS.colors.accent,
   },
@@ -151,7 +151,7 @@ const styles = StyleSheet.create({
     color: DESIGN_TOKENS.colors.successDark,
   },
   coversPoolsText: {
-    fontSize: 11,
+    fontSize: 12,
     color: DESIGN_TOKENS.colors.textMuted,
     lineHeight: 16,
   },

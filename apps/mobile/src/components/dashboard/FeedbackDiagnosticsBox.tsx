@@ -33,12 +33,12 @@ const styles = StyleSheet.create({
     gap: 4,
   },
   telemetryTitle: {
-    fontSize: 11,
+    fontSize: 12,
     fontWeight: '800',
     color: DESIGN_TOKENS.colors.primary,
   },
   telemetryItem: {
-    fontSize: 11,
+    fontSize: 12,
     color: DESIGN_TOKENS.colors.slate[500],
     fontFamily: 'monospace',
   },

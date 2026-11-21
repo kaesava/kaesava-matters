@@ -21,7 +21,7 @@ export const RecordFilterBadge: React.FC<RecordFilterBadgeProps> = ({
       </Text>
       <TouchableOpacity
         onPress={onClear}
-        hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
+        hitSlop={{ top: 13, bottom: 13, left: 13, right: 13 }}
         style={styles.clearBtn}
         accessibilityLabel={`Clear filter for ${label}`}
         accessibilityRole="button"
@@ -46,18 +46,18 @@ const styles = StyleSheet.create({
     alignSelf: 'flex-start',
   },
   prefix: {
-    fontSize: 11,
+    fontSize: 12,
     color: '#64748B',
   },
   label: {
-    fontSize: 11,
+    fontSize: 12,
     fontWeight: '700',
     color: '#1B2B4B',
     maxWidth: 220,
   },
   clearBtn: {
-    width: 16,
-    height: 16,
+    width: 16, // mm-allow-interaction: 16dp glyph with hitSlop
+    height: 16, // mm-allow-interaction: 16dp glyph with hitSlop
     borderRadius: 8,
     backgroundColor: '#DBEAFE',
     alignItems: 'center',

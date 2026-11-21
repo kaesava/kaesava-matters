@@ -129,7 +129,7 @@ const styles = StyleSheet.create({
     borderColor: DESIGN_TOKENS.colors.accentBorder,
   },
   scheduledBadgeText: {
-    fontSize: 9,
+    fontSize: 11,
     fontWeight: '700',
     color: DESIGN_TOKENS.colors.accent,
   },
@@ -138,7 +138,7 @@ const styles = StyleSheet.create({
     borderColor: DESIGN_TOKENS.colors.slate[300],
   },
   flexibleBadgeText: {
-    fontSize: 9,
+    fontSize: 11,
     fontWeight: '700',
     color: DESIGN_TOKENS.colors.slate[600],
   },
@@ -156,7 +156,7 @@ const styles = StyleSheet.create({
     paddingVertical: 4,
     borderRadius: 6,
   },
-  freqText: { fontSize: 11, fontWeight: '700', color: DESIGN_TOKENS.colors.textMuted },
+  freqText: { fontSize: 12, fontWeight: '700', color: DESIGN_TOKENS.colors.textMuted },
   removeBtn: { fontSize: 13, fontWeight: '700', color: DESIGN_TOKENS.colors.slate[400], paddingHorizontal: 4 },
   editBtn: {
     paddingHorizontal: 8,
@@ -166,5 +166,5 @@ const styles = StyleSheet.create({
     borderColor: DESIGN_TOKENS.colors.accentBorder,
     backgroundColor: DESIGN_TOKENS.colors.accentLight,
   },
-  editBtnText: { fontSize: 11, fontWeight: '700', color: DESIGN_TOKENS.colors.accent },
+  editBtnText: { fontSize: 12, fontWeight: '700', color: DESIGN_TOKENS.colors.accent },
 });

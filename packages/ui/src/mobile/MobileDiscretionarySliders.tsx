@@ -226,8 +226,8 @@ const styles = StyleSheet.create({
     gap: 8,
   },
   stepperBtn: {
-    width: 32,
-    height: 32,
+    width: 44,
+    height: 44,
     borderRadius: 8,
     backgroundColor: '#EFF6FF',
     borderWidth: 1,

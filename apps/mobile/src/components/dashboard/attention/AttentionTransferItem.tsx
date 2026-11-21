@@ -123,7 +123,7 @@ const styles = StyleSheet.create({
   },
   overdueBadgeText: {
     color: DESIGN_TOKENS.colors.criticalDark,
-    fontSize: 9,
+    fontSize: 11,
     fontWeight: '800',
     textTransform: 'uppercase',
   },
@@ -132,16 +132,16 @@ const styles = StyleSheet.create({
   },
   transferBadgeText: {
     color: DESIGN_TOKENS.colors.accentDark,
-    fontSize: 9,
+    fontSize: 11,
     fontWeight: '800',
     textTransform: 'uppercase',
   },
   badgeText: {
-    fontSize: 9,
+    fontSize: 11,
     fontWeight: '800',
   },
   itemMeta: {
-    fontSize: 11,
+    fontSize: 12,
     color: DESIGN_TOKENS.colors.textMuted,
   },
   amountText: {
@@ -158,7 +158,7 @@ const styles = StyleSheet.create({
     color: DESIGN_TOKENS.colors.burnRed,
   },
   transferRouteText: {
-    fontSize: 11,
+    fontSize: 12,
     fontWeight: '600',
     color: DESIGN_TOKENS.colors.accent,
   },
@@ -175,7 +175,7 @@ const styles = StyleSheet.create({
     paddingVertical: 5,
   },
   actionPrimaryBtnText: {
-    fontSize: 11,
+    fontSize: 12,
     fontWeight: '800',
     color: DESIGN_TOKENS.colors.accent,
   },
@@ -184,7 +184,7 @@ const styles = StyleSheet.create({
     paddingVertical: 2,
   },
   deleteLinkText: {
-    fontSize: 10,
+    fontSize: 12,
     fontWeight: '600',
     color: DESIGN_TOKENS.colors.slate[400],
   },
