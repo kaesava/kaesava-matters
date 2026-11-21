@@ -1,4 +1,5 @@
 import { DbOrTx, tenants } from "@money-matters/db";
+import { resolveAppConfigOrDefault } from "@money-matters/config";
 import { eq } from "drizzle-orm";
 
 export interface SubscriptionStatusInfo {
@@ -13,7 +14,8 @@ export interface SubscriptionStatusInfo {
 export async function ensurePremiumAccess(
   db: DbOrTx,
   tenantId: string,
-  featureName: string = "This feature"
+  featureName: string = "This feature",
+  appId?: string | null
 ): Promise<void> {
   const [tenant] = await db
     .select({
@@ -32,6 +34,7 @@ export async function ensurePremiumAccess(
   const isExpired = tenant.subscriptionStatus === "TRIAL_EXPIRED" || (tenant.subscriptionStatus === "TRIAL_ACTIVE" && trialExpired);
 
   if (isExpired || isDeactivated) {
-    throw new Error(`${featureName} requires an active subscription or unexpired 60-day trial.`);
+    const app = resolveAppConfigOrDefault(appId);
+    throw new Error(`${featureName} requires an active subscription or unexpired ${app.trialDays}-day trial.`);
   }
 }

@@ -3,7 +3,7 @@
  * 
  * Manages feature flags, ownership metadata, expiry timelines, and tenant-scoped runtime evaluations.
  */
-import { resolveAppConfig } from "./app-registry";
+import { resolveAppConfig, resolveAppConfigOrDefault } from "./app-registry.js";
 
 /**
  * Feature flag metadata specification.
@@ -129,6 +129,28 @@ export function isFeatureEnabled(
     return appConfig.features.premiumEnabled || isPremiumOverride;
   }
 
-  return appConfig.features[flag];
+  return Boolean(appConfig.features[flag]);
+}
+
+/**
+ * Unifies static kill switches, AppManifest defaults, and live DB apps.feature_flags overrides.
+ */
+export function resolveEffectiveAppFlags(
+  appId?: string | null,
+  dbFeatureFlags?: Partial<Record<string, unknown>> | null
+): Record<string, unknown> {
+  const manifest = resolveAppConfigOrDefault(appId);
+  const merged: Record<string, unknown> = {
+    ...manifest.features,
+    ...(dbFeatureFlags ?? {}),
+  };
+
+  for (const [key, meta] of Object.entries(FEATURE_FLAGS)) {
+    if (meta.killSwitchEnabled) {
+      merged[key] = false;
+    }
+  }
+
+  return merged;
 }
 

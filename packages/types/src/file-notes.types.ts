@@ -1,27 +1,11 @@
 import { z } from "zod";
 import { BaseSchema } from "./tenant.types.js";
-
-export interface AppFeatureFlags {
-  aiAssistant: boolean;
-  privateMode: boolean;
-  fileNotes: boolean;
-  fileNotesMaxStorageMb: number;
-  fileNotesMaxFileMb: number;
-  simulation: boolean;
-  customAllocationRules: boolean;
-  reports: boolean;
-}
-
-export const DEFAULT_APP_FEATURE_FLAGS: AppFeatureFlags = {
-  aiAssistant: true,
-  privateMode: true,
-  fileNotes: true,
-  fileNotesMaxStorageMb: 100,
-  fileNotesMaxFileMb: 10,
-  simulation: true,
-  customAllocationRules: true,
-  reports: true,
-};
+export {
+  type AppFeatureFlags,
+  type PlatformCapabilityFlags,
+  type MoneyMattersFeatureFlags,
+  DEFAULT_APP_FEATURE_FLAGS,
+} from "./feature-flags.types.js";
 
 export const StorageQuotaDto = z.object({
   usedBytes: z.number().int().nonnegative(),

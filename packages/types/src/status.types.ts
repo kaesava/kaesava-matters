@@ -137,3 +137,31 @@ export function getNextStatuses(
   return config.transitions[matchedKey] || [];
 }
 
+export type StatusBadgeTone = "neutral" | "info" | "success" | "warning" | "critical";
+
+export interface StatusMachineConfig<TState extends string> {
+  states: readonly TState[];
+  transitions: Record<TState, readonly TState[]>;
+  terminalStates?: readonly TState[];
+  badgeTones?: Partial<Record<TState, StatusBadgeTone>>;
+}
+
+export function defineStatusMachine<TState extends string>(
+  config: StatusMachineConfig<TState>
+) {
+  const terminalSet = new Set<TState>(config.terminalStates ?? []);
+  return {
+    states: config.states,
+    canTransition: (from: TState, to: TState): boolean =>
+      (config.transitions[from] ?? []).includes(to),
+    assertTransition: (from: TState, to: TState): void => {
+      if (!(config.transitions[from] ?? []).includes(to)) {
+        throw new Error(`Invalid status transition from '${from}' to '${to}'.`);
+      }
+    },
+    isTerminal: (state: TState): boolean => terminalSet.has(state),
+    getBadgeTone: (state: TState): StatusBadgeTone =>
+      config.badgeTones?.[state] ?? "neutral",
+  };
+}
+

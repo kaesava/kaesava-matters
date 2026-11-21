@@ -29,6 +29,8 @@ export interface AppPreferencesBlob {
   tour_completed_at?: string;
   tour_dismissed_at?: string;
   tour_last_step?: number;
+  // Extensible per-app slice preferences keyed by canonical appId
+  [key: string]: unknown;
 }
 
 /**

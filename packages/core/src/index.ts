@@ -6,5 +6,8 @@ export * from "./user-sync.js";
 export * from "./australian-calendar.js";
 export * from "./email.js";
 export * from "./guards/ensure-premium.js";
+export * from "./guards/rbac.js";
+export * from "./archive-registry.js";
+export * from "./schedule-burst.js";
 export * from "./formatters.js";
 export * from "./security-headers.js";

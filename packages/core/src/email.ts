@@ -1,4 +1,5 @@
 import { logger } from "./logger.js";
+import { resolveAppConfigOrDefault } from "@money-matters/config";
 
 export interface SendEmailPayload {
   to: string;
@@ -129,7 +130,11 @@ export async function sendEmail(payload: SendEmailPayload): Promise<{ success: b
 /**
  * Returns the canonical Money Matters email header HTML block using the hosted brand lockup.
  */
-export function buildBrandEmailHeader(variant: "light" | "dark" = "light"): string {
+export function buildBrandEmailHeader(
+  variant: "light" | "dark" = "light",
+  appId?: string | null
+): string {
+  const app = resolveAppConfigOrDefault(appId);
   const wrapperStyle =
     variant === "dark"
       ? "margin-bottom: 24px; background-color: #ffffff; padding: 12px 18px; border-radius: 10px; display: inline-block;"
@@ -137,7 +142,7 @@ export function buildBrandEmailHeader(variant: "light" | "dark" = "light"): stri
 
   return `
     <div style="${wrapperStyle}">
-      <img src="https://moneymatters.kaesava.au/email-header-logo.png" alt="Money Matters" width="200" height="50" style="display: block; height: auto; border: 0;" />
+      <img src="${app.branding.logoUrl}" alt="${escapeHtml(app.name)}" width="200" height="50" style="display: block; height: auto; border: 0;" />
     </div>
   `;
 }
@@ -148,16 +153,18 @@ export function buildBrandEmailHeader(variant: "light" | "dark" = "light"): stri
 export async function sendNotificationEmail(
   to: string,
   subject: string,
-  bodyText: string
+  bodyText: string,
+  appId?: string | null
 ): Promise<{ success: boolean; id?: string }> {
-  const headerHtml = buildBrandEmailHeader("light");
+  const app = resolveAppConfigOrDefault(appId);
+  const headerHtml = buildBrandEmailHeader("light", appId);
   const footerHtml = `
     <div style="margin-top: 32px; padding-top: 16px; border-top: 1px solid #e2e8f0; font-size: 11px; color: #64748b; line-height: 1.5;">
-      Money Matters by Kaesava AU • VIC 3030, Australia • info@moneymatters.kaesava.au<br />
-      <a href="https://moneymatters.kaesava.au/dashboard/settings/notifications" style="color: #2563eb; text-decoration: underline;">Manage Notification Preferences & Unsubscribe</a>
+      ${escapeHtml(app.name)} by ${escapeHtml(app.branding.companyName)} • VIC 3030, Australia • ${escapeHtml(app.branding.supportEmail)}<br />
+      <a href="${app.branding.appUrl}/dashboard/settings/notifications" style="color: #2563eb; text-decoration: underline;">Manage Notification Preferences & Unsubscribe</a>
     </div>
   `;
   const safeBody = escapeHtml(bodyText).replace(/\n/g, "<br />");
   const html = `<div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; padding: 20px; line-height: 1.6; color: #1B2B4B;">${headerHtml}${safeBody}${footerHtml}</div>`;
-  return sendEmail({ to, subject, html, text: bodyText });
+  return sendEmail({ to, subject, html, text: bodyText, from: app.branding.fromEmail });
 }
