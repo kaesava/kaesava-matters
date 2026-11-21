@@ -12,13 +12,53 @@ export async function PUT(req: NextRequest) {
   return handleProxy(req);
 }
 
+const DEV_PROBE_TIMEOUT_MS = 3000;
+const DEV_PROBE_CACHE_TTL_MS = 60_000;
+
 let cachedActiveBase: string | null = null;
 let lastProbeTime = 0;
+let inFlightProbe: Promise<string> | null = null;
+
+async function probeHealth(baseUrl: string): Promise<boolean> {
+  try {
+    const res = await fetch(`${baseUrl}/health`, {
+      signal: AbortSignal.timeout(DEV_PROBE_TIMEOUT_MS),
+    });
+    return res.ok;
+  } catch {
+    return false;
+  }
+}
+
+async function probeDevApiBase(): Promise<string> {
+  const customUrl = process.env.NEXT_PUBLIC_API_URL;
+  if (customUrl && !customUrl.includes("moneymatters.kaesava.au")) {
+    const cleanUrl = customUrl
+      .trim()
+      .replace(/\/+$/, "")
+      .replace(/\/trpc$/, "")
+      .replace("://localhost:", "://127.0.0.1:");
+    if (await probeHealth(cleanUrl)) {
+      cachedActiveBase = cleanUrl;
+      lastProbeTime = Date.now();
+      return cachedActiveBase;
+    }
+  }
+
+  for (const port of [3001, 8787, 3002, 3003, 3004]) {
+    const candidate = `http://127.0.0.1:${port}`;
+    if (await probeHealth(candidate)) {
+      cachedActiveBase = candidate;
+      lastProbeTime = Date.now();
+      return cachedActiveBase;
+    }
+  }
+
+  return "http://127.0.0.1:3001";
+}
 
 async function resolveApiBase(): Promise<string> {
-  const isDev = process.env.NODE_ENV === "development";
-
-  if (!isDev) {
+  if (process.env.NODE_ENV !== "development") {
     let envUrl = process.env.NEXT_PUBLIC_API_URL;
     if (envUrl) {
       envUrl = envUrl.replace("api.kaesava.au", "api.moneymatters.kaesava.au");
@@ -27,42 +67,18 @@ async function resolveApiBase(): Promise<string> {
     return "https://api.moneymatters.kaesava.au";
   }
 
-  // In local development, probe active API server on localhost ports
+  // Deduplicate concurrent health probes in dev so parallel tRPC calls don't stampede /health
   const now = Date.now();
-  if (cachedActiveBase && now - lastProbeTime < 10000) {
+  if (cachedActiveBase && now - lastProbeTime < DEV_PROBE_CACHE_TTL_MS) {
     return cachedActiveBase;
   }
 
-  const customUrl = process.env.NEXT_PUBLIC_API_URL;
-  if (customUrl && !customUrl.includes("moneymatters.kaesava.au")) {
-    const cleanUrl = customUrl.trim().replace(/\/+$/, "").replace(/\/trpc$/, "");
-    try {
-      const res = await fetch(`${cleanUrl}/health`, { signal: AbortSignal.timeout(500) });
-      if (res.ok) {
-        cachedActiveBase = cleanUrl;
-        lastProbeTime = now;
-        return cachedActiveBase;
-      }
-    } catch {
-      // Continue to candidate ports
-    }
+  if (!inFlightProbe) {
+    inFlightProbe = probeDevApiBase().finally(() => {
+      inFlightProbe = null;
+    });
   }
-
-  const candidatePorts = [3001, 8787, 3002, 3003, 3004];
-  for (const port of candidatePorts) {
-    try {
-      const res = await fetch(`http://localhost:${port}/health`, { signal: AbortSignal.timeout(500) });
-      if (res.ok) {
-        cachedActiveBase = `http://localhost:${port}`;
-        lastProbeTime = now;
-        return cachedActiveBase;
-      }
-    } catch {
-      // Continue probing next port
-    }
-  }
-
-  return "http://localhost:3001";
+  return inFlightProbe;
 }
 
 function isValidOrigin(req: NextRequest): boolean {
@@ -213,6 +229,8 @@ async function handleProxy(req: NextRequest) {
   } catch (err: unknown) {
     const isConnRefused = err && typeof err === "object" && "cause" in err && (err as { cause?: { code?: string } }).cause?.code === "ECONNREFUSED";
     if (isConnRefused) {
+      cachedActiveBase = null;
+      lastProbeTime = 0;
       console.warn(`[tRPC Proxy] Backend API server unavailable at ${targetUrl.split("/trpc")[0]} (ECONNREFUSED). Make sure apps/api is running.`);
     } else {
       console.error("[tRPC Proxy Error]:", err);
