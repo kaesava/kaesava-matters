@@ -63,7 +63,11 @@ export const MobileHorizonPaydayColumnHeader: React.FC<MobileHorizonPaydayColumn
 
       {/* Row 2: Source Name */}
       {!isConfirmed && onEditIncome ? (
-        <TouchableOpacity onPress={() => onEditIncome(col.id)} activeOpacity={0.7}>
+        <TouchableOpacity
+          onPress={() => onEditIncome(col.id)}
+          activeOpacity={0.7}
+          style={styles.sourceNameButton}
+        >
           <Text style={styles.sourceNameLink} numberOfLines={1}>
             {col.sourceName || t('common.income')}
           </Text>
@@ -156,6 +160,10 @@ const styles = StyleSheet.create({
     fontWeight: '800',
     color: DESIGN_TOKENS.colors.primary,
     textAlign: 'center',
+  },
+  sourceNameButton: {
+    minHeight: 36,
+    justifyContent: 'center',
   },
   sourceNameLink: {
     fontSize: 12,

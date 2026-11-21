@@ -1,6 +1,6 @@
 import React from 'react';
-import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
-import { DESIGN_TOKENS } from '@money-matters/ui/mobile';
+import { View, Text, StyleSheet } from 'react-native';
+import { DESIGN_TOKENS, MobileLinkButton } from '@money-matters/ui/mobile';
 import { t } from '@money-matters/i18n';
 import { MobilePaydayMetricsGrid } from './MobilePaydayMetricsGrid';
 import { MobilePaydayActionButtons } from './MobilePaydayActionButtons';
@@ -66,15 +66,13 @@ export function MobilePaydayCelebrationCard({
           </View>
           {strategyName && (
             onStrategyClick ? (
-              <TouchableOpacity
+              <MobileLinkButton
+                label={t('paydayDrawer.activeStrategyBadge', { name: strategyName })}
                 onPress={onStrategyClick}
-                activeOpacity={0.75}
-                style={styles.strategyBadge}
-              >
-                <Text style={[styles.strategyBadgeText, styles.strategyBadgeLinkText]}>
-                  {t('paydayDrawer.activeStrategyBadge', { name: strategyName })}
-                </Text>
-              </TouchableOpacity>
+                color={DESIGN_TOKENS.colors.accentBorder}
+                style={styles.strategyLinkButton}
+                textStyle={styles.strategyBadgeText}
+              />
             ) : (
               <View style={styles.strategyBadge}>
                 <Text style={styles.strategyBadgeText}>
@@ -159,9 +157,11 @@ const styles = StyleSheet.create({
     fontWeight: '700',
     color: '#FFFFFF',
   },
-  strategyBadgeLinkText: {
-    color: '#BFDBFE',
-    textDecorationLine: 'underline',
+  strategyLinkButton: {
+    backgroundColor: 'rgba(255, 255, 255, 0.15)',
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: 'rgba(255, 255, 255, 0.25)',
   },
   sparkle: {
     fontSize: 12,
