@@ -95,6 +95,8 @@ export const plan = {
     "incomeAllocationGridTitle": "Payday Plan Schedule",
     "showNext5": "Show Next 5 Paydays",
     "showFull12Events": "Show upto 12 months out",
+    "viewCards": "Paydays",
+    "viewGrid": "Grid",
     "statusPending": "Pending",
     "statusConfirmed": "Confirmed",
     "confirmedBadge": "CONFIRMED",

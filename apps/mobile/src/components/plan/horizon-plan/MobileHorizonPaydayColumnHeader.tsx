@@ -23,6 +23,8 @@ interface MobileHorizonPaydayColumnHeaderProps {
   readonly onReset?: (colId: string) => void;
   readonly onDelete: (colId: string) => void;
   readonly onEditIncome?: (colId: string) => void;
+  /** Card layout: fill the parent instead of the fixed 140dp grid column width. */
+  readonly fullWidth?: boolean;
 }
 
 export const MobileHorizonPaydayColumnHeader: React.FC<MobileHorizonPaydayColumnHeaderProps> = ({
@@ -35,6 +37,7 @@ export const MobileHorizonPaydayColumnHeader: React.FC<MobileHorizonPaydayColumn
   onReset,
   onDelete,
   onEditIncome,
+  fullWidth,
 }) => {
   const dateStr = col.date ? formatDate(col.date) : col.dateLabel || '';
 
@@ -44,6 +47,7 @@ export const MobileHorizonPaydayColumnHeader: React.FC<MobileHorizonPaydayColumn
         styles.columnHeader,
         isConfirmed && styles.confirmedCol,
         isSaved && styles.savedCol,
+        fullWidth && styles.fullWidthCol,
       ]}
     >
       {/* Row 1: Status Badge on its own row */}
@@ -148,6 +152,14 @@ const styles = StyleSheet.create({
     borderRightColor: DESIGN_TOKENS.colors.slate[200],
     backgroundColor: DESIGN_TOKENS.colors.slate[50],
     gap: 3,
+  },
+  fullWidthCol: {
+    width: '100%',
+    borderRightWidth: 0,
+    borderRadius: DESIGN_TOKENS.radius.lg,
+    borderWidth: 1,
+    borderColor: DESIGN_TOKENS.colors.slate[200],
+    paddingVertical: 14,
   },
   confirmedCol: {
     backgroundColor: DESIGN_TOKENS.colors.successLight,

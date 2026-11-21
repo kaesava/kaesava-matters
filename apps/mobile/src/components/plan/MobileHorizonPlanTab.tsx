@@ -6,6 +6,8 @@ import { DESIGN_TOKENS, showMobileConfirm, useMobileToast } from '@money-matters
 import { t } from '@money-matters/i18n';
 import { trpc } from '../../lib/trpc';
 import { MobileHorizonGrid } from './horizon-plan/MobileHorizonGrid';
+import { MobileHorizonPaydayCards } from './horizon-plan/MobileHorizonPaydayCards';
+import { MobileHorizonViewToggle, type HorizonViewMode } from './horizon-plan/MobileHorizonViewToggle';
 import { EventOverrideModal, EventToOverride } from '../EventOverrideModal';
 import type { MobileMatrixCategoryItem, MobileMatrixGroupData } from './horizon-plan/MobileHorizonFrozenColumn';
 import type { MobileMatrixColumnData } from './horizon-plan/MobileHorizonPaydayColumnHeader';
@@ -27,6 +29,7 @@ export function MobileHorizonPlanTab({ onOpenCategoryModal }: MobileHorizonPlanT
   const utils = trpc.useUtils();
   const [savingColId, setSavingColId] = useState<string | null>(null);
   const [showFullHorizon, setShowFullHorizon] = useState(false);
+  const [viewMode, setViewMode] = useState<HorizonViewMode>('cards');
   const [eventToOverride, setEventToOverride] = useState<EventToOverride | null>(null);
 
   const { data, isLoading: projectionLoading } = trpc.getHorizonProjectionData.useQuery({ monthsAhead: 12 });
@@ -195,6 +198,18 @@ export function MobileHorizonPlanTab({ onOpenCategoryModal }: MobileHorizonPlanT
     });
   };
 
+  const handleEditIncome = (colId: string) => {
+    const col = visibleColumns.find((c) => c.id === colId);
+    if (!col) return;
+    setEventToOverride({
+      id: col.id,
+      eventType: 'INCOME',
+      name: col.sourceName || t('common.income'),
+      expectedDate: col.date || '',
+      expectedAmount: String(col.totalIncome),
+    });
+  };
+
   return (
     <View style={styles.container}>
       {rawColumns.length > 5 && (
@@ -211,6 +226,19 @@ export function MobileHorizonPlanTab({ onOpenCategoryModal }: MobileHorizonPlanT
           </TouchableOpacity>
         </View>
       )}
+      <MobileHorizonViewToggle value={viewMode} onChange={setViewMode} />
+      {viewMode === 'cards' ? (
+        <MobileHorizonPaydayCards
+          columns={visibleColumns}
+          columnStateMap={columnStateMap}
+          savingColId={savingColId}
+          onReview={handleReview}
+          onSave={handleSave}
+          onReset={handleReset}
+          onDelete={handleDelete}
+          onEditIncome={handleEditIncome}
+        />
+      ) : (
       <MobileHorizonGrid
         columns={visibleColumns}
         groups={rawGroups}
@@ -223,18 +251,9 @@ export function MobileHorizonPlanTab({ onOpenCategoryModal }: MobileHorizonPlanT
         onReset={handleReset}
         onDelete={handleDelete}
         onOpenCategoryDrawer={handleOpenCategoryDrawer}
-        onEditIncome={(colId) => {
-          const col = visibleColumns.find((c) => c.id === colId);
-          if (!col) return;
-          setEventToOverride({
-            id: col.id,
-            eventType: 'INCOME',
-            name: col.sourceName || t('common.income'),
-            expectedDate: col.date || '',
-            expectedAmount: String(col.totalIncome),
-          });
-        }}
+        onEditIncome={handleEditIncome}
       />
+      )}
       <EventOverrideModal
         visible={Boolean(eventToOverride)}
         eventToEdit={eventToOverride}
