@@ -10,6 +10,7 @@ import {
   ActivityIndicator,
 } from 'react-native';
 import { DESIGN_TOKENS } from '../tokens';
+import { PLATFORM_STYLE } from './platform-style';
 
 export interface ButtonProps extends TouchableOpacityProps {
   variant?: 'primary' | 'secondary' | 'danger' | 'ghost';
@@ -106,14 +107,17 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
   },
   sizeSm: {
+    minHeight: PLATFORM_STYLE.minTouch,
     paddingVertical: 8,
     paddingHorizontal: 14,
   },
   sizeMd: {
+    minHeight: PLATFORM_STYLE.minTouch + 4,
     paddingVertical: 12,
     paddingHorizontal: 20,
   },
   sizeLg: {
+    minHeight: PLATFORM_STYLE.fieldHeight + 4,
     paddingVertical: 14,
     paddingHorizontal: 24,
   },

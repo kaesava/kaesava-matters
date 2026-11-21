@@ -13,6 +13,8 @@ import {
 import { Feather } from '@expo/vector-icons';
 import { t } from '@money-matters/i18n';
 import { DESIGN_TOKENS } from '../tokens';
+import { PLATFORM_STYLE } from './platform-style';
+import { useKeyboardInset } from './useKeyboardInset';
 import { showMobileConfirm } from './MobileConfirmDialog';
 
 export interface MobileModalDialogProps {
@@ -36,6 +38,7 @@ export default function MobileModalDialog({
   children,
 }: MobileModalDialogProps) {
   const D = DESIGN_TOKENS;
+  const keyboardInset = useKeyboardInset(visible);
 
   const handleRequestClose = () => {
     if (isDirty) {
@@ -55,8 +58,8 @@ export default function MobileModalDialog({
   return (
     <Modal visible={visible} animationType="slide" transparent onRequestClose={handleRequestClose}>
       <KeyboardAvoidingView
-        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-        style={styles.overlay}
+        behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+        style={[styles.overlay, { paddingBottom: keyboardInset }]}
       >
         <Pressable
           style={styles.backdrop}
@@ -65,6 +68,7 @@ export default function MobileModalDialog({
           accessibilityLabel={t('common.close')}
         />
         <View style={styles.content}>
+          <View style={styles.handle} />
           {/* Header */}
           <View style={styles.header}>
             <View style={{ flex: 1 }}>
@@ -110,7 +114,15 @@ const styles = StyleSheet.create({
     borderTopRightRadius: D.radius.lg,
     paddingTop: 16,
     paddingHorizontal: 20,
-    paddingBottom: Platform.OS === 'ios' ? 32 : 20,
+    paddingBottom: PLATFORM_STYLE.sheetBottomPadding + 4,
+  },
+  handle: {
+    alignSelf: 'center',
+    width: 36,
+    height: 4,
+    borderRadius: 2,
+    backgroundColor: D.colors.slate[300],
+    marginBottom: 12,
   },
   header: {
     flexDirection: 'row',
@@ -131,8 +143,13 @@ const styles = StyleSheet.create({
     marginTop: 2,
   },
   closeBtn: {
-    padding: 4,
-    marginLeft: 12,
+    width: PLATFORM_STYLE.minTouch,
+    height: PLATFORM_STYLE.minTouch,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginRight: -12,
+    marginTop: -8,
+    marginLeft: 4,
   },
   body: {
     paddingVertical: 14,

@@ -10,6 +10,7 @@ import {
   TextStyle,
 } from 'react-native';
 import { DESIGN_TOKENS } from '../tokens';
+import { PLATFORM_STYLE } from './platform-style';
 import { FormLabel } from './FormLabel';
 import { FormFieldError } from './FormFieldError';
 
@@ -65,6 +66,7 @@ const styles = StyleSheet.create({
     borderRadius: D.radius.md,
     paddingHorizontal: 14,
     paddingVertical: 12,
+    minHeight: PLATFORM_STYLE.fieldHeight,
     fontSize: 15,
     color: D.colors.textPrimary,
   },

@@ -3,6 +3,7 @@ import { View, Text, StyleSheet, Animated, TouchableOpacity } from 'react-native
 import { Feather } from '@expo/vector-icons';
 import { useMobileToast, MobileToastItem, MobileToastType } from './ToastContext';
 import { DESIGN_TOKENS } from '../tokens';
+import { PLATFORM_STYLE } from './platform-style';
 
 const typeConfig: Record<
   MobileToastType,
@@ -101,7 +102,7 @@ export function MobileToastContainer() {
 const styles = StyleSheet.create({
   wrapper: {
     position: 'absolute',
-    bottom: 32,
+    bottom: PLATFORM_STYLE.toastBottomOffset,
     left: 16,
     right: 16,
     zIndex: 9999,
@@ -132,12 +133,16 @@ const styles = StyleSheet.create({
     marginBottom: 2,
   },
   message: {
-    fontSize: 12,
+    fontSize: 13,
     fontWeight: '600',
-    lineHeight: 16,
+    lineHeight: 18,
   },
   closeButton: {
-    padding: 4,
-    marginLeft: 8,
+    width: PLATFORM_STYLE.minTouch,
+    height: PLATFORM_STYLE.minTouch,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginRight: -10,
+    marginLeft: 4,
   },
 });

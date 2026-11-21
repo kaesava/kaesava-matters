@@ -254,7 +254,7 @@ const styles = StyleSheet.create({
   tabBar: {
     backgroundColor: D.colors.surface,
     borderTopWidth: 1,
-    borderTopColor: '#E5E7EB',
+    borderTopColor: D.colors.border,
     height: 68,
     paddingBottom: 10,
     paddingTop: 6,
@@ -264,6 +264,6 @@ const styles = StyleSheet.create({
     shadowRadius: 8,
     elevation: 8,
   },
-  tabLabel: { fontSize: 10, fontWeight: '600' },
+  tabLabel: { fontSize: 12, fontWeight: '600' },
   iconWrap: { alignItems: 'center', justifyContent: 'center' },
 });

@@ -7,6 +7,7 @@ vi.mock('react-native', () => ({
   Modal: (props: Record<string, unknown>) => React.createElement('Modal', props),
   Pressable: (props: Record<string, unknown>) => React.createElement('Pressable', props),
   TouchableOpacity: (props: Record<string, unknown>) => React.createElement('TouchableOpacity', props),
+  Platform: { OS: 'android' },
   StyleSheet: {
     create: <T extends Record<string, unknown>>(styles: T): T => styles,
   },
