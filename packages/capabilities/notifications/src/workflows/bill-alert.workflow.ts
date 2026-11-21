@@ -13,6 +13,7 @@ import {
 } from "@money-matters/db";
 import { eq, and, sql, inArray } from "drizzle-orm";
 import { sendNotificationEmail, todayInZone, getLocalHourInZone, formatCurrency } from "@money-matters/core";
+import { t } from "@money-matters/i18n";
 import { isChannelEnabled, readNotificationPrefs, resolveNotificationRecipient } from "../helpers.js";
 
 function addDaysToIsoDate(isoDate: string, days: number): string {
@@ -47,6 +48,7 @@ export function createBillAlertWorkflow(inngest: Inngest) {
             userId: users.id,
             email: users.email,
             notificationEmail: userPreferences.notificationEmail,
+            hideAmountsInNotifications: userPreferences.hideAmountsInNotifications,
             userTimezone: userPreferences.timezone,
             appPreferences: tenantUserPreferences.appPreferences,
           })
@@ -117,9 +119,11 @@ export function createBillAlertWorkflow(inngest: Inngest) {
 
         await step.run(`send-bill-shortfall-${item.eventId}-${item.userId}`, async () => {
           const cur = item.tenantCurrency || "AUD";
-          const formattedBill = formatCurrency(billAmount, { currency: cur });
-          const formattedBal = formatCurrency(envelopeBalance, { currency: cur });
-          const formattedShortfall = formatCurrency(shortfall, { currency: cur });
+          const hideAmounts = Boolean(item.hideAmountsInNotifications);
+          const masked = t("notifications.settings.maskedAmountText");
+          const formattedBill = hideAmounts ? masked : formatCurrency(billAmount, { currency: cur });
+          const formattedBal = hideAmounts ? masked : formatCurrency(envelopeBalance, { currency: cur });
+          const formattedShortfall = hideAmounts ? masked : formatCurrency(shortfall, { currency: cur });
           const prefs = readNotificationPrefs(item.appPreferences, item.appId);
           const emailEnabled = isChannelEnabled(prefs, "bill_alerts_email", "bill_alerts_enabled");
           const pushEnabled = isChannelEnabled(prefs, "bill_alerts_push", "bill_alerts_enabled");
@@ -129,11 +133,13 @@ export function createBillAlertWorkflow(inngest: Inngest) {
             await sendNotificationEmail(
               emailRecipient,
               `Upcoming Bill Shortfall — ${item.billName}`,
-              `Your bill "${item.billName}" (${formattedBill}) is due in 2 days (${item.dueDate}).\n\n` +
-              `• Envelope: ${item.envelopeName}\n` +
-              `• Current Balance: ${formattedBal}\n` +
-              `• Shortfall: ${formattedShortfall}\n\n` +
-              `Open Money Matters to top up your envelope before the due date.`
+              hideAmounts
+                ? `Your bill "${item.billName}" is due in 2 days (${item.dueDate}) and its envelope "${item.envelopeName}" has a shortfall (${masked}).\n\nOpen Money Matters to top up your envelope before the due date.`
+                : `Your bill "${item.billName}" (${formattedBill}) is due in 2 days (${item.dueDate}).\n\n` +
+                  `• Envelope: ${item.envelopeName}\n` +
+                  `• Current Balance: ${formattedBal}\n` +
+                  `• Shortfall: ${formattedShortfall}\n\n` +
+                  `Open Money Matters to top up your envelope before the due date.`
             );
           }
 
@@ -144,7 +150,9 @@ export function createBillAlertWorkflow(inngest: Inngest) {
                 userId: item.userId,
                 tenantId: item.tenantId,
                 title: `Upcoming Bill Shortfall: ${item.billName}`,
-                body: `Due ${item.dueDate} (${formattedBill}). ${item.envelopeName} is short by ${formattedShortfall}.`,
+                body: hideAmounts
+                  ? `Due ${item.dueDate}. ${item.envelopeName} has a shortfall (${masked}).`
+                  : `Due ${item.dueDate} (${formattedBill}). ${item.envelopeName} is short by ${formattedShortfall}.`,
                 data: { route: "/(app)/envelopes" },
               },
             }).catch(() => {});

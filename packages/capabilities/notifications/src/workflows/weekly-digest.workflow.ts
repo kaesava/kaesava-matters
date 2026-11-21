@@ -2,6 +2,7 @@ import { Inngest } from "inngest";
 import { db, envelopes, getEnvelopeBalancesMap, tenants, tenantUsers, users, userPreferences, tenantUserPreferences } from "@money-matters/db";
 import { eq, and, sql, inArray } from "drizzle-orm";
 import { sendNotificationEmail, formatCurrency, logger } from "@money-matters/core";
+import { t } from "@money-matters/i18n";
 import { isChannelEnabled, isLocalScheduleMatch, readNotificationPrefs, resolveNotificationRecipient } from "../helpers.js";
 
 export function createWeeklyDigestWorkflow(inngest: Inngest) {
@@ -20,6 +21,7 @@ export function createWeeklyDigestWorkflow(inngest: Inngest) {
             userId: users.id,
             email: users.email,
             notificationEmail: userPreferences.notificationEmail,
+            hideAmountsInNotifications: userPreferences.hideAmountsInNotifications,
             userTimezone: userPreferences.timezone,
             appPreferences: tenantUserPreferences.appPreferences,
           })
@@ -118,8 +120,10 @@ export function createWeeklyDigestWorkflow(inngest: Inngest) {
 
                 const safeToSpend = Math.max(0, everydayBal - everydayBuffer);
                 const cur = record.tenantCurrency || "AUD";
-                const formattedSafe = formatCurrency(safeToSpend, { currency: cur });
-                const formattedBills = formatCurrency(billsBal, { currency: cur });
+                const hideAmounts = Boolean(record.hideAmountsInNotifications);
+                const masked = t("notifications.settings.maskedAmountText");
+                const formattedSafe = hideAmounts ? masked : formatCurrency(safeToSpend, { currency: cur });
+                const formattedBills = hideAmounts ? masked : formatCurrency(billsBal, { currency: cur });
 
                 const prefs = readNotificationPrefs(record.appPreferences, record.appId);
                 const emailEnabled = isChannelEnabled(prefs, "weekly_digest_email", "weekly_digest_enabled");
@@ -130,10 +134,12 @@ export function createWeeklyDigestWorkflow(inngest: Inngest) {
                   await sendNotificationEmail(
                     emailRecipient,
                     `Weekly Summary — ${record.tenantName}`,
-                    `Here is your Sunday household balance check-in:\n\n` +
-                    `• Safe to Spend (Everyday): ${formattedSafe}\n` +
-                    `• Ring-Fenced Bills Balance: ${formattedBills}\n\n` +
-                    `Keep spending freely from Everyday with zero guilt!`
+                    hideAmounts
+                      ? `Your Sunday household balance check-in is ready (${masked}).\n\nOpen Money Matters to review your Safe to Spend and Ring-Fenced Bills balances.`
+                      : `Here is your Sunday household balance check-in:\n\n` +
+                        `• Safe to Spend (Everyday): ${formattedSafe}\n` +
+                        `• Ring-Fenced Bills Balance: ${formattedBills}\n\n` +
+                        `Keep spending freely from Everyday with zero guilt!`
                   );
                 }
 
@@ -144,7 +150,9 @@ export function createWeeklyDigestWorkflow(inngest: Inngest) {
                       userId: record.userId,
                       tenantId: record.tenantId,
                       title: "📊 Weekly Balance Digest",
-                      body: `Safe to spend: ${formattedSafe}. Bills balance: ${formattedBills}.`,
+                      body: hideAmounts
+                        ? `Your weekly balance digest is ready (${masked}).`
+                        : `Safe to spend: ${formattedSafe}. Bills balance: ${formattedBills}.`,
                       data: { route: "/(app)/home" },
                     },
                   }).catch(() => {});

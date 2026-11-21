@@ -3,7 +3,6 @@ import { View, Text, TouchableOpacity, StyleSheet, ScrollView } from 'react-nati
 import { Feather } from '@expo/vector-icons';
 import { MobileModalDialog, MobileButton, DESIGN_TOKENS } from '@money-matters/ui/mobile';
 import { t } from '@money-matters/i18n';
-import { getMobileCurrencySymbol, getMobileLocaleConfig } from '../../lib/format';
 
 export type PlanChoice = 'annual' | 'monthly';
 
@@ -21,9 +20,6 @@ export function MobileSubscriptionModal({
   loading,
 }: MobileSubscriptionModalProps) {
   const [billingCycle, setBillingCycle] = useState<PlanChoice>('annual');
-  const sym = getMobileCurrencySymbol();
-  const cfg = getMobileLocaleConfig();
-  const curr = cfg.currency;
 
   const handleConfirm = async () => {
     await onSelectPlan(billingCycle);
@@ -57,8 +53,8 @@ export function MobileSubscriptionModal({
             variant="primary"
             label={
               billingCycle === 'annual'
-                ? t('subscription.claimFoundingRate', { amount: `${sym}69` })
-                : t('subscription.subscribeMonthlyCta', { amount: `${sym}9.95` })
+                ? t('subscription.claimFoundingRate', { amount: 'A$69 AUD' })
+                : t('subscription.subscribeMonthlyCta', { amount: 'A$9.95 AUD' })
             }
             onPress={handleConfirm}
             loading={loading}
@@ -76,7 +72,7 @@ export function MobileSubscriptionModal({
             activeOpacity={0.8}
           >
             <Text style={[styles.toggleText, billingCycle === 'annual' && styles.toggleTextActive]}>
-              {t('subscription.annualTabFounding', { amount: `${sym}69` })}
+              {t('subscription.annualTabFounding', { amount: 'A$69' })}
             </Text>
           </TouchableOpacity>
           <TouchableOpacity
@@ -85,7 +81,7 @@ export function MobileSubscriptionModal({
             activeOpacity={0.8}
           >
             <Text style={[styles.toggleText, billingCycle === 'monthly' && styles.toggleTextActive]}>
-              {t('subscription.monthlyTab', { amount: `${sym}9.95` })}
+              {t('subscription.monthlyTab', { amount: 'A$9.95' })}
             </Text>
           </TouchableOpacity>
         </View>
@@ -104,14 +100,14 @@ export function MobileSubscriptionModal({
           <View style={styles.priceRow}>
             {billingCycle === 'annual' ? (
               <>
-                <Text style={styles.strikePrice}>{`${sym}89`}</Text>
-                <Text style={styles.mainPrice}>{`${sym}69`}</Text>
-                <Text style={styles.pricePeriod}>{`${curr} / yr (${sym}5.75/mo)`}</Text>
+                <Text style={styles.strikePrice}>{'A$89'}</Text>
+                <Text style={styles.mainPrice}>{'A$69'}</Text>
+                <Text style={styles.pricePeriod}>{'AUD / yr (A$5.75/mo)'}</Text>
               </>
             ) : (
               <>
-                <Text style={styles.mainPrice}>{`${sym}9.95`}</Text>
-                <Text style={styles.pricePeriod}>{`${curr} / month`}</Text>
+                <Text style={styles.mainPrice}>{'A$9.95'}</Text>
+                <Text style={styles.pricePeriod}>{'AUD / month'}</Text>
               </>
             )}
           </View>
@@ -119,7 +115,7 @@ export function MobileSubscriptionModal({
           {billingCycle === 'annual' && (
             <View style={styles.foundingOfferBanner}>
               <Text style={styles.foundingOfferText}>
-                🏷️ {t('subscription.foundingMemberBadge', { amount: `${sym}69` })}
+                🏷️ {t('subscription.foundingMemberBadge', { amount: 'A$69 AUD' })}
               </Text>
             </View>
           )}
@@ -145,7 +141,14 @@ export function MobileSubscriptionModal({
         {/* Guarantees Row */}
         <View style={styles.guaranteeRow}>
           <Text style={styles.guaranteeText}>
-            🔒 {t('subscription.guaranteeCancel')} • 🇦🇺 {t('subscription.guaranteePrivacy')} • ⚡ {t('subscription.guaranteeInstant')}
+            🔒 {t('subscription.guaranteeCancel')} • 🛡️ {t('subscription.guaranteePrivacy')} • ⚡ {t('subscription.guaranteeInstant')}
+          </Text>
+        </View>
+
+        {/* Auto-Renewal & Currency Note */}
+        <View style={styles.supportRow}>
+          <Text style={styles.supportText}>
+            {t('subscription.autoRenewalNote')}
           </Text>
         </View>
 

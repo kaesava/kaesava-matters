@@ -2,7 +2,7 @@ import { tenantProcedure, authenticatedProcedure, ownerProcedure, privateOwnerPr
 import { apps } from "@money-matters/db";
 import { eq } from "drizzle-orm";
 import { inngest } from '../../inngest/client.js';
-import { logAuditEvent, sendEmail, buildBrandEmailHeader, checkRateLimit } from '@money-matters/core';
+import { logAuditEvent, logger, sendEmail, buildBrandEmailHeader, checkRateLimit } from '@money-matters/core';
 import { t } from '@money-matters/i18n';
 import {
   invitePartnerHandler,
@@ -53,7 +53,7 @@ export const householdProcedures = {
       `;
 
       sendEmail({ to: input.email, subject: t('notifications.inngest.inviteSubject'), html: inviteHtml }).catch((err) => {
-        console.error('Direct partner invite email send failed:', err);
+        logger.error('Direct partner invite email send failed:', { err });
       });
 
       logAuditEvent('partner_invited', ctx.tenantId!, ctx.userId!, { inviteEmail: input.email });
@@ -89,7 +89,9 @@ export const householdProcedures = {
   leaveMyHousehold: privateTenantProcedure
     .mutation(async ({ ctx }) => {
       const handler = leaveTenantHandler(ctx.db);
-      return await handler(ctx.tenantId!, ctx.userId!, ctx.email!, ctx.appId!);
+      const result = await handler(ctx.tenantId!, ctx.userId!, ctx.email!, ctx.appId!);
+      clearEdgeContextCache();
+      return result;
     }),
 
   getHouseholdGovernanceInfo: tenantProcedure
@@ -97,7 +99,11 @@ export const householdProcedures = {
 
   removeHouseholdMember: privateOwnerProcedure
     .input(z.object({ targetUserId: z.string().optional(), memberId: z.string().optional() }).strict())
-    .mutation(({ ctx, input }) => removeHouseholdMemberHandler(input, ctx.tenantId!, ctx.userId!, ctx.db)),
+    .mutation(async ({ ctx, input }) => {
+      const result = await removeHouseholdMemberHandler(input, ctx.tenantId!, ctx.userId!, ctx.db);
+      clearEdgeContextCache();
+      return result;
+    }),
 
   updateHousehold: tenantProcedure
     .input(

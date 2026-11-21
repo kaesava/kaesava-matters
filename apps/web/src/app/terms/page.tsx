@@ -56,6 +56,7 @@ export default function TermsOfServicePage() {
               <li>{t("terms.section2Item2")}</li>
               <li>{t("terms.section2Item3")}</li>
               <li>{t("terms.section2Item4")}</li>
+              <li>{t("terms.section2Item5")}</li>
             </ul>
           </div>
 
@@ -68,6 +69,7 @@ export default function TermsOfServicePage() {
               <li>{t("terms.section3Item2")}</li>
               <li>{t("terms.section3Item3")}</li>
               <li>{t("terms.section3Item4")}</li>
+              <li>{t("terms.section3Item5")}</li>
             </ul>
           </div>
 
@@ -135,8 +137,20 @@ export default function TermsOfServicePage() {
           <div className="space-y-3">
             <h2 className="text-xl font-bold text-[#1B2B4B]">{t("terms.section13Title")}</h2>
             <p>{t("terms.section13Body")}</p>
+          </div>
+
+          {/* Section 14 */}
+          <div className="space-y-3">
+            <h2 className="text-xl font-bold text-[#1B2B4B]">{t("terms.section14Title")}</h2>
+            <p>{t("terms.section14Body")}</p>
+          </div>
+
+          {/* Section 15 */}
+          <div className="space-y-3">
+            <h2 className="text-xl font-bold text-[#1B2B4B]">{t("terms.section15Title")}</h2>
+            <p>{t("terms.section15Body")}</p>
             <div className="bg-slate-50 p-4 rounded-xl border border-slate-200 inline-block font-mono text-xs text-[#2563eb] font-bold">
-              {t("terms.section13Email")}
+              {t("terms.section15Email")}
             </div>
           </div>
         </section>

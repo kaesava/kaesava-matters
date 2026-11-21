@@ -9,9 +9,7 @@ export const billingInvoices = pgTable(
   "billing_invoices",
   {
     id: uuid("id").primaryKey().defaultRandom(),
-    tenantId: uuid("tenant_id")
-      .notNull()
-      .references(() => tenants.id),
+    tenantId: uuid("tenant_id").references(() => tenants.id, { onDelete: "set null" }),
     appId: uuid("app_id").notNull().default("01908bde-34bb-7b19-a178-574211bc93aa"),
     stripeInvoiceId: varchar("stripe_invoice_id", { length: 255 }).notNull().unique(),
     stripeCustomerId: varchar("stripe_customer_id", { length: 255 }).notNull(),
@@ -24,6 +22,7 @@ export const billingInvoices = pgTable(
     periodEnd: timestamp("period_end", { withTimezone: true }),
     invoicePdfUrl: varchar("invoice_pdf_url", { length: 1024 }),
     hostedInvoiceUrl: varchar("hosted_invoice_url", { length: 1024 }),
+    legalHoldUntil: timestamp("legal_hold_until", { withTimezone: true }),
     createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
     createdBy: uuid("created_by"),
     updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),

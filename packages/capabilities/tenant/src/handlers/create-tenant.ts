@@ -1,6 +1,6 @@
 import { z } from "zod";
 import { tenants, tenantUsers, envelopes, bankAccounts, apps, users, userPreferences, DbOrTx } from "@money-matters/db";
-import { CreateTenantCommand, COUNTRY_DEFAULTS } from "@money-matters/types";
+import { CreateTenantCommand, COUNTRY_DEFAULTS, CURRENT_TERMS_VERSION, CURRENT_PRIVACY_VERSION } from "@money-matters/types";
 import { eq, and, isNull, or, sql } from "drizzle-orm";
 
 export const DEFAULT_BANK_ACCOUNT_NAME = "Primary Bank Account";
@@ -77,6 +77,9 @@ export function createTenantHandler(db: DbOrTx) {
         id: userId,
         email: userEmail || `user-${userId.substring(0, 8)}@moneymatters.kaesava.au`,
         displayName: resolvedDisplayName,
+        termsAcceptedAt: now,
+        termsVersion: CURRENT_TERMS_VERSION,
+        privacyVersion: CURRENT_PRIVACY_VERSION,
       })
       .onConflictDoNothing();
 
@@ -85,6 +88,9 @@ export function createTenantHandler(db: DbOrTx) {
         .update(users)
         .set({
           displayName: input.displayName.trim(),
+          termsAcceptedAt: now,
+          termsVersion: CURRENT_TERMS_VERSION,
+          privacyVersion: CURRENT_PRIVACY_VERSION,
           updatedAt: now,
         })
         .where(eq(users.id, userId));

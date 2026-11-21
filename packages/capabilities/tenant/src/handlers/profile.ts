@@ -33,6 +33,7 @@ export async function getUserPreferencesHandler(userId: string, tenantId: string
     locale: currentTenant?.country ? (countryDefaults?.locale || `en-${currentTenant.country}`) : DEFAULT_LOCALE,
     showIcons: globalPref?.showIcons ?? true,
     telemetryConsent: (globalPref?.telemetryConsent as "granted" | "denied" | null) ?? null,
+    hideAmountsInNotifications: globalPref?.hideAmountsInNotifications ?? false,
     notificationEmail: globalPref?.notificationEmail ?? null,
     phoneCountryCode:
       globalPref?.phoneCountryCode && globalPref.phoneCountryCode !== "+61"
@@ -61,6 +62,7 @@ export async function updateUserPreferencesHandler(
     language?: "en";
     showIcons?: boolean;
     telemetryConsent?: "granted" | "denied";
+    hideAmountsInNotifications?: boolean;
     setupCompleted?: boolean;
     appPreferences?: Record<string, Record<string, unknown>>;
   },
@@ -76,6 +78,10 @@ export async function updateUserPreferencesHandler(
       .set({
         showIcons: input.showIcons ?? existingGlobal.showIcons,
         telemetryConsent: input.telemetryConsent !== undefined ? input.telemetryConsent : existingGlobal.telemetryConsent,
+        hideAmountsInNotifications:
+          input.hideAmountsInNotifications !== undefined
+            ? input.hideAmountsInNotifications
+            : existingGlobal.hideAmountsInNotifications,
         language: input.language ?? existingGlobal.language,
         timezone: input.timezone !== undefined ? input.timezone : existingGlobal.timezone,
         updatedAt: new Date(),
@@ -86,6 +92,7 @@ export async function updateUserPreferencesHandler(
       userId,
       showIcons: input.showIcons ?? true,
       telemetryConsent: input.telemetryConsent ?? null,
+      hideAmountsInNotifications: input.hideAmountsInNotifications ?? false,
       language: input.language ?? "en",
       timezone: input.timezone || null,
     });

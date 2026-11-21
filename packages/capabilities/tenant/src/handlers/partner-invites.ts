@@ -1,7 +1,7 @@
-import { tenantUsers, bankAccounts, envelopes, tenants, DbOrTx } from "@money-matters/db";
+import { tenantUsers, bankAccounts, envelopes, tenants, users, DbOrTx } from "@money-matters/db";
 import { eq, and, sql, isNull } from "drizzle-orm";
 import { ensurePremiumAccess } from "@money-matters/core";
-import { GetInviteDetailsResult, InviteAccountStatus } from "@money-matters/types";
+import { GetInviteDetailsResult, InviteAccountStatus, CURRENT_TERMS_VERSION, CURRENT_PRIVACY_VERSION } from "@money-matters/types";
 
 function extractRows<T>(result: unknown): T[] {
   return Array.isArray(result)
@@ -168,6 +168,17 @@ export function acceptInviteHandler(db: DbOrTx) {
       })
       .where(eq(tenantUsers.id, invite.id))
       .returning();
+
+    const acceptedAt = new Date();
+    await db
+      .update(users)
+      .set({
+        termsAcceptedAt: acceptedAt,
+        termsVersion: CURRENT_TERMS_VERSION,
+        privacyVersion: CURRENT_PRIVACY_VERSION,
+        updatedAt: acceptedAt,
+      })
+      .where(eq(users.id, userId));
 
     const [tenant] = await db
       .select({ appId: tenants.appId })

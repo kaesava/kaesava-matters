@@ -6,6 +6,7 @@
 import Stripe from "stripe";
 import { eq } from "drizzle-orm";
 import { tenants, billingInvoices, type DbOrTx } from "@money-matters/db";
+import { logger } from "@money-matters/core";
 import { validateEnv } from "@money-matters/config";
 import type { SubscriptionStatusDto } from "@money-matters/types";
 import { getSubscriptionStatus } from "../queries/get-subscription-status.js";
@@ -153,7 +154,7 @@ export async function syncSubscriptionCommand(
     }
   } catch (err) {
     // Non-blocking catch to allow graceful fallback to current local state
-    console.warn("[syncSubscriptionCommand] Error syncing with Stripe:", err);
+    logger.warn("[syncSubscriptionCommand] Error syncing with Stripe:", { err });
   }
 
   return await getSubscriptionStatus(db, tenantId);

@@ -54,12 +54,11 @@ export function PrivacyGovernanceSection() {
 
   const exportQuery = trpc.exportMyData.useQuery(undefined, { enabled: false });
 
-  const handleOpenPrivacyPolicy = async () => {
-    const privacyUrl = 'https://moneymatters.kaesava.au/privacy';
+  const handleOpenExternalLegal = async (url: string) => {
     try {
-      await WebBrowser.openBrowserAsync(privacyUrl);
+      await WebBrowser.openBrowserAsync(url);
     } catch {
-      await Linking.openURL(privacyUrl).catch(() => {});
+      await Linking.openURL(url).catch(() => {});
     }
   };
 
@@ -111,14 +110,23 @@ export function PrivacyGovernanceSection() {
 
       <Text style={styles.cardSubtitle}>{t('privacy.aussiePrivacyDetail')}</Text>
 
-      {/* Public Privacy Policy Link */}
+      {/* Public Privacy Policy & Terms Links */}
       <TouchableOpacity
-        onPress={handleOpenPrivacyPolicy}
+        onPress={() => handleOpenExternalLegal('https://moneymatters.kaesava.au/privacy')}
         style={styles.policyLinkRow}
         activeOpacity={0.7}
       >
         <Text style={styles.policyLinkText}>
           {t('privacy.viewPublicPrivacyPolicyLink')}
+        </Text>
+      </TouchableOpacity>
+      <TouchableOpacity
+        onPress={() => handleOpenExternalLegal('https://moneymatters.kaesava.au/terms')}
+        style={styles.policyLinkRow}
+        activeOpacity={0.7}
+      >
+        <Text style={styles.policyLinkText}>
+          {t('privacy.viewPublicTermsLink')}
         </Text>
       </TouchableOpacity>
 

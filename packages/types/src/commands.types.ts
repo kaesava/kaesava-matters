@@ -1,6 +1,9 @@
 import { z } from "zod";
 import { BillingCycleSchema, SubscriptionTierSchema } from "./subscription.types.js";
 
+export const CURRENT_TERMS_VERSION = "2026-11";
+export const CURRENT_PRIVACY_VERSION = "2026-11";
+
 export const CreateTenantCommand = z.object({
   name: z.string().min(1),
   displayName: z.string().trim().min(1).max(120).optional(),
@@ -24,6 +27,7 @@ export const UpdateUserPreferencesCommand = z.object({
   locale: z.string().optional(),
   showIcons: z.boolean().optional(),
   telemetryConsent: z.enum(["granted", "denied"]).optional(),
+  hideAmountsInNotifications: z.boolean().optional(),
   setupCompleted: z.boolean().optional(),
   appPreferences: z.record(z.string(), z.record(z.string(), z.unknown())).optional(),
 }).strict();

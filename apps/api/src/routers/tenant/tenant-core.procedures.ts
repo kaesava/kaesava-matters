@@ -126,6 +126,7 @@ export const tenantCoreProcedures = {
     .mutation(async ({ ctx }) => {
       const handler = deleteMyAccountHandler(ctx.db, deleteFileFromBucket);
       const result = await handler(ctx.tenantId!, ctx.userId!, ctx.email!, ctx.appId!);
+      clearEdgeContextCache();
 
       inngest.send({
         name: 'user/account.delete-requested',

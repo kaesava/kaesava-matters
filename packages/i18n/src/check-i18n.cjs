@@ -255,5 +255,26 @@ if (jsxWarnings.length > 0) {
   process.exit(1);
 }
 
+// 6. Legal Snapshot Drift Guard (ensures /terms and /privacy edits bump version & snapshot)
+const commandsSrc = fs.readFileSync(path.resolve(__dirname, '../../types/src/commands.types.ts'), 'utf8');
+const termsVersionMatch = commandsSrc.match(/CURRENT_TERMS_VERSION\s*=\s*"([^"]+)"/);
+const privacyVersionMatch = commandsSrc.match(/CURRENT_PRIVACY_VERSION\s*=\s*"([^"]+)"/);
+if (!termsVersionMatch || !privacyVersionMatch) {
+  console.error('\x1b[31mMissing CURRENT_TERMS_VERSION or CURRENT_PRIVACY_VERSION in packages/types/src/commands.types.ts\x1b[0m');
+  process.exit(1);
+}
+const termsSnapPath = path.resolve(__dirname, `../legal-snapshots/${termsVersionMatch[1]}.json`);
+const privacySnapPath = path.resolve(__dirname, `../legal-snapshots/${privacyVersionMatch[1]}.json`);
+if (!fs.existsSync(termsSnapPath) || !fs.existsSync(privacySnapPath)) {
+  console.error(`\x1b[31mMissing legal snapshot file for version ${termsVersionMatch[1]} / ${privacyVersionMatch[1]} in packages/i18n/legal-snapshots/\x1b[0m`);
+  process.exit(1);
+}
+const termsSnap = JSON.parse(fs.readFileSync(termsSnapPath, 'utf8'));
+const privacySnap = JSON.parse(fs.readFileSync(privacySnapPath, 'utf8'));
+if (JSON.stringify(termsSnap.terms) !== JSON.stringify(en.terms) || JSON.stringify(privacySnap.privacy) !== JSON.stringify(en.privacy)) {
+  console.error('\x1b[31m[Legal Snapshot Drift] packages/i18n/src/dictionaries/en/privacy.ts was modified without creating a new snapshot in packages/i18n/legal-snapshots/ and bumping CURRENT_TERMS_VERSION / CURRENT_PRIVACY_VERSION.\x1b[0m');
+  process.exit(1);
+}
+
 console.log('\x1b[32m✔ All translation keys and JSX text externalization validated successfully!\x1b[0m');
 process.exit(0);

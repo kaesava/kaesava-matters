@@ -30,7 +30,7 @@ export const settingsSections = {
     "householdTierName": "Household Tier",
     "unlimitedHouseholdAccess": "100% UNLIMITED HOUSEHOLD ACCESS",
     "annualDiscountBadge": "22% OFF",
-    "foundingMemberBadge": "Special offer extended to founding customers — {amount}/year locked for life",
+    "foundingMemberBadge": "Special offer extended to founding customers — {amount}/year while continuously subscribed",
     "featureHistoryPaid": "Full transaction history & zero artificial limits",
     "featureGoalsPaid": "Unlimited savings goals",
     "featureCsvImportPaid": "1-Click Bank Balance Alignment & Cashflow Projections",
@@ -55,7 +55,8 @@ export const settingsSections = {
     "verifyingDelayedNotice": "Payment received! We're finishing activating your household in the background.",
     "goToDashboardCta": "Go to Dashboard",
     "trialDaysLeftBadge": "{days}d left",
-    "guaranteeCancel": "Cancel anytime in 1-click",
+    "guaranteeCancel": "Cancel anytime via portal",
+    "autoRenewalNote": "Auto-renews until cancelled. Billed in AUD; any applicable taxes are shown at checkout and your card issuer handles FX conversion.",
     "guaranteePrivacy": "Stealth Privacy Guarantee",
     "guaranteeInstant": "Instant Household Access",
     "claimFoundingRate": "Get Special Annual – {amount}/year →",
@@ -108,7 +109,10 @@ export const settingsSections = {
       "sendTestButton": "Send Test Email",
       "sendingTest": "Sending test...",
       "testEmailSuccess": "Test email sent to {email}.",
-      "testSuccessWithDetails": "Test email sent to {email} and push sent to {count} registered mobile device(s)."
+      "testSuccessWithDetails": "Test email sent to {email} and push sent to {count} registered mobile device(s).",
+      "hideAmountsTitle": "Mask dollar amounts in emails & push",
+      "hideAmountsDesc": "Hide specific balances and bill amounts from notification emails and lock-screen push alerts.",
+      "maskedAmountText": "Masked for privacy (open Money Matters to view)"
     }
   },
   "bankAccounts": {

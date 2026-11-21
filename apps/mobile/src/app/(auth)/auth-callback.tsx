@@ -2,7 +2,6 @@ import React, { useEffect } from "react";
 import { View, Text, ActivityIndicator, StyleSheet, Platform } from "react-native";
 import { useLocalSearchParams, useRouter, type Href } from "expo-router";
 import * as SecureStore from "expo-secure-store";
-import { usePostHog } from "posthog-react-native";
 import { t } from "@money-matters/i18n";
 import { DESIGN_TOKENS } from "@money-matters/ui/mobile";
 import { authClient } from "../../lib/auth";
@@ -11,7 +10,6 @@ import { registerPushNotificationsAsync } from "../../lib/push";
 
 export default function MobileAuthCallbackScreen() {
   const router = useRouter();
-  const posthog = usePostHog();
   const utils = trpc.useUtils();
   const { token, error, redirect } = useLocalSearchParams<{ token?: string; error?: string; redirect?: string }>();
   const registerToken = trpc.registerToken.useMutation();
@@ -39,7 +37,6 @@ export default function MobileAuthCallbackScreen() {
         return;
       }
 
-      posthog?.identify(session.data.user.id);
       try {
         const pushToken = await registerPushNotificationsAsync();
         if (pushToken) {
@@ -82,7 +79,7 @@ export default function MobileAuthCallbackScreen() {
     return () => {
       active = false;
     };
-  }, [token, error, router, posthog, utils, registerToken]);
+  }, [token, error, router, utils, registerToken]);
 
   return (
     <View style={styles.container}>

@@ -2,7 +2,6 @@ import { DEFAULT_TIMEZONE } from "@money-matters/types";
 import { useState, useMemo } from "react";
 import { Platform } from "react-native";
 import { useRouter, useLocalSearchParams, type Href } from "expo-router";
-import { usePostHog } from "posthog-react-native";
 import { t } from "@money-matters/i18n";
 import { SignUpInputSchema, isValidEmail, getCountryDefaults, detectBestGuessCountry } from "@money-matters/types";
 import { authClient } from "../../lib/auth";
@@ -14,7 +13,6 @@ export function useSignUpForm() {
   const router = useRouter();
   const { redirect } = useLocalSearchParams<{ redirect?: string }>();
   const isInviteFlow = typeof redirect === "string" && redirect.startsWith("/invite/");
-  const posthog = usePostHog();
 
   const detectedTimezone = useMemo(() => {
     try {
@@ -143,8 +141,6 @@ export function useSignUpForm() {
         await SecureStore.setItemAsync("auth_session_token", session.data.session.token);
       }
       if (session?.data?.user) {
-        const userId = session.data.user.id;
-        posthog?.identify(userId);
         if (!isInviteFlow) {
           try {
             await createTenant.mutateAsync({

@@ -17,7 +17,7 @@ export async function listInvoicesQuery(
 
   return records.map((inv) => ({
     id: inv.id,
-    tenantId: inv.tenantId,
+    tenantId: inv.tenantId ?? tenantId,
     stripeInvoiceId: inv.stripeInvoiceId,
     amountPaid: inv.amountPaid,
     currency: inv.currency,

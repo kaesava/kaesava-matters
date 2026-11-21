@@ -5,6 +5,18 @@ import { fileNotes } from '@money-matters/db';
 import { and, eq, or, sql } from 'drizzle-orm';
 
 const MAX_UPLOAD_BYTES = 10 * 1024 * 1024; // 10MB safety ceiling
+const ALLOWED_UPLOAD_MIME_TYPES = new Set([
+  'image/jpeg',
+  'image/png',
+  'image/webp',
+  'image/heic',
+  'image/heif',
+  'application/pdf',
+]);
+
+function normalizeContentType(raw: string | null): string {
+  return (raw || '').split(';')[0].trim().toLowerCase();
+}
 
 export async function handleFileNotesRequest(
   request: Request,
@@ -44,7 +56,13 @@ export async function handleFileNotesRequest(
       });
     }
 
-    const contentType = request.headers.get('content-type') || 'application/octet-stream';
+    const contentType = normalizeContentType(request.headers.get('content-type'));
+    if (!ALLOWED_UPLOAD_MIME_TYPES.has(contentType)) {
+      return new Response(JSON.stringify({ error: 'Unsupported file type. Allowed: JPEG, PNG, WebP, HEIC, PDF.' }), {
+        status: 415,
+        headers: { 'Content-Type': 'application/json', ...baseHeaders },
+      });
+    }
     await uploadObjectToStorage(fileKey, new Uint8Array(buffer), contentType);
     return new Response(JSON.stringify({ success: true }), {
       status: 200,
@@ -93,12 +111,17 @@ export async function handleFileNotesRequest(
     }
 
     const safeFileName = (note.fileName || 'attachment').replace(/["\r\n]/g, '_');
+    const resolvedType = normalizeContentType(note.fileMimeType || stored.contentType);
+    const isSafeInlineImage = resolvedType.startsWith('image/') && ALLOWED_UPLOAD_MIME_TYPES.has(resolvedType);
+    const disposition = isSafeInlineImage ? 'inline' : 'attachment';
+
     return new Response(stored.body as unknown as BodyInit, {
       status: 200,
       headers: {
         ...baseHeaders,
-        'Content-Type': note.fileMimeType || stored.contentType || 'application/octet-stream',
-        'Content-Disposition': `inline; filename="${safeFileName}"`,
+        'Content-Type': ALLOWED_UPLOAD_MIME_TYPES.has(resolvedType) ? resolvedType : 'application/octet-stream',
+        'Content-Disposition': `${disposition}; filename="${safeFileName}"`,
+        'X-Content-Type-Options': 'nosniff',
         'Cache-Control': 'private, max-age=300',
       },
     });

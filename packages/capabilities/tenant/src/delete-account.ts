@@ -49,14 +49,7 @@ async function cancelStripeResources(tenantRecord: {
       }
     }
   }
-
-  if (tenantRecord?.stripeCustomerId) {
-    try {
-      await stripe.customers.del(tenantRecord.stripeCustomerId);
-    } catch (custErr) {
-      logger.warn("Failed to delete Stripe customer during account deletion:", { custErr });
-    }
-  }
+  // Preserve Stripe Customer record for statutory tax/invoice auditability (ATO 5-year rule).
 }
 
 async function purgeNeonAuthRecords(tx: DbOrTx, userId: string) {
@@ -119,7 +112,16 @@ async function purgeHouseholdRecords(
   await tx.delete(userPreferences).where(eq(userPreferences.userId, userId));
   await tx.delete(tenantUserPreferences).where(eq(tenantUserPreferences.userId, userId));
   await tx.delete(bankAccounts).where(and(eq(bankAccounts.tenantId, tenantId), eq(bankAccounts.appId, appId)));
-  await tx.delete(billingInvoices).where(eq(billingInvoices.tenantId, tenantId));
+  const legalHoldUntil = new Date(Date.now() + 5 * 365 * 24 * 60 * 60 * 1000);
+  await tx
+    .update(billingInvoices)
+    .set({
+      tenantId: null,
+      legalHoldUntil,
+      archivedAt: new Date(),
+      updatedAt: new Date(),
+    })
+    .where(eq(billingInvoices.tenantId, tenantId));
   await tx.delete(aiUsage).where(eq(aiUsage.tenantId, tenantId));
   if (email) {
     await tx.delete(earlyAccessSubscribers).where(eq(earlyAccessSubscribers.email, email));

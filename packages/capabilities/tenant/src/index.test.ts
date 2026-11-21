@@ -317,6 +317,9 @@ describe('Capability Tenant Handlers', () => {
     const { deleteMyAccountHandler } = await import('./index.js');
     const deleteWhereMock = vi.fn().mockResolvedValue([]);
     const deleteMock = vi.fn().mockReturnValue({ where: deleteWhereMock });
+    const updateWhereMock = vi.fn().mockResolvedValue([]);
+    const updateSetMock = vi.fn().mockReturnValue({ where: updateWhereMock });
+    const updateMock = vi.fn().mockReturnValue({ set: updateSetMock });
     const selectWhereResult: Promise<Array<{ role: string; stripeSubscriptionId: null; stripeCustomerId: null }>> & { limit?: ReturnType<typeof vi.fn> } = Promise.resolve([{ role: 'OWNER', stripeSubscriptionId: null, stripeCustomerId: null }]);
     selectWhereResult.limit = vi.fn().mockResolvedValue([{ role: 'OWNER', stripeSubscriptionId: null, stripeCustomerId: null }]);
     const selectMock = vi.fn().mockReturnValue({
@@ -328,6 +331,7 @@ describe('Capability Tenant Handlers', () => {
     const txMock: unknown = {
       select: selectMock,
       delete: deleteMock,
+      update: updateMock,
       execute: vi.fn().mockResolvedValue([]),
     };
 
@@ -342,6 +346,7 @@ describe('Capability Tenant Handlers', () => {
 
     expect(result.success).toBe(true);
     expect(deleteMock).toHaveBeenCalled();
+    expect(updateMock).toHaveBeenCalled();
   });
 
   it('checkEmailAuthProviderHandler identifies Google-only vs linked/credential accounts', async () => {

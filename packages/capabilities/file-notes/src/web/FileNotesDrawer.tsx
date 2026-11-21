@@ -101,6 +101,7 @@ export function FileNotesPanel({ entityType, entityId, onDirtyChange }: FileNote
                 ref={fileInputRef}
                 id={fileInputId}
                 type="file"
+                accept="image/jpeg,image/png,image/webp,image/heic,image/heif,application/pdf"
                 className="hidden"
                 onChange={handleFileSelect}
               />

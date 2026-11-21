@@ -18,6 +18,7 @@ export const userPreferences = pgTable("user_preferences", {
   phoneCountryCode: varchar("phone_country_code", { length: 10 }).default("+61"),
   phoneNumber: varchar("phone_number", { length: 50 }),
   telemetryConsent: varchar("telemetry_consent", { length: 16 }),
+  hideAmountsInNotifications: boolean("hide_amounts_in_notifications").notNull().default(false),
   createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
   createdBy: uuid("created_by"),
   updatedAt: timestamp("updated_at", { withTimezone: true }).defaultNow().notNull(),

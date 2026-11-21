@@ -81,6 +81,12 @@ export default function NotificationSettingsPage() {
     },
   ];
 
+  const hideAmounts = optimistic.hideAmountsInNotifications ?? userPrefQuery.data?.hideAmountsInNotifications ?? false;
+  const handleToggleHideAmounts = (value: boolean) => {
+    setOptimistic((prev) => ({ ...prev, hideAmountsInNotifications: value }));
+    updatePrefMutation.mutate({ hideAmountsInNotifications: value });
+  };
+
   const status = channelStatusQuery.data;
 
   return (
@@ -155,6 +161,24 @@ export default function NotificationSettingsPage() {
           );
         })}
       </div>
+
+      <label className="p-4 rounded-xl bg-white dark:bg-zinc-900 border border-slate-200 dark:border-zinc-800 flex items-start justify-between gap-4 shadow-xs hover:border-slate-300 dark:hover:border-zinc-700 transition-colors cursor-pointer">
+        <div className="flex flex-col gap-1 min-w-0">
+          <span className="text-sm font-bold text-[#1B2B4B] dark:text-white">
+            {t("notifications.settings.hideAmountsTitle")}
+          </span>
+          <span className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">
+            {t("notifications.settings.hideAmountsDesc")}
+          </span>
+        </div>
+        <input
+          type="checkbox"
+          checked={hideAmounts}
+          onChange={(e) => handleToggleHideAmounts(e.target.checked)}
+          aria-label={t("notifications.settings.hideAmountsTitle")}
+          className="w-4 h-4 mt-1 text-[#2563eb] rounded focus:ring-2 focus:ring-[#2563eb] cursor-pointer shrink-0"
+        />
+      </label>
 
       <div className="pt-1">
         <Button

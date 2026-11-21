@@ -105,7 +105,7 @@ interface CachedTenantMembership {
 
 const sessionClaimsMemoryCache = new Map<string, CachedSessionClaims>();
 const tenantMembershipMemoryCache = new Map<string, CachedTenantMembership>();
-const EDGE_CACHE_TTL_MS = 300_000; // 5 minutes
+const EDGE_CACHE_TTL_MS = 30_000; // 30 seconds — tight window for revocation/membership changes
 
 export function clearEdgeContextCache(): void {
   sessionClaimsMemoryCache.clear();

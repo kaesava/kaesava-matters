@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { Platform } from "react-native";
 import { useRouter, useLocalSearchParams } from "expo-router";
-import { usePostHog } from "posthog-react-native";
 import { t } from "@money-matters/i18n";
 import { SignInInputSchema } from "@money-matters/types";
 import { authClient } from "../../lib/auth";
@@ -11,7 +10,6 @@ import { registerPushNotificationsAsync } from "../../lib/push";
 
 export function useSignInForm() {
   const router = useRouter();
-  const posthog = usePostHog();
   const searchParams = useLocalSearchParams<{ email?: string; reason?: string; error?: string }>();
   const utils = trpc.useUtils();
 
@@ -108,8 +106,6 @@ export function useSignInForm() {
 
       const session = await authClient.getSession();
       if (session?.data?.user) {
-        posthog?.identify(session.data.user.id);
-
         try {
           const pushToken = await registerPushNotificationsAsync();
           const platform = Platform.OS === "ios" ? "ios" : "android";
@@ -157,7 +153,6 @@ export function useSignInForm() {
         await SecureStore.setItemAsync("auth_session_token", session.data.session.token);
       }
       if (session?.data?.user) {
-        posthog?.identify(session.data.user.id);
         try {
           const pushToken = await registerPushNotificationsAsync();
           const platform = Platform.OS === "ios" ? "ios" : "android";

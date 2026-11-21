@@ -75,7 +75,7 @@ export function NotesFeedModal({
     try {
       setErrorMessage(null);
       const result = await DocumentPicker.getDocumentAsync({
-        type: '*/*',
+        type: ['image/*', 'application/pdf'],
         copyToCacheDirectory: true,
       });
 

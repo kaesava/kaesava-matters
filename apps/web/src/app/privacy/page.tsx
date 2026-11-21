@@ -105,12 +105,16 @@ export default function PrivacyPolicyPage() {
                 </thead>
                 <tbody className="divide-y divide-slate-200 text-slate-600">
                   <tr><td className="p-3 font-semibold text-left">Neon DB</td><td className="p-3 text-left">{t("privacy.spNeonPurpose")}</td><td className="p-3 text-left">{t("privacy.spNeonLocation")}</td></tr>
+                  <tr><td className="p-3 font-semibold text-left">Neon Auth &amp; Google OAuth</td><td className="p-3 text-left">{t("privacy.spNeonAuthPurpose")}</td><td className="p-3 text-left">{t("privacy.spNeonAuthLocation")}</td></tr>
                   <tr><td className="p-3 font-semibold text-left">Cloudflare Workers / OpenNext</td><td className="p-3 text-left">{t("privacy.spCloudflareWorkersPurpose")}</td><td className="p-3 text-left">{t("privacy.spCloudflareWorkersLocation")}</td></tr>
+                  <tr><td className="p-3 font-semibold text-left">Cloudflare Workers AI / AI Gateway</td><td className="p-3 text-left">{t("privacy.spCloudflareAiPurpose")}</td><td className="p-3 text-left">{t("privacy.spCloudflareAiLocation")}</td></tr>
                   <tr><td className="p-3 font-semibold text-left">Cloudflare R2</td><td className="p-3 text-left">{t("privacy.spCloudflareR2Purpose")}</td><td className="p-3 text-left">{t("privacy.spCloudflareR2Location")}</td></tr>
                   <tr><td className="p-3 font-semibold text-left">Stripe</td><td className="p-3 text-left">{t("privacy.spStripePurpose")}</td><td className="p-3 text-left">{t("privacy.spStripeLocation")}</td></tr>
                   <tr><td className="p-3 font-semibold text-left">Resend API</td><td className="p-3 text-left">{t("privacy.spResendPurpose")}</td><td className="p-3 text-left">{t("privacy.spResendLocation")}</td></tr>
                   <tr><td className="p-3 font-semibold text-left">Inngest Cloud</td><td className="p-3 text-left">{t("privacy.spInngestPurpose")}</td><td className="p-3 text-left">{t("privacy.spInngestLocation")}</td></tr>
                   <tr><td className="p-3 font-semibold text-left">PostHog</td><td className="p-3 text-left">{t("privacy.spPostHogPurpose")}</td><td className="p-3 text-left">{t("privacy.spPostHogLocation")}</td></tr>
+                  <tr><td className="p-3 font-semibold text-left">{"Google Analytics 4"}</td><td className="p-3 text-left">{t("privacy.spGa4Purpose")}</td><td className="p-3 text-left">{t("privacy.spGa4Location")}</td></tr>
+                  <tr><td className="p-3 font-semibold text-left">Expo Push (APNs / FCM)</td><td className="p-3 text-left">{t("privacy.spExpoPushPurpose")}</td><td className="p-3 text-left">{t("privacy.spExpoPushLocation")}</td></tr>
                   <tr><td className="p-3 font-semibold text-left">Sentry</td><td className="p-3 text-left">{t("privacy.spSentryPurpose")}</td><td className="p-3 text-left">{t("privacy.spSentryLocation")}</td></tr>
                 </tbody>
               </table>
@@ -168,6 +172,12 @@ export default function PrivacyPolicyPage() {
             <p className="text-xs text-slate-500 mt-2">
               {t("privacy.section12OaicNote")}
             </p>
+          </div>
+
+          {/* Section 13 */}
+          <div className="space-y-3">
+            <h2 className="text-xl font-bold text-[#1B2B4B]">{t("privacy.section13Title")}</h2>
+            <p>{t("privacy.section13Body")}</p>
           </div>
         </section>
       </main>

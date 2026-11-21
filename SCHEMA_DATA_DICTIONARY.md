@@ -170,6 +170,7 @@
 | `periodEnd` | timestamp | Yes | Domain column |
 | `invoicePdfUrl` | varchar | Yes | Domain column |
 | `hostedInvoiceUrl` | varchar | Yes | Domain column |
+| `legalHoldUntil` | timestamp | Yes | Statutory 5-year tax/invoice legal-hold expiry (when `tenantId` is nulled on deletion) |
 | `createdAt` | timestamp | No | Creation timestamp |
 | `createdBy` | uuid | Yes | Creator User ID |
 | `updatedAt` | timestamp | No | Last update timestamp |
@@ -443,6 +444,9 @@
 | `displayName` | text | Yes | Domain column |
 | `avatarUrl` | text | Yes | Domain column |
 | `hasUsedTrial` | boolean | No | Domain column |
+| `termsAcceptedAt` | timestamp | Yes | Timestamp when user accepted Terms & Privacy Policy |
+| `termsVersion` | text | Yes | Accepted Terms of Service snapshot version (e.g. `2026-11`) |
+| `privacyVersion` | text | Yes | Accepted Privacy Policy snapshot version (e.g. `2026-11`) |
 | `createdAt` | timestamp | No | Creation timestamp |
 | `createdBy` | uuid | Yes | Creator User ID |
 | `updatedAt` | timestamp | No | Last update timestamp |
@@ -463,6 +467,7 @@
 | `phoneCountryCode` | varchar | Yes | Domain column |
 | `phoneNumber` | varchar | Yes | Domain column |
 | `telemetryConsent` | varchar | Yes | Per-user PostHog analytics consent (`granted` \| `denied` \| `null`) |
+| `hideAmountsInNotifications` | boolean | No | Mask dollar figures in notification emails & mobile push alerts (`false` default) |
 | `createdAt` | timestamp | No | Creation timestamp |
 | `createdBy` | uuid | Yes | Creator User ID |
 | `updatedAt` | timestamp | No | Last update timestamp |

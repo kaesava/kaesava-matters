@@ -63,6 +63,12 @@ export default function MobileNotificationSettingsScreen() {
     { id: "bill_alerts", title: t("notifications.settings.billAlertsTitle"), desc: t("notifications.settings.billAlertsDesc"), emailKey: "bill_alerts_email", pushKey: "bill_alerts_push", legacyKey: "bill_alerts_enabled" },
     { id: "weekly_digest", title: t("notifications.settings.weeklyDigestTitle"), desc: t("notifications.settings.weeklyDigestDesc"), emailKey: "weekly_digest_email", pushKey: "weekly_digest_push", legacyKey: "weekly_digest_enabled" },
   ];
+  const hideAmounts = optimistic.hideAmountsInNotifications ?? userPrefQuery.data?.hideAmountsInNotifications ?? false;
+  const handleToggleHideAmounts = (value: boolean) => {
+    setOptimistic((prev) => ({ ...prev, hideAmountsInNotifications: value }));
+    updatePrefMutation.mutate({ hideAmountsInNotifications: value });
+  };
+
   const status = channelStatusQuery.data;
   const showMobilePush = (status?.mobilePushDeviceCount ?? 0) > 0;
 
@@ -97,6 +103,15 @@ export default function MobileNotificationSettingsScreen() {
             )}
           </View>
         ))}
+
+        <View style={styles.card}>
+          <SwitchRow
+            label={t("notifications.settings.hideAmountsTitle")}
+            hint={t("notifications.settings.hideAmountsDesc")}
+            value={hideAmounts}
+            onValueChange={handleToggleHideAmounts}
+          />
+        </View>
 
         <View style={styles.testActionContainer}>
           <MobileButton variant="secondary" title={sendTestMutation.isPending ? t("notifications.settings.sendingTest") : t("notifications.settings.sendTestButton")} onPress={() => sendTestMutation.mutate({ channel: showMobilePush ? "all" : "email" })} disabled={sendTestMutation.isPending} />

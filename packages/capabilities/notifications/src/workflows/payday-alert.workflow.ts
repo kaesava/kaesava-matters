@@ -2,6 +2,7 @@ import { Inngest } from "inngest";
 import { db, incomeEvents, incomeSources, bankAccounts, tenants, tenantUsers, users, userPreferences, tenantUserPreferences } from "@money-matters/db";
 import { eq, and, sql, inArray } from "drizzle-orm";
 import { sendNotificationEmail, todayInZone, getLocalHourInZone, formatCurrency } from "@money-matters/core";
+import { t } from "@money-matters/i18n";
 import { isChannelEnabled, readNotificationPrefs, resolveNotificationRecipient } from "../helpers.js";
 
 export function createPaydayAlertWorkflow(inngest: Inngest) {
@@ -21,6 +22,7 @@ export function createPaydayAlertWorkflow(inngest: Inngest) {
             userId: users.id,
             email: users.email,
             notificationEmail: userPreferences.notificationEmail,
+            hideAmountsInNotifications: userPreferences.hideAmountsInNotifications,
             expectedDate: incomeEvents.expectedDate,
             amount: incomeEvents.expectedAmount,
             userTimezone: userPreferences.timezone,
@@ -74,7 +76,10 @@ export function createPaydayAlertWorkflow(inngest: Inngest) {
       for (const item of paydaysToday) {
         await step.run(`send-payday-alert-${item.eventId}-${item.expectedDate}`, async () => {
           const cur = item.tenantCurrency || "AUD";
-          const formattedAmount = formatCurrency(item.amount, { currency: cur });
+          const hideAmounts = Boolean(item.hideAmountsInNotifications);
+          const formattedAmount = hideAmounts
+            ? t("notifications.settings.maskedAmountText")
+            : formatCurrency(item.amount, { currency: cur });
           const prefs = readNotificationPrefs(item.appPreferences, item.appId);
           const emailEnabled = isChannelEnabled(prefs, "payday_alerts_email", "payday_alerts_enabled");
           const pushEnabled = isChannelEnabled(prefs, "payday_alerts_push", "payday_alerts_enabled");
@@ -84,8 +89,9 @@ export function createPaydayAlertWorkflow(inngest: Inngest) {
             await sendNotificationEmail(
               emailRecipient,
               `Payday Alert — ${item.tenantName}`,
-              `It's payday! An expected deposit of ${formattedAmount} is scheduled today.\n\n` +
-              `Open Money Matters to review and confirm your Payday Plan.`
+              hideAmounts
+                ? `It's payday! An expected deposit is scheduled today (${formattedAmount}).\n\nOpen Money Matters to review and confirm your Payday Plan.`
+                : `It's payday! An expected deposit of ${formattedAmount} is scheduled today.\n\nOpen Money Matters to review and confirm your Payday Plan.`
             );
           }
 
@@ -96,7 +102,9 @@ export function createPaydayAlertWorkflow(inngest: Inngest) {
                 userId: item.userId,
                 tenantId: item.tenantId,
                 title: "💰 Payday Alert",
-                body: `An expected deposit of ${formattedAmount} is scheduled today. Tap to allocate.`,
+                body: hideAmounts
+                  ? `It's payday today (${formattedAmount}). Tap to allocate.`
+                  : `An expected deposit of ${formattedAmount} is scheduled today. Tap to allocate.`,
                 data: { route: `/(app)/payday-plan/${item.eventId}` },
               },
             }).catch(() => {});

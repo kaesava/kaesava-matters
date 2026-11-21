@@ -2,6 +2,7 @@ import { initTRPC, TRPCError } from '@trpc/server';
 import type { EdgeContext as Context } from './edge-context.js';
 
 import { sql } from 'drizzle-orm';
+import { logger } from '@money-matters/core';
 import { getSubscriptionStatus } from '@money-matters/capability-billing';
 import type { SubscriptionStatusDto } from '@money-matters/types';
 
@@ -12,7 +13,7 @@ const t = initTRPC.context<Context>().create({
       /violates.*constraint|foreign key|syntax error|relation.*does not exist|table ".*"|column ".*"/i.test(error.message);
 
     if (isInternalOrDbError) {
-      console.error('[API Error Intercepted]', {
+      logger.error('[API Error Intercepted]', {
         code: error.code,
         message: error.message,
         stack: error.cause instanceof Error ? error.cause.stack : error.stack,
