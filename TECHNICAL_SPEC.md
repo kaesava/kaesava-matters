@@ -42,9 +42,10 @@ money-matters/
 │   └── web/           # Next.js web app on Cloudflare Workers via OpenNext (`wrangler.jsonc`)
 ├── packages/
 │   ├── capabilities/
-│   │   ├── assistant/       # Ask Penny AI Assistant (Cloudflare Workers AI Gateway, deterministic matcher, usage quota)
-│   │   ├── billing/         # Subscription state machine, Stripe checkout & customer portal, raw-body webhook processor
-│   │   ├── tenant/          # Household creation, partner invite, bank account CRUD, bank balance reconciliation
+│   │   ├── assistant/       # Ask Penny AI Assistant + generic runQuotaGuardedAssistant engine (Cloudflare Workers AI Gateway, usage quota)
+│   │   ├── bank-accounts/   # Standalone Bank Account CRUD, expected balance & balance sync via BankAccountLifecycleHooks
+│   │   ├── billing/         # Subscription state machine, Stripe checkout & customer portal, multi-app raw-body webhook processor
+│   │   ├── tenant/          # App-agnostic tenant creation, partner/member invites, profile, preferences, data export & deletion via TenantLifecycleHooks
 │   │   ├── budgeting/       # Envelope-centric architecture (`Bank Account → Envelope → Category`), 5-step waterfall allocation engine, rolling window maintainer
 │   │   ├── transactions/    # Daily ledger, expense recording, transaction history, paired transfer resolution
 │   │   ├── simulation/      # Stateless "Can I Afford It?" engine with 3-tier verdict model (Safe, Caution, Not Recommended) & goal timeline impact analysis

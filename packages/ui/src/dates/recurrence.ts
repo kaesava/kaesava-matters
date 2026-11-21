@@ -15,6 +15,7 @@ export interface ScheduleSummaryOptions {
   endDate?: string | null;
   envelopeType?: string | null;
   fundingMode?: string | null;
+  customSummaryOverride?: string | null;
   locale?: string;
   timeZone?: string;
 }
@@ -99,7 +100,10 @@ export function formatScheduleSummary(
   options: ScheduleSummaryOptions,
   dateFormatter?: (d: string | Date | number | null | undefined) => string
 ): string {
-  const { rrule, startDate, endDate, fundingMode } = options;
+  const { rrule, startDate, endDate, fundingMode, customSummaryOverride } = options;
+  if (customSummaryOverride) {
+    return customSummaryOverride;
+  }
   if (fundingMode === "TARGET_BALANCE") {
     return t("categories.drawdownAsNeeded");
   }

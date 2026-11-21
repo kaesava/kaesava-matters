@@ -81,3 +81,18 @@ export const DESIGN_TOKENS = {
     mono: "JetBrains Mono, monospace"
   }
 } as const;
+
+export type DesignTokens = typeof DESIGN_TOKENS;
+
+export function createDesignTokens(
+  colorOverrides?: Partial<DesignTokens["colors"]>
+): DesignTokens {
+  if (!colorOverrides) return DESIGN_TOKENS;
+  return {
+    ...DESIGN_TOKENS,
+    colors: {
+      ...DESIGN_TOKENS.colors,
+      ...colorOverrides,
+    },
+  };
+}
