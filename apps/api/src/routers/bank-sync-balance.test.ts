@@ -4,6 +4,10 @@ import {
   archiveBankAccountHandler,
   createTenantHandler,
 } from "@money-matters/capability-tenant";
+import {
+  createMoneyMattersTenantLifecycleHooks,
+  moneyMattersBankAccountHooks,
+} from "@money-matters/capability-budgeting";
 
 type RowRecord = Record<string, unknown>;
 
@@ -50,7 +54,7 @@ describe("Bank Sync Balance & Mapping Rules", () => {
       }),
     } as unknown as DbOrTx;
 
-    const handler = createTenantHandler(mockDb);
+    const handler = createTenantHandler(mockDb, createMoneyMattersTenantLifecycleHooks());
     const result = await handler({ name: "Test Tenant", country: "AU" }, "app-123", "user-123");
 
     expect(result.success).toBe(true);
@@ -85,7 +89,7 @@ describe("Bank Sync Balance & Mapping Rules", () => {
       }),
     } as unknown as DbOrTx;
 
-    const archiveHandler = archiveBankAccountHandler(mockDb);
+    const archiveHandler = archiveBankAccountHandler(mockDb, moneyMattersBankAccountHooks);
     await expect(
       archiveHandler("acc-1", "tenant-1", "app-1", "user-1")
     ).rejects.toThrow("Cannot archive bank account linked to the Everyday envelope");

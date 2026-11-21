@@ -1,7 +1,13 @@
-import { tenantUsers, bankAccounts, envelopes, tenants, users, DbOrTx } from "@money-matters/db";
+import { tenantUsers, tenants, users, type DbOrTx } from "@money-matters/db";
 import { eq, and, sql, isNull } from "drizzle-orm";
 import { ensurePremiumAccess } from "@money-matters/core";
-import { GetInviteDetailsResult, InviteAccountStatus, CURRENT_TERMS_VERSION, CURRENT_PRIVACY_VERSION } from "@money-matters/types";
+import {
+  GetInviteDetailsResult,
+  InviteAccountStatus,
+  CURRENT_TERMS_VERSION,
+  CURRENT_PRIVACY_VERSION,
+  type TenantLifecycleHooks,
+} from "@money-matters/types";
 
 function extractRows<T>(result: unknown): T[] {
   return Array.isArray(result)
@@ -108,7 +114,7 @@ export function invitePartnerHandler(db: DbOrTx) {
 /**
  * Accepts a household partner invitation after verifying token expiry and email identity.
  */
-export function acceptInviteHandler(db: DbOrTx) {
+export function acceptInviteHandler(db: DbOrTx, hooks?: TenantLifecycleHooks<DbOrTx>) {
   return async (input: { inviteToken: string }, userId: string, userEmail?: string) => {
     const [invite] = await db
       .select()
@@ -190,48 +196,13 @@ export function acceptInviteHandler(db: DbOrTx) {
       throw new Error("Tenant not found for accepted invitation.");
     }
 
-    // Auto-seed default Private Personal Bank Account & Pool for joining partner
-    const [existingPrivateAcc] = await db
-      .select()
-      .from(bankAccounts)
-      .where(
-        and(
-          eq(bankAccounts.tenantId, updated.tenantId),
-          eq(bankAccounts.isPrivate, true),
-          eq(bankAccounts.userId, userId)
-        )
-      )
-      .limit(1);
-
-    if (!existingPrivateAcc) {
-      const [partnerAcc] = await db
-        .insert(bankAccounts)
-        .values({
-          tenantId: updated.tenantId,
-          appId: tenant.appId,
-          name: "Personal Private Account",
-          lastKnownBalance: "0.00",
-          unbudgetedBuffer: "0.00",
-          isPrivate: true,
-          userId: userId,
-          createdBy: userId,
-          updatedBy: userId,
-        })
-        .returning();
-
-      await db.insert(envelopes).values({
-        tenantId: updated.tenantId,
-        appId: tenant.appId,
-        name: "Personal Spending",
-        envelopeType: "EVERYDAY",
-        bankAccountId: partnerAcc.id,
-        monthlyAmount: "200.00",
-        isPrivate: true,
-        userId: userId,
-        createdBy: userId,
-        updatedBy: userId,
-      });
-    }
+    await hooks?.onMemberJoined?.({
+      db,
+      tenantId: updated.tenantId,
+      appId: tenant.appId,
+      userId,
+      userEmail,
+    });
 
     await db.execute(sql`UPDATE neon_auth.user SET "emailVerified" = true, "updatedAt" = NOW() WHERE id = ${userId} AND ("emailVerified" = false OR "emailVerified" IS NULL)`);
 

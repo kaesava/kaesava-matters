@@ -1,6 +1,6 @@
 import { inngest } from "./client.js";
 import { db, tenants } from "@money-matters/db";
-import { isNull } from "drizzle-orm";
+import { and, eq, isNull } from "drizzle-orm";
 import { maintainRollingWindowCommand } from "@money-matters/capability-budgeting";
 import { logger } from "@money-matters/core";
 import { MONEY_MATTERS_APP_ID } from "../trpc/edge-context.js";
@@ -17,7 +17,7 @@ export const maintainRollingWindowWorkflow = inngest.createFunction(
           createdBy: tenants.createdBy,
         })
         .from(tenants)
-        .where(isNull(tenants.archivedAt));
+        .where(and(isNull(tenants.archivedAt), eq(tenants.appId, MONEY_MATTERS_APP_ID)));
     });
 
     let totalNewEvents = 0;

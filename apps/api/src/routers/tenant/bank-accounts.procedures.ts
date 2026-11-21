@@ -1,17 +1,16 @@
 import { privateTenantProcedure, requiresWriteAccess } from '../../trpc/trpc.js';
-import { bankAccounts, transactionLedger } from "@money-matters/db";
+import { bankAccounts } from "@money-matters/db";
 import { and, eq, sql, or } from "drizzle-orm";
-import { 
+import {
   createBankAccountHandler,
   updateBankAccountHandler,
   archiveBankAccountHandler,
   getBankAccountsWithMappingsHandler,
-} from "@money-matters/capability-tenant";
-import { listEnvelopesQuery } from "@money-matters/capability-budgeting";
-import { 
-  CreateBankAccountCommand,
-  UpdateBankAccountCommand,
-} from "@money-matters/types";
+  listBankAccountsWithExpectedHandler,
+  syncBankBalanceHandler,
+} from "@money-matters/capability-bank-accounts";
+import { moneyMattersBankAccountHooks } from "@money-matters/capability-budgeting";
+import { CreateBankAccountCommand, UpdateBankAccountCommand } from "@money-matters/types";
 import { z } from 'zod';
 import { captureIfConsented } from '../../lib/posthog.js';
 
@@ -20,7 +19,7 @@ export const bankAccountsProcedures = {
     .input(CreateBankAccountCommand)
     .mutation(async ({ input, ctx }) => {
       requiresWriteAccess(ctx);
-      const handler = createBankAccountHandler(ctx.db);
+      const handler = createBankAccountHandler(ctx.db, moneyMattersBankAccountHooks);
       const result = await handler(input, ctx.tenantId!, ctx.appId!, ctx.userId!);
       await captureIfConsented(ctx.db, ctx.userId, 'bank_account_created', {
         tenant_id: ctx.tenantId,
@@ -57,27 +56,20 @@ export const bankAccountsProcedures = {
         )
         .limit(1);
 
-      if (!acc) {
-        throw new Error("Bank account not found or access unauthorized.");
-      }
-
+      if (!acc) throw new Error("Bank account not found or access unauthorized.");
       if (acc.isPrivate) {
-        if (acc.userId !== ctx.userId) {
-          throw new Error("Bank account not found or access unauthorized.");
-        }
-      } else {
-        if (ctx.session?.role !== "OWNER") {
-          throw new Error("Only household owners can archive shared bank accounts.");
-        }
+        if (acc.userId !== ctx.userId) throw new Error("Bank account not found or access unauthorized.");
+      } else if (ctx.session?.role !== "OWNER") {
+        throw new Error("Only household owners can archive shared bank accounts.");
       }
 
-      const handler = archiveBankAccountHandler(ctx.db);
+      const handler = archiveBankAccountHandler(ctx.db, moneyMattersBankAccountHooks);
       return await handler(input.accountId, ctx.tenantId!, ctx.appId!, ctx.userId!);
     }),
 
   getBankAccountsWithMappings: privateTenantProcedure
     .query(async ({ ctx }) => {
-      const handler = getBankAccountsWithMappingsHandler(ctx.db);
+      const handler = getBankAccountsWithMappingsHandler(ctx.db, moneyMattersBankAccountHooks);
       return await handler(ctx.tenantId!, ctx.appId!, ctx.userId!);
     }),
 
@@ -98,31 +90,8 @@ export const bankAccountsProcedures = {
 
   listBankAccountsWithExpected: privateTenantProcedure
     .query(async ({ ctx }) => {
-      const accounts = await ctx.db
-        .select()
-        .from(bankAccounts)
-        .where(
-          and(
-            eq(bankAccounts.tenantId, ctx.tenantId!),
-            eq(bankAccounts.appId, ctx.appId!),
-            sql`${bankAccounts.archivedAt} IS NULL`,
-            or(eq(bankAccounts.isPrivate, false), eq(bankAccounts.userId, ctx.userId!))!
-          )
-        );
-
-      const allEnvelopes = await listEnvelopesQuery(ctx.tenantId!, ctx.appId!, ctx.db, ctx.userId!);
-
-      return accounts.map((acc) => {
-        const linkedEnvelopes = allEnvelopes.filter((p) => p.bankAccountId === acc.id);
-        const buffer = parseFloat(acc.unbudgetedBuffer || "0");
-        const expectedBalance = linkedEnvelopes.reduce((sum, p) => sum + (p.currentBalance || 0), 0) + buffer;
-        return {
-          ...acc,
-          expectedBalance: expectedBalance.toFixed(2),
-          linkedPoolCount: linkedEnvelopes.length,
-          linkedEnvelopeCount: linkedEnvelopes.length,
-        };
-      });
+      const handler = listBankAccountsWithExpectedHandler(ctx.db, moneyMattersBankAccountHooks);
+      return await handler(ctx.tenantId!, ctx.appId!, ctx.userId!);
     }),
 
   syncBankBalance: privateTenantProcedure
@@ -143,68 +112,7 @@ export const bankAccountsProcedures = {
     )
     .mutation(async ({ input, ctx }) => {
       requiresWriteAccess(ctx);
-      const accountId = input.accountId;
-
-      return await ctx.db.transaction(async (tx) => {
-        const [acc] = await tx
-          .select({ isPrivate: bankAccounts.isPrivate, userId: bankAccounts.userId })
-          .from(bankAccounts)
-          .where(
-            and(
-              eq(bankAccounts.id, accountId),
-              eq(bankAccounts.tenantId, ctx.tenantId!),
-              eq(bankAccounts.appId, ctx.appId!),
-              sql`${bankAccounts.archivedAt} IS NULL`
-            )
-          )
-          .limit(1);
-
-        if (!acc) {
-          throw new Error("Bank account not found or access unauthorized.");
-        }
-
-        if (acc.isPrivate && acc.userId !== ctx.userId) {
-          throw new Error("Bank account not found or access unauthorized.");
-        }
-
-        await tx
-          .update(bankAccounts)
-          .set({
-            lastKnownBalance: input.actualBalance,
-            lastBalanceMatchedAt: new Date(),
-            updatedAt: new Date(),
-            updatedBy: ctx.userId!,
-          })
-          .where(eq(bankAccounts.id, accountId));
-
-        const txValues = [];
-        const alignmentNote = input.note?.trim() || "Balance matched";
-        for (const split of input.splits) {
-          const adj = parseFloat(split.adjustment);
-          if (Math.abs(adj) < 0.01) continue;
-
-          const targetEnvId = (split.envelopeId || split.poolId)!;
-          txValues.push({
-            tenantId: ctx.tenantId!,
-            appId: ctx.appId!,
-            envelopeId: targetEnvId,
-            bankAccountId: accountId,
-            flowType: (adj > 0 ? "CREDIT" : "DEBIT") as "CREDIT" | "DEBIT",
-            transactionType: "ACCOUNT_ALIGNMENT" as const,
-            amount: Math.abs(adj).toFixed(2),
-            idempotencyKey: `reconcile-${accountId}-${targetEnvId}-${input.clientIdempotencyToken}`,
-            note: alignmentNote,
-            source: "MANUAL" as const,
-            createdBy: ctx.userId!,
-            updatedBy: ctx.userId!,
-          });
-        }
-
-        if (txValues.length > 0) {
-          await tx.insert(transactionLedger).values(txValues);
-        }
-
-        return { success: true };
-      });
+      const handler = syncBankBalanceHandler(ctx.db, moneyMattersBankAccountHooks);
+      return await handler(input, ctx.tenantId!, ctx.appId!, ctx.userId!);
     }),
 };

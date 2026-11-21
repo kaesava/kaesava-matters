@@ -1,5 +1,6 @@
 import { FetchCreateContextFnOptions } from '@trpc/server/adapters/fetch';
 import { verifyJwt, upsertUserFromJwt, logger, createDbClient } from '@money-matters/core';
+import { resolveAppConfig } from '@money-matters/config';
 import { db, tenantUsers, tenants } from '@money-matters/db';
 import { eq, and, isNull, sql, asc } from 'drizzle-orm';
 
@@ -9,6 +10,15 @@ export interface EdgeContextEnv {
   DATABASE_URL?: string;
   NEON_AUTH_BASE_URL?: string;
   NEON_AUTH_JWKS_URL?: string;
+  MONEY_MATTERS_APP_ID?: string;
+}
+
+export function resolveRequestAppId(req: Request, env?: EdgeContextEnv): string {
+  const headerAppId = req.headers.get('x-app-id')?.trim();
+  if (headerAppId && resolveAppConfig(headerAppId)) {
+    return headerAppId;
+  }
+  return env?.MONEY_MATTERS_APP_ID || MONEY_MATTERS_APP_ID;
 }
 
 export interface ResolvedClaims {
@@ -258,9 +268,10 @@ export async function resolveTenantMembership(
   requestDb: ReturnType<typeof createDbClient> | typeof db,
   claims: ResolvedClaims,
   requestedTenantId: string | null,
-  _correlationId: string
+  _correlationId: string,
+  targetAppId: string = MONEY_MATTERS_APP_ID
 ): Promise<{ tenantId: string | null; role: string | null; appId: string }> {
-  const cacheKey = `${claims.userId}:${requestedTenantId ?? ''}`;
+  const cacheKey = `${claims.userId}:${targetAppId}:${requestedTenantId ?? ''}`;
   const now = Date.now();
   const cached = tenantMembershipMemoryCache.get(cacheKey);
   if (cached && now - cached.cachedAt < EDGE_CACHE_TTL_MS) {
@@ -280,7 +291,7 @@ export async function resolveTenantMembership(
     .where(
       and(
         eq(tenantUsers.userId, claims.userId),
-        eq(tenants.appId, MONEY_MATTERS_APP_ID),
+        eq(tenants.appId, targetAppId),
         eq(tenantUsers.inviteStatus, 'ACCEPTED'),
         isNull(tenantUsers.archivedAt)
       )
@@ -301,7 +312,7 @@ export async function resolveTenantMembership(
     resolved = {
       tenantId: membership.tenantId,
       role: membership.role ?? null,
-      appId: membership.appId ?? MONEY_MATTERS_APP_ID,
+      appId: membership.appId ?? targetAppId,
     };
     if (tenantMembershipMemoryCache.size > 500) {
       tenantMembershipMemoryCache.clear();
@@ -315,7 +326,7 @@ export async function resolveTenantMembership(
   return {
     tenantId: null,
     role: null,
-    appId: MONEY_MATTERS_APP_ID,
+    appId: targetAppId,
   };
 }
 
@@ -360,12 +371,14 @@ export async function createEdgeContext(
 
   const rawTenantHeader = req.headers.get('x-tenant-id') ?? req.headers.get('x-active-tenant');
   const requestedTenantId = rawTenantHeader || null;
+  const resolvedAppId = resolveRequestAppId(req, env);
 
   const { tenantId, role, appId } = await resolveTenantMembership(
     requestDb,
     claims,
     requestedTenantId,
-    correlationId
+    correlationId,
+    resolvedAppId
   );
 
   return {

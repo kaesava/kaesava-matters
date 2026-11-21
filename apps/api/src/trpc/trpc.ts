@@ -2,7 +2,7 @@ import { initTRPC, TRPCError } from '@trpc/server';
 import type { EdgeContext as Context } from './edge-context.js';
 
 import { sql } from 'drizzle-orm';
-import { logger } from '@money-matters/core';
+import { logger, canRolePerform } from '@money-matters/core';
 import { getSubscriptionStatus } from '@money-matters/capability-billing';
 import type { SubscriptionStatusDto } from '@money-matters/types';
 
@@ -178,6 +178,26 @@ export const privateOwnerProcedure = privateTenantProcedure.use(async ({ ctx, ne
       userId: ctx.userId,
     },
   });
+});
+
+export const memberWriteProcedure = tenantProcedure.use(async ({ ctx, next }) => {
+  if (!canRolePerform(ctx.session?.role, 'write')) {
+    throw new TRPCError({
+      code: 'FORBIDDEN',
+      message: 'Viewer members have read-only access.',
+    });
+  }
+  return next();
+});
+
+export const privateMemberWriteProcedure = privateTenantProcedure.use(async ({ ctx, next }) => {
+  if (!canRolePerform(ctx.session?.role, 'write')) {
+    throw new TRPCError({
+      code: 'FORBIDDEN',
+      message: 'Viewer members have read-only access.',
+    });
+  }
+  return next();
 });
 
 /**

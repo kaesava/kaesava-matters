@@ -106,16 +106,12 @@ export async function updateUserPreferencesHandler(
   const existingAppPrefs: Record<string, AppPreferencesBlob> = existingTenantPref?.appPreferences || {};
   if (input.appPreferences) {
     const incomingBlob: AppPreferencesBlob = {
-      ...(existingAppPrefs["money-matters"] || {}),
       ...(existingAppPrefs[appId] || {}),
-      ...(input.appPreferences["money-matters"] || {}),
       ...(input.appPreferences[appId] || {}),
     };
-    const { ["money-matters"]: _legacy, ...restExisting } = existingAppPrefs;
-    const { ["money-matters"]: _incomingLegacy, ...restIncoming } = input.appPreferences;
     const updatedAppPrefs: Record<string, AppPreferencesBlob> = {
-      ...restExisting,
-      ...restIncoming,
+      ...existingAppPrefs,
+      ...input.appPreferences,
       [appId]: incomingBlob,
     };
 

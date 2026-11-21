@@ -8,8 +8,5 @@ export const db = drizzle(pool, { schema });
 export * from "./types.js";
 
 export * from "./schema/index.js";
-export * as platformSchema from "./rings/platform.js";
-export * as capabilitySchema from "./rings/capabilities.js";
-export * as moneyMattersSchema from "./rings/money-matters.js";
 export * from "./get-envelope-balances.js";
 export * from "./testing/mock-db.js";

@@ -14,6 +14,7 @@ import {
   setAccountPasswordHandler,
 } from "@money-matters/capability-tenant";
 import { deleteFileFromBucket, getPresignedDownloadUrl } from "@money-matters/capability-file-notes";
+import { createMoneyMattersTenantLifecycleHooks } from "@money-matters/capability-budgeting";
 import {
   CreateTenantCommand,
   CheckEmailAuthProviderInputSchema,
@@ -31,7 +32,7 @@ export const tenantCoreProcedures = {
     .input(CreateTenantCommand)
     .mutation(async ({ input, ctx }) => {
       const appId = ctx.appId || ctx.session?.appId || MONEY_MATTERS_APP_ID;
-      const handler = createTenantHandler(ctx.db || db);
+      const handler = createTenantHandler(ctx.db || db, createMoneyMattersTenantLifecycleHooks());
       const result = await handler(input, appId, ctx.userId, ctx.email, ctx.session?.displayName);
       clearEdgeContextCache();
 
@@ -106,25 +107,33 @@ export const tenantCoreProcedures = {
     .mutation(async ({ ctx }) => {
       requiresWriteAccess(ctx);
       const appId = ctx.appId || MONEY_MATTERS_APP_ID;
-      const handler = cancelSetupHandler(ctx.db);
+      const handler = cancelSetupHandler(ctx.db, createMoneyMattersTenantLifecycleHooks());
       return await handler(ctx.tenantId!, appId, ctx.userId!);
     }),
 
   getTenant: tenantProcedure
     .query(async ({ ctx }) => {
-      const handler = getTenantHandler(ctx.db);
+      const handler = getTenantHandler(ctx.db, createMoneyMattersTenantLifecycleHooks());
       return await handler(ctx.tenantId!, ctx.appId!);
     }),
 
   exportMyData: privateTenantProcedure
     .query(async ({ ctx }) => {
-      const handler = exportDataHandler(ctx.db, getPresignedDownloadUrl);
+      const handler = exportDataHandler(
+        ctx.db,
+        getPresignedDownloadUrl,
+        createMoneyMattersTenantLifecycleHooks({ getPresignedDownloadUrl })
+      );
       return await handler(ctx.tenantId!, ctx.userId!, ctx.appId!);
     }),
 
   deleteMyAccount: privateOwnerProcedure
     .mutation(async ({ ctx }) => {
-      const handler = deleteMyAccountHandler(ctx.db, deleteFileFromBucket);
+      const handler = deleteMyAccountHandler(
+        ctx.db,
+        deleteFileFromBucket,
+        createMoneyMattersTenantLifecycleHooks()
+      );
       const result = await handler(ctx.tenantId!, ctx.userId!, ctx.email!, ctx.appId!);
       clearEdgeContextCache();
 

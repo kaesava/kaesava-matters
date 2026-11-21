@@ -1,5 +1,5 @@
 import { describe, it, expect, vi } from 'vitest';
-import { DbOrTx, tenants, bankAccounts, envelopes, incomeSources, incomeEvents, expenseEvents } from '@money-matters/db';
+import { DbOrTx, tenants } from '@money-matters/db';
 import {
   createTenantHandler,
   cancelSetupHandler,
@@ -53,12 +53,14 @@ describe('Capability Tenant Handlers', () => {
       update: updateMock,
     };
 
-    const handler = createTenantHandler(mockDb as unknown as DbOrTx);
+    const onTenantCreated = vi.fn().mockResolvedValue(undefined);
+    const handler = createTenantHandler(mockDb as unknown as DbOrTx, { onTenantCreated });
     const result = await handler({ name: 'Acme Household', country: 'AU' }, appId, userId);
 
     expect(result.success).toBe(true);
     expect(typeof result.tenantId).toBe('string');
-    expect(insertMock).toHaveBeenCalledTimes(7);
+    expect(insertMock).toHaveBeenCalledTimes(5);
+    expect(onTenantCreated).toHaveBeenCalledTimes(1);
   });
 
   it('createTenantHandler rejects if user already owns an active household', async () => {
@@ -237,7 +239,7 @@ describe('Capability Tenant Handlers', () => {
     });
   });
 
-  it('cancelSetupHandler marks PENDING setup as CANCELLED and ensures only 1 bank account + 1 shared Everyday envelope', async () => {
+  it('cancelSetupHandler marks PENDING setup as CANCELLED and invokes onSetupCancelled hook', async () => {
     const updatedTables: unknown[] = [];
     const setWhereMock = vi.fn().mockResolvedValue([]);
     const setMock = vi.fn().mockReturnValue({ where: setWhereMock });
@@ -252,8 +254,6 @@ describe('Capability Tenant Handlers', () => {
           where: vi.fn().mockImplementation(() => ({
             limit: vi.fn().mockImplementation(async () => {
               if (table === tenants) return [{ setupStatus: 'PENDING' }];
-              if (table === bankAccounts) return [{ id: accountId }];
-              if (table === envelopes) return [{ id: 'env-everyday-1' }];
               return [];
             }),
           })),
@@ -267,7 +267,8 @@ describe('Capability Tenant Handlers', () => {
       transaction: vi.fn().mockImplementation((cb: (tx: unknown) => unknown) => cb(txMock)),
     } as unknown as DbOrTx;
 
-    const handler = cancelSetupHandler(mockDb as unknown as DbOrTx);
+    const onSetupCancelled = vi.fn().mockResolvedValue(undefined);
+    const handler = cancelSetupHandler(mockDb as unknown as DbOrTx, { onSetupCancelled });
     const result = await handler(tenantId, appId, userId);
 
     expect(result).toEqual({
@@ -275,12 +276,7 @@ describe('Capability Tenant Handlers', () => {
       setupStatus: 'CANCELLED',
       alreadyCompleted: false,
     });
-    expect(txMock.insert).not.toHaveBeenCalled();
-    expect(updatedTables).toContain(envelopes);
-    expect(updatedTables).toContain(bankAccounts);
-    expect(updatedTables).toContain(incomeSources);
-    expect(updatedTables).toContain(incomeEvents);
-    expect(updatedTables).toContain(expenseEvents);
+    expect(onSetupCancelled).toHaveBeenCalledTimes(1);
     expect(updatedTables).toContain(tenants);
   });
 

@@ -1,52 +1,20 @@
 import { z } from "zod";
-import { tenants, tenantUsers, envelopes, bankAccounts, apps, users, userPreferences, DbOrTx } from "@money-matters/db";
-import { CreateTenantCommand, COUNTRY_DEFAULTS, CURRENT_TERMS_VERSION, CURRENT_PRIVACY_VERSION } from "@money-matters/types";
+import { tenants, tenantUsers, apps, users, userPreferences, type DbOrTx } from "@money-matters/db";
+import { resolveAppConfigOrDefault } from "@money-matters/config";
+import {
+  CreateTenantCommand,
+  COUNTRY_DEFAULTS,
+  CURRENT_TERMS_VERSION,
+  CURRENT_PRIVACY_VERSION,
+  type TenantLifecycleHooks,
+} from "@money-matters/types";
 import { eq, and, isNull, or, sql } from "drizzle-orm";
-
-export const DEFAULT_BANK_ACCOUNT_NAME = "Primary Bank Account";
-export const DEFAULT_EVERYDAY_ENVELOPE_NAME = "Everyday Spending";
-
-/**
- * Seeds the absolute minimum workspace: ONE bank account and the single shared Everyday envelope
- * linked to it (also the surplus target). Never creates Bill/Goal envelopes or Income Schedules.
- * Pass existing ids to make the call idempotent.
- */
-export async function seedMinimalWorkspace(
-  db: DbOrTx,
-  params: {
-    tenantId: string;
-    appId: string;
-    userId: string;
-    existingBankAccountId?: string | null;
-    existingEverydayEnvelopeId?: string | null;
-    hasEverydayEnvelope?: boolean;
-  }
-): Promise<{ bankAccountId: string; everydayEnvelopeId: string | null }> {
-  const { tenantId, appId, userId } = params;
-  let bankAccountId = params.existingBankAccountId ?? null;
-  if (!bankAccountId) {
-    const [acc] = await db.insert(bankAccounts).values({
-      tenantId, appId, name: DEFAULT_BANK_ACCOUNT_NAME, bankProvider: "Other", accountType: "EVERYDAY",
-      lastKnownBalance: "0.00", unbudgetedBuffer: "0.00", isPrivate: false, createdBy: userId, updatedBy: userId,
-    }).returning();
-    bankAccountId = acc.id;
-  }
-  let everydayEnvelopeId = params.existingEverydayEnvelopeId ?? null;
-  if (!everydayEnvelopeId && !params.hasEverydayEnvelope) {
-    const ins = await db.insert(envelopes).values({
-      tenantId, appId, bankAccountId, name: DEFAULT_EVERYDAY_ENVELOPE_NAME, envelopeType: "EVERYDAY",
-      fundingMode: "TARGET_BALANCE", monthlyAmount: "0.00", budgetFrequency: "MONTHLY", isPriority: true,
-      isSurplusTarget: true, isPrivate: false, orderIndex: 0, createdBy: userId, updatedBy: userId,
-    }).returning();
-    everydayEnvelopeId = Array.isArray(ins) && ins[0]?.id ? ins[0].id : null;
-  }
-  return { bankAccountId, everydayEnvelopeId };
-}
 
 /**
  * Creates a new tenant scope and assigns the creator user as OWNER.
+ * Domain-specific workspace seeding is delegated via optional TenantLifecycleHooks.
  */
-export function createTenantHandler(db: DbOrTx) {
+export function createTenantHandler(db: DbOrTx, hooks?: TenantLifecycleHooks<DbOrTx>) {
   return async (
     input: z.infer<typeof CreateTenantCommand>,
     appId: string,
@@ -56,26 +24,25 @@ export function createTenantHandler(db: DbOrTx) {
   ) => {
     const tenantId = crypto.randomUUID();
     const now = new Date();
+    const appConfig = resolveAppConfigOrDefault(appId);
     const trialStartedAt = now;
-    const trialEndsAt = new Date(now.getTime() + 60 * 24 * 60 * 60 * 1000);
+    const trialEndsAt = new Date(now.getTime() + appConfig.trialDays * 24 * 60 * 60 * 1000);
     const derivedName = input.name.replace(/'s Household$/i, "").trim();
-    const resolvedDisplayName = input.displayName?.trim() || displayName?.trim() || (derivedName && derivedName !== "My Household" ? derivedName : "User");
+    const resolvedDisplayName =
+      input.displayName?.trim() ||
+      displayName?.trim() ||
+      (derivedName && derivedName !== "My Household" ? derivedName : "User");
 
-    // 0. Guard app and user mirror records
     await db
       .insert(apps)
-      .values({
-        id: appId,
-        name: "Money Matters",
-        slug: "money-matters",
-      })
+      .values({ id: appId, name: appConfig.name, slug: appConfig.slug })
       .onConflictDoNothing();
 
     await db
       .insert(users)
       .values({
         id: userId,
-        email: userEmail || `user-${userId.substring(0, 8)}@moneymatters.kaesava.au`,
+        email: userEmail || `user-${userId.substring(0, 8)}@${appConfig.branding.primaryDomain}`,
         displayName: resolvedDisplayName,
         termsAcceptedAt: now,
         termsVersion: CURRENT_TERMS_VERSION,
@@ -96,7 +63,6 @@ export function createTenantHandler(db: DbOrTx) {
         .where(eq(users.id, userId));
     }
 
-    // 1. Guard against owning more than one active household
     const [existingOwnedTenant] = await db
       .select({ id: tenantUsers.tenantId })
       .from(tenantUsers)
@@ -116,7 +82,6 @@ export function createTenantHandler(db: DbOrTx) {
       throw new Error("You already have an active household. An account can only own one active household at a time.");
     }
 
-    // 2. Check if user or email already used their 60-day trial across the platform
     const normalizedEmail = userEmail?.trim().toLowerCase();
     const matchedUsers = normalizedEmail
       ? await db
@@ -139,25 +104,21 @@ export function createTenantHandler(db: DbOrTx) {
     const currency = input.currency || countryDefaults.currency;
     const timezone = input.timezone || countryDefaults.timezone;
 
-    // 3. Insert the tenant
-    await db
-      .insert(tenants)
-      .values({
-        id: tenantId,
-        appId,
-        name: input.name,
-        country,
-        currency,
-        timezone,
-        subscriptionStatus,
-        trialStartedAt: hasUsedTrial ? null : trialStartedAt,
-        trialEndsAt: hasUsedTrial ? null : trialEndsAt,
-        cancelAtPeriodEnd: false,
-        createdBy: userId,
-        updatedBy: userId,
-      });
+    await db.insert(tenants).values({
+      id: tenantId,
+      appId,
+      name: input.name,
+      country,
+      currency,
+      timezone,
+      subscriptionStatus,
+      trialStartedAt: hasUsedTrial ? null : trialStartedAt,
+      trialEndsAt: hasUsedTrial ? null : trialEndsAt,
+      cancelAtPeriodEnd: false,
+      createdBy: userId,
+      updatedBy: userId,
+    });
 
-    // Mark that the user has consumed their initial trial allocation
     await db
       .update(users)
       .set({ hasUsedTrial: true, updatedAt: now })
@@ -167,21 +128,16 @@ export function createTenantHandler(db: DbOrTx) {
           : eq(users.id, userId)
       );
 
-    // 4. Add the owner record to tenant_users
-    await db
-      .insert(tenantUsers)
-      .values({
-        tenantId,
-        userId,
-        role: "OWNER" as const,
-        inviteStatus: "ACCEPTED" as const,
-        createdBy: userId,
-        updatedBy: userId,
-      });
+    await db.insert(tenantUsers).values({
+      tenantId,
+      userId,
+      role: "OWNER" as const,
+      inviteStatus: "ACCEPTED" as const,
+      createdBy: userId,
+      updatedBy: userId,
+    });
 
-    // 5. Initialize or synchronize userPreferences with country defaults
     const phoneCountryCode = countryDefaults.phoneCountryCode || "+61";
-
     const [existingPref] = await db
       .select()
       .from(userPreferences)
@@ -212,30 +168,21 @@ export function createTenantHandler(db: DbOrTx) {
         .onConflictDoNothing();
     }
 
-    await seedMinimalWorkspace(db, { tenantId, appId, userId });
+    await hooks?.onTenantCreated?.({ db, tenantId, appId, userId, userEmail });
 
-    return {
-      success: true,
-      tenantId,
-    };
+    return { success: true, tenantId };
   };
 }
 
 /**
- * Fetches tenant details, member users, active bank accounts, and envelopes.
+ * Fetches tenant details, member users, and optional domain-enriched relations via hooks.
  */
-export function getTenantHandler(db: DbOrTx) {
+export function getTenantHandler(db: DbOrTx, hooks?: TenantLifecycleHooks<DbOrTx>) {
   return async (tenantId: string, appId: string) => {
     const [tenant] = await db
       .select()
       .from(tenants)
-      .where(
-        and(
-          eq(tenants.id, tenantId),
-          eq(tenants.appId, appId),
-          isNull(tenants.archivedAt)
-        )
-      )
+      .where(and(eq(tenants.id, tenantId), eq(tenants.appId, appId), isNull(tenants.archivedAt)))
       .limit(1);
 
     if (!tenant) return null;
@@ -243,40 +190,14 @@ export function getTenantHandler(db: DbOrTx) {
     const tenantMemberList = await db
       .select()
       .from(tenantUsers)
-      .where(
-        and(
-          eq(tenantUsers.tenantId, tenant.id),
-          isNull(tenantUsers.archivedAt)
-        )
-      );
+      .where(and(eq(tenantUsers.tenantId, tenant.id), isNull(tenantUsers.archivedAt)));
 
-    const accounts = await db
-      .select()
-      .from(bankAccounts)
-      .where(
-        and(
-          eq(bankAccounts.tenantId, tenant.id),
-          eq(bankAccounts.appId, appId),
-          isNull(bankAccounts.archivedAt)
-        )
-      );
-
-    const tenantPools = await db
-      .select()
-      .from(envelopes)
-      .where(
-        and(
-          eq(envelopes.tenantId, tenant.id),
-          eq(envelopes.appId, appId),
-          isNull(envelopes.archivedAt)
-        )
-      );
+    const enriched = (await hooks?.onEnrichTenantDetails?.({ db, tenantId: tenant.id, appId })) ?? {};
 
     return {
       ...tenant,
       users: tenantMemberList,
-      bankAccounts: accounts,
-      envelopes: tenantPools,
+      ...enriched,
     };
   };
 }

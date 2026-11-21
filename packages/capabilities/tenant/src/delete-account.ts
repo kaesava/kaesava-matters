@@ -1,36 +1,24 @@
 import { t } from "@money-matters/i18n";
 import {
-  envelopes,
-  incomeSources,
-  incomeEvents,
-  expenseEvents,
-  transactionLedger,
-  bankAccounts,
   userPreferences,
   tenantUserPreferences,
-  allocationPlans,
-  allocationPlanLines,
-  allocationStrategies,
-  allocationStrategySteps,
-  fileNotes,
   deviceTokens,
   tenantUsers,
-  transferEvents,
   billingInvoices,
   aiUsage,
   earlyAccessSubscribers,
   tenants,
   users,
-  DbOrTx,
+  type DbOrTx,
 } from "@money-matters/db";
+import type { TenantLifecycleHooks } from "@money-matters/types";
 import { eq, and, sql, inArray, ne } from "drizzle-orm";
 import { sendNotificationEmail, logger } from "@money-matters/core";
 import Stripe from "stripe";
 
-async function cancelStripeResources(tenantRecord: {
-  stripeSubscriptionId: string | null;
-  stripeCustomerId: string | null;
-} | undefined) {
+async function cancelStripeResources(
+  tenantRecord: { stripeSubscriptionId: string | null; stripeCustomerId: string | null } | undefined
+) {
   if (!process.env.STRIPE_SECRET_KEY) return;
   const stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
     httpClient: Stripe.createFetchHttpClient(),
@@ -49,7 +37,6 @@ async function cancelStripeResources(tenantRecord: {
       }
     }
   }
-  // Preserve Stripe Customer record for statutory tax/invoice auditability (ATO 5-year rule).
 }
 
 async function purgeNeonAuthRecords(tx: DbOrTx, userId: string) {
@@ -64,63 +51,34 @@ async function purgeNeonAuthRecords(tx: DbOrTx, userId: string) {
   }
 }
 
-async function purgeHouseholdRecords(
+async function purgePlatformTenantRecords(
   tx: DbOrTx,
   tenantId: string,
   userId: string,
   email: string,
   appId: string,
-  allUserIdsToPurgeTokens: string[]
+  allUserIdsToPurgeTokens: string[],
+  hooks?: TenantLifecycleHooks<DbOrTx>
 ): Promise<string[]> {
   if (allUserIdsToPurgeTokens.length > 0) {
     await tx.delete(deviceTokens).where(inArray(deviceTokens.userId, allUserIdsToPurgeTokens));
   }
-  await tx.delete(transactionLedger).where(and(eq(transactionLedger.tenantId, tenantId), eq(transactionLedger.appId, appId)));
 
-  const plans = await tx.select({ id: allocationPlans.id }).from(allocationPlans).where(and(eq(allocationPlans.tenantId, tenantId), eq(allocationPlans.appId, appId)));
-  const planIds = plans.map((p) => p.id);
-  if (planIds.length > 0) {
-    await tx.delete(allocationPlanLines).where(inArray(allocationPlanLines.planId, planIds));
-  }
-  await tx.delete(allocationPlans).where(and(eq(allocationPlans.tenantId, tenantId), eq(allocationPlans.appId, appId)));
-
-  const strategies = await tx
-    .select({ id: allocationStrategies.id })
-    .from(allocationStrategies)
-    .where(and(eq(allocationStrategies.tenantId, tenantId), eq(allocationStrategies.appId, appId)));
-  const strategyIds = strategies.map((s) => s.id);
-  if (strategyIds.length > 0) {
-    await tx.delete(allocationStrategySteps).where(inArray(allocationStrategySteps.strategyId, strategyIds));
-  }
-  await tx.delete(allocationStrategies).where(and(eq(allocationStrategies.tenantId, tenantId), eq(allocationStrategies.appId, appId)));
-
-  const noteFiles = await tx
-    .select({ fileKey: fileNotes.fileKey })
-    .from(fileNotes)
-    .where(and(eq(fileNotes.tenantId, tenantId), eq(fileNotes.appId, appId)));
-  const fileKeysToDelete = noteFiles
-    .map((n) => n.fileKey)
-    .filter((k): k is string => typeof k === "string" && k.length > 0);
-  await tx.delete(fileNotes).where(and(eq(fileNotes.tenantId, tenantId), eq(fileNotes.appId, appId)));
-
-  await tx.delete(expenseEvents).where(and(eq(expenseEvents.tenantId, tenantId), eq(expenseEvents.appId, appId)));
-  await tx.delete(transferEvents).where(and(eq(transferEvents.tenantId, tenantId), eq(transferEvents.appId, appId)));
-  await tx.delete(incomeEvents).where(and(eq(incomeEvents.tenantId, tenantId), eq(incomeEvents.appId, appId)));
-  await tx.delete(incomeSources).where(and(eq(incomeSources.tenantId, tenantId), eq(incomeSources.appId, appId)));
-  await tx.delete(envelopes).where(and(eq(envelopes.tenantId, tenantId), eq(envelopes.appId, appId)));
+  const hookResult = await hooks?.onTenantDeleting?.({
+    db: tx,
+    tenantId,
+    appId,
+    userId,
+    userEmail: email,
+  });
+  const fileKeysToDelete = hookResult?.fileKeysToDelete ?? [];
 
   await tx.delete(userPreferences).where(eq(userPreferences.userId, userId));
   await tx.delete(tenantUserPreferences).where(eq(tenantUserPreferences.userId, userId));
-  await tx.delete(bankAccounts).where(and(eq(bankAccounts.tenantId, tenantId), eq(bankAccounts.appId, appId)));
   const legalHoldUntil = new Date(Date.now() + 5 * 365 * 24 * 60 * 60 * 1000);
   await tx
     .update(billingInvoices)
-    .set({
-      tenantId: null,
-      legalHoldUntil,
-      archivedAt: new Date(),
-      updatedAt: new Date(),
-    })
+    .set({ tenantId: null, legalHoldUntil, archivedAt: new Date(), updatedAt: new Date() })
     .where(eq(billingInvoices.tenantId, tenantId));
   await tx.delete(aiUsage).where(eq(aiUsage.tenantId, tenantId));
   if (email) {
@@ -135,12 +93,10 @@ async function purgeHouseholdRecords(
   return fileKeysToDelete;
 }
 
-/**
- * Hard-deletes the entire tenant/household and all financial data. (Owner only)
- */
 export function deleteMyAccountHandler(
   db: DbOrTx,
-  deleteFileFromBucket?: (fileKey: string) => Promise<boolean>
+  deleteFileFromBucket?: (fileKey: string) => Promise<boolean>,
+  hooks?: TenantLifecycleHooks<DbOrTx>
 ) {
   return async (tenantId: string, userId: string, email: string, appId: string) => {
     const partnerMemberships = await db
@@ -148,16 +104,11 @@ export function deleteMyAccountHandler(
       .from(tenantUsers)
       .where(and(eq(tenantUsers.tenantId, tenantId), ne(tenantUsers.userId, userId)));
 
-    const partnerUserIds = partnerMemberships
-      .map((p) => p.userId)
-      .filter((id): id is string => Boolean(id));
+    const partnerUserIds = partnerMemberships.map((p) => p.userId).filter((id): id is string => Boolean(id));
     const allUserIdsToPurgeTokens: string[] = [userId, ...partnerUserIds];
 
     const [tenantRecord] = await db
-      .select({
-        stripeSubscriptionId: tenants.stripeSubscriptionId,
-        stripeCustomerId: tenants.stripeCustomerId,
-      })
+      .select({ stripeSubscriptionId: tenants.stripeSubscriptionId, stripeCustomerId: tenants.stripeCustomerId })
       .from(tenants)
       .where(eq(tenants.id, tenantId))
       .limit(1);
@@ -175,20 +126,14 @@ export function deleteMyAccountHandler(
         throw new Error("Only the Household Owner can delete the household tenant. Partners can leave the household.");
       }
 
-      return await purgeHouseholdRecords(tx, tenantId, userId, email, appId, allUserIdsToPurgeTokens);
+      return await purgePlatformTenantRecords(tx, tenantId, userId, email, appId, allUserIdsToPurgeTokens, hooks);
     });
 
     if (deleteFileFromBucket && fileKeysToDelete.length > 0) {
-      await Promise.allSettled(
-        fileKeysToDelete.map((fileKey) => deleteFileFromBucket(fileKey))
-      );
+      await Promise.allSettled(fileKeysToDelete.map((fileKey) => deleteFileFromBucket(fileKey)));
     }
 
-    await sendNotificationEmail(
-      email,
-      t("privacy.deletionConfirmedTitle"),
-      t("privacy.deletionConfirmedBody")
-    );
+    await sendNotificationEmail(email, t("privacy.deletionConfirmedTitle"), t("privacy.deletionConfirmedBody"), appId);
 
     for (const partner of partnerMemberships) {
       let partnerEmail = partner.inviteEmail;
@@ -196,12 +141,12 @@ export function deleteMyAccountHandler(
         const [u] = await db.select({ email: users.email }).from(users).where(eq(users.id, partner.userId)).limit(1);
         partnerEmail = u?.email || null;
       }
-
       if (partnerEmail) {
         await sendNotificationEmail(
           partnerEmail,
           t("privacy.deletionNotificationSubject"),
-          t("privacy.deletionNotificationBody", { ownerEmail: email })
+          t("privacy.deletionNotificationBody", { ownerEmail: email }),
+          appId
         ).catch((err) => logger.warn("Failed to send partner deletion notification email:", { err }));
       }
     }
@@ -210,12 +155,8 @@ export function deleteMyAccountHandler(
   };
 }
 
-/**
- * Removes user from household tenant and purges user's private data.
- * If user is OWNER and a partner exists, ownership transfers automatically to the partner.
- */
-export function leaveTenantHandler(db: DbOrTx) {
-  return async (tenantId: string, userId: string, email: string, _appId: string) => {
+export function leaveTenantHandler(db: DbOrTx, hooks?: TenantLifecycleHooks<DbOrTx>) {
+  return async (tenantId: string, userId: string, email: string, appId: string) => {
     return await db.transaction(async (tx) => {
       const [membership] = await tx
         .select()
@@ -223,9 +164,7 @@ export function leaveTenantHandler(db: DbOrTx) {
         .where(and(eq(tenantUsers.tenantId, tenantId), eq(tenantUsers.userId, userId)))
         .limit(1);
 
-      if (!membership) {
-        throw new Error("You are not a member of this household.");
-      }
+      if (!membership) throw new Error("You are not a member of this household.");
 
       const remainingMembers = await tx
         .select()
@@ -246,7 +185,8 @@ export function leaveTenantHandler(db: DbOrTx) {
           await sendNotificationEmail(
             nextOwner.inviteEmail,
             "Household Ownership Transferred to You",
-            `The former owner (${email}) has left the household. You are now the Household Owner.`
+            `The former owner (${email}) has left the household. You are now the Household Owner.`,
+            appId
           );
         }
       } else {
@@ -255,23 +195,13 @@ export function leaveTenantHandler(db: DbOrTx) {
           await sendNotificationEmail(
             ownerMember.inviteEmail,
             "Household Member Left",
-            `${email} has left your household budget.`
+            `${email} has left your household budget.`,
+            appId
           );
         }
       }
 
-      // Purge user's private bank accounts and linked envelopes
-      const privateBankAccs = await tx
-        .select({ id: bankAccounts.id })
-        .from(bankAccounts)
-        .where(and(eq(bankAccounts.tenantId, tenantId), eq(bankAccounts.userId, userId), eq(bankAccounts.isPrivate, true)));
-
-      const privateBankAccIds = privateBankAccs.map((b) => b.id);
-
-      if (privateBankAccIds.length > 0) {
-        await tx.delete(envelopes).where(inArray(envelopes.bankAccountId, privateBankAccIds));
-        await tx.delete(bankAccounts).where(inArray(bankAccounts.id, privateBankAccIds));
-      }
+      await hooks?.onMemberLeft?.({ db: tx, tenantId, appId, userId, userEmail: email });
 
       await tx.delete(tenantUserPreferences).where(and(eq(tenantUserPreferences.tenantId, tenantId), eq(tenantUserPreferences.userId, userId)));
       await tx.delete(tenantUsers).where(and(eq(tenantUsers.tenantId, tenantId), eq(tenantUsers.userId, userId)));

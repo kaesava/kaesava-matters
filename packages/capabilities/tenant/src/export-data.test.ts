@@ -3,77 +3,37 @@ import type { DbOrTx } from "@money-matters/db";
 import { exportDataHandler } from "./export-data.js";
 
 describe("exportDataHandler", () => {
-  it("filters out partner private bank accounts, envelopes, ledger rows, and events", async () => {
+  it("exports core profile CSVs and merges domain CSVs returned by onExportTenantData hook", async () => {
     const responses = [
-      [{ id: "user-1", email: "alice@example.com", displayName: "Alice" }], // users
-      [{ id: "tenant-1", name: "Home" }], // tenants
-      [
-        { id: "ba-shared", name: "Shared", isPrivate: false, userId: null },
-        { id: "ba-alice", name: "Alice Private", isPrivate: true, userId: "user-1" },
-        { id: "ba-bob", name: "Bob Private", isPrivate: true, userId: "user-2" },
-      ], // bankAccounts
-      [
-        { id: "env-shared", name: "Groceries", isPrivate: false, userId: null },
-        { id: "env-bob", name: "Bob Secret", isPrivate: true, userId: "user-2" },
-      ], // envelopes
-      [{ id: "inc-1", receivingAccountId: "ba-shared" }, { id: "inc-bob", receivingAccountId: "ba-bob" }], // incomeSources
-      [{ id: "ie-1", incomeSourceId: "inc-1" }, { id: "ie-bob", incomeSourceId: "inc-bob" }], // incomeEvents
-      [{ id: "ee-1", envelopeId: "env-shared" }, { id: "ee-bob", envelopeId: "env-bob" }], // expenseEvents
-      [{ id: "tx-1", envelopeId: "env-shared", bankAccountId: "ba-shared", note: "=SUM(1,2)" }, { id: "tx-bob", envelopeId: "env-bob", bankAccountId: "ba-bob" }], // transactionLedger
-      [{ id: "ap-1", incomeEventId: "ie-1" }, { id: "ap-bob", incomeEventId: "ie-bob" }], // allocationPlans
-      [{ id: "apl-1", planId: "ap-1", envelopeId: "env-shared" }, { id: "apl-bob", planId: "ap-bob", envelopeId: "env-bob" }], // allocationPlanLines
-      [{ id: "te-1", sourceEnvelopeId: "env-shared", destinationEnvelopeId: "env-shared", name: "Transfer 1", expectedDate: "2026-01-01", expectedAmount: "50", status: "PENDING" }, { id: "te-bob", sourceEnvelopeId: "env-shared", destinationEnvelopeId: "env-bob", name: "Secret Transfer", expectedDate: "2026-01-01", expectedAmount: "20", status: "PENDING" }], // transferEvents
-      [{ id: "st-1", name: "Household Balanced", presetKey: "BALANCED", isDefault: true, isPrivate: false, userId: null }, { id: "st-bob", name: "Bob Strategy", presetKey: "CUSTOM", isDefault: true, isPrivate: true, userId: "user-2" }], // allocationStrategies
-      [{ id: "sts-1", strategyId: "st-1", orderIndex: 0, stepType: "IMMEDIATE_BILLS", targetEnvelopeId: null }, { id: "sts-bob", strategyId: "st-bob", orderIndex: 0, stepType: "IMMEDIATE_BILLS", targetEnvelopeId: null }], // allocationStrategySteps
-      [{ id: "fn-1", entityType: "ENVELOPE", entityId: "env-shared", comment: "Receipt", fileName: "r.pdf", fileMimeType: "application/pdf", fileSize: "100", fileKey: "k-1", isPrivate: false, userId: "user-1", createdAt: new Date("2026-01-01") }, { id: "fn-bob", entityType: "ENVELOPE", entityId: "env-bob", comment: "Secret", fileName: null, fileMimeType: null, fileSize: null, fileKey: "k-bob", isPrivate: true, userId: "user-2", createdAt: new Date("2026-01-01") }], // fileNotes
+      [{ id: "user-1", email: "alice@example.com", displayName: "Alice" }],
+      [{ id: "tenant-1", name: "Acme Co", timezone: "Australia/Melbourne" }],
     ];
 
     let callIdx = 0;
     const mockDb = {
       select: vi.fn().mockImplementation(() => {
         const rows = responses[callIdx++] ?? [];
-        const chain = {
+        return {
           from: vi.fn().mockReturnThis(),
-          where: vi.fn().mockImplementation(() => {
-            const thenable = Promise.resolve(rows) as Promise<unknown[]> & { limit: () => Promise<unknown[]> };
-            thenable.limit = vi.fn().mockResolvedValue(rows);
-            return thenable;
-          }),
+          where: vi.fn().mockImplementation(() => ({
+            limit: vi.fn().mockResolvedValue(rows),
+          })),
         };
-        return chain;
       }),
     };
 
-    const presignMock = vi.fn().mockResolvedValue("https://signed.example.com/k-1");
-    const handler = exportDataHandler(mockDb as unknown as DbOrTx, presignMock);
-    const result = await handler("tenant-1", "user-1", "money-matters");
+    const onExportTenantData = vi.fn().mockResolvedValue({
+      "Jobs.csv": "id,title\njob-1,Fix Roof",
+    });
 
-    expect(result.csvFiles["Bank_Accounts.csv"]).toContain("ba-shared");
-    expect(result.csvFiles["Bank_Accounts.csv"]).toContain("ba-alice");
-    expect(result.csvFiles["Bank_Accounts.csv"]).not.toContain("ba-bob");
+    const handler = exportDataHandler(mockDb as unknown as DbOrTx, undefined, {
+      onExportTenantData,
+    });
+    const result = await handler("tenant-1", "user-1", "app-1");
 
-    expect(result.csvFiles["Envelopes.csv"]).toContain("env-shared");
-    expect(result.csvFiles["Envelopes.csv"]).not.toContain("env-bob");
-
-    expect(result.csvFiles["Transactions_Ledger.csv"]).toContain("tx-1");
-    expect(result.csvFiles["Transactions_Ledger.csv"]).not.toContain("tx-bob");
-
-    expect(result.csvFiles["Income_Split_Plans.csv"]).toContain("ap-1");
-    expect(result.csvFiles["Income_Split_Plans.csv"]).not.toContain("ap-bob");
-
-    expect(result.csvFiles["Income_Split_Plan_Lines.csv"]).toContain("apl-1");
-    expect(result.csvFiles["Income_Split_Plan_Lines.csv"]).not.toContain("apl-bob");
-
-    expect(result.csvFiles["Transfer_Events.csv"]).toContain("te-1");
-    expect(result.csvFiles["Transfer_Events.csv"]).not.toContain("te-bob");
-
-    expect(result.csvFiles["Allocation_Strategies.csv"]).toContain("st-1");
-    expect(result.csvFiles["Allocation_Strategies.csv"]).not.toContain("st-bob");
-
-    expect(result.csvFiles["Allocation_Strategy_Steps.csv"]).toContain("sts-1");
-    expect(result.csvFiles["Allocation_Strategy_Steps.csv"]).not.toContain("sts-bob");
-
-    expect(result.csvFiles["File_Notes.csv"]).toContain("https://signed.example.com/k-1");
-    expect(result.csvFiles["File_Notes.csv"]).not.toContain("fn-bob");
+    expect(result.csvFiles["User_Profile.csv"]).toContain("alice@example.com");
+    expect(result.csvFiles["Household_Profile.csv"]).toContain("Acme Co");
+    expect(result.csvFiles["Jobs.csv"]).toContain("Fix Roof");
+    expect(onExportTenantData).toHaveBeenCalledTimes(1);
   });
 });

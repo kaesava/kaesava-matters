@@ -1,15 +1,16 @@
-export function isValidRedirectUrl(target: string): boolean {
+import { resolveAppConfigOrDefault } from "@money-matters/config";
+
+export function isValidRedirectUrl(target: string, appId?: string | null): boolean {
   if (!target) return false;
-  if (target.startsWith("moneymatters://")) return true;
+  const app = resolveAppConfigOrDefault(appId);
+  if (target.startsWith(app.branding.deepLinkScheme)) return true;
   try {
     const parsed = new URL(target);
     const host = parsed.hostname;
-    if (
-      host === "kaesava.au" ||
-      host.endsWith(".kaesava.au") ||
-      host === "localhost" ||
-      host === "127.0.0.1"
-    ) {
+    const isAllowedHost = app.allowedRedirectHosts.some((h) =>
+      h.startsWith(".") ? host.endsWith(h) : host === h
+    );
+    if (isAllowedHost) {
       return parsed.protocol === "https:" || parsed.protocol === "http:";
     }
     return false;

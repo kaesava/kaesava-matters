@@ -10,6 +10,21 @@
       "types": "./src/index.ts",
       "import": "./src/index.ts",
       "require": "./src/index.ts"
+    },
+    "./rings/platform": {
+      "types": "./src/rings/platform.ts",
+      "import": "./src/rings/platform.ts",
+      "require": "./src/rings/platform.ts"
+    },
+    "./rings/capabilities": {
+      "types": "./src/rings/capabilities.ts",
+      "import": "./src/rings/capabilities.ts",
+      "require": "./src/rings/capabilities.ts"
+    },
+    "./rings/money-matters": {
+      "types": "./src/rings/money-matters.ts",
+      "import": "./src/rings/money-matters.ts",
+      "require": "./src/rings/money-matters.ts"
     }
   },
   "dependencies": {

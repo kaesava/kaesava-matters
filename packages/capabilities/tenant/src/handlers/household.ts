@@ -1,6 +1,6 @@
-import { DEFAULT_TIMEZONE } from "@money-matters/types";
-import { tenants, tenantUsers, users, bankAccounts, envelopes, tenantUserPreferences, type DbOrTx } from "@money-matters/db";
-import { and, eq, sql, inArray } from "drizzle-orm";
+import { DEFAULT_TIMEZONE, type TenantLifecycleHooks } from "@money-matters/types";
+import { tenants, tenantUsers, users, tenantUserPreferences, type DbOrTx } from "@money-matters/db";
+import { and, eq, sql } from "drizzle-orm";
 
 interface DbMember {
   id: string;
@@ -88,7 +88,8 @@ export async function removeHouseholdMemberHandler(
   input: { targetUserId?: string; memberId?: string },
   tenantId: string,
   userId: string,
-  db: DbOrTx
+  db: DbOrTx,
+  hooks?: TenantLifecycleHooks<DbOrTx>
 ) {
   const [caller] = await db
     .select()
@@ -103,21 +104,13 @@ export async function removeHouseholdMemberHandler(
 
   const [targetMember] = await db.select().from(tenantUsers).where(and(eq(tenantUsers.tenantId, tenantId), memberFilter));
   if (targetMember?.userId) {
-    const privateBankAccs = await db
-      .select({ id: bankAccounts.id })
-      .from(bankAccounts)
-      .where(and(eq(bankAccounts.tenantId, tenantId), eq(bankAccounts.userId, targetMember.userId), eq(bankAccounts.isPrivate, true)));
-    const privateBankAccIds = privateBankAccs.map((b) => b.id);
-
-    if (privateBankAccIds.length > 0) {
-      const privateEnvs = await db.select({ id: envelopes.id }).from(envelopes).where(inArray(envelopes.bankAccountId, privateBankAccIds));
-      const privateEnvIds = privateEnvs.map((p) => p.id);
-      if (privateEnvIds.length > 0) {
-        await db.update(envelopes).set({ archivedAt: new Date(), updatedAt: new Date(), updatedBy: userId }).where(inArray(envelopes.id, privateEnvIds));
-      }
-      await db.update(bankAccounts).set({ archivedAt: new Date(), updatedAt: new Date(), updatedBy: userId }).where(inArray(bankAccounts.id, privateBankAccIds));
-    }
-
+    await hooks?.onMemberRemoved?.({
+      db,
+      tenantId,
+      appId: "",
+      userId,
+      removedUserId: targetMember.userId,
+    });
     await db.update(tenantUserPreferences).set({ archivedAt: new Date(), updatedAt: new Date() }).where(and(eq(tenantUserPreferences.tenantId, tenantId), eq(tenantUserPreferences.userId, targetMember.userId)));
   }
 

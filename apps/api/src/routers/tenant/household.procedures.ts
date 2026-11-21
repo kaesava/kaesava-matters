@@ -3,6 +3,8 @@ import { apps } from "@money-matters/db";
 import { eq } from "drizzle-orm";
 import { inngest } from '../../inngest/client.js';
 import { logAuditEvent, logger, sendEmail, buildBrandEmailHeader, checkRateLimit } from '@money-matters/core';
+import { resolveAppConfigOrDefault } from '@money-matters/config';
+import { createMoneyMattersTenantLifecycleHooks } from '@money-matters/capability-budgeting';
 import { t } from '@money-matters/i18n';
 import {
   invitePartnerHandler,
@@ -40,7 +42,8 @@ export const householdProcedures = {
         data: { email: input.email, inviteToken: result.inviteToken, tenantId: ctx.tenantId!, senderUserId: ctx.userId! },
       }).catch(() => {});
 
-      const inviteUrl = `https://moneymatters.kaesava.au/invite/${result.inviteToken}`;
+      const appConfig = resolveAppConfigOrDefault(ctx.appId);
+      const inviteUrl = `${appConfig.branding.appUrl}/invite/${result.inviteToken}`;
       const inviteHtml = `
         <div style="font-family: sans-serif; background-color: #0b132b; color: #ffffff; padding: 40px; border-radius: 16px;">
           ${buildBrandEmailHeader('dark')}
@@ -80,7 +83,7 @@ export const householdProcedures = {
   acceptInvite: authenticatedProcedure
     .input(z.object({ inviteToken: z.string().min(1) }).strict())
     .mutation(async ({ input, ctx }) => {
-      const handler = acceptInviteHandler(ctx.db);
+      const handler = acceptInviteHandler(ctx.db, createMoneyMattersTenantLifecycleHooks());
       const result = await handler(input, ctx.userId!, ctx.email ?? undefined);
       await captureIfConsented(ctx.db, ctx.userId, 'partner_invite_accepted', {});
       return result;
@@ -88,7 +91,7 @@ export const householdProcedures = {
 
   leaveMyHousehold: privateTenantProcedure
     .mutation(async ({ ctx }) => {
-      const handler = leaveTenantHandler(ctx.db);
+      const handler = leaveTenantHandler(ctx.db, createMoneyMattersTenantLifecycleHooks());
       const result = await handler(ctx.tenantId!, ctx.userId!, ctx.email!, ctx.appId!);
       clearEdgeContextCache();
       return result;
@@ -100,7 +103,13 @@ export const householdProcedures = {
   removeHouseholdMember: privateOwnerProcedure
     .input(z.object({ targetUserId: z.string().optional(), memberId: z.string().optional() }).strict())
     .mutation(async ({ ctx, input }) => {
-      const result = await removeHouseholdMemberHandler(input, ctx.tenantId!, ctx.userId!, ctx.db);
+      const result = await removeHouseholdMemberHandler(
+        input,
+        ctx.tenantId!,
+        ctx.userId!,
+        ctx.db,
+        createMoneyMattersTenantLifecycleHooks()
+      );
       clearEdgeContextCache();
       return result;
     }),
