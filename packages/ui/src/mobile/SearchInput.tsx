@@ -1,6 +1,7 @@
 import { View, TextInput, TouchableOpacity, StyleSheet } from 'react-native';
 import { Feather } from '@expo/vector-icons';
 import { t } from '@money-matters/i18n';
+import { PLATFORM_STYLE } from './platform-style';
 
 export interface SearchInputProps {
   value: string;
@@ -66,7 +67,7 @@ const styles = StyleSheet.create({
     zIndex: 1,
   },
   input: {
-    height: 44,
+    height: PLATFORM_STYLE.minTouch,
     backgroundColor: '#FFFFFF',
     borderWidth: 1,
     borderColor: '#E2E8F0',

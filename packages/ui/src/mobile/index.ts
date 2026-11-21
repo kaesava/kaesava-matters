@@ -61,7 +61,6 @@ export type { MobileConfirmOptions, MobileConfirmDialogProps } from './MobileCon
 
 export { default as MobileDatePickerField, DatePickerField } from './fields/DatePickerField';
 export type { DatePickerFieldProps as MobileDatePickerFieldProps } from './fields/DatePickerField';
-export { CalendarModal as MobileCalendarModal } from './fields/CalendarModal';
 
 export { default as MobileCheckbox, MobileCheckbox as Checkbox } from './fields/Checkbox';
 export type { MobileCheckboxProps } from './fields/Checkbox';

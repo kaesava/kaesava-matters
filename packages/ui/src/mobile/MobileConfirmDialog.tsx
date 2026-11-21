@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { Modal, View, Text, StyleSheet, Pressable } from 'react-native';
 import { t } from '@money-matters/i18n';
 import { DESIGN_TOKENS } from '../tokens';
+import { PLATFORM_STYLE } from './platform-style';
 import MobileButton from './Button';
 
 export interface MobileConfirmOptions {
@@ -156,7 +157,7 @@ const styles = StyleSheet.create({
     width: '100%',
     maxWidth: 340,
     backgroundColor: D.colors.surface,
-    borderRadius: D.radius.lg,
+    borderRadius: PLATFORM_STYLE.dialogRadius,
     padding: 20,
     borderWidth: 1,
     borderColor: D.colors.border,

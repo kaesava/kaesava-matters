@@ -80,6 +80,8 @@ export const common = {
     "transferPastDateError": "Transfers cannot be scheduled in the past.",
     "deleteConfirmNamed": "Are you sure you want to delete \"{name}\"?",
     "showMore": "Show More →",
+    "selectDate": "Select date",
+    "info": "Information",
     "overdue": "Overdue",
     "transfer": "Transfer",
     "saveOnly": "Save Only",

@@ -1,6 +1,8 @@
 import React from 'react';
-import { View, Text, TouchableOpacity, ScrollView, StyleSheet, StyleProp, ViewStyle } from 'react-native';
+import { View, Text, Pressable, ScrollView, StyleSheet, StyleProp, ViewStyle } from 'react-native';
 import { Feather } from '@expo/vector-icons';
+import { DESIGN_TOKENS } from '../tokens';
+import { PLATFORM_STYLE, getRipple } from './platform-style';
 
 export interface SegmentTabItem<T extends string = string> {
   key: T;
@@ -29,21 +31,24 @@ export function SegmentedTabs<T extends string = string>({
       {tabs.map((tab) => {
         const isActive = tab.key === activeKey;
         return (
-          <TouchableOpacity
+          <Pressable
             key={tab.key}
             onPress={() => onChange(tab.key)}
-            style={[
+            android_ripple={getRipple()}
+            style={({ pressed }) => [
               styles.tab,
               scrollable && styles.scrollTab,
               isActive && styles.tabActive,
+              !PLATFORM_STYLE.rippleColor && pressed && { opacity: 0.75 },
             ]}
-            activeOpacity={0.7}
+            accessibilityRole="tab"
+            accessibilityState={{ selected: isActive }}
           >
             {tab.icon && (
               <Feather
                 name={tab.icon}
                 size={14}
-                color={isActive ? '#2563eb' : '#64748B'}
+                color={isActive ? DESIGN_TOKENS.colors.accent : DESIGN_TOKENS.colors.textMuted}
                 style={styles.icon}
               />
             )}
@@ -57,7 +62,7 @@ export function SegmentedTabs<T extends string = string>({
                 </Text>
               </View>
             )}
-          </TouchableOpacity>
+          </Pressable>
         );
       })}
     </View>
@@ -80,25 +85,28 @@ export function SegmentedTabs<T extends string = string>({
   return content;
 }
 
+const D = DESIGN_TOKENS;
 const styles = StyleSheet.create({
   container: {
     flexDirection: 'row',
-    backgroundColor: '#F1F5F9',
-    borderRadius: 12,
+    backgroundColor: D.colors.slate[100],
+    borderRadius: D.radius.md,
     padding: 3,
     marginBottom: 14,
   },
   tab: {
     flex: 1,
+    minHeight: PLATFORM_STYLE.minTouch - 6,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
     paddingVertical: 8,
-    paddingHorizontal: 8,
+    paddingHorizontal: 10,
     borderRadius: 9,
+    overflow: 'hidden',
   },
   tabActive: {
-    backgroundColor: '#FFFFFF',
+    backgroundColor: D.colors.surface,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 1 },
     shadowOpacity: 0.08,
@@ -109,12 +117,12 @@ const styles = StyleSheet.create({
     marginRight: 6,
   },
   label: {
-    fontSize: 12,
+    fontSize: 13,
     fontWeight: '600',
-    color: '#64748B',
+    color: D.colors.textMuted,
   },
   labelActive: {
-    color: '#2563eb',
+    color: D.colors.accent,
     fontWeight: '700',
   },
   badge: {
@@ -122,18 +130,18 @@ const styles = StyleSheet.create({
     paddingHorizontal: 5,
     paddingVertical: 1,
     borderRadius: 8,
-    backgroundColor: '#E2E8F0',
+    backgroundColor: D.colors.slate[200],
   },
   badgeActive: {
-    backgroundColor: '#DBEAFE',
+    backgroundColor: D.colors.accentLight,
   },
   badgeText: {
     fontSize: 11,
     fontWeight: '700',
-    color: '#475569',
+    color: D.colors.slate[600],
   },
   badgeTextActive: {
-    color: '#1E40AF',
+    color: D.colors.accentDark,
   },
   scrollWrapper: {
     marginBottom: 14,

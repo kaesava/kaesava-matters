@@ -95,9 +95,9 @@ export function ScreenHeader({
             <TouchableOpacity
               onPress={onOpenAsk}
               style={{
-                width: 34,
-                height: 34,
-                borderRadius: 17,
+                width: 44,
+                height: 44,
+                borderRadius: 22,
                 backgroundColor: DESIGN_TOKENS.colors.accentLight,
                 alignItems: "center",
                 justifyContent: "center",

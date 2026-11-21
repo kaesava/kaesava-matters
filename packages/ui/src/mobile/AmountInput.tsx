@@ -11,6 +11,7 @@ import {
   TargetedEvent,
 } from 'react-native';
 import { DESIGN_TOKENS } from '../tokens';
+import { PLATFORM_STYLE } from './platform-style';
 import { FormLabel } from './FormLabel';
 import { FormFieldError } from './FormFieldError';
 import { formatAmountNumber, getCurrencyMinorUnits, getCurrencySymbol } from '../lib/format';
@@ -147,6 +148,7 @@ export const AmountInputBase = (
           placeholder={placeholder}
           placeholderTextColor={DESIGN_TOKENS.colors.textMuted}
           keyboardType="decimal-pad"
+          inputMode="decimal"
           editable={editable}
           selectTextOnFocus={selectTextOnFocus}
           style={[styles.input, style]}
@@ -175,7 +177,7 @@ const styles = StyleSheet.create({
     borderColor: '#E2E8F0',
     borderRadius: D.radius.md,
     paddingHorizontal: 14,
-    minHeight: 46,
+    minHeight: PLATFORM_STYLE.fieldHeight,
   },
   inputError: {
     borderColor: D.colors.critical,

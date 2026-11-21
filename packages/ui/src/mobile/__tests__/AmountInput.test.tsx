@@ -5,6 +5,7 @@ vi.mock('react-native', () => ({
   View: (props: Record<string, unknown>) => React.createElement('View', props),
   Text: (props: Record<string, unknown>) => React.createElement('Text', props),
   TextInput: (props: Record<string, unknown>) => React.createElement('TextInput', props),
+  Platform: { OS: 'android' },
   StyleSheet: {
     create: <T extends Record<string, unknown>>(styles: T): T => styles,
   },

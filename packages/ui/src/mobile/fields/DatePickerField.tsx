@@ -1,9 +1,13 @@
-import { useState } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import React, { useState } from 'react';
+import { View, Text, Pressable, StyleSheet } from 'react-native';
 import { Feather } from '@expo/vector-icons';
+import { t } from '@money-matters/i18n';
+import { DESIGN_TOKENS } from '../../tokens';
+import { PLATFORM_STYLE, getRipple } from '../platform-style';
 import FormLabel from '../FormLabel';
 import FormFieldError from '../FormFieldError';
-import { CalendarModal } from './CalendarModal';
+import MobileModalDialog from '../MobileModalDialog';
+import MobileButton from '../Button';
 import { useDateLocale } from '../../hooks/DateLocaleContext';
 
 export interface DatePickerFieldProps {
@@ -20,33 +24,49 @@ export interface DatePickerFieldProps {
   timeZone?: string;
 }
 
+interface NativeDateTimePickerProps {
+  value: Date;
+  mode: 'date';
+  display?: 'default' | 'spinner' | 'calendar' | 'inline';
+  minimumDate?: Date;
+  maximumDate?: Date;
+  onChange: (event: { type: string }, selectedDate?: Date) => void;
+}
 
-
-function formatDisplayDate(isoDate?: string, locale: string = 'en-AU', _timeZone?: string, compact: boolean = false): string {
-  if (!isoDate) return 'Select date';
-  const parts = isoDate.split('-');
-  if (parts.length === 3) {
-    const y = parseInt(parts[0], 10);
-    const m = parseInt(parts[1], 10) - 1;
-    const d = parseInt(parts[2], 10);
-    if (!isNaN(y) && !isNaN(m) && !isNaN(d)) {
-      const dateObj = new Date(y, m, d);
-      if (compact) {
-        return dateObj.toLocaleDateString(locale === 'auto' ? 'en-AU' : locale, {
-          day: 'numeric',
-          month: 'short',
-          year: 'numeric',
-        });
-      }
-      return dateObj.toLocaleDateString(locale === 'auto' ? 'en-AU' : locale, {
-        weekday: 'short',
-        day: 'numeric',
-        month: 'short',
-        year: 'numeric',
-      });
-    }
+function loadNativeDateTimePicker(): React.ComponentType<NativeDateTimePickerProps> | null {
+  try {
+    // Lazy-loaded so Web/Node test bundles never evaluate native RN DateTimePicker.
+    const mod = require('@react-native-community/datetimepicker') as {
+      default?: React.ComponentType<NativeDateTimePickerProps>;
+    };
+    return mod?.default ?? null;
+  } catch {
+    return null;
   }
-  return isoDate;
+}
+
+function parseIsoDate(iso?: string): Date {
+  if (iso) {
+    const [y, m, d] = iso.split('-').map((n) => parseInt(n, 10));
+    if (y && m && d) return new Date(y, m - 1, d);
+  }
+  return new Date();
+}
+
+function toIsoDate(date: Date): string {
+  const y = date.getFullYear();
+  const m = String(date.getMonth() + 1).padStart(2, '0');
+  const d = String(date.getDate()).padStart(2, '0');
+  return `${y}-${m}-${d}`;
+}
+
+function formatDisplayDate(isoDate?: string, locale?: string, compact = false): string {
+  if (!isoDate) return t('common.selectDate');
+  const dateObj = parseIsoDate(isoDate);
+  const resolvedLocale = !locale || locale === 'auto' ? undefined : locale;
+  return dateObj.toLocaleDateString(resolvedLocale, compact
+    ? { day: 'numeric', month: 'short', year: 'numeric' }
+    : { weekday: 'short', day: 'numeric', month: 'short', year: 'numeric' });
 }
 
 export function DatePickerField({
@@ -60,120 +80,143 @@ export function DatePickerField({
   minDate,
   maxDate,
   locale: propLocale,
-  timeZone: propTimeZone,
 }: DatePickerFieldProps) {
-  const [modalVisible, setModalVisible] = useState(false);
+  const [open, setOpen] = useState(false);
+  const [draftDate, setDraftDate] = useState<Date>(() => parseIsoDate(value));
   const dateLocaleCtx = useDateLocale();
-  const effectiveLocale = propLocale || dateLocaleCtx.locale || 'en-AU';
-  const effectiveTimeZone = propTimeZone || dateLocaleCtx.timeZone || 'Australia/Sydney';
+  const effectiveLocale = propLocale || dateLocaleCtx.locale;
+  const NativePicker = loadNativeDateTimePicker();
+
+  const handleOpen = () => {
+    if (disabled) return;
+    setDraftDate(parseIsoDate(value));
+    setOpen(true);
+  };
+
+  const minDateObj = minDate ? parseIsoDate(minDate) : undefined;
+  const maxDateObj = maxDate ? parseIsoDate(maxDate) : undefined;
 
   return (
     <View style={styles.container}>
       {label ? <FormLabel required={required}>{label}</FormLabel> : null}
 
-      <TouchableOpacity
-        onPress={() => !disabled && setModalVisible(true)}
+      <Pressable
+        onPress={handleOpen}
         disabled={disabled}
+        android_ripple={getRipple()}
+        accessibilityRole="button"
+        accessibilityLabel={label || t('common.selectDate')}
         style={[
           styles.fieldCard,
-          compact ? styles.fieldCardCompact : null,
+          compact && styles.fieldCardCompact,
           error ? styles.fieldCardError : null,
-          disabled ? styles.fieldCardDisabled : null,
+          disabled && styles.fieldCardDisabled,
         ]}
-        activeOpacity={0.7}
       >
-        <View style={[styles.iconBox, compact ? styles.iconBoxCompact : null]}>
-          <Feather name="calendar" size={compact ? 14 : 18} color="#2563eb" />
+        <View style={[styles.iconBox, compact && styles.iconBoxCompact]}>
+          <Feather name="calendar" size={compact ? 14 : 18} color={DESIGN_TOKENS.colors.accent} />
         </View>
 
         <Text
           numberOfLines={1}
           style={[
             styles.dateText,
-            compact ? styles.dateTextCompact : null,
-            !value ? styles.datePlaceholder : null,
-            disabled ? styles.textDisabled : null,
+            compact && styles.dateTextCompact,
+            !value && styles.datePlaceholder,
+            disabled && styles.textDisabled,
           ]}
         >
-          {formatDisplayDate(value, effectiveLocale, effectiveTimeZone, compact)}
+          {formatDisplayDate(value, effectiveLocale, compact)}
         </Text>
 
-        <Feather name="chevron-down" size={compact ? 14 : 18} color="#94A3B8" />
-      </TouchableOpacity>
+        <Feather name="chevron-down" size={compact ? 14 : 18} color={DESIGN_TOKENS.colors.subtleText} />
+      </Pressable>
 
       <FormFieldError error={error} />
 
-      <CalendarModal
-        visible={modalVisible}
-        onClose={() => setModalVisible(false)}
-        value={value}
-        onChange={onChange}
-        title={label}
-        minDate={minDate}
-        maxDate={maxDate}
-      />
+      {open && NativePicker && PLATFORM_STYLE.isAndroid && (
+        <NativePicker
+          value={draftDate}
+          mode="date"
+          display="default"
+          minimumDate={minDateObj}
+          maximumDate={maxDateObj}
+          onChange={(event, selectedDate) => {
+            setOpen(false);
+            if (event.type === 'set' && selectedDate) {
+              onChange(toIsoDate(selectedDate));
+            }
+          }}
+        />
+      )}
+
+      {open && NativePicker && !PLATFORM_STYLE.isAndroid && (
+        <MobileModalDialog
+          visible={open}
+          onClose={() => setOpen(false)}
+          title={label || t('common.selectDate')}
+          footer={
+            <MobileButton
+              variant="primary"
+              title={t('common.done')}
+              onPress={() => {
+                onChange(toIsoDate(draftDate));
+                setOpen(false);
+              }}
+            />
+          }
+        >
+          <NativePicker
+            value={draftDate}
+            mode="date"
+            display="spinner"
+            minimumDate={minDateObj}
+            maximumDate={maxDateObj}
+            onChange={(_event, selectedDate) => {
+              if (selectedDate) setDraftDate(selectedDate);
+            }}
+          />
+        </MobileModalDialog>
+      )}
     </View>
   );
 }
 
+const D = DESIGN_TOKENS;
 const styles = StyleSheet.create({
-  container: {
-    marginBottom: 12,
-  },
+  container: { marginBottom: 12 },
   fieldCard: {
     flexDirection: 'row',
     alignItems: 'center',
-    height: 48,
+    minHeight: PLATFORM_STYLE.fieldHeight,
     paddingHorizontal: 12,
-    backgroundColor: '#FFFFFF',
+    backgroundColor: D.colors.surface,
     borderWidth: 1,
-    borderColor: '#E2E8F0',
-    borderRadius: 12,
+    borderColor: D.colors.cardBorder,
+    borderRadius: D.radius.md,
+    overflow: 'hidden',
   },
   fieldCardCompact: {
-    height: 42,
-    paddingHorizontal: 8,
-    borderRadius: 8,
+    minHeight: PLATFORM_STYLE.minTouch,
+    paddingHorizontal: 10,
+    borderRadius: D.radius.default,
   },
-  fieldCardError: {
-    borderColor: '#EF4444',
-  },
-  fieldCardDisabled: {
-    backgroundColor: '#F8FAFC',
-    borderColor: '#E2E8F0',
-  },
+  fieldCardError: { borderColor: D.colors.critical },
+  fieldCardDisabled: { backgroundColor: D.colors.slate[50], borderColor: D.colors.cardBorder },
   iconBox: {
     width: 28,
     height: 28,
     borderRadius: 8,
-    backgroundColor: '#EFF6FF',
+    backgroundColor: D.colors.accentLight,
     alignItems: 'center',
     justifyContent: 'center',
     marginRight: 10,
   },
-  iconBoxCompact: {
-    width: 22,
-    height: 22,
-    borderRadius: 6,
-    marginRight: 6,
-  },
-  dateText: {
-    flex: 1,
-    fontSize: 14,
-    fontWeight: '600',
-    color: '#1E293B',
-  },
-  dateTextCompact: {
-    fontSize: 12,
-    fontWeight: '500',
-  },
-  datePlaceholder: {
-    color: '#94A3B8',
-    fontWeight: '400',
-  },
-  textDisabled: {
-    color: '#94A3B8',
-  },
+  iconBoxCompact: { width: 24, height: 24, borderRadius: 6, marginRight: 6 },
+  dateText: { flex: 1, fontSize: 15, fontWeight: '600', color: D.colors.textPrimary },
+  dateTextCompact: { fontSize: 13, fontWeight: '500' },
+  datePlaceholder: { color: D.colors.subtleText, fontWeight: '400' },
+  textDisabled: { color: D.colors.subtleText },
 });
 
 export default DatePickerField;

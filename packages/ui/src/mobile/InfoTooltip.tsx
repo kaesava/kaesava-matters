@@ -1,7 +1,11 @@
 import { useState } from 'react';
-import { View, Text, TouchableOpacity, Modal, StyleSheet, Pressable } from 'react-native';
+import { Text, TouchableOpacity, StyleSheet } from 'react-native';
+import { Feather } from '@expo/vector-icons';
 import { useIconVisibility } from '../hooks/IconVisibilityContext';
 import { t } from '@money-matters/i18n';
+import { DESIGN_TOKENS } from '../tokens';
+import MobileModalDialog from './MobileModalDialog';
+import MobileButton from './Button';
 
 export interface InfoTooltipProps {
   content: string;
@@ -21,91 +25,45 @@ export function InfoTooltip({ content, title }: InfoTooltipProps) {
         style={styles.iconButton}
         activeOpacity={0.7}
         hitSlop={{ top: 13, bottom: 13, left: 13, right: 13 }}
+        accessibilityRole="button"
+        accessibilityLabel={title || t('common.info')}
       >
-        <Text style={styles.iconText}>ℹ</Text>
+        <Feather name="info" size={14} color={DESIGN_TOKENS.colors.textMuted} />
       </TouchableOpacity>
 
-      <Modal
+      <MobileModalDialog
         visible={visible}
-        transparent
-        animationType="fade"
-        onRequestClose={() => setVisible(false)}
+        onClose={() => setVisible(false)}
+        title={title || t('common.info')}
+        footer={
+          <MobileButton
+            variant="primary"
+            title={t('common.gotIt')}
+            onPress={() => setVisible(false)}
+          />
+        }
       >
-        <Pressable style={styles.modalOverlay} onPress={() => setVisible(false)}>
-          <View style={styles.tooltipCard}>
-            {title && <Text style={styles.tooltipTitle}>{title}</Text>}
-            <Text style={styles.tooltipContent}>{content}</Text>
-            <TouchableOpacity
-              style={styles.closeButton}
-              onPress={() => setVisible(false)}
-            >
-              <Text style={styles.closeButtonText}>{t('common.gotIt')}</Text>
-            </TouchableOpacity>
-          </View>
-        </Pressable>
-      </Modal>
+        <Text style={styles.tooltipContent}>{content}</Text>
+      </MobileModalDialog>
     </>
   );
 }
 
+const D = DESIGN_TOKENS;
 const styles = StyleSheet.create({
   iconButton: {
-    width: 18, // mm-allow-interaction: 18dp glyph with hitSlop
-    height: 18, // mm-allow-interaction: 18dp glyph with hitSlop
-    borderRadius: 9,
-    backgroundColor: '#F1F5F9',
-    borderColor: '#CBD5E1',
-    borderWidth: 1,
+    width: 20, // mm-allow-interaction: 20dp icon with 13dp hitSlop (= 46dp target)
+    height: 20, // mm-allow-interaction: 20dp icon with 13dp hitSlop (= 46dp target)
+    borderRadius: 10,
+    backgroundColor: D.colors.slate[100],
     alignItems: 'center',
     justifyContent: 'center',
     marginLeft: 6,
   },
-  iconText: {
-    fontSize: 12,
-    fontWeight: 'bold',
-    color: '#64748B',
-  },
-  modalOverlay: {
-    flex: 1,
-    backgroundColor: 'rgba(15, 23, 42, 0.5)',
-    justifyContent: 'center',
-    alignItems: 'center',
-    padding: 24,
-  },
-  tooltipCard: {
-    width: '100%',
-    maxWidth: 320,
-    backgroundColor: '#1B2B4B',
-    borderRadius: 20,
-    padding: 20,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.25,
-    shadowRadius: 12,
-    elevation: 8,
-  },
-  tooltipTitle: {
-    fontSize: 15,
-    fontWeight: 'bold',
-    color: '#00B4A6',
-    marginBottom: 6,
-  },
   tooltipContent: {
-    fontSize: 13,
-    lineHeight: 18,
-    color: '#F7F8FA',
-    marginBottom: 16,
-  },
-  closeButton: {
-    backgroundColor: '#2563eb',
-    borderRadius: 12,
-    paddingVertical: 10,
-    alignItems: 'center',
-  },
-  closeButtonText: {
-    color: '#FFFFFF',
-    fontSize: 13,
-    fontWeight: 'bold',
+    fontSize: 15,
+    color: D.colors.textPrimary,
+    lineHeight: 22,
   },
 });
 
