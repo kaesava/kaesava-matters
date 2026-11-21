@@ -13,11 +13,13 @@ interface PlatformStyleValues {
   rippleColor: string | undefined;
   /** Distance from screen bottom for toasts so they clear the tab bar. */
   toastBottomOffset: number;
+  /** Material 3 active pill behind bottom tab bar icon (Android only). */
+  tabActiveIndicator: boolean;
 }
 
 const VALUES: Record<PlatformKey, PlatformStyleValues> = {
-  android: { minTouch: 48, fieldHeight: 52, sheetBottomPadding: 16, rippleColor: 'rgba(15, 23, 42, 0.12)', toastBottomOffset: 96 },
-  ios: { minTouch: 44, fieldHeight: 48, sheetBottomPadding: 32, rippleColor: undefined, toastBottomOffset: 96 },
+  android: { minTouch: 48, fieldHeight: 52, sheetBottomPadding: 16, rippleColor: 'rgba(15, 23, 42, 0.12)', toastBottomOffset: 96, tabActiveIndicator: true },
+  ios: { minTouch: 44, fieldHeight: 48, sheetBottomPadding: 32, rippleColor: undefined, toastBottomOffset: 96, tabActiveIndicator: false },
 };
 
 // Single platform branch point: add iOS-specific tuning in VALUES.ios, never inline Platform.OS in components.

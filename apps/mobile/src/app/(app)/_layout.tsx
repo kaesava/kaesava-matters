@@ -2,9 +2,10 @@ import React from 'react';
 import { Tabs, useSegments, useRouter, type Href } from 'expo-router';
 import { View, StyleSheet } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { DESIGN_TOKENS, useMobileToast, usePushNotifications } from '@money-matters/ui/mobile';
+import { DESIGN_TOKENS, PLATFORM_STYLE, useMobileToast, usePushNotifications } from '@money-matters/ui/mobile';
 import { t } from '@money-matters/i18n';
 import { Feather } from '@expo/vector-icons';
+import { triggerHaptic } from '../../lib/haptics';
 import { trpc, getActiveTenantId, switchActiveTenant } from '../../lib/trpc';
 import { authClient } from '../../lib/auth';
 import { QuickActionFab } from '../../components/QuickActionFab';
@@ -16,13 +17,15 @@ function TabIcon({
   name,
   color,
   size,
+  focused,
 }: {
   name: React.ComponentProps<typeof Feather>['name'];
   color: string;
   size: number;
+  focused?: boolean;
 }) {
   return (
-    <View style={styles.iconWrap}>
+    <View style={[styles.iconWrap, PLATFORM_STYLE.tabActiveIndicator && focused && styles.iconWrapActive]}>
       <Feather name={name} size={size} color={color} />
     </View>
   );
@@ -154,6 +157,11 @@ export default function AppLayout() {
       <View style={styles.root}>
         <Tabs
         backBehavior="history"
+        screenListeners={{
+          tabPress: () => {
+            triggerHaptic('selection').catch(() => {});
+          },
+        }}
         screenOptions={{
           headerShown: false,
           tabBarStyle: [
@@ -173,8 +181,8 @@ export default function AppLayout() {
           name="home"
           options={{
             title: t('nav.home'),
-            tabBarIcon: ({ color, size }) => (
-              <TabIcon name="home" color={color} size={size} />
+            tabBarIcon: ({ color, size, focused }) => (
+              <TabIcon name="home" color={color} size={size} focused={focused} />
             ),
           }}
         />
@@ -182,8 +190,8 @@ export default function AppLayout() {
           name="plan"
           options={{
             title: t('nav.incomeExpenses'),
-            tabBarIcon: ({ color, size }) => (
-              <TabIcon name="calendar" color={color} size={size} />
+            tabBarIcon: ({ color, size, focused }) => (
+              <TabIcon name="calendar" color={color} size={size} focused={focused} />
             ),
           }}
         />
@@ -191,8 +199,8 @@ export default function AppLayout() {
           name="envelopes"
           options={{
             title: t('nav.categories'),
-            tabBarIcon: ({ color, size }) => (
-              <TabIcon name="layers" color={color} size={size} />
+            tabBarIcon: ({ color, size, focused }) => (
+              <TabIcon name="layers" color={color} size={size} focused={focused} />
             ),
           }}
         />
@@ -200,8 +208,8 @@ export default function AppLayout() {
           name="history"
           options={{
             title: t('nav.transactions'),
-            tabBarIcon: ({ color, size }) => (
-              <TabIcon name="list" color={color} size={size} />
+            tabBarIcon: ({ color, size, focused }) => (
+              <TabIcon name="list" color={color} size={size} focused={focused} />
             ),
           }}
         />
@@ -265,5 +273,6 @@ const styles = StyleSheet.create({
     elevation: 8,
   },
   tabLabel: { fontSize: 12, fontWeight: '600' },
-  iconWrap: { alignItems: 'center', justifyContent: 'center' },
+  iconWrap: { alignItems: 'center', justifyContent: 'center', width: 56, height: 30, borderRadius: 15 },
+  iconWrapActive: { backgroundColor: D.colors.accentLight },
 });

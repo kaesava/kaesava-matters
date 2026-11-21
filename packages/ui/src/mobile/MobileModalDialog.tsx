@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo, useRef } from 'react';
 import {
   Modal,
   View,
@@ -7,6 +7,7 @@ import {
   Pressable,
   StyleSheet,
   KeyboardAvoidingView,
+  PanResponder,
   Platform,
   ScrollView,
 } from 'react-native';
@@ -55,6 +56,21 @@ export default function MobileModalDialog({
     }
   };
 
+  const handleRequestCloseRef = useRef(handleRequestClose);
+  handleRequestCloseRef.current = handleRequestClose;
+
+  // Swipe down on the drag handle/header to dismiss the sheet naturally.
+  const panResponder = useMemo(
+    () =>
+      PanResponder.create({
+        onMoveShouldSetPanResponder: (_, g) => g.dy > 12 && Math.abs(g.dy) > Math.abs(g.dx),
+        onPanResponderRelease: (_, g) => {
+          if (g.dy > 64 || g.vy > 0.8) handleRequestCloseRef.current();
+        },
+      }),
+    []
+  );
+
   return (
     <Modal visible={visible} animationType="slide" transparent onRequestClose={handleRequestClose}>
       <KeyboardAvoidingView
@@ -68,16 +84,18 @@ export default function MobileModalDialog({
           accessibilityLabel={t('common.close')}
         />
         <View style={styles.content}>
-          <View style={styles.handle} />
-          {/* Header */}
-          <View style={styles.header}>
-            <View style={{ flex: 1 }}>
-              <Text style={styles.title}>{title}</Text>
-              {subtitle ? <Text style={styles.subtitle}>{subtitle}</Text> : null}
+          <View {...panResponder.panHandlers}>
+            <View style={styles.handle} />
+            {/* Header */}
+            <View style={styles.header}>
+              <View style={{ flex: 1 }}>
+                <Text style={styles.title}>{title}</Text>
+                {subtitle ? <Text style={styles.subtitle}>{subtitle}</Text> : null}
+              </View>
+              <TouchableOpacity onPress={handleRequestClose} style={styles.closeBtn} activeOpacity={0.7}>
+                <Feather name="x" size={20} color={D.colors.textMuted} />
+              </TouchableOpacity>
             </View>
-            <TouchableOpacity onPress={handleRequestClose} style={styles.closeBtn} activeOpacity={0.7}>
-              <Feather name="x" size={20} color={D.colors.textMuted} />
-            </TouchableOpacity>
           </View>
 
           {/* Scrollable Content Body */}

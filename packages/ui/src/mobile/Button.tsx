@@ -1,25 +1,28 @@
 import React from 'react';
 import {
-  TouchableOpacity,
+  Pressable,
   Text,
   StyleSheet,
-  TouchableOpacityProps,
+  PressableProps,
   StyleProp,
   TextStyle,
   ViewStyle,
   ActivityIndicator,
 } from 'react-native';
 import { DESIGN_TOKENS } from '../tokens';
-import { PLATFORM_STYLE } from './platform-style';
+import { PLATFORM_STYLE, getRipple } from './platform-style';
 
-export interface ButtonProps extends TouchableOpacityProps {
+export interface ButtonProps extends Omit<PressableProps, 'style' | 'children'> {
   variant?: 'primary' | 'secondary' | 'danger' | 'ghost';
   size?: 'sm' | 'md' | 'lg';
+  style?: StyleProp<ViewStyle>;
   textStyle?: StyleProp<TextStyle>;
   title?: string;
   label?: string;
   children?: React.ReactNode;
   loading?: boolean;
+  /** Retained for backwards compatibility with TouchableOpacity callers. */
+  activeOpacity?: number;
 }
 
 export const Button: React.FC<ButtonProps> = ({
@@ -32,6 +35,7 @@ export const Button: React.FC<ButtonProps> = ({
   textStyle,
   disabled,
   loading,
+  activeOpacity: _activeOpacity,
   ...props
 }) => {
   const D = DESIGN_TOKENS;
@@ -67,17 +71,22 @@ export const Button: React.FC<ButtonProps> = ({
         (c) => typeof c === 'string' || typeof c === 'number' || c === null || c === undefined
       ));
 
+  const ripple = getRipple(
+    variant === 'primary' || variant === 'danger' ? 'rgba(255, 255, 255, 0.22)' : undefined
+  );
+
   return (
-    <TouchableOpacity
-      style={[
+    <Pressable
+      android_ripple={ripple}
+      style={({ pressed }) => [
         styles.button,
         btnStyle,
         sizeStyle,
         (disabled || loading) && styles.disabled,
+        !ripple && pressed && styles.pressed,
         style,
       ]}
       disabled={disabled || loading}
-      activeOpacity={0.7}
       {...props}
     >
       {loading ? (
@@ -93,7 +102,7 @@ export const Button: React.FC<ButtonProps> = ({
           {label ?? title}
         </Text>
       )}
-    </TouchableOpacity>
+    </Pressable>
   );
 };
 
@@ -105,6 +114,10 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     flexDirection: 'row',
+    overflow: 'hidden',
+  },
+  pressed: {
+    opacity: 0.75,
   },
   sizeSm: {
     minHeight: PLATFORM_STYLE.minTouch,
