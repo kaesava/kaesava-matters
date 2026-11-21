@@ -112,7 +112,7 @@ export function HistoryTab({
 
           <div className="h-6 w-px bg-zinc-200 hidden sm:block" />
 
-          <div className="flex items-center bg-white p-1 rounded-xl border border-zinc-200">
+          <div className="w-full sm:w-auto grid grid-cols-4 sm:flex items-center bg-white p-1 rounded-xl border border-zinc-200">
             {(["ALL", "DEBIT", "CREDIT", "TRANSFER"] as const).map((tType) => (
               <button
                 key={tType}
@@ -219,7 +219,7 @@ export function HistoryTab({
                   <ResizableTh
                     width={widths.type}
                     onResizeMouseDown={(e: React.MouseEvent) => onMouseDown("type", e)}
-                    className="py-3 px-4 text-center cursor-pointer hover:bg-slate-100"
+                    className="hidden md:table-cell py-3 px-4 text-center cursor-pointer hover:bg-slate-100"
                     onClick={() => handleSort("transactionType")}
                   >
                     <div className="flex items-center justify-center gap-1">
@@ -245,7 +245,7 @@ export function HistoryTab({
                   <ResizableTh
                     width={widths.category}
                     onResizeMouseDown={(e: React.MouseEvent) => onMouseDown("category", e)}
-                    className="py-3 px-4 text-left"
+                    className="hidden md:table-cell py-3 px-4 text-left"
                   >
                     <span>{t("tables.envelopeOrBankAccount")}</span>
                   </ResizableTh>
@@ -268,13 +268,13 @@ export function HistoryTab({
                 {paginatedTransactions.map((tx) => (
                   <tr key={tx.id} className="hover:bg-slate-50/50 transition-colors">
                     <td className="py-3 px-4 font-mono text-zinc-500 text-center">{tx.date}</td>
-                    <td className="py-3 px-4 text-center text-zinc-600 dark:text-zinc-300 font-medium">
+                    <td className="hidden md:table-cell py-3 px-4 text-center text-zinc-600 dark:text-zinc-300 font-medium">
                       {getTransactionTypeLabel(tx.transactionType)}
                     </td>
                     <td className="py-3 px-4 font-semibold text-[#1B2B4B] text-left">
                       <span>{tx.description}</span>
                     </td>
-                    <td className="py-3 px-4 text-left">
+                    <td className="hidden md:table-cell py-3 px-4 text-left">
                       {tx.categoryName.includes(" ➔ ") ? (
                         (() => {
                           const [fromPart, toPart] = tx.categoryName.split(" ➔ ");

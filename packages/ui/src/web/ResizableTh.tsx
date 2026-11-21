@@ -40,7 +40,7 @@ export function ResizableTh({
         <div
           onMouseDown={onResizeMouseDown}
           onClick={(e) => e.stopPropagation()}
-          className="absolute right-0 top-0 bottom-0 w-2 cursor-col-resize hover:bg-[#2563eb]/40 group-hover:bg-zinc-300/60 transition-colors z-10"
+          className="hidden md:block absolute right-0 top-0 bottom-0 w-2 cursor-col-resize hover:bg-[#2563eb]/40 group-hover:bg-zinc-300/60 transition-colors z-10"
           title="Drag to resize column"
         />
       )}

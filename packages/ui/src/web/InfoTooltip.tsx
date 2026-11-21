@@ -35,6 +35,17 @@ export const InfoTooltip: React.FC<InfoTooltipProps> = ({
     setMounted(true);
   }, []);
 
+  useEffect(() => {
+    if (!isOpen) return;
+    const handlePointerDown = (e: PointerEvent) => {
+      if (containerRef.current && !containerRef.current.contains(e.target as Node)) {
+        setIsOpen(false);
+      }
+    };
+    document.addEventListener('pointerdown', handlePointerDown);
+    return () => document.removeEventListener('pointerdown', handlePointerDown);
+  }, [isOpen]);
+
   const updatePosition = () => {
     if (!containerRef.current) return;
     const rect = containerRef.current.getBoundingClientRect();
@@ -111,7 +122,7 @@ export const InfoTooltip: React.FC<InfoTooltipProps> = ({
             else handleOpen();
           }
         }}
-        className="w-4 h-4 rounded-full bg-slate-100 hover:bg-blue-100 text-slate-400 hover:text-[#2563eb] text-[10px] font-bold inline-flex items-center justify-center transition-colors border border-slate-200 cursor-pointer shrink-0 select-none"
+        className="relative after:content-[''] after:absolute after:-inset-2 w-4 h-4 rounded-full bg-slate-100 hover:bg-blue-100 text-slate-400 hover:text-[#2563eb] text-[10px] font-bold inline-flex items-center justify-center transition-colors border border-slate-200 cursor-pointer shrink-0 select-none"
         aria-label="Information"
       >
         ℹ

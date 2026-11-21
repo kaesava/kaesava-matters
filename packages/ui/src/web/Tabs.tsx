@@ -16,7 +16,7 @@ export interface TabsProps {
 
 export function Tabs({ tabs, activeTab, onChange, className = "" }: TabsProps) {
   return (
-    <div className={`flex items-center gap-1 border-b border-slate-200 ${className}`}>
+    <div className={`flex items-center gap-1 border-b border-slate-200 overflow-x-auto no-scrollbar ${className}`}>
       {tabs.map((tab) => {
         const isActive = tab.id === activeTab;
         return (
@@ -24,7 +24,7 @@ export function Tabs({ tabs, activeTab, onChange, className = "" }: TabsProps) {
             key={tab.id}
             type="button"
             onClick={() => onChange(tab.id)}
-            className={`py-3 px-4 text-xs font-bold transition-all border-b-2 -mb-px flex items-center gap-2 cursor-pointer ${
+            className={`py-3 px-4 text-xs font-bold transition-all border-b-2 -mb-px flex items-center gap-2 whitespace-nowrap shrink-0 cursor-pointer ${
               isActive
                 ? "border-[#2563eb] text-[#2563eb] bg-blue-50/50"
                 : "border-transparent text-slate-500 hover:text-slate-800 hover:border-slate-300"

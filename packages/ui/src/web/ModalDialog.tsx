@@ -87,7 +87,7 @@ export function ModalDialog({
 
   return createPortal(
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center p-4"
+      className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4"
       role="dialog"
       aria-modal="true"
       aria-labelledby={titleId}
@@ -100,7 +100,7 @@ export function ModalDialog({
 
       {/* Modal Card */}
       <div
-        className={`relative z-10 w-full ${effectiveMaxWidth} bg-white rounded-2xl shadow-2xl border border-zinc-200 flex flex-col max-h-[90vh] overflow-hidden animate-in zoom-in-95 duration-150`}
+        className={`relative z-10 w-full ${effectiveMaxWidth} bg-white rounded-t-2xl sm:rounded-2xl shadow-2xl border border-zinc-200 flex flex-col max-h-[92dvh] sm:max-h-[90vh] pb-[env(safe-area-inset-bottom)] overflow-hidden animate-in zoom-in-95 duration-150`}
       >
         {/* Header */}
         <div className="px-6 py-4 bg-zinc-50 border-b border-zinc-100 flex items-center justify-between gap-4">
@@ -114,7 +114,7 @@ export function ModalDialog({
             type="button"
             onClick={handleRequestClose}
             aria-label={t('common.close')}
-            className="p-1.5 rounded-lg text-zinc-400 hover:text-zinc-800 hover:bg-zinc-100 transition-colors cursor-pointer"
+            className="min-w-[44px] min-h-[44px] sm:min-w-0 sm:min-h-0 flex items-center justify-center p-1.5 rounded-lg text-zinc-400 hover:text-zinc-800 hover:bg-zinc-100 transition-colors cursor-pointer"
             title={t('common.close')}
           >
             <X className="w-4 h-4" />

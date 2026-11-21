@@ -23,6 +23,7 @@ export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
   minimumScale: 1,
+  viewportFit: "cover",
 };
 
 const baseUrl = "https://moneymatters.kaesava.au";
@@ -96,7 +97,7 @@ export const metadata: Metadata = {
   twitter: {
     card: "summary_large_image",
     title: "Money Matters — Zero bill shock. Real progress on long-term goals.",
-    description: "Zero bill shock. Real progress on long-term goals. Zero daily tracking for Aussie households.",
+    description: "Zero bill shock. Real progress on long-term goals. Zero daily tracking for modern households.",
     images: ["/og-image.png"],
     creator: "@money_matters",
   },

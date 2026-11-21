@@ -34,7 +34,7 @@ export function DashboardMobileHeader({
     >
       <button
         onClick={onOpenMobileMenu}
-        className="p-1 text-white/80 hover:text-white transition-colors"
+        className="min-w-[44px] min-h-[44px] -ml-2 flex items-center justify-center text-white/80 hover:text-white transition-colors"
         aria-label="Open navigation menu"
       >
         <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
@@ -49,11 +49,11 @@ export function DashboardMobileHeader({
         </span>
       </div>
 
-      <div className="flex items-center gap-2">
+      <div className="flex items-center gap-1">
         <button
           type="button"
           onClick={onOpenAskPenny}
-          className="p-1.5 rounded-lg text-blue-200 hover:text-white bg-blue-500/20 hover:bg-blue-500/30 border border-blue-400/30 transition-colors flex items-center justify-center cursor-pointer"
+          className="min-w-[44px] min-h-[44px] rounded-lg text-blue-200 hover:text-white bg-blue-500/20 hover:bg-blue-500/30 border border-blue-400/30 transition-colors flex items-center justify-center cursor-pointer"
           title={t(hasAiAssistant ? "commandPalette.triggerTitle" : "common.search")}
           aria-label={t(hasAiAssistant ? "commandPalette.triggerTitle" : "common.search")}
         >
@@ -64,7 +64,7 @@ export function DashboardMobileHeader({
         <button
           type="button"
           onClick={onNavigateToSettings}
-          className="cursor-pointer rounded-full overflow-hidden"
+          className="min-w-[44px] min-h-[44px] -mr-1.5 flex items-center justify-center cursor-pointer rounded-full overflow-hidden"
           title={t("settings.profile.title")}
           aria-label={t("settings.profile.title")}
         >

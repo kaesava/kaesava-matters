@@ -63,12 +63,12 @@ export function EnvelopesTable({
   return (
     <div className="bg-white rounded-2xl border border-zinc-200/80 shadow-xs overflow-hidden min-h-[220px]">
       <div className="overflow-x-auto min-h-[220px]">
-        <table className="w-full text-left border-collapse min-w-[900px]">
+        <table className="w-full text-left border-collapse md:min-w-[900px]">
           <thead>
             <tr className="border-b border-zinc-200 bg-zinc-50/70 text-[11px] font-bold text-zinc-500 uppercase tracking-wider select-none">
               {/* Pools & Categories */}
               <th
-                className="py-3.5 px-4 cursor-pointer hover:text-zinc-800 transition-colors text-left"
+                className="sticky left-0 z-10 bg-zinc-50 md:static md:bg-transparent py-3.5 px-4 cursor-pointer hover:text-zinc-800 transition-colors text-left"
                 onClick={() => toggleSort("name")}
               >
                 <div className="flex items-center gap-1">
@@ -90,7 +90,7 @@ export function EnvelopesTable({
 
               {/* Target */}
               <th
-                className="py-3.5 px-4 cursor-pointer hover:text-zinc-800 transition-colors text-right"
+                className="hidden md:table-cell py-3.5 px-4 cursor-pointer hover:text-zinc-800 transition-colors text-right"
                 onClick={() => toggleSort("targetAmount")}
               >
                 <div className="flex items-center justify-end gap-1">

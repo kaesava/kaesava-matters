@@ -15,6 +15,7 @@ import { trpc } from "../../lib/trpc";
 import { SidebarContent } from "./components/SidebarContent";
 import { DashboardDesktopSidebar } from "./components/DashboardDesktopSidebar";
 import { DashboardMobileDrawer } from "./components/DashboardMobileDrawer";
+import { DashboardMobileFab } from "./components/DashboardMobileFab";
 import { DashboardMobileHeader } from "./components/DashboardMobileHeader";
 import { DashboardQueryErrorFallback } from "./components/DashboardQueryErrorFallback";
 import { DashboardFooter } from "./components/DashboardFooter";
@@ -249,7 +250,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   if (!mounted || isPending || isAuthenticating || isExchanging) {
     return (
       <div
-        className="flex items-center justify-center min-h-screen"
+        className="flex items-center justify-center min-h-dvh"
         style={{ backgroundColor: "var(--dash-bg)" }}
       >
         <Spinner size="lg" label={t("dashboard.loading")} direction="col" />
@@ -292,7 +293,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
 
   return (
     <ProductTourProvider>
-      <div className="flex min-h-screen" style={{ backgroundColor: "var(--dash-bg)" }}>
+      <div className="flex min-h-dvh" style={{ backgroundColor: "var(--dash-bg)" }}>
         {/* ── Desktop Sidebar ── */}
         <DashboardDesktopSidebar
           sidebarCollapsed={sidebarCollapsed}
@@ -332,7 +333,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
           {/* Global Toolbar and Main Worksheets Viewport */}
           <div className="flex-1 flex flex-col overflow-y-auto">
             {/* Main workspace */}
-            <main className="flex-1 w-full max-w-7xl mx-auto px-4 md:px-8 py-6 md:py-8">
+            <main className="flex-1 w-full max-w-7xl mx-auto px-3 md:px-8 py-4 md:py-8 pb-24 md:pb-8">
               {(isInitialLoading || isQueryFetching) ? (
                 <div className="min-h-[60vh] flex items-center justify-center p-6 text-center">
                   <Spinner size="lg" label={t("common.loading")} direction="col" />
@@ -352,6 +353,13 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
             {/* App-wide Dashboard Legal & Version Footer */}
             <DashboardFooter versionInfo={versionInfo} />
           </div>
+
+          <DashboardMobileFab
+            onClick={() => {
+              setQuickExpenseData(undefined);
+              setQuickExpenseOpen(true);
+            }}
+          />
 
           <DashboardLayoutModals
             quickExpenseOpen={quickExpenseOpen}

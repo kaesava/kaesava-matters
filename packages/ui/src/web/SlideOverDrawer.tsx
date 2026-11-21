@@ -45,7 +45,7 @@ export function SlideOverDrawer({
   });
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4" role="dialog" aria-modal="true">
+    <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4" role="dialog" aria-modal="true">
       {/* Backdrop */}
       <div 
         className="absolute inset-0 bg-slate-950/40 backdrop-blur-sm transition-opacity" 
@@ -53,14 +53,14 @@ export function SlideOverDrawer({
       />
 
       {/* Modal Dialog Body */}
-      <div className={`relative pointer-events-auto w-full ${widthClass} bg-white shadow-2xl rounded-2xl border border-slate-200 flex flex-col max-h-[90vh] overflow-hidden animate-in zoom-in-95 duration-200`}>
+      <div className={`relative pointer-events-auto w-full ${widthClass} bg-white shadow-2xl rounded-t-2xl sm:rounded-2xl border border-slate-200 flex flex-col max-h-[92dvh] sm:max-h-[90vh] pb-[env(safe-area-inset-bottom)] overflow-hidden animate-in zoom-in-95 duration-200`}>
         {/* Header */}
         <div className="px-6 py-5 bg-slate-50 border-b border-slate-100 flex items-center gap-3">
           {onBack && (
             <button
               type="button"
               onClick={onBack}
-              className="p-1 rounded-lg text-slate-400 hover:text-slate-950 hover:bg-slate-100 transition-colors cursor-pointer"
+              className="min-w-[44px] min-h-[44px] sm:min-w-0 sm:min-h-0 flex items-center justify-center p-1 rounded-lg text-slate-400 hover:text-slate-950 hover:bg-slate-100 transition-colors cursor-pointer"
               title={t('common.back')}
             >
               <ArrowLeft className="w-5 h-5" />
@@ -79,7 +79,7 @@ export function SlideOverDrawer({
             <button
               type="button"
               onClick={handleRequestClose}
-              className="p-1.5 rounded-lg text-slate-400 hover:text-slate-950 hover:bg-slate-100 transition-colors cursor-pointer"
+              className="min-w-[44px] min-h-[44px] sm:min-w-0 sm:min-h-0 flex items-center justify-center p-1.5 rounded-lg text-slate-400 hover:text-slate-950 hover:bg-slate-100 transition-colors cursor-pointer"
               title={t('common.close')}
             >
               <X className="w-5 h-5" />

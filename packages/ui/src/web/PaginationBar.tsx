@@ -42,7 +42,7 @@ export function PaginationBar({
             id="page-size-select"
             value={pageSize}
             onChange={(e) => onPageSizeChange(Number(e.target.value))}
-            className="px-2.5 py-1 rounded-xl border border-zinc-200 bg-zinc-50 font-bold text-zinc-800 focus:outline-none focus:ring-2 focus:ring-[#2563eb]/20 cursor-pointer"
+            className="px-2.5 py-1 rounded-xl border border-zinc-200 bg-zinc-50 text-base md:text-xs font-bold text-zinc-800 focus:outline-none focus:ring-2 focus:ring-[#2563eb]/20 cursor-pointer"
           >
             {pageSizeOptions.map((opt) => (
               <option key={opt} value={opt}>
@@ -59,7 +59,7 @@ export function PaginationBar({
           type="button"
           disabled={page <= 1}
           onClick={() => onPageChange(page - 1)}
-          className="px-3 py-1.5 rounded-xl border border-zinc-200 hover:bg-zinc-50 font-bold disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+          className="min-h-[40px] sm:min-h-0 px-3.5 py-2 sm:py-1.5 rounded-xl border border-zinc-200 hover:bg-zinc-50 font-bold disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
         >
           {t('common.previous')}
         </button>
@@ -72,7 +72,7 @@ export function PaginationBar({
           type="button"
           disabled={page >= totalPages}
           onClick={() => onPageChange(page + 1)}
-          className="px-3 py-1.5 rounded-xl border border-zinc-200 hover:bg-zinc-50 font-bold disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+          className="min-h-[40px] sm:min-h-0 px-3.5 py-2 sm:py-1.5 rounded-xl border border-zinc-200 hover:bg-zinc-50 font-bold disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
         >
           {t('common.next')}
         </button>

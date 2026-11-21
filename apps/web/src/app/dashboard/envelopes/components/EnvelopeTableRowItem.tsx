@@ -70,7 +70,7 @@ export function EnvelopeTableRowItem({
   return (
     <tr className="hover:bg-slate-50/80 transition-colors group/row">
       {/* Envelope Name & Badges */}
-      <td className="py-2.5 px-4 text-left">
+      <td className="sticky left-0 z-10 bg-white group-hover/row:bg-slate-50 md:static md:bg-transparent py-2.5 px-4 text-left">
         <div className="flex items-center gap-2 flex-wrap">
           {isEveryday && <Wallet className="w-3.5 h-3.5 text-purple-500 shrink-0" aria-hidden="true" />}
           {isBill && <Receipt className="w-3.5 h-3.5 text-blue-500 shrink-0" aria-hidden="true" />}
@@ -196,7 +196,7 @@ export function EnvelopeTableRowItem({
       </td>
 
       {/* Target Amount */}
-      <td className="py-2.5 px-4 text-right">
+      <td className="hidden md:table-cell py-2.5 px-4 text-right">
         <div className="flex flex-col items-end gap-1">
           <span className="font-mono font-semibold tabular-nums text-zinc-700 text-sm">
             {fmtMoney(pool.targetAmount)}
