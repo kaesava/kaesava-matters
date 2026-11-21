@@ -1,13 +1,11 @@
 import { DEFAULT_TIMEZONE } from "@money-matters/types";
 import { useState, useMemo } from "react";
-import { Platform } from "react-native";
 import { useRouter, useLocalSearchParams, type Href } from "expo-router";
 import { t } from "@money-matters/i18n";
 import { SignUpInputSchema, isValidEmail, getCountryDefaults, detectBestGuessCountry } from "@money-matters/types";
 import { authClient } from "../../lib/auth";
 import { trpc, setActiveSessionToken } from "../../lib/trpc";
 import * as SecureStore from "expo-secure-store";
-import { registerPushNotificationsAsync } from "../../lib/push";
 
 export function useSignUpForm() {
   const router = useRouter();
@@ -61,7 +59,6 @@ export function useSignUpForm() {
   const [passwordForOtp, setPasswordForOtp] = useState<string | undefined>(undefined);
 
   const createTenant = trpc.createTenant.useMutation();
-  const registerToken = trpc.registerToken.useMutation();
 
   const handleSignUp = async () => {
     setError(null);
@@ -152,13 +149,6 @@ export function useSignUpForm() {
           } catch {
             // Household provisioning fallback
           }
-        }
-        try {
-          const pushToken = await registerPushNotificationsAsync();
-          const platform = Platform.OS === "ios" ? "ios" : "android";
-          if (pushToken) await registerToken.mutateAsync({ token: pushToken, platform });
-        } catch {
-          // Push registration fallback
         }
       }
       if (isInviteFlow && redirect) {

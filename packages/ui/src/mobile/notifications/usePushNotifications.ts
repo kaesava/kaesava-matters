@@ -58,12 +58,30 @@ export function usePushNotifications(
           return;
         }
 
-        const settings = (await Notifications!.getPermissionsAsync()) as unknown as { granted: boolean };
+        const settings = (await Notifications!.getPermissionsAsync()) as unknown as {
+          granted: boolean;
+          canAskAgain?: boolean;
+        };
         let isGranted = settings?.granted;
 
-        if (!isGranted) {
-          const permission = (await Notifications!.requestPermissionsAsync()) as unknown as { granted: boolean };
-          isGranted = permission?.granted;
+        if (!isGranted && settings?.canAskAgain !== false) {
+          let alreadyPrompted = false;
+          try {
+            const SecureStore = require('expo-secure-store') as {
+              getItemAsync: (k: string) => Promise<string | null>;
+              setItemAsync: (k: string, v: string) => Promise<void>;
+            };
+            alreadyPrompted = (await SecureStore.getItemAsync('push_permission_prompted')) === '1';
+            if (!alreadyPrompted) {
+              await SecureStore.setItemAsync('push_permission_prompted', '1');
+            }
+          } catch {
+            // SecureStore unavailable in test/web environments
+          }
+          if (!alreadyPrompted) {
+            const permission = (await Notifications!.requestPermissionsAsync()) as unknown as { granted: boolean };
+            isGranted = permission?.granted;
+          }
         }
 
         if (!isGranted) {

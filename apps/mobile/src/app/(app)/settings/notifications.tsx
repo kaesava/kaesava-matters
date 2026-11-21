@@ -1,10 +1,11 @@
 import React, { useState } from "react";
-import { View, Text, StyleSheet, ScrollView } from "react-native";
+import { View, Text, StyleSheet, ScrollView, Linking } from "react-native";
 import { useRouter } from "expo-router";
-import { DESIGN_TOKENS, MobileScreenWrapper, SwitchRow, MobileButton, useMobileToast } from "@money-matters/ui/mobile";
+import { DESIGN_TOKENS, MobileScreenWrapper, SwitchRow, MobileButton, useMobileToast, showMobileConfirm } from "@money-matters/ui/mobile";
 import { t } from "@money-matters/i18n";
 import { authClient } from "../../../lib/auth";
 import { trpc } from "../../../lib/trpc";
+import { getPushPlatform, registerPushNotificationsAsync, unregisterCachedPushToken } from "../../../lib/push";
 
 function resolvePrefsBlob(raw: unknown, appId?: string): Record<string, unknown> {
   if (!raw || typeof raw !== "object") return {};
@@ -23,6 +24,9 @@ export default function MobileNotificationSettingsScreen() {
 
   const userPrefQuery = trpc.getUserPreferences.useQuery();
   const channelStatusQuery = trpc.getNotificationChannelStatus.useQuery();
+  const registerTokenMut = trpc.registerToken.useMutation();
+  const removeTokenMut = trpc.removeToken.useMutation();
+  const [pushBusy, setPushBusy] = useState(false);
   const updatePrefMutation = trpc.updateUserPreferences.useMutation({
     onSuccess: () => {
       utils.getUserPreferences.invalidate();
@@ -72,9 +76,49 @@ export default function MobileNotificationSettingsScreen() {
   const status = channelStatusQuery.data;
   const showMobilePush = (status?.mobilePushDeviceCount ?? 0) > 0;
 
+  const handleToggleMobilePush = async (enabled: boolean) => {
+    setPushBusy(true);
+    try {
+      if (enabled) {
+        const pushToken = await registerPushNotificationsAsync();
+        if (!pushToken) {
+          showMobileConfirm({
+            title: t("notifications.settings.pushBlockedTitle"),
+            message: t("notifications.settings.pushBlockedDesc"),
+            confirmText: t("notifications.settings.openSystemSettings"),
+            cancelText: t("common.cancel"),
+            onConfirm: () => {
+              Linking.openSettings().catch(() => {});
+            },
+          });
+          return;
+        }
+        await registerTokenMut.mutateAsync({ token: pushToken, platform: getPushPlatform() });
+      } else {
+        await unregisterCachedPushToken((input) => removeTokenMut.mutateAsync(input));
+      }
+      await utils.getNotificationChannelStatus.invalidate();
+      toast.success(t("toasts.saved"));
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : t("common.errorTryAgain"));
+    } finally {
+      setPushBusy(false);
+    }
+  };
+
   return (
     <MobileScreenWrapper title={t("notifications.settings.title")} user={session?.user} showBack onBackPress={() => router.back()}>
       <ScrollView contentContainerStyle={{ padding: 16, paddingBottom: 100, gap: 14 }}>
+        <View style={styles.card}>
+          <SwitchRow
+            label={t("notifications.settings.pushMasterTitle")}
+            hint={t("notifications.settings.pushMasterDesc")}
+            value={showMobilePush}
+            disabled={pushBusy}
+            onValueChange={handleToggleMobilePush}
+          />
+        </View>
+
         {status && (
           <View style={styles.statusBanner}>
             <Text style={styles.descText}>{t("notifications.settings.emailChannelNote", { email: status.emailRecipient })}</Text>

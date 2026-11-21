@@ -1,12 +1,10 @@
 import { useState } from "react";
-import { Platform } from "react-native";
 import { useRouter, useLocalSearchParams } from "expo-router";
 import { t } from "@money-matters/i18n";
 import { SignInInputSchema } from "@money-matters/types";
 import { authClient } from "../../lib/auth";
 import { trpc, setActiveSessionToken, setActiveTenantId, switchActiveTenant } from "../../lib/trpc";
 import * as SecureStore from "expo-secure-store";
-import { registerPushNotificationsAsync } from "../../lib/push";
 
 export function useSignInForm() {
   const router = useRouter();
@@ -31,7 +29,6 @@ export function useSignInForm() {
   const [unverifiedEmail, setUnverifiedEmail] = useState<string | null>(null);
   const [passwordForOtp, setPasswordForOtp] = useState<string | undefined>(undefined);
 
-  const registerToken = trpc.registerToken.useMutation();
 
   const handleSignIn = async () => {
     setError(null);
@@ -106,14 +103,6 @@ export function useSignInForm() {
 
       const session = await authClient.getSession();
       if (session?.data?.user) {
-        try {
-          const pushToken = await registerPushNotificationsAsync();
-          const platform = Platform.OS === "ios" ? "ios" : "android";
-          if (pushToken) await registerToken.mutateAsync({ token: pushToken, platform });
-        } catch {
-          // Push notification registration fallback
-        }
-
         const tenants = await utils.listUserTenants.fetch();
         if (tenants && tenants.length > 0) {
           const defaultTenant = tenants[0];
@@ -151,15 +140,6 @@ export function useSignInForm() {
       if (session?.data?.session?.token) {
         setActiveSessionToken(session.data.session.token);
         await SecureStore.setItemAsync("auth_session_token", session.data.session.token);
-      }
-      if (session?.data?.user) {
-        try {
-          const pushToken = await registerPushNotificationsAsync();
-          const platform = Platform.OS === "ios" ? "ios" : "android";
-          if (pushToken) await registerToken.mutateAsync({ token: pushToken, platform });
-        } catch {
-          // Push notification registration fallback
-        }
       }
       router.replace("/(setup)/income");
     } catch {
