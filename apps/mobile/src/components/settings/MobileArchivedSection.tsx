@@ -76,7 +76,7 @@ export function MobileArchivedSection() {
     });
 
   const totalPages = Math.ceil(filtered.length / pageSize) || 1;
-  const paginated = filtered.slice((page - 1) * pageSize, page * pageSize);
+  const paginated = filtered.slice(0, page * pageSize);
 
   const activeFilterCount =
     (filterType !== 'ALL' ? 1 : 0) + (sortField !== 'name' || sortOrder !== 'asc' ? 1 : 0);

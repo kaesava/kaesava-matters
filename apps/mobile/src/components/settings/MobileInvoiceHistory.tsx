@@ -30,7 +30,7 @@ export function MobileInvoiceHistory({ invoices, isLoading }: MobileInvoiceHisto
   }, [invoices.length, pageSize]);
 
   const totalPages = Math.ceil(invoices.length / pageSize) || 1;
-  const paginatedInvoices = invoices.slice((page - 1) * pageSize, page * pageSize);
+  const paginatedInvoices = invoices.slice(0, page * pageSize);
 
   const handleOpenReceipt = (url?: string | null) => {
     if (!url) return;

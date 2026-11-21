@@ -96,7 +96,7 @@ export function MobileBankAccountsSection() {
     });
 
   const totalPages = Math.ceil(filteredAccounts.length / pageSize) || 1;
-  const paginatedAccounts = filteredAccounts.slice((page - 1) * pageSize, page * pageSize);
+  const paginatedAccounts = filteredAccounts.slice(0, page * pageSize);
   const targetedAccount = selectedAccountId ? accounts.find((a) => a.id === selectedAccountId) : null;
 
   const activeFilterCount =

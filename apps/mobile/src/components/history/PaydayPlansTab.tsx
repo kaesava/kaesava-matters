@@ -68,7 +68,7 @@ export function PaydayPlansTab({
 
   const activeCount = selectedBankId !== 'ALL' ? 1 : 0;
   const totalPages = Math.ceil(plans.length / pageSize) || 1;
-  const paginatedPlans = plans.slice((page - 1) * pageSize, page * pageSize);
+  const paginatedPlans = plans.slice(0, page * pageSize);
 
   return (
     <View style={styles.container}>
@@ -87,6 +87,10 @@ export function PaydayPlansTab({
       <FlatList
         data={paginatedPlans}
         keyExtractor={(item) => item.id}
+        onEndReached={() => {
+          if (page < totalPages) onPageChange(page + 1);
+        }}
+        onEndReachedThreshold={0.4}
         refreshControl={
           <RefreshControl
             refreshing={refreshing}
@@ -189,6 +193,7 @@ const styles = StyleSheet.create({
   listContent: {
     paddingHorizontal: 16,
     paddingVertical: 8,
+    paddingBottom: 100,
     gap: 10,
   },
   emptyContainer: {

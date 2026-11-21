@@ -105,8 +105,7 @@ export function UpcomingEventsTab({
   });
 
   const paginatedUpcomingEvents = useMemo(() => {
-    const start = (upcomingPage - 1) * UPCOMING_PAGE_SIZE;
-    return filteredUpcomingEvents.slice(start, start + UPCOMING_PAGE_SIZE);
+    return filteredUpcomingEvents.slice(0, upcomingPage * UPCOMING_PAGE_SIZE);
   }, [filteredUpcomingEvents, upcomingPage]);
 
   return (

@@ -1,6 +1,7 @@
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import { t } from '@money-matters/i18n';
 import { DESIGN_TOKENS } from '../tokens';
+import { PLATFORM_STYLE } from './platform-style';
 
 export interface MobilePaginationBarProps {
   page: number;
@@ -12,150 +13,61 @@ export interface MobilePaginationBarProps {
   onPageSizeChange: (pageSize: number) => void;
 }
 
+// Mobile-native incremental "Show More" footer (replaces web-style Prev/Next page controls).
 export function MobilePaginationBar({
   page,
   totalPages,
   pageSize,
   totalItems,
-  pageSizeOptions = [10, 20, 50],
   onPageChange,
-  onPageSizeChange,
 }: MobilePaginationBarProps) {
-  if (totalItems < 5) return null;
-
-  const startItem = Math.min((page - 1) * pageSize + 1, totalItems);
-  const endItem = Math.min(page * pageSize, totalItems);
+  const shownCount = Math.min(page * pageSize, totalItems);
+  if (totalItems < 5 || page >= totalPages || shownCount >= totalItems) return null;
 
   return (
     <View style={styles.container}>
-      {/* Items Range & Page Size Options */}
-      <View style={styles.infoRow}>
-        <Text style={styles.infoText}>
-          {t('common.showingRange', { start: startItem, end: endItem, total: totalItems })}
+      <TouchableOpacity
+        onPress={() => onPageChange(page + 1)}
+        activeOpacity={0.75}
+        accessibilityRole="button"
+        accessibilityLabel={t('common.showMore')}
+        style={styles.loadMoreBtn}
+      >
+        <Text style={styles.loadMoreText}>{t('common.showMore')}</Text>
+        <Text style={styles.countText}>
+          ({shownCount}/{totalItems})
         </Text>
-
-        <View style={styles.pageSizeRow}>
-          {pageSizeOptions.map((opt) => {
-            const isSelected = opt === pageSize;
-            return (
-              <TouchableOpacity
-                key={opt}
-                onPress={() => onPageSizeChange(opt)}
-                style={[styles.pageSizeBadge, isSelected && styles.pageSizeBadgeActive]}
-              >
-                <Text style={[styles.pageSizeText, isSelected && styles.pageSizeTextActive]}>
-                  {opt}
-                </Text>
-              </TouchableOpacity>
-            );
-          })}
-        </View>
-      </View>
-
-      {/* Navigation Row */}
-      <View style={styles.navRow}>
-        <TouchableOpacity
-          disabled={page <= 1}
-          onPress={() => onPageChange(page - 1)}
-          style={[styles.button, page <= 1 && styles.buttonDisabled]}
-        >
-          <Text style={[styles.buttonText, page <= 1 && styles.buttonTextDisabled]}>
-            {t('common.previous')}
-          </Text>
-        </TouchableOpacity>
-
-        <Text style={styles.pageText}>
-          {t('common.pageOf', { page, totalPages: Math.max(totalPages, 1) })}
-        </Text>
-
-        <TouchableOpacity
-          disabled={page >= totalPages}
-          onPress={() => onPageChange(page + 1)}
-          style={[styles.button, page >= totalPages && styles.buttonDisabled]}
-        >
-          <Text style={[styles.buttonText, page >= totalPages && styles.buttonTextDisabled]}>
-            {t('common.next')}
-          </Text>
-        </TouchableOpacity>
-      </View>
+      </TouchableOpacity>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: '#FFFFFF',
-    borderRadius: 16,
-    borderWidth: 1,
-    borderColor: '#E4E4E7',
-    padding: 14,
-    marginVertical: 12,
-    gap: 10,
+    paddingVertical: 10,
   },
-  infoRow: {
+  loadMoreBtn: {
+    minHeight: PLATFORM_STYLE.minTouch,
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'space-between',
-    flexWrap: 'wrap',
-    gap: 8,
+    justifyContent: 'center',
+    gap: 6,
+    backgroundColor: DESIGN_TOKENS.colors.surface,
+    borderWidth: 1,
+    borderColor: DESIGN_TOKENS.colors.slate[200],
+    borderRadius: DESIGN_TOKENS.radius.md,
+    paddingHorizontal: 16,
   },
-  infoText: {
+  loadMoreText: {
+    fontSize: 13,
+    fontWeight: '700',
+    color: DESIGN_TOKENS.colors.accent,
+  },
+  countText: {
     fontSize: 12,
     fontWeight: '600',
-    color: '#71717A',
-  },
-  pageSizeRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 6,
-  },
-  pageSizeBadge: {
-    paddingHorizontal: 8,
-    paddingVertical: 4,
-    borderRadius: 8,
-    backgroundColor: '#F4F4F5',
-  },
-  pageSizeBadgeActive: {
-    backgroundColor: DESIGN_TOKENS.colors.sereneBlue,
-  },
-  pageSizeText: {
-    fontSize: 12,
-    fontWeight: '700',
-    color: '#3F3F46',
-  },
-  pageSizeTextActive: {
-    color: '#FFFFFF',
-  },
-  navRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingTop: 6,
-    borderTopWidth: 1,
-    borderTopColor: '#F4F4F5',
-  },
-  button: {
-    paddingHorizontal: 14,
-    paddingVertical: 8,
-    borderRadius: 10,
-    backgroundColor: '#F4F4F5',
-    borderWidth: 1,
-    borderColor: '#E4E4E7',
-  },
-  buttonDisabled: {
-    opacity: 0.4,
-  },
-  buttonText: {
-    fontSize: 12,
-    fontWeight: '700',
-    color: '#18181B',
-  },
-  buttonTextDisabled: {
-    color: '#A1A1AA',
-  },
-  pageText: {
-    fontSize: 12,
-    fontWeight: '700',
-    color: '#71717A',
+    color: DESIGN_TOKENS.colors.textMuted,
   },
 });
+
+export default MobilePaginationBar;

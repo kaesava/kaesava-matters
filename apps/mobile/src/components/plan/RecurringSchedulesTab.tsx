@@ -68,13 +68,11 @@ export function RecurringSchedulesTab({
     : (selectedExpensePoolId !== 'ALL' ? 1 : 0);
 
   const paginatedIncomeSources = useMemo(() => {
-    const start = (incomePage - 1) * PAGE_SIZE;
-    return filteredIncomeSources.slice(start, start + PAGE_SIZE);
+    return filteredIncomeSources.slice(0, incomePage * PAGE_SIZE);
   }, [filteredIncomeSources, incomePage]);
 
   const paginatedExpenseSources = useMemo(() => {
-    const start = (expensePage - 1) * PAGE_SIZE;
-    return filteredExpenseSources.slice(start, start + PAGE_SIZE);
+    return filteredExpenseSources.slice(0, expensePage * PAGE_SIZE);
   }, [filteredExpenseSources, expensePage]);
 
   return (

@@ -55,7 +55,7 @@ export function EnvelopeGroupSection({
   if (pools.length === 0) return null;
 
   const paginatedPools = pools.length >= 5
-    ? pools.slice((page - 1) * pageSize, page * pageSize)
+    ? pools.slice(0, page * pageSize)
     : pools;
 
   return (

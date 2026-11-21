@@ -95,7 +95,7 @@ export function LedgerHistoryTab({
     (selectedBankAccountId !== 'ALL' ? 1 : 0);
 
   const totalPages = Math.ceil(transactions.length / pageSize) || 1;
-  const paginatedTxs = transactions.slice((page - 1) * pageSize, page * pageSize);
+  const paginatedTxs = transactions.slice(0, page * pageSize);
 
   const matchedPool = pools.find((p) => p.id === selectedPoolId);
   const matchedBank = bankAccounts.find((b) => b.id === selectedBankAccountId);
@@ -133,6 +133,10 @@ export function LedgerHistoryTab({
       <FlatList
         data={paginatedTxs}
         keyExtractor={(item) => item.id}
+        onEndReached={() => {
+          if (page < totalPages) onPageChange(page + 1);
+        }}
+        onEndReachedThreshold={0.4}
         refreshControl={
           <RefreshControl
             refreshing={refreshing}
@@ -221,6 +225,8 @@ const styles = StyleSheet.create({
   listContent: {
     paddingHorizontal: 16,
     paddingVertical: 8,
+    paddingBottom: 100,
+    gap: 10,
   },
   emptyContainer: {
     alignItems: 'center',
