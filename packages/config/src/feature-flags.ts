@@ -154,3 +154,20 @@ export function resolveEffectiveAppFlags(
   return merged;
 }
 
+/**
+ * Resolves Ring 3 app-specific feature flags validated by an app-owned Zod schema,
+ * keeping Ring 1 & Ring 2 completely decoupled from app-specific flag keys.
+ */
+export function resolveTypedAppFlags<T>(
+  appId: string | null | undefined,
+  dbFeatureFlags: Partial<Record<string, unknown>> | null | undefined,
+  schema: { parse: (input: unknown) => T }
+): T {
+  const effective = resolveEffectiveAppFlags(appId, dbFeatureFlags);
+  const rawAppFlags =
+    effective.appFlags && typeof effective.appFlags === "object"
+      ? (effective.appFlags as Record<string, unknown>)
+      : effective;
+  return schema.parse(rawAppFlags);
+}
+

@@ -3,12 +3,24 @@
  */
 
 export interface PlatformCapabilityFlags {
+  billing?: boolean;
+  memberInvites?: boolean;
   aiAssistant: boolean;
   privateMode: boolean;
   fileNotes: boolean;
   fileNotesMaxStorageMb: number;
   fileNotesMaxFileMb: number;
+  categories?: boolean;
+  schedules?: boolean;
+  transactions?: boolean;
+  bankAccounts?: boolean;
   reports: boolean;
+  offlineSync?: boolean;
+  foundingMemberPromo?: boolean;
+}
+
+export interface AppFeatureFlagsRecord extends PlatformCapabilityFlags {
+  appFlags?: Record<string, boolean | number | string>;
 }
 
 export interface MoneyMattersFeatureFlags {

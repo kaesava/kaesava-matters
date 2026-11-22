@@ -5,4 +5,5 @@ export * from "./queries/search-transactions.query.js";
 export * from "./queries/get-spending-analytics.query.js";
 export * from "./queries/list-transfer-events.query.js";
 export * from "./commands/transfer-events.command.js";
+export * from "./generic-ledger.js";
 

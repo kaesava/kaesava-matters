@@ -25,35 +25,35 @@ import {
  * Tradies = Tenant Users, Jobs = Domain Entity) purely via AppManifest + Platform Contracts
  * with ZERO budgeting tables or Money Matters domain code.
  */
-describe("Dry Run: TradiePro Multi-Tenant App Assembly", () => {
+describe("Dry Run: TradieMatters Multi-Tenant App Assembly", () => {
   const TRADIE_APP_ID = "01908bde-9999-7b19-a178-574211bc93ff";
 
-  it("assembles TradiePro end-to-end with AppManifest, Job Status Machine, Recurring Maintenance Bursting, RBAC, Archive Registry, and Tenant Hooks", async () => {
+  it("assembles TradieMatters end-to-end with AppManifest, Job Status Machine, Recurring Maintenance Bursting, RBAC, Archive Registry, and Tenant Hooks", async () => {
     // 1. Register AppManifest (zero changes to platform code)
     registerAppManifest({
       id: TRADIE_APP_ID,
-      name: "TradiePro",
-      slug: "tradie-pro",
+      name: "TradieMatters",
+      slug: "tradie-matters",
       trialDays: 14,
       maxOwnedTenantsPerUser: 5,
-      storageKeyPrefix: "tradie_pro",
+      storageKeyPrefix: "tradie_matters",
       easProjectId: "tradie-eas-project-id",
       branding: {
         companyName: "Kaesava AU",
-        primaryDomain: "tradiepro.kaesava.au",
-        appUrl: "https://tradiepro.kaesava.au",
-        apiUrl: "https://api.tradiepro.kaesava.au",
-        deepLinkScheme: "tradiepro://",
-        supportEmail: "support@tradiepro.kaesava.au",
-        fromEmail: "TradiePro <support@tradiepro.kaesava.au>",
-        logoUrl: "https://tradiepro.kaesava.au/logo.png",
+        primaryDomain: "tradiematters.kaesava.au",
+        appUrl: "https://tradiematters.kaesava.au",
+        apiUrl: "https://api.tradiematters.kaesava.au",
+        deepLinkScheme: "tradiematters://",
+        supportEmail: "support@tradiematters.kaesava.au",
+        fromEmail: "TradieMatters <support@tradiematters.kaesava.au>",
+        logoUrl: "https://tradiematters.kaesava.au/logo.png",
       },
       terminology: {
         tenantSingular: "Company",
         tenantPlural: "Companies",
         memberSingular: "Tradie",
       },
-      allowedRedirectHosts: ["tradiepro.kaesava.au", "localhost"],
+      allowedRedirectHosts: ["tradiematters.kaesava.au", "localhost"],
       features: {
         premiumEnabled: true,
         partnerInvite: true,
@@ -71,12 +71,12 @@ describe("Dry Run: TradiePro Multi-Tenant App Assembly", () => {
     });
 
     const manifest = resolveAppConfigOrDefault(TRADIE_APP_ID);
-    expect(manifest.name).toBe("TradiePro");
+    expect(manifest.name).toBe("TradieMatters");
     expect(manifest.terminology.tenantSingular).toBe("Company");
     expect(manifest.terminology.memberSingular).toBe("Tradie");
     expect(manifest.trialDays).toBe(14);
     expect(manifest.maxOwnedTenantsPerUser).toBe(5);
-    expect(manifest.storageKeyPrefix).toBe("tradie_pro");
+    expect(manifest.storageKeyPrefix).toBe("tradie_matters");
     expect(manifest.easProjectId).toBe("tradie-eas-project-id");
 
     // 1b. Auth Edge Proxy & Consent-Gated Telemetry
@@ -110,8 +110,8 @@ describe("Dry Run: TradiePro Multi-Tenant App Assembly", () => {
     expect(flags.simulation).toBe(false);
 
     // 3. CORS with x-app-id header
-    const cors = buildCorsHeaders("https://tradiepro.kaesava.au", false, manifest.allowedRedirectHosts);
-    expect(cors["Access-Control-Allow-Origin"]).toBe("https://tradiepro.kaesava.au");
+    const cors = buildCorsHeaders("https://tradiematters.kaesava.au", false, manifest.allowedRedirectHosts);
+    expect(cors["Access-Control-Allow-Origin"]).toBe("https://tradiematters.kaesava.au");
     expect(cors["Access-Control-Allow-Headers"]).toContain("x-app-id");
 
     // 4. RBAC (Owner = Company Director, Member = Tradie, Viewer = Apprentice/Client)

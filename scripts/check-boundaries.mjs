@@ -22,6 +22,7 @@ const PROTECTED_PACKAGES = [
   "packages/capabilities/categories/src",
   "packages/capabilities/file-notes/src",
   "packages/capabilities/notifications/src",
+  "packages/capabilities/schedules/src",
 ];
 
 const FORBIDDEN_PATTERNS = [
