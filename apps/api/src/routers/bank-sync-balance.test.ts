@@ -1,9 +1,7 @@
 import { describe, it, expect } from "vitest";
 import { bankAccounts, envelopes, type DbOrTx } from "@money-matters/db";
-import {
-  archiveBankAccountHandler,
-  createTenantHandler,
-} from "@money-matters/capability-tenant";
+import { archiveBankAccountHandler } from "@money-matters/capability-bank-accounts";
+import { createTenantHandler } from "@money-matters/capability-tenant";
 import {
   createMoneyMattersTenantLifecycleHooks,
   moneyMattersBankAccountHooks,

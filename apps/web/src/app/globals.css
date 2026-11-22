@@ -1,6 +1,6 @@
 @import "tailwindcss";
 @source "../../../../packages/ui";
-@source "../../../../packages/capabilities/file-notes";
+@source "../../../../packages/capabilities";
 
 @keyframes spin {
   from {

@@ -1,6 +1,7 @@
 import { TRPCError } from "@trpc/server";
 import { eq, and, or, isNull, isNotNull, desc, sql } from "drizzle-orm";
 import { fileNotes, users, apps, type DbOrTx } from "@money-matters/db";
+import { resolveEffectiveAppFlags } from "@money-matters/config";
 import {
   CreatePreSignedUrlInput,
   CreateFileNoteInput,
@@ -23,6 +24,7 @@ export interface FileNotesContext {
   tenantId: string;
   userId: string;
   appId: string;
+  allowedEntityTypes?: readonly string[];
   entityResolvers?: EntityPrivacyResolverMap<DbOrTx>;
 }
 
@@ -33,7 +35,10 @@ async function getAppFlags(db: DbOrTx, appId: string): Promise<AppFeatureFlags> 
     .where(eq(apps.id, appId))
     .limit(1);
 
-  return appRecord?.featureFlags || DEFAULT_APP_FEATURE_FLAGS;
+  return {
+    ...DEFAULT_APP_FEATURE_FLAGS,
+    ...resolveEffectiveAppFlags(appId, appRecord?.featureFlags as unknown as Record<string, unknown> | undefined),
+  } as AppFeatureFlags;
 }
 
 async function resolveEntityPrivacy(
@@ -42,8 +47,14 @@ async function resolveEntityPrivacy(
   entityType: string,
   entityId: string
 ): Promise<EntityPrivacyResolution> {
+  if (ctx.allowedEntityTypes && !ctx.allowedEntityTypes.includes(entityType)) {
+    return { exists: false, isPrivate: true, ownerUserId: null };
+  }
   const resolver = ctx.entityResolvers?.[entityType];
   if (!resolver) {
+    if (ctx.allowedEntityTypes) {
+      return { exists: false, isPrivate: true, ownerUserId: null };
+    }
     return { exists: true, isPrivate: false, ownerUserId: null };
   }
   return resolver(db, { tenantId: ctx.tenantId, userId: ctx.userId, appId: ctx.appId }, entityId);
@@ -67,13 +78,19 @@ export async function createPreSignedUrlHandler(
     });
   }
 
-  // Quota enforcement: compute tenant storage
+  // Quota enforcement: compute tenant storage scoped to appId
   const [usage] = await db
     .select({
       totalBytes: sql<string>`COALESCE(SUM(CAST(${fileNotes.fileSize} AS BIGINT)), 0)`,
     })
     .from(fileNotes)
-    .where(and(eq(fileNotes.tenantId, ctx.tenantId), isNotNull(fileNotes.fileKey)));
+    .where(
+      and(
+        eq(fileNotes.tenantId, ctx.tenantId),
+        eq(fileNotes.appId, ctx.appId),
+        isNotNull(fileNotes.fileKey)
+      )
+    );
 
   const currentBytes = Number(usage?.totalBytes || 0);
   const maxStorageBytes = flags.fileNotesMaxStorageMb * 1024 * 1024;
@@ -95,7 +112,7 @@ export async function createPreSignedUrlHandler(
 
   const sanitizedFileName = input.fileName.replace(/[^a-zA-Z0-9.-]/g, "_");
   const uniqueId = crypto.randomUUID();
-  const fileKey = `tenants/${ctx.tenantId}/${input.entityType.toLowerCase()}/${input.entityId}/${uniqueId}-${sanitizedFileName}`;
+  const fileKey = `apps/${ctx.appId}/tenants/${ctx.tenantId}/${input.entityType.toLowerCase()}/${input.entityId}/${uniqueId}-${sanitizedFileName}`;
 
   const uploadUrl = await getPresignedUploadUrl(fileKey, input.fileMimeType);
   return { fileKey, uploadUrl };

@@ -4,4 +4,3 @@
 export * from "./create-tenant.js";
 export * from "./cancel-setup.js";
 export * from "./partner-invites.js";
-export * from "@money-matters/capability-bank-accounts";

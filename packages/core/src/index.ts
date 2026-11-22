@@ -1,4 +1,5 @@
 export * from "./logger.js";
+export * from "./errors.js";
 export * from "./db-client.js";
 export * from "./auth.js";
 export * from "./rate-limiter.js";

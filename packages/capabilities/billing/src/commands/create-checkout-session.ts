@@ -26,9 +26,10 @@ export async function createCheckoutSessionCommand(
   db: DbOrTx,
   tenantId: string,
   userEmail: string,
-  input: { priceId?: string; planType?: "monthly" | "annual" | "founding"; successUrl: string; cancelUrl: string }
+  input: { priceId?: string; planType?: "monthly" | "annual" | "founding"; successUrl: string; cancelUrl: string },
+  appId?: string | null
 ): Promise<{ url: string }> {
-  if (!isWhitelistedUrl(input.successUrl) || !isWhitelistedUrl(input.cancelUrl)) {
+  if (!isWhitelistedUrl(input.successUrl, appId) || !isWhitelistedUrl(input.cancelUrl, appId)) {
     throw new Error("Invalid redirect URL: target domain is not authorized.");
   }
 
@@ -69,6 +70,7 @@ export async function createCheckoutSessionCommand(
   const [tenant] = await db
     .select({
       id: tenants.id,
+      appId: tenants.appId,
       name: tenants.name,
       stripeCustomerId: tenants.stripeCustomerId,
     })
@@ -78,6 +80,10 @@ export async function createCheckoutSessionCommand(
 
   if (!tenant) {
     throw new Error(`Tenant not found: ${tenantId}`);
+  }
+
+  if (!isWhitelistedUrl(input.successUrl, tenant.appId) || !isWhitelistedUrl(input.cancelUrl, tenant.appId)) {
+    throw new Error("Invalid redirect URL: target domain is not authorized.");
   }
 
   let customerId = tenant.stripeCustomerId;

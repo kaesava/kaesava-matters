@@ -22,6 +22,13 @@ export interface AppTerminologyConfig {
   memberSingular: string;
 }
 
+export interface AppRoleOption {
+  key: string;
+  label: string;
+  baseRole: "OWNER" | "MEMBER" | "VIEWER";
+  description?: string;
+}
+
 export interface AppConfig {
   id: string;
   name: string;
@@ -30,6 +37,7 @@ export interface AppConfig {
   maxOwnedTenantsPerUser?: number;
   storageKeyPrefix?: string;
   easProjectId?: string;
+  roles?: readonly AppRoleOption[];
   branding: AppBrandingConfig;
   terminology: AppTerminologyConfig;
   allowedRedirectHosts: readonly string[];

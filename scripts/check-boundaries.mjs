@@ -29,6 +29,10 @@ const FORBIDDEN_PATTERNS = [
   { label: "@money-matters/capability-budgeting", regex: /@money-matters\/capability-budgeting/ },
   { label: "@money-matters/db/rings/money-matters", regex: /@money-matters\/db\/rings\/money-matters/ },
   {
+    label: "cross-Ring-2 capability import",
+    regex: /from\s+["']@money-matters\/capability-(tenant|bank-accounts|billing|bug-reports|categories|file-notes|notifications|schedules|assistant|transactions)["']/,
+  },
+  {
     label: "Money Matters budgeting DB tables",
     regex: /import\s*\{[^}]*\b(envelopes|incomeEvents|expenseEvents|allocationPlans|allocationPlanLines|paydayStrategySteps|transactionLedger|getEnvelopeBalancesMap)\b[^}]*\}\s*from\s*["']@money-matters\/db["']/,
   },

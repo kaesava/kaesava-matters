@@ -14,6 +14,7 @@ import {
   computeRecurringDates,
   planSeriesEditScope,
   canRolePerform,
+  defineAppRolePolicy,
   buildCorsHeaders,
   evaluateAuthEdgeProxy,
   createConsentGatedTelemetry,
@@ -114,11 +115,21 @@ describe("Dry Run: TradieMatters Multi-Tenant App Assembly", () => {
     expect(cors["Access-Control-Allow-Origin"]).toBe("https://tradiematters.kaesava.au");
     expect(cors["Access-Control-Allow-Headers"]).toContain("x-app-id");
 
-    // 4. RBAC (Owner = Company Director, Member = Tradie, Viewer = Apprentice/Client)
+    // 4. 2-Layer RBAC (Base Role + TradieMatters App Roles)
     expect(canRolePerform("OWNER", "manage_members")).toBe(true);
     expect(canRolePerform("MEMBER", "write")).toBe(true);
     expect(canRolePerform("MEMBER", "delete_tenant")).toBe(false);
     expect(canRolePerform("VIEWER", "write")).toBe(false);
+
+    const tradieRoles = defineAppRolePolicy({
+      COORDINATOR: { baseRole: "MEMBER", permissions: ["jobs:view_all", "jobs:assign"] },
+      TRADIE: { baseRole: "MEMBER", permissions: ["jobs:view_assigned", "jobs:complete"] },
+      APPRENTICE: { baseRole: "VIEWER", permissions: ["jobs:view_assigned"] },
+    });
+    expect(tradieRoles.can("MEMBER", "COORDINATOR", "jobs:view_all")).toBe(true);
+    expect(tradieRoles.can("MEMBER", "TRADIE", "jobs:view_all")).toBe(false);
+    expect(tradieRoles.can("MEMBER", "TRADIE", "jobs:complete")).toBe(true);
+    expect(tradieRoles.can("OWNER", null, "jobs:view_all")).toBe(true);
 
     // 5. Custom Job Status State Machine
     const jobStatusMachine = defineStatusMachine({

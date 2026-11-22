@@ -13,7 +13,6 @@
     }
   },
   "dependencies": {
-    "@money-matters/capability-bank-accounts": "workspace:*",
     "@money-matters/config": "workspace:*",
     "@money-matters/core": "workspace:*",
     "@money-matters/db": "workspace:*",

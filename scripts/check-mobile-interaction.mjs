@@ -4,7 +4,7 @@
 import { readdirSync, readFileSync, statSync } from 'node:fs';
 import { join } from 'node:path';
 
-const ROOTS = ['apps/mobile/src', 'packages/ui/src/mobile'];
+const ROOTS = ['apps/mobile/src', 'packages/ui/src/mobile', 'packages/capabilities'];
 const DECORATIVE_KEY = /badge|chip|pill|tag|footnote|caption|axis|tick/i;
 const CHART_KEY = /label|legend|pct|month|subtitle|text/i;
 const BUTTONISH_KEY = /btn|button|close|action|toggle|overflow|trigger/i;

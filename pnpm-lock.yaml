@@ -720,9 +720,6 @@ importers:
 
   packages/capabilities/tenant:
     dependencies:
-      '@money-matters/capability-bank-accounts':
-        specifier: workspace:*
-        version: link:../bank-accounts
       '@money-matters/config':
         specifier: workspace:*
         version: link:../../config

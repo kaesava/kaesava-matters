@@ -3,7 +3,8 @@ import type { EdgeContext as Context } from './edge-context.js';
 
 import { sql } from 'drizzle-orm';
 import { logger, canRolePerform } from '@money-matters/core';
-import { getSubscriptionStatus } from '@money-matters/capability-billing';
+import { resolveAppConfigOrDefault } from '@money-matters/config';
+import { getSubscriptionStatus, evaluateSubscriptionWriteAccess } from '@money-matters/capability-billing';
 import type { SubscriptionStatusDto } from '@money-matters/types';
 
 const t = initTRPC.context<Context>().create({
@@ -83,9 +84,10 @@ export const tenantProcedure = t.procedure.use(async ({ ctx, next }) => {
     const subscriptionStatus = await getSubscriptionStatus(tx, tenantId);
 
     if (subscriptionStatus.isDeactivated) {
+      const tenantLabel = resolveAppConfigOrDefault(appId).terminology.tenantSingular;
       throw new TRPCError({
         code: 'FORBIDDEN',
-        message: 'subscription_deactivated: Household account access is paused.',
+        message: `subscription_deactivated: ${tenantLabel} account access is paused.`,
       });
     }
 
@@ -127,9 +129,10 @@ export const privateTenantProcedure = t.procedure.use(async ({ ctx, next }) => {
     const subscriptionStatus = await getSubscriptionStatus(tx, tenantId);
 
     if (subscriptionStatus.isDeactivated) {
+      const tenantLabel = resolveAppConfigOrDefault(appId).terminology.tenantSingular;
       throw new TRPCError({
         code: 'FORBIDDEN',
-        message: 'subscription_deactivated: Household account access is paused.',
+        message: `subscription_deactivated: ${tenantLabel} account access is paused.`,
       });
     }
 
@@ -203,16 +206,23 @@ export const privateMemberWriteProcedure = privateTenantProcedure.use(async ({ c
 /**
  * Throws TRPCError FORBIDDEN if tenant's trial has ended, is in read-only grace period, past due, or deactivated.
  */
-export function requiresWriteAccess(ctx: { subscriptionStatus: SubscriptionStatusDto }) {
-  if (
+export function requiresWriteAccess(ctx: { subscriptionStatus: SubscriptionStatusDto; session?: { role?: string | null } | null }) {
+  const isReadOnly =
     ctx.subscriptionStatus.isTrialExpired ||
     ctx.subscriptionStatus.isGracePeriod ||
     ctx.subscriptionStatus.isPastDue ||
-    ctx.subscriptionStatus.isDeactivated
-  ) {
+    ctx.subscriptionStatus.isDeactivated;
+  const decision = evaluateSubscriptionWriteAccess({
+    isReadOnly,
+    role: ctx.session?.role,
+  });
+  if (!decision.allowed) {
     throw new TRPCError({
       code: 'FORBIDDEN',
-      message: 'Your account is currently read-only. Please update your billing details to resume making changes.',
+      message:
+        decision.reason === 'READ_ONLY_SUBSCRIPTION'
+          ? 'Your account is currently read-only. Please update your billing details to resume making changes.'
+          : decision.message || 'Write access forbidden.',
     });
   }
 }

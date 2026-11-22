@@ -115,7 +115,7 @@ export const styles = StyleSheet.create({
     color: DESIGN_TOKENS.colors.slate[800],
   },
   noteDate: {
-    fontSize: 10,
+    fontSize: 12,
     color: DESIGN_TOKENS.colors.slate[400],
     marginTop: 1,
   },
@@ -145,7 +145,7 @@ export const styles = StyleSheet.create({
     color: DESIGN_TOKENS.colors.slate[800],
   },
   attachmentSize: {
-    fontSize: 10,
+    fontSize: 12,
     color: DESIGN_TOKENS.colors.slate[400],
     marginTop: 1,
   },

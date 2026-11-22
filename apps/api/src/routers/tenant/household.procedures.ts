@@ -3,7 +3,7 @@ import { apps } from "@money-matters/db";
 import { eq } from "drizzle-orm";
 import { inngest } from '../../inngest/client.js';
 import { logAuditEvent, logger, sendEmail, buildBrandEmailHeader, checkRateLimit } from '@money-matters/core';
-import { resolveAppConfigOrDefault } from '@money-matters/config';
+import { resolveAppConfigOrDefault, resolveEffectiveAppFlags } from '@money-matters/config';
 import { createMoneyMattersTenantLifecycleHooks } from '@money-matters/capability-budgeting';
 import { t } from '@money-matters/i18n';
 import {
@@ -16,7 +16,7 @@ import {
   removeHouseholdMemberHandler,
   updateHouseholdHandler,
 } from "@money-matters/capability-tenant";
-import { UpdateHouseholdMemberRoleCommand, GetInviteDetailsInputSchema, DEFAULT_APP_FEATURE_FLAGS } from "@money-matters/types";
+import { UpdateHouseholdMemberRoleCommand, GetInviteDetailsInputSchema } from "@money-matters/types";
 import { clearEdgeContextCache } from '../../trpc/edge-context.js';
 import { TRPCError } from '@trpc/server';
 import { z } from 'zod';
@@ -29,7 +29,7 @@ export const householdProcedures = {
       requiresWriteAccess(ctx);
 
       const [appRecord] = await ctx.db.select({ featureFlags: apps.featureFlags }).from(apps).where(eq(apps.id, ctx.appId!)).limit(1);
-      const flags = appRecord?.featureFlags || DEFAULT_APP_FEATURE_FLAGS;
+      const flags = resolveEffectiveAppFlags(ctx.appId, appRecord?.featureFlags as unknown as Record<string, unknown> | undefined);
       if (!flags.privateMode) {
         throw new TRPCError({ code: "FORBIDDEN", message: "Partner invitations are disabled for this application." });
       }
