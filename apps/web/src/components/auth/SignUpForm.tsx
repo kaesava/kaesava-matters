@@ -9,7 +9,7 @@ import { Button, FormLabel, FormFieldError, FormErrorBanner } from "@money-matte
 import { SUPPORTED_COUNTRIES, SignUpInputSchema, isValidEmail, getCountryDefaults, detectBestGuessCountry } from "@money-matters/types";
 import { authClient } from "../../lib/auth";
 import { trpc } from "../../lib/trpc";
-import { PasswordStrengthIndicator } from "./PasswordStrengthIndicator";
+import { PasswordStrengthIndicator } from "@money-matters/capability-auth/web";
 
 export interface PendingTenantData {
   name: string;

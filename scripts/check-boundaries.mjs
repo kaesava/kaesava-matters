@@ -25,6 +25,7 @@ const PROTECTED_PACKAGES = [
   "packages/capabilities/notifications/src",
   "packages/capabilities/schedules/src",
   "packages/capabilities/assistant/src",
+  "packages/capabilities/auth/src",
   "packages/capabilities/transactions/src",
 ];
 
@@ -34,7 +35,7 @@ const FORBIDDEN_PATTERNS = [
   { label: "@money-matters/db/rings/money-matters", regex: /@money-matters\/db\/rings\/money-matters/ },
   {
     label: "cross-Ring-2 capability import",
-    regex: /from\s+["']@money-matters\/capability-(tenant|bank-accounts|billing|bug-reports|file-notes|notifications|schedules|assistant|transactions)(\/[^"']*)?["']/,
+    regex: /from\s+["']@money-matters\/capability-(tenant|bank-accounts|billing|bug-reports|file-notes|notifications|schedules|assistant|auth|transactions)(\/[^"']*)?["']/,
   },
   {
     label: "@trpc/server inside Ring 1/Ring 2 domain logic",

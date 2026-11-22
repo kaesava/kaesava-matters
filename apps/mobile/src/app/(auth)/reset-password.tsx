@@ -20,7 +20,7 @@ import {
 } from "@money-matters/ui/mobile";
 import { evaluatePasswordStrength } from "@money-matters/types";
 import { authClient } from "../../lib/auth";
-import { MobilePasswordStrength } from "../../components/auth/MobilePasswordStrength";
+import { MobilePasswordStrength } from "@money-matters/capability-auth/mobile";
 
 export default function ResetPasswordScreen() {
   const insets = useSafeAreaInsets();

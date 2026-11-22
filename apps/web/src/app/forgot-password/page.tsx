@@ -14,7 +14,7 @@ import {
 import { isValidEmail } from "@money-matters/types";
 import { PublicHeader } from "../../components/public/PublicHeader";
 import { PublicFooter } from "../../components/public/PublicFooter";
-import { PasswordStrengthIndicator } from "../../components/auth/PasswordStrengthIndicator";
+import { PasswordStrengthIndicator } from "@money-matters/capability-auth/web";
 import { useForgotPassword } from "./useForgotPassword";
 
 export default function ForgotPasswordPage() {

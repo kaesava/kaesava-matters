@@ -9,7 +9,7 @@ import {
   FormErrorBanner,
   MobileButton,
 } from "@money-matters/ui/mobile";
-import { MobilePasswordStrength } from "../auth/MobilePasswordStrength";
+import { MobilePasswordStrength } from "@money-matters/capability-auth/mobile";
 import { useMobileAccountPasswordForm } from "./profile/useMobileAccountPasswordForm";
 
 interface MobileAccountPasswordModalProps {

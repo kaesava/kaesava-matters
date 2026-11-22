@@ -12,6 +12,7 @@ const nextConfig: NextConfig = {
     "@money-matters/capability-tenant",
     "@money-matters/capability-notifications",
     "@money-matters/capability-assistant",
+    "@money-matters/capability-auth",
     "@money-matters/capability-schedules",
     "@money-matters/capability-file-notes",
   ],

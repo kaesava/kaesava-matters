@@ -3,16 +3,8 @@ import { MONEY_MATTERS_APP_ID, clearEdgeContextCache } from '../../trpc/edge-con
 import { db, tenants, tenantUsers, earlyAccessSubscribers, apps } from "@money-matters/db";
 import { and, eq, sql, asc, isNull } from "drizzle-orm";
 import { inngest } from '../../inngest/client.js';
-import { 
-  createTenantHandler,
-  cancelSetupHandler,
-  getTenantHandler,
-  exportDataHandler,
-  deleteMyAccountHandler,
-  checkEmailAuthProviderHandler,
-  getAuthMethodsHandler,
-  setAccountPasswordHandler,
-} from "@money-matters/capability-tenant";
+import { createTenantHandler, cancelSetupHandler, getTenantHandler, exportDataHandler, deleteMyAccountHandler } from "@money-matters/capability-tenant";
+import { checkEmailAuthProviderHandler, getAuthMethodsHandler, setAccountPasswordHandler } from "@money-matters/capability-auth";
 import {
   createMoneyMattersTenantLifecycleHooks,
   createMoneyMattersExportContributor,

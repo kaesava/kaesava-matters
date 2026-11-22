@@ -7,7 +7,7 @@ import {
   FormLabel,
 } from "@money-matters/ui/mobile";
 import { SUPPORTED_COUNTRIES } from "@money-matters/types";
-import { MobilePasswordStrength } from "./MobilePasswordStrength";
+import { MobilePasswordStrength } from "@money-matters/capability-auth/mobile";
 
 interface SignUpFormFieldsProps {
   name: string;

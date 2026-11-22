@@ -6,7 +6,7 @@ import { t } from "@money-matters/i18n";
 import { Button, FormLabel, FormFieldError, FormErrorBanner } from "@money-matters/ui/web";
 import { InviteSignUpInputSchema } from "@money-matters/types";
 import { authClient } from "../../../../lib/auth";
-import { PasswordStrengthIndicator } from "../../../../components/auth/PasswordStrengthIndicator";
+import { PasswordStrengthIndicator } from "@money-matters/capability-auth/web";
 
 interface InviteNewUserFormProps {
   inviteEmail: string;

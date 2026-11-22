@@ -10,7 +10,7 @@ import {
   FormLabel,
   FormErrorBanner,
 } from "@money-matters/ui/mobile";
-import { MobilePasswordStrength } from "./MobilePasswordStrength";
+import { MobilePasswordStrength } from "@money-matters/capability-auth/mobile";
 
 interface ForgotPasswordOtpStepProps {
   email: string;

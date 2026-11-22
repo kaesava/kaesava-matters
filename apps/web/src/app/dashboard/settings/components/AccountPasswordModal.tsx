@@ -3,7 +3,7 @@
 import React from "react";
 import { t } from "@money-matters/i18n";
 import { ModalDialog, FormLabel, Input, FormFieldError, FormErrorBanner, Button } from "@money-matters/ui/web";
-import { PasswordStrengthIndicator } from "../../../../components/auth/PasswordStrengthIndicator";
+import { PasswordStrengthIndicator } from "@money-matters/capability-auth/web";
 import { useAccountPasswordForm } from "./useAccountPasswordForm";
 
 interface AccountPasswordModalProps {

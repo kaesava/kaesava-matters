@@ -12,7 +12,7 @@ import {
 } from "@money-matters/ui/web";
 import { evaluatePasswordStrength } from "@money-matters/types";
 import { authClient } from "../../lib/auth";
-import { PasswordStrengthIndicator } from "../../components/auth/PasswordStrengthIndicator";
+import { PasswordStrengthIndicator } from "@money-matters/capability-auth/web";
 
 function ResetPasswordForm() {
   const router = useRouter();

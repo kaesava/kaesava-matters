@@ -16,6 +16,7 @@
   },
   "dependencies": {
     "@money-matters/capability-assistant": "workspace:*",
+    "@money-matters/capability-auth": "workspace:*",
     "@money-matters/capability-budgeting": "workspace:*",
     "@money-matters/capability-file-notes": "workspace:*",
     "@money-matters/capability-schedules": "workspace:*",
