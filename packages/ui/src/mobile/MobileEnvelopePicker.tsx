@@ -40,7 +40,6 @@ export interface MobileEnvelopePickerProps {
   error?: string;
 }
 
-export type MobilePoolPickerProps = MobileEnvelopePickerProps;
 
 import {
   formatPoolBalance,

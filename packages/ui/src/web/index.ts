@@ -1,6 +1,5 @@
 export { DESIGN_TOKENS, createDesignTokens, type DesignTokens } from '../tokens';
 export * from '../hooks/AppThemeContext';
-export * from './DataTable';
 export * from './shells/PlatformSettingsShell';
 export * from './Button';
 export * from './Input';
@@ -49,7 +48,6 @@ export * from './TypedConfirmDialog';
 export * from './fields/RecurrenceBuilder';
 export * from '../hooks/useRecurrenceBuilder';
 export * from '../dates/recurrence';
-export * from '../hooks/DateLocaleContext';
 export * from './EnvelopeModeToggle';
 export * from './ProductTourPopover';
 export * from './ProductTourSpotlight';

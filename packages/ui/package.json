@@ -35,7 +35,6 @@
     "@hookform/resolvers": "^3.3.4",
     "@money-matters/i18n": "workspace:*",
     "@money-matters/types": "workspace:*",
-    "jszip": "^3.10.1",
     "lucide-react": "^0.470.0",
     "react-hook-form": "^7.51.0",
     "react-native": "0.81.5",
@@ -53,7 +52,6 @@
   },
   "devDependencies": {
     "@expo/vector-icons": "^15.1.1",
-    "@types/jszip": "^3.4.1",
     "@types/react": "^19.1.0",
     "react-native-safe-area-context": "^5.6.0",
     "react-native-svg": "15.12.1",
