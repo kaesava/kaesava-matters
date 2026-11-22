@@ -3,7 +3,6 @@ import { BaseSchema } from "./tenant.types.js";
 export {
   type AppFeatureFlags,
   type PlatformCapabilityFlags,
-  type MoneyMattersFeatureFlags,
   DEFAULT_APP_FEATURE_FLAGS,
 } from "./feature-flags.types.js";
 
@@ -14,8 +13,6 @@ export const StorageQuotaDto = z.object({
 }).strict();
 
 export type StorageQuotaDto = z.infer<typeof StorageQuotaDto>;
-
-export const MoneyMattersFileNoteEntityTypeEnum = z.enum(["ENVELOPE", "BANK_ACCOUNT"]);
 
 const FileNoteEntityTypeEnum = z.string().trim().min(1).max(64).regex(/^[A-Z0-9_]+$/);
 

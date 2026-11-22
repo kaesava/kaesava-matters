@@ -124,7 +124,8 @@ describe("Settings Types & Schemas", () => {
 
   describe("Subscription Helpers", () => {
     it("builds consistent export file name", () => {
-      expect(buildExportFileName("2026-10-03")).toBe("money-matters-backup-2026-10-03.zip");
+      expect(buildExportFileName("2026-10-03")).toBe("workspace-backup-2026-10-03.zip");
+      expect(buildExportFileName("2026-10-03", "money-matters")).toBe("money-matters-backup-2026-10-03.zip");
     });
   });
 

@@ -8,10 +8,10 @@ export const SubscriptionStatusSchema = z.enum([
   "DEACTIVATED",
 ]);
 
-export const SubscriptionTierSchema = z.enum(["household"]);
+export const SubscriptionTierSchema = z.enum(["standard", "household"]);
 
 export const BillingCycleSchema = z.enum(["monthly", "annual", "founding"]);
 
-export function buildExportFileName(dateStr: string): string {
-  return `money-matters-backup-${dateStr}.zip`;
+export function buildExportFileName(dateStr: string, appSlug = "workspace"): string {
+  return `${appSlug}-backup-${dateStr}.zip`;
 }

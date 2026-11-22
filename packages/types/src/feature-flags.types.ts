@@ -4,39 +4,35 @@
 
 export interface PlatformCapabilityFlags {
   billing?: boolean;
+  memberInvite?: boolean;
   memberInvites?: boolean;
   aiAssistant: boolean;
   privateMode: boolean;
   fileNotes: boolean;
   fileNotesMaxStorageMb: number;
   fileNotesMaxFileMb: number;
-  categories?: boolean;
   schedules?: boolean;
   transactions?: boolean;
   bankAccounts?: boolean;
-  reports: boolean;
   offlineSync?: boolean;
   foundingMemberPromo?: boolean;
 }
 
 export interface AppFeatureFlagsRecord extends PlatformCapabilityFlags {
   appFlags?: Record<string, boolean | number | string>;
+  [key: string]: unknown;
 }
 
-export interface MoneyMattersFeatureFlags {
-  simulation: boolean;
-  customAllocationRules: boolean;
-}
+export type AppFeatureFlags = AppFeatureFlagsRecord;
 
-export type AppFeatureFlags = PlatformCapabilityFlags & MoneyMattersFeatureFlags;
-
-export const DEFAULT_APP_FEATURE_FLAGS: AppFeatureFlags = {
+export const DEFAULT_APP_FEATURE_FLAGS: PlatformCapabilityFlags = {
   aiAssistant: true,
   privateMode: true,
   fileNotes: true,
   fileNotesMaxStorageMb: 100,
   fileNotesMaxFileMb: 10,
-  simulation: true,
-  customAllocationRules: true,
-  reports: true,
+  bankAccounts: false,
+  foundingMemberPromo: false,
+  offlineSync: false,
+  memberInvite: true,
 };

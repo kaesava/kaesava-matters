@@ -6,7 +6,6 @@
  */
 
 export * from "./tenant.types.js";
-export * from "./status.types.js";
 export * from "./commands.types.js";
 export * from "./app-preferences.js";
 export * from "./onboarding-quiz.js";
@@ -41,5 +40,4 @@ export * from "./logger.js";
 export * from "./platform-contracts.types.js";
 export * from "./schedules.types.js";
 export * from "./feature-flags.types.js";
-export * from "./categories.types.js";
 
