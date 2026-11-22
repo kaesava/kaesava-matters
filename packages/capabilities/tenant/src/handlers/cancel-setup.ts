@@ -1,4 +1,4 @@
-import { tenants, type DbOrTx } from "@money-matters/db";
+import { tenants, type DbOrTx } from "@money-matters/db/rings/capabilities";
 import type { TenantLifecycleHooks } from "@money-matters/types";
 import { and, eq } from "drizzle-orm";
 

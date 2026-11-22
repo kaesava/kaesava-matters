@@ -3,7 +3,7 @@
  * Calculates days remaining in trial and derives typed boolean flags.
  */
 import { eq } from "drizzle-orm";
-import { tenants, type DbOrTx } from "@money-matters/db";
+import { tenants, type DbOrTx } from "@money-matters/db/rings/capabilities";
 import { SubscriptionStatusDto } from "@money-matters/types";
 import type { SubscriptionStatusDto as TSubscriptionStatusDto } from "@money-matters/types";
 

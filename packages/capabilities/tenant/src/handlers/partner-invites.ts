@@ -1,4 +1,4 @@
-import { tenantUsers, tenants, users, type DbOrTx } from "@money-matters/db";
+import { tenantUsers, tenants, users, type DbOrTx } from "@money-matters/db/rings/capabilities";
 import { eq, and, sql, isNull } from "drizzle-orm";
 import { ensurePremiumAccess } from "@money-matters/core";
 import {

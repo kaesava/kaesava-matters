@@ -4,7 +4,7 @@
  */
 import Stripe from "stripe";
 import { eq } from "drizzle-orm";
-import { tenants, type DbOrTx } from "@money-matters/db";
+import { tenants, type DbOrTx } from "@money-matters/db/rings/capabilities";
 import { validateEnv, resolveAppConfigOrDefault } from "@money-matters/config";
 
 function isWhitelistedUrl(target: string, appId?: string | null): boolean {

@@ -15,6 +15,8 @@ const PROTECTED_PACKAGES = [
   "packages/config/src",
   "packages/core/src",
   "packages/ui/src",
+  "packages/types/src",
+  "packages/i18n/src",
   "packages/capabilities/tenant/src",
   "packages/capabilities/bank-accounts/src",
   "packages/capabilities/billing/src",
@@ -23,6 +25,7 @@ const PROTECTED_PACKAGES = [
   "packages/capabilities/notifications/src",
   "packages/capabilities/schedules/src",
   "packages/capabilities/assistant/src",
+  "packages/capabilities/transactions/src",
 ];
 
 const FORBIDDEN_PATTERNS = [
@@ -32,6 +35,14 @@ const FORBIDDEN_PATTERNS = [
   {
     label: "cross-Ring-2 capability import",
     regex: /from\s+["']@money-matters\/capability-(tenant|bank-accounts|billing|bug-reports|file-notes|notifications|schedules|assistant|transactions)(\/[^"']*)?["']/,
+  },
+  {
+    label: "@trpc/server inside Ring 1/Ring 2 domain logic",
+    regex: /from\s+["']@trpc\/server["']/,
+  },
+  {
+    label: "monolithic root @money-matters/db import (use @money-matters/db/rings/platform or /rings/capabilities)",
+    regex: /from\s+["']@money-matters\/db["']/,
   },
   {
     label: "Money Matters budgeting DB tables",
@@ -49,6 +60,8 @@ const BRAND_CHECK_ALLOWLIST = new Set([
   "packages/config/src/app-registry.ts",
   "packages/config/src/env.ts",
   "packages/core/src/security-headers.ts",
+  "packages/i18n/src/dictionaries/en/privacy.ts",
+  "packages/i18n/src/dictionaries/en/landing.ts",
 ]);
 
 function walkTsFiles(dir) {
@@ -76,6 +89,9 @@ for (const relPkg of PROTECTED_PACKAGES) {
     const relPath = path.relative(ROOT, file);
     const content = fs.readFileSync(file, "utf8");
     for (const rule of FORBIDDEN_PATTERNS) {
+      if (relPath === "packages/core/src/db-client.ts" && rule.label.startsWith("monolithic root")) {
+        continue;
+      }
       if (rule.regex.test(content)) {
         violations.push({ file: relPath, rule: rule.label });
       }

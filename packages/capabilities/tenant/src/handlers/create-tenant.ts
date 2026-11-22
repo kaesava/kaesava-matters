@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { tenants, tenantUsers, apps, users, userAppTrials, userPreferences, type DbOrTx } from "@money-matters/db";
+import { tenants, tenantUsers, apps, users, userAppTrials, userPreferences, type DbOrTx } from "@money-matters/db/rings/capabilities";
 import { resolveAppConfigOrDefault } from "@money-matters/config";
 import {
   CreateTenantCommand,

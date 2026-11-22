@@ -1,6 +1,6 @@
 import Stripe from "stripe";
 import { z } from "zod";
-import { type DbOrTx, billingInvoices, tenants } from "@money-matters/db";
+import { type DbOrTx, billingInvoices, tenants } from "@money-matters/db/rings/capabilities";
 import { getCachedDateFormat, sendNotificationEmail, formatCurrency } from "@money-matters/core";
 import { resolveAppConfigOrDefault } from "@money-matters/config";
 import { eq } from "drizzle-orm";

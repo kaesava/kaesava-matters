@@ -12,26 +12,6 @@ export const CreateTenantCommand = z.object({
   timezone: z.string().optional(),
 }).strict();
 
-export const UpdateTenantCommand = z.object({
-  name: z.string().min(1).optional(),
-  country: z.string().length(2).optional(),
-  currency: z.string().length(3).optional(),
-  timezone: z.string().optional(),
-  state: z.string().optional(),
-  postcode: z.string().optional(),
-}).strict();
-
-export const UpdateUserPreferencesCommand = z.object({
-  timezone: z.string().optional(),
-  language: z.enum(["en"]).optional(),
-  locale: z.string().optional(),
-  showIcons: z.boolean().optional(),
-  telemetryConsent: z.enum(["granted", "denied"]).optional(),
-  hideAmountsInNotifications: z.boolean().optional(),
-  setupCompleted: z.boolean().optional(),
-  appPreferences: z.record(z.string(), z.record(z.string(), z.unknown())).optional(),
-}).strict();
-
 export const AccountTypeSchema = z.enum(["EVERYDAY", "SAVINGS", "LOAN_OFFSET"]);
 
 export const CreateBankAccountCommand = z.object({
@@ -223,11 +203,6 @@ export const DeleteUpcomingEventCommand = z.object({
   eventType: z.enum(["INCOME", "EXPENSE"]),
 }).strict();
 
-export const BulkDeleteEventsCommand = z.object({
-  incomeEventIds: z.array(z.string().uuid()).default([]),
-  expenseEventIds: z.array(z.string().uuid()).default([]),
-}).strict();
-
 export const ConfirmPaydayCommand = z.object({
   incomeEventId: z.string().uuid(),
   actualAmount: z.string().regex(/^\d{1,12}(\.\d{1,2})?$/),
@@ -248,38 +223,6 @@ export const ConfirmPaydayCommand = z.object({
   message: "Sum of allocation lines must equal total actual income amount",
   path: ["lines"],
       });
-
-export const InvitePartnerCommand = z.object({
-  email: z.string().email(),
-  role: z.enum(["MEMBER", "OWNER"]).default("MEMBER"),
-  ttlHours: z.number().int().min(1).max(168).default(72),
-}).strict();
-
-export const AcceptInviteCommand = z.object({
-  inviteToken: z.string().uuid(),
-  userEmail: z.string().email(),
-}).strict();
-
-export const SyncLedgerMutationCommand = z.object({
-  clientMutationId: z.string().uuid(),
-  idempotencyKey: z.string().min(1),
-  clientTimestamp: z.string().datetime(),
-  envelopeId: z.string().uuid(),
-  bankAccountId: z.string().uuid().optional().nullable(),
-  amount: z.string().regex(/^\d{1,12}(\.\d{1,2})?$/),
-  flowType: z.enum(["DEBIT", "CREDIT"]),
-  transactionType: TransactionTypeSchema.optional(),
-  note: z.string().optional(),
-  source: z.enum(["MANUAL", "AUTO", "IMPORT"]).default("MANUAL"),
-}).strict();
-
-export const WaterfallExecutionPayload = z.object({
-  tenantId: z.string().uuid(),
-  incomeEventId: z.string().uuid(),
-  paycheckAmount: z.string().regex(/^\d{1,12}(\.\d{1,2})?$/),
-  idempotencyKey: z.string().min(1),
-  executionLockId: z.string().uuid(),
-}).strict();
 
 export const CreateCheckoutSessionCommand = z.object({
   priceId: z.string().min(1).optional(),

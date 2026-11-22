@@ -1,6 +1,6 @@
 import Stripe from "stripe";
 import { z } from "zod";
-import { type DbOrTx } from "@money-matters/db";
+import { type DbOrTx } from "@money-matters/db/rings/capabilities";
 import { activateSubscriptionCommand } from "../../commands/activate-subscription.js";
 import { resolveTenantId } from "./resolve-tenant.js";
 

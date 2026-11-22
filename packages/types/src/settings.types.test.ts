@@ -1,7 +1,5 @@
 import { describe, it, expect } from "vitest";
 import {
-  UpdateProfileFormSchema,
-  UpdateUserPreferencesCommand,
   UpdateHouseholdFormSchema,
   BankAccountFormSchema,
   computeAccountAvailability,
@@ -11,36 +9,6 @@ import {
 } from "./index";
 
 describe("Settings Types & Schemas", () => {
-  describe("UpdateProfileFormSchema", () => {
-    it("validates valid profile data", () => {
-      const parsed = UpdateProfileFormSchema.parse({
-        displayName: "Alice Smith",
-        notificationEmail: "alice@example.com",
-        phone: "+61412345678",
-        timezone: "Australia/Sydney",
-        showIcons: true,
-      });
-      expect(parsed.displayName).toBe("Alice Smith");
-      expect(parsed.notificationEmail).toBe("alice@example.com");
-    });
-
-    it("rejects empty name or invalid email", () => {
-      expect(() =>
-        UpdateProfileFormSchema.parse({
-          displayName: "",
-          notificationEmail: "alice@example.com",
-        })
-      ).toThrow();
-
-      expect(() =>
-        UpdateProfileFormSchema.parse({
-          displayName: "Alice",
-          notificationEmail: "not-an-email",
-        })
-      ).toThrow();
-    });
-  });
-
   describe("UpdateHouseholdFormSchema", () => {
     it("validates valid household data with AU 4-digit postcode", () => {
       const parsed = UpdateHouseholdFormSchema.parse({
@@ -134,14 +102,6 @@ describe("Settings Types & Schemas", () => {
       expect(COMMON_TIMEZONES.length).toBeGreaterThanOrEqual(10);
       expect(AU_STATES).toHaveLength(8);
       expect(AU_STATES.map((s) => s.code)).toContain("NSW");
-    });
-  });
-
-  describe("UpdateUserPreferencesCommand", () => {
-    it("accepts granted or denied telemetryConsent and rejects invalid values", () => {
-      expect(UpdateUserPreferencesCommand.parse({ telemetryConsent: "granted" }).telemetryConsent).toBe("granted");
-      expect(UpdateUserPreferencesCommand.parse({ telemetryConsent: "denied" }).telemetryConsent).toBe("denied");
-      expect(() => UpdateUserPreferencesCommand.parse({ telemetryConsent: "maybe" })).toThrow();
     });
   });
 });

@@ -2,7 +2,7 @@
  * Queries billing invoice history for a tenant scope.
  */
 import { desc, eq } from "drizzle-orm";
-import { billingInvoices, type DbOrTx } from "@money-matters/db";
+import { billingInvoices, type DbOrTx } from "@money-matters/db/rings/capabilities";
 import type { BillingInvoiceDto } from "@money-matters/types";
 
 export async function listInvoicesQuery(

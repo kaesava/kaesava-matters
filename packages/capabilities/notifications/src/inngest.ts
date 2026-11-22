@@ -1,5 +1,5 @@
 import { Inngest } from 'inngest';
-import { db, deviceTokens } from '@money-matters/db';
+import { db, deviceTokens } from "@money-matters/db/rings/capabilities";
 import { resolveAppConfigOrDefault } from '@money-matters/config';
 import { sendEmail, logAuditEvent, buildBrandEmailHeader } from '@money-matters/core';
 import { t } from '@money-matters/i18n';

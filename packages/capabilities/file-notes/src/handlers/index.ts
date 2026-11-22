@@ -1,6 +1,6 @@
-import { TRPCError } from "@trpc/server";
+import { CapabilityError, getPresignedUploadUrl, getPresignedDownloadUrl } from "@money-matters/core";
 import { eq, and, or, isNull, isNotNull, desc, sql } from "drizzle-orm";
-import { fileNotes, users, apps, type DbOrTx } from "@money-matters/db";
+import { fileNotes, users, apps, type DbOrTx } from "@money-matters/db/rings/capabilities";
 import { resolveEffectiveAppFlags } from "@money-matters/config";
 import {
   CreatePreSignedUrlInput,
@@ -14,7 +14,6 @@ import {
   type EntityPrivacyResolverMap,
   type EntityPrivacyResolution,
 } from "@money-matters/types";
-import { getPresignedUploadUrl, getPresignedDownloadUrl } from "../storage.js";
 
 function privacyFilter(userId: string) {
   return or(eq(fileNotes.isPrivate, false), eq(fileNotes.userId, userId));
@@ -67,15 +66,15 @@ export async function createPreSignedUrlHandler(
 ): Promise<{ fileKey: string; uploadUrl: string }> {
   const flags = await getAppFlags(db, ctx.appId);
   if (!flags.fileNotes) {
-    throw new TRPCError({ code: "FORBIDDEN", message: "file_notes_disabled" });
+    throw new CapabilityError("FORBIDDEN", "file_notes_disabled");
   }
 
   const maxFileBytes = flags.fileNotesMaxFileMb * 1024 * 1024;
   if (input.fileSize > maxFileBytes) {
-    throw new TRPCError({
-      code: "BAD_REQUEST",
-      message: `File size exceeds the limit of ${flags.fileNotesMaxFileMb}MB`,
-    });
+    throw new CapabilityError(
+      "BAD_REQUEST",
+      `File size exceeds the limit of ${flags.fileNotesMaxFileMb}MB`
+    );
   }
 
   // Quota enforcement: compute tenant storage scoped to appId
@@ -95,19 +94,16 @@ export async function createPreSignedUrlHandler(
   const currentBytes = Number(usage?.totalBytes || 0);
   const maxStorageBytes = flags.fileNotesMaxStorageMb * 1024 * 1024;
   if (currentBytes + input.fileSize > maxStorageBytes) {
-    throw new TRPCError({
-      code: "BAD_REQUEST",
-      message: "storage_quota_exceeded",
-    });
+    throw new CapabilityError("BAD_REQUEST", "storage_quota_exceeded");
   }
 
   // Verify entity access
   const entityInfo = await resolveEntityPrivacy(db, ctx, input.entityType, input.entityId);
   if (!entityInfo.exists) {
-    throw new TRPCError({ code: "NOT_FOUND", message: "target_entity_not_found" });
+    throw new CapabilityError("NOT_FOUND", "target_entity_not_found");
   }
   if (entityInfo.isPrivate && entityInfo.ownerUserId && entityInfo.ownerUserId !== ctx.userId) {
-    throw new TRPCError({ code: "FORBIDDEN", message: "private_entity_unauthorized" });
+    throw new CapabilityError("FORBIDDEN", "private_entity_unauthorized");
   }
 
   const sanitizedFileName = input.fileName.replace(/[^a-zA-Z0-9.-]/g, "_");
@@ -125,15 +121,15 @@ export async function createFileNoteHandler(
 ): Promise<FileNoteDto> {
   const flags = await getAppFlags(db, ctx.appId);
   if (!flags.fileNotes) {
-    throw new TRPCError({ code: "FORBIDDEN", message: "file_notes_disabled" });
+    throw new CapabilityError("FORBIDDEN", "file_notes_disabled");
   }
 
   const entityInfo = await resolveEntityPrivacy(db, ctx, input.entityType, input.entityId);
   if (!entityInfo.exists) {
-    throw new TRPCError({ code: "NOT_FOUND", message: "target_entity_not_found" });
+    throw new CapabilityError("NOT_FOUND", "target_entity_not_found");
   }
   if (entityInfo.isPrivate && entityInfo.ownerUserId && entityInfo.ownerUserId !== ctx.userId) {
-    throw new TRPCError({ code: "FORBIDDEN", message: "private_entity_unauthorized" });
+    throw new CapabilityError("FORBIDDEN", "private_entity_unauthorized");
   }
 
   const isPrivate = entityInfo.isPrivate;
@@ -198,11 +194,12 @@ export async function listFileNotesHandler(
     return [];
   }
   if (entityInfo.isPrivate && entityInfo.ownerUserId && entityInfo.ownerUserId !== ctx.userId) {
-    throw new TRPCError({ code: "FORBIDDEN", message: "private_entity_unauthorized" });
+    throw new CapabilityError("FORBIDDEN", "private_entity_unauthorized");
   }
 
   const conditions = [
     eq(fileNotes.tenantId, ctx.tenantId),
+    eq(fileNotes.appId, ctx.appId),
     eq(fileNotes.entityType, input.entityType),
     eq(fileNotes.entityId, input.entityId),
     privacyFilter(ctx.userId),
@@ -255,11 +252,11 @@ export async function getDownloadUrlHandler(
   const [note] = await db
     .select()
     .from(fileNotes)
-    .where(and(eq(fileNotes.id, id), eq(fileNotes.tenantId, ctx.tenantId), privacyFilter(ctx.userId)))
+    .where(and(eq(fileNotes.id, id), eq(fileNotes.tenantId, ctx.tenantId), eq(fileNotes.appId, ctx.appId), privacyFilter(ctx.userId)))
     .limit(1);
 
   if (!note || !note.fileKey) {
-    throw new TRPCError({ code: "NOT_FOUND", message: "attachmentNotFound" });
+    throw new CapabilityError("NOT_FOUND", "attachmentNotFound");
   }
 
   const downloadUrl = await getPresignedDownloadUrl(note.id);
@@ -278,6 +275,7 @@ export async function updateFileNoteCommentHandler(
       and(
         eq(fileNotes.id, input.id),
         eq(fileNotes.tenantId, ctx.tenantId),
+        eq(fileNotes.appId, ctx.appId),
         privacyFilter(ctx.userId),
         isNull(fileNotes.archivedAt)
       )
@@ -285,7 +283,7 @@ export async function updateFileNoteCommentHandler(
     .limit(1);
 
   if (!existing) {
-    throw new TRPCError({ code: "NOT_FOUND", message: "fileNoteNotFound" });
+    throw new CapabilityError("NOT_FOUND", "fileNoteNotFound");
   }
 
   const [updated] = await db
@@ -295,14 +293,14 @@ export async function updateFileNoteCommentHandler(
       updatedAt: new Date(),
       updatedBy: ctx.userId,
     })
-    .where(eq(fileNotes.id, input.id))
+    .where(and(eq(fileNotes.id, input.id), eq(fileNotes.tenantId, ctx.tenantId), eq(fileNotes.appId, ctx.appId)))
     .returning();
 
   return {
     id: updated.id,
     tenantId: updated.tenantId,
     appId: updated.appId,
-    entityType: updated.entityType as "ENVELOPE" | "BANK_ACCOUNT",
+    entityType: updated.entityType,
     entityId: updated.entityId,
     comment: updated.comment,
     fileKey: updated.fileKey,
@@ -331,6 +329,7 @@ export async function archiveFileNoteHandler(
       and(
         eq(fileNotes.id, id),
         eq(fileNotes.tenantId, ctx.tenantId),
+        eq(fileNotes.appId, ctx.appId),
         privacyFilter(ctx.userId),
         isNull(fileNotes.archivedAt)
       )
@@ -338,7 +337,7 @@ export async function archiveFileNoteHandler(
     .limit(1);
 
   if (!existing) {
-    throw new TRPCError({ code: "NOT_FOUND", message: "fileNoteNotFound" });
+    throw new CapabilityError("NOT_FOUND", "fileNoteNotFound");
   }
 
   await db
@@ -347,7 +346,7 @@ export async function archiveFileNoteHandler(
       archivedAt: new Date(),
       archivedBy: ctx.userId,
     })
-    .where(eq(fileNotes.id, id));
+    .where(and(eq(fileNotes.id, id), eq(fileNotes.tenantId, ctx.tenantId), eq(fileNotes.appId, ctx.appId)));
 
   return { success: true };
 }
@@ -363,7 +362,7 @@ export async function getStorageQuotaHandler(
       totalBytes: sql<string>`COALESCE(SUM(CAST(${fileNotes.fileSize} AS BIGINT)), 0)`,
     })
     .from(fileNotes)
-    .where(and(eq(fileNotes.tenantId, ctx.tenantId), isNotNull(fileNotes.fileKey)));
+    .where(and(eq(fileNotes.tenantId, ctx.tenantId), eq(fileNotes.appId, ctx.appId), isNotNull(fileNotes.fileKey)));
 
   return {
     usedBytes: Number(usage?.totalBytes || 0),

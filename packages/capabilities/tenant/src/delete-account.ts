@@ -10,7 +10,7 @@ import {
   tenants,
   users,
   type DbOrTx,
-} from "@money-matters/db";
+} from "@money-matters/db/rings/capabilities";
 import type { TenantLifecycleHooks } from "@money-matters/types";
 import { eq, and, sql, inArray, ne } from "drizzle-orm";
 import { sendNotificationEmail, logger } from "@money-matters/core";

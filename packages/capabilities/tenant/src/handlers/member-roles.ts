@@ -1,4 +1,4 @@
-import { tenantUsers, DbOrTx } from "@money-matters/db";
+import { tenantUsers, DbOrTx } from "@money-matters/db/rings/capabilities";
 import { eq, and, sql, isNull } from "drizzle-orm";
 import { UpdateHouseholdMemberRoleCommandType } from "@money-matters/types";
 

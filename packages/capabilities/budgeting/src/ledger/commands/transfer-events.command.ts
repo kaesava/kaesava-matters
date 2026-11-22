@@ -243,7 +243,13 @@ export async function executeTransferEventCommand(
       updatedAt: new Date(),
       updatedBy: userId,
     })
-    .where(eq(transferEvents.id, input.eventId));
+    .where(
+      and(
+        eq(transferEvents.id, input.eventId),
+        eq(transferEvents.tenantId, tenantId),
+        eq(transferEvents.appId, appId)
+      )
+    );
 
   return { success: true, message: "Transfer completed successfully." };
 }

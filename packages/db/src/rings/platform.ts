@@ -9,3 +9,5 @@ export * from "../schema/tenant_user.js";
 export * from "../schema/tenant_user_preference.js";
 export * from "../schema/device_token.js";
 export * from "../schema/early_access.js";
+export * from "../types.js";
+export { db } from "../index.js";

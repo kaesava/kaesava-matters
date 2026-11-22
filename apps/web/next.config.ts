@@ -9,7 +9,6 @@ const nextConfig: NextConfig = {
     "@money-matters/core",
     "@money-matters/config",
     "@money-matters/capability-budgeting",
-    "@money-matters/capability-transactions",
     "@money-matters/capability-tenant",
     "@money-matters/capability-notifications",
   ],

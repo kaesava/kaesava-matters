@@ -7,10 +7,9 @@ import {
   EstimatedCategoryItem,
   QuizAnswers,
   UserGoalItem,
-  calculateQuizEstimates,
   convertToMonthly,
   convertFromMonthly,
-  getGoalMonthsDiff,
+  computeSetupWizardCalculations as computeSharedSetupWizardCalculations,
 } from '@money-matters/types';
 
 export { convertToMonthly, convertFromMonthly };
@@ -68,102 +67,15 @@ export function computeSetupWizardCalculations(props: CalculationsProps) {
     weeklyPersonal: props.weeklyPersonal,
   };
 
-  const estimation = calculateQuizEstimates(quizAnswers);
-
-  const activeGoals: EstimatedCategoryItem[] = (props.goals || [])
-    .filter((g) => !props.removedCategoryNames.has(g.name))
-    .map((g) => {
-      const isOngoing = g.fundingMode === 'RECURRING' || (!g.dueDate && Boolean(g.budgetFrequency));
-      const override = props.amountOverrides[g.name];
-      let baseMonthly = 0;
-      if (isOngoing) {
-        const rawAmt =
-          g.enteredAmount !== undefined && g.enteredAmount !== null
-            ? g.enteredAmount
-            : (g.monthlyAmount || g.targetAmount || 0);
-        if (g.budgetFrequency === 'WEEKLY') baseMonthly = Math.round((rawAmt * 52) / 12);
-        else if (g.budgetFrequency === 'FORTNIGHTLY') baseMonthly = Math.round((rawAmt * 26) / 12);
-        else if (g.budgetFrequency === 'QUARTERLY') baseMonthly = Math.round((rawAmt * 4) / 12);
-        else if (g.budgetFrequency === 'ANNUALLY') baseMonthly = Math.round(rawAmt / 12);
-        else baseMonthly = Math.round(rawAmt);
-      } else {
-        baseMonthly = Math.round((g.targetAmount || 0) / getGoalMonthsDiff(g.dueDate));
-      }
-      return {
-        id: g.id,
-        name: g.name,
-        type: 'GOAL' as const,
-        envelopeType: 'GOAL' as const,
-        fundingMode: isOngoing ? ('RECURRING' as const) : ('TARGET_BALANCE' as const),
-        isPriority: g.isPriority ?? true,
-        isSurplusTarget: g.isSurplusTarget ?? false,
-        isPrivate: g.isPrivate ?? false,
-        bankAccountId: g.bankAccountId,
-        targetAmount: g.targetAmount ?? null,
-        enteredAmount: g.enteredAmount ?? null,
-        endDate: g.dueDate ?? null,
-        budgetFrequency: g.budgetFrequency ?? null,
-        startDate: g.startDate ?? null,
-        rrule: g.rrule ?? null,
-        currentBalance: g.currentBalance ?? 0,
-        monthlyAud: override !== undefined ? override : baseMonthly,
-        icon: g.icon || 'target',
-      };
-    });
-
-  const nonGoalCategories = props.isRerun
-    ? props.customCategories.filter((c) => c.type !== 'GOAL')
-    : [
-        ...estimation.regularBills.filter(
-          (b) => !props.customCategories.some((c) => c.name.trim().toLowerCase() === b.name.trim().toLowerCase())
-        ),
-        ...estimation.everydayCategories.filter(
-          (e) => !props.customCategories.some((c) => c.name.trim().toLowerCase() === e.name.trim().toLowerCase())
-        ),
-        ...props.customCategories.filter((c) => c.type !== 'GOAL'),
-      ];
-
-  const billTypeOverrides = props.billTypeOverrides || {};
-  const mappedNonGoals = nonGoalCategories
-    .filter((cat) => !props.removedCategoryNames.has(cat.name))
-    .map((cat) => {
-      const override = props.amountOverrides[cat.name];
-      const typeOverride = billTypeOverrides[cat.name];
-      const isEveryday = cat.type === 'EVERYDAY';
-      return {
-        ...cat,
-        envelopeType: isEveryday ? ('EVERYDAY' as const) : ('BILL' as const),
-        fundingMode:
-          typeOverride ||
-          cat.fundingMode ||
-          (isEveryday ? ('TARGET_BALANCE' as const) : ('RECURRING' as const)),
-        monthlyAud: override !== undefined ? override : cat.monthlyAud,
-      };
-    });
-
-  const activeCategories = [...mappedNonGoals, ...activeGoals];
-
-  const activeEveryday = activeCategories.filter((c) => c.type === 'EVERYDAY');
-  const activeRegular = activeCategories.filter((c) => c.type === 'BILL');
-
-  const totalEverydayMonthly = activeEveryday.reduce((acc, c) => acc + c.monthlyAud, 0);
-  const totalRegularMonthly = activeRegular.reduce((acc, c) => acc + c.monthlyAud, 0);
-  const totalGoalMonthly = activeGoals.reduce((acc, c) => acc + c.monthlyAud, 0);
-  const totalAllocatedMonthly = totalEverydayMonthly + totalRegularMonthly + totalGoalMonthly;
-
-  return {
-    estimation,
-    activeCategories,
-    activeEveryday,
-    activeRegular,
-    activeGoals,
-    totalEverydayMonthly,
-    totalRegularMonthly,
-    totalGoalMonthly,
-    totalAllocatedMonthly,
-    convertToMonthly,
-    convertFromMonthly,
-  };
+  return computeSharedSetupWizardCalculations({
+    quizAnswers,
+    isRerun: props.isRerun,
+    goals: props.goals,
+    customCategories: props.customCategories,
+    removedCategoryNames: props.removedCategoryNames,
+    amountOverrides: props.amountOverrides,
+    billTypeOverrides: props.billTypeOverrides,
+  });
 }
 
 export function useSetupWizardCalculations(props: CalculationsProps) {

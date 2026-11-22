@@ -3,7 +3,7 @@
  * Updates subscriptionStatus = 'SUBSCRIBED', premiumEnabled = true.
  */
 import { eq } from "drizzle-orm";
-import { tenants, type DbOrTx } from "@money-matters/db";
+import { tenants, type DbOrTx } from "@money-matters/db/rings/capabilities";
 
 export async function activateSubscriptionCommand(
   db: DbOrTx,

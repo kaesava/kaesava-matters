@@ -13,7 +13,6 @@ import {
   getAuthMethodsHandler,
   setAccountPasswordHandler,
 } from "@money-matters/capability-tenant";
-import { deleteFileFromBucket, getPresignedDownloadUrl } from "@money-matters/capability-file-notes";
 import { createMoneyMattersTenantLifecycleHooks } from "@money-matters/capability-budgeting";
 import {
   CreateTenantCommand,
@@ -21,8 +20,9 @@ import {
   SetAccountPasswordInputSchema,
   DEFAULT_APP_FEATURE_FLAGS,
 } from "@money-matters/types";
+import { resolveEffectiveAppFlags } from "@money-matters/config";
 import { hashPassword } from "better-auth/crypto";
-import { checkRateLimit } from "@money-matters/core";
+import { checkRateLimit, deleteFileFromBucket, getPresignedDownloadUrl } from "@money-matters/core";
 import { TRPCError } from '@trpc/server';
 import { z } from 'zod';
 import { captureIfConsented, identifyIfConsented } from '../../lib/posthog.js';
@@ -99,7 +99,7 @@ export const tenantCoreProcedures = {
         setupStatus,
         features: {
           ...DEFAULT_APP_FEATURE_FLAGS,
-          ...(appRecord?.featureFlags ?? {}),
+          ...resolveEffectiveAppFlags(appId, appRecord?.featureFlags),
         },
       };
     }),

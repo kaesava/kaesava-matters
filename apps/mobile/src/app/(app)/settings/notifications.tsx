@@ -11,7 +11,6 @@ function resolvePrefsBlob(raw: unknown, appId?: string): Record<string, unknown>
   if (!raw || typeof raw !== "object") return {};
   const map = raw as Record<string, unknown>;
   if (appId && map[appId] && typeof map[appId] === "object") return map[appId] as Record<string, unknown>;
-  if (map["money-matters"] && typeof map["money-matters"] === "object") return map["money-matters"] as Record<string, unknown>;
   return map;
 }
 

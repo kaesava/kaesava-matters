@@ -1,13 +1,13 @@
 import { describe, it, expect, vi } from "vitest";
-import { recordExpenseCommand } from "./commands/record-expense.command.js";
+import { recordExpenseCommand } from "./record-expense.command.js";
 import type { DbOrTx } from "@money-matters/db";
 
-describe("transactions capability", () => {
+describe("recordExpenseCommand", () => {
   const tenantId = "00000000-0000-0000-0000-000000000001";
   const appId = "00000000-0000-0000-0000-000000000002";
   const userId = "00000000-0000-0000-0000-000000000003";
 
-  it("throws error when target pool is not found or unauthorized", async () => {
+  it("throws error when target envelope is not found or unauthorized", async () => {
     const mockTx = {
       select: vi.fn().mockReturnValue({
         from: vi.fn().mockReturnValue({
@@ -41,7 +41,6 @@ describe("transactions capability", () => {
             if (selectCount === 1) {
               return Promise.resolve([{ id: "p-123", tenantId }]);
             }
-            // Return existing credit transaction giving balance of 100.00
             return Promise.resolve([{ amount: "100.00", flowType: "CREDIT" }]);
           }),
         }),
@@ -77,7 +76,6 @@ describe("transactions capability", () => {
             if (selectCount === 1) {
               return Promise.resolve([{ id: "p-123", tenantId }]);
             }
-            // Return existing balance of only 20.00
             return Promise.resolve([{ amount: "20.00", flowType: "CREDIT" }]);
           }),
         }),

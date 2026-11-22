@@ -39,4 +39,12 @@ export * from "./lifecycle/money-matters-tenant-hooks.js";
 export * from "./lifecycle/money-matters-bank-account-hooks.js";
 export * from "./lifecycle/money-matters-archive-adapters.js";
 export * from "./lifecycle/money-matters-file-notes.js";
+export * from "./manifest/money-matters.manifest.js";
+export * from "./ledger/commands/record-expense.command.js";
+export * from "./ledger/commands/mark-expense-paid.command.js";
+export * from "./ledger/commands/transfer-events.command.js";
+export * from "./ledger/queries/list-transactions.query.js";
+export * from "./ledger/queries/search-transactions.query.js";
+export * from "./ledger/queries/get-spending-analytics.query.js";
+export * from "./ledger/queries/list-transfer-events.query.js";
 

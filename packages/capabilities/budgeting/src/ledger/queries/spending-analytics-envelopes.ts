@@ -1,20 +1,12 @@
-import { DEFAULT_LOCALE, SpendingTimeframe, TopPayeeItemDTO } from "@money-matters/types";
-import { getCachedDateFormat } from "@money-matters/core";
+import { getMonthLabel, SpendingTimeframe, TopPayeeItemDTO } from "@money-matters/types";
+
+export { getMonthLabel };
 
 export interface AnalyticsBucketItem {
   key: string;
   label: string;
   income: number;
   outflow: number;
-}
-
-export function getMonthLabel(year: number, monthZeroIndex: number, locale: string = DEFAULT_LOCALE): string {
-  const date = new Date(Date.UTC(year, monthZeroIndex, 1));
-  return getCachedDateFormat(locale, {
-    month: "short",
-    year: "2-digit",
-    timeZone: "UTC",
-  }).format(date);
 }
 
 export function getAnalyticsCutoff(timeframe: SpendingTimeframe, refDate: Date): Date {

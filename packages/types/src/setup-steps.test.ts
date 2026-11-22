@@ -1,31 +1,16 @@
 import { describe, it, expect } from "vitest";
-import { FIRST_RUN_SETUP_STEPS, RERUN_SETUP_STEPS, getSetupSteps, getTotalSetupSteps } from "./setup-steps.types.js";
+import { getTotalSetupSteps, convertToMonthly, convertFromMonthly } from "./setup-steps.types.js";
 import { simulateSetupPaydaySandbox } from "./setup-sandbox-simulation.js";
 
 describe("Setup Steps Parity", () => {
-  it("defines ordered steps for first-run setup matching exactly 5 steps ending with review", () => {
-    expect(FIRST_RUN_SETUP_STEPS.map((s) => s.id)).toEqual([
-      "income",
-      "accounts",
-      "goals",
-      "lifestyle",
-      "review",
-    ]);
+  it("defines step counts for first-run (5) and rerun (3) setup", () => {
     expect(getTotalSetupSteps(false)).toBe(5);
-  });
-
-  it("defines ordered steps for rerun setup matching exactly 3 steps ending with review", () => {
-    expect(RERUN_SETUP_STEPS.map((s) => s.id)).toEqual([
-      "income",
-      "goals",
-      "review",
-    ]);
     expect(getTotalSetupSteps(true)).toBe(3);
   });
 
-  it("getSetupSteps returns corresponding array according to isRerun flag", () => {
-    expect(getSetupSteps(false)).toEqual(FIRST_RUN_SETUP_STEPS);
-    expect(getSetupSteps(true)).toEqual(RERUN_SETUP_STEPS);
+  it("converts frequencies to and from monthly amounts symmetrically", () => {
+    expect(convertToMonthly(1200, "MONTHLY")).toBe(1200);
+    expect(convertFromMonthly(1200, "MONTHLY")).toBe(1200);
   });
 
   it("simulateSetupPaydaySandbox prorates waterfall allocations across regular bills, everyday, and goals", () => {

@@ -30,33 +30,16 @@ pnpm app:set-flag --flag=customAllocationRules --value=true --env=prod
 
 # Current State
 
-
-# Mobile tests
-
-I' now testing the mobile app  on a Google Pixel 10 (which I downloaded off the Play store - internal testing). While this applies to ios too, if there are android specific improvements, let's make them with an is android check and default to something reasonable otherwise.
-
-
-## Audit permissions
-
-It seems to request these - audit - do we really need all of these?
-
-android.permission.ACCESS_NETWORK_STATE, android.permission.ACCESS_WIFI_STATE, android.permission.CAMERA, android.permission.DETECT_SCREEN_CAPTURE, android.permission.INTERNET, android.permission.POST_NOTIFICATIONS, android.permission.READ_APP_BADGE, android.permission.READ_EXTERNAL_STORAGE, android.permission.READ_MEDIA_IMAGES, android.permission.RECEIVE_BOOT_COMPLETED, android.permission.RECORD_AUDIO, android.permission.SYSTEM_ALERT_WINDOW, android.permission.USE_BIOMETRIC, android.permission.USE_FINGERPRINT, android.permission.VIBRATE, android.permission.WAKE_LOCK, android.permission.WRITE_EXTERNAL_STORAGE, au.kaesava.moneymatters.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION, com.anddoes.launcher.permission.UPDATE_COUNT, com.android.vending.CHECK_LICENSE, com.google.android.c2dm.permission.RECEIVE, com.google.android.finsky.permission.BIND_GET_INSTALL_REFERRER_SERVICE, com.htc.launcher.permission.READ_SETTINGS, com.htc.launcher.permission.UPDATE_SHORTCUT, com.huawei.android.launcher.permission.CHANGE_BADGE, com.huawei.android.launcher.permission.READ_SETTINGS, com.huawei.android.launcher.permission.WRITE_SETTINGS, com.majeur.launcher.permission.UPDATE_BADGE, com.oppo.launcher.permission.READ_SETTINGS, com.oppo.launcher.permission.WRITE_SETTINGS, com.sec.android.provider.badge.permission.READ, com.sec.android.provider.badge.permission.WRITE, com.sonyericsson.home.permission.BROADCAST_BADGE, com.sonymobile.home.permission.PROVIDER_INSERT_BADGE, me.everything.badger.permission.BADGE_COUNT_READ, me.everything.badger.permission.BADGE_COUNT_WRITE
-
-* When I login, it asks me if I want to Allow Notifications. If I select No, it asked me again! The second time, it didn't ask. Also, The Notifications page only shows Email. That makes sens for the web app, but shouldn't we also have a Mobile app yes/no toggle - which should defult to no, and turn to yes if user accepts? And what if user didn't accept notifications and tries to turn them on? What's best practice?
-* Allow taking screenshots in the app
-
-## General UI
-
-* Some button text is too long for mobile - shorten (this may work for web app as well - so literals can be re-used) - example: "Take 60-Second Tour" to "Tour" and "Explore on My Own" to "Skip". This is just one example. Consider more widely.
-* Re-design table/list cards to feel more mobile-native. For example, History cards - look quite unintuitive. They don't allow swipe left or right (in this instance, that makes sense since History is immutable, but in other tables with cards, maybe it does)? Maybe pagination doesn't make sense for mobile and we use infinite scroll and sort? I feel the filter settings are clumsy too? Try to make change centrally
-
-## History
+Do another deep and broad pass across the codebase to ensure no cross-pollution between or within ring boundaries, no redundant/un-used code left behind, and all agent instructions. Are there opportunities to re-use code across or
+  within the web or mobilr app? Are there other re-usable components hiding within Money Matters app that we can extract? Are there sub-components that ought to be promoted or components that ought to be broken down? Do all components
+  reflect a consistent structure enforced so agents in the future don't pollute them? Are there other signficant blockers to start to build a new app that would make re-use difficult (this could be code in our codebase or even external
+  tooling - for example, if you need me to go and create relevant projects in upstash, etc. if needed). Is the architecture cleanly and consistenly implemented (injection, hooks, extension, routers, db table structures, etc) across all
+  components, and will future agentic codng honour this? Optimise this ask by limiting the number of codebase sweeps and collating audit. Output: /plan-feature with detailed implementation plan to address gaps/opportunities. /grill-me
 
 
-* File Upload fails
 
 
-* Test Google Authentication
+
 
 ############# IGNORE BELOW ##########################
 

@@ -1,5 +1,5 @@
 import { sql, eq, and, isNull } from "drizzle-orm";
-import { aiUsage, DbOrTx } from "@money-matters/db";
+import { aiUsage, DbOrTx } from "@money-matters/db/rings/capabilities";
 import { AI_TIER_LIMITS } from "@money-matters/config";
 import type { UsageStorePort } from "./index.js";
 

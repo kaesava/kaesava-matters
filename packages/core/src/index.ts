@@ -17,3 +17,4 @@ export * from "./posthog.js";
 export * from "./worker-factory.js";
 export * from "./next/auth-proxy.js";
 export * from "./next/trpc-proxy.js";
+export * from "./storage.js";

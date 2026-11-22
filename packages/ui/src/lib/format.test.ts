@@ -2,7 +2,6 @@ import { describe, it, expect } from "vitest";
 import {
   formatCurrency,
   formatAmountNumber,
-  fmtBalance,
   fmtTransactionAmount,
   getCurrencySymbol,
   getCurrencyMinorUnits,
@@ -36,7 +35,6 @@ describe("UI Format Utilities", () => {
     expect(formatCurrency(null, "en-AU", "AUD")).toContain("0.00");
     expect(formatCurrency(undefined, "en-AU", "AUD")).toContain("0.00");
     expect(formatCurrency(0, "en-AU", "AUD")).toContain("0.00");
-    expect(fmtBalance(null, "en-AU", "AUD")).toContain("0.00");
   });
 
   it("extracts currency symbols correctly via getCurrencySymbol", () => {

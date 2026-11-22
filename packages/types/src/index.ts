@@ -11,7 +11,6 @@ export * from "./app-preferences.js";
 export * from "./onboarding-quiz.js";
 export * from "./locale.types.js";
 export * from "./auth.types.js";
-export * from "./profile.types.js";
 export * from "./household.types.js";
 export * from "./bank-account.types.js";
 export * from "./subscription.types.js";

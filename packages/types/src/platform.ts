@@ -4,7 +4,6 @@
  */
 export * from "./tenant.types.js";
 export * from "./auth.types.js";
-export * from "./profile.types.js";
 export * from "./locale.types.js";
 export * from "./logger.js";
 export * from "./feature-flags.types.js";

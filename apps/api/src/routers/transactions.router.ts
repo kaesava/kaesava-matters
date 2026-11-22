@@ -6,7 +6,7 @@ import {
   searchTransactionsQuery,
   listEnvelopeTransactionsQuery,
   getSpendingAnalyticsQuery,
-} from "@money-matters/capability-transactions";
+} from "@money-matters/capability-budgeting";
 import {
   RecordExpenseCommand,
   ListTransactionsQuery,

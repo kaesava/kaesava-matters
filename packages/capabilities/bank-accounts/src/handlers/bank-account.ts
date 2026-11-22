@@ -1,12 +1,12 @@
 import { z } from "zod";
-import { bankAccounts, type DbOrTx } from "@money-matters/db";
+import { bankAccounts, type DbOrTx } from "@money-matters/db/rings/capabilities";
 import {
   CreateBankAccountCommand,
   UpdateBankAccountCommand,
   type BankAccountLifecycleHooks,
   type BankBalanceSyncSplit,
 } from "@money-matters/types";
-import { eq, and, sql, or } from "drizzle-orm";
+import { eq, and, sql, or, isNull } from "drizzle-orm";
 import { ensurePremiumAccess } from "@money-matters/core";
 
 export function getBankAccountsWithMappingsHandler(
@@ -288,7 +288,14 @@ export function syncBankBalanceHandler(
           updatedAt: new Date(),
           updatedBy: userId,
         })
-        .where(eq(bankAccounts.id, input.accountId));
+        .where(
+          and(
+            eq(bankAccounts.id, input.accountId),
+            eq(bankAccounts.tenantId, tenantId),
+            eq(bankAccounts.appId, appId),
+            isNull(bankAccounts.archivedAt)
+          )
+        );
 
       await hooks?.onBankBalanceSynced?.({
         db: tx,

@@ -1,5 +1,5 @@
 import { eq, and, isNull, inArray } from "drizzle-orm";
-import { DbOrTx, deviceTokens } from "@money-matters/db";
+import { DbOrTx, deviceTokens } from "@money-matters/db/rings/capabilities";
 
 export function registerDeviceTokenHandler(db: DbOrTx) {
   return async (

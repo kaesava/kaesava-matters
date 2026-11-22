@@ -1,4 +1,4 @@
-import { DbOrTx } from "@money-matters/db";
+import { DbOrTx } from "@money-matters/db/rings/capabilities";
 import { AccountAuthMethods, CheckEmailAuthProviderResult } from "@money-matters/types";
 import { sql } from "drizzle-orm";
 

@@ -1,5 +1,5 @@
 import { and, eq, inArray, isNull } from "drizzle-orm";
-import { DbOrTx, deviceTokens, userPreferences } from "@money-matters/db";
+import { DbOrTx, deviceTokens, userPreferences } from "@money-matters/db/rings/capabilities";
 import { getLocalDayOfWeekInZone, getLocalHourInZone } from "@money-matters/core";
 import type { NotificationChannelStatus } from "@money-matters/types";
 

@@ -1,6 +1,6 @@
 import type { FetchCreateContextFnOptions } from '@trpc/server/adapters/fetch';
 import { createEdgeContext, EdgeContextEnv } from '../trpc/edge-context.js';
-import { uploadObjectToStorage, downloadObjectFromStorage } from '@money-matters/capability-file-notes';
+import { uploadObjectToStorage, downloadObjectFromStorage } from '@money-matters/core';
 import { fileNotes } from '@money-matters/db';
 import { and, eq, or, sql } from 'drizzle-orm';
 
@@ -91,6 +91,7 @@ export async function handleFileNotesRequest(
           and(
             eq(fileNotes.id, noteId),
             eq(fileNotes.tenantId, ctx.tenantId!),
+            ...(ctx.appId ? [eq(fileNotes.appId, ctx.appId)] : []),
             or(eq(fileNotes.isPrivate, false), eq(fileNotes.userId, ctx.userId!))
           )
         )

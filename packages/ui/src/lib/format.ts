@@ -35,14 +35,6 @@ export function formatAmountNumber(
   }).format(num);
 }
 
-export function fmtBalance(
-  value: number | string | null | undefined,
-  locale: string = "en-AU",
-  currency: string = "AUD"
-): string {
-  return formatCurrency(value, locale, currency);
-}
-
 export function getCurrencySymbol(locale: string = "en-AU", currency: string = "AUD"): string {
   try {
     const parts = new Intl.NumberFormat(locale, { style: "currency", currency }).formatToParts(0);
@@ -85,22 +77,6 @@ export function fmtTransactionAmount(
     return `+${absFormatted}`;
   }
   return absFormatted;
-}
-
-export function getAmountColorClass(
-  value: number | string | null | undefined,
-  flowType?: 'CREDIT' | 'DEBIT' | 'BALANCE'
-): string {
-  const num = typeof value === 'string' ? parseFloat(value) : typeof value === 'number' ? value : 0;
-  if (isNaN(num) || num === 0) return 'text-slate-500 font-semibold';
-
-  if (flowType === 'CREDIT' || (flowType !== 'DEBIT' && num > 0 && flowType !== 'BALANCE')) {
-    return 'text-emerald-600 dark:text-emerald-400 font-bold';
-  }
-  if (flowType === 'DEBIT' || num < 0) {
-    return 'text-rose-600 dark:text-rose-400 font-bold';
-  }
-  return 'text-[#1B2B4B] dark:text-slate-100 font-bold';
 }
 
 export function fmtDateTime(

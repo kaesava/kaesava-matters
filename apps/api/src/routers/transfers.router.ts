@@ -1,12 +1,12 @@
 import { privateTenantProcedure, requiresWriteAccess } from '../trpc/trpc.js';
-import { moveMoneyCommand } from "@money-matters/capability-budgeting";
 import {
+  moveMoneyCommand,
   listTransferEventsQuery,
   createTransferSourceCommand,
   deleteTransferEventCommand,
   updateTransferEventCommand,
   executeTransferEventCommand,
-} from "@money-matters/capability-transactions";
+} from "@money-matters/capability-budgeting";
 import { z } from 'zod';
 
 export const transfersRouter = {

@@ -1,6 +1,6 @@
 import { envelopes, expenseEvents, incomeSources, incomeEvents, bankAccounts, apps, DbOrTx } from "@money-matters/db";
 import { eq, and, sql, gte, lte, inArray } from "drizzle-orm";
-import { DEFAULT_APP_FEATURE_FLAGS } from "@money-matters/types";
+import { resolveEffectiveAppFlags } from "@money-matters/config";
 
 const CASCADE_WINDOW_MS = 2000;
 
@@ -30,7 +30,7 @@ export async function restoreItemCommand(
           .from(apps)
           .where(eq(apps.id, appId))
           .limit(1);
-        const flags = appRecord?.featureFlags || DEFAULT_APP_FEATURE_FLAGS;
+        const flags = resolveEffectiveAppFlags(appId, appRecord?.featureFlags);
         if (!flags.privateMode) {
           throw new Error("Private Mode is currently disabled for this application. Private items cannot be restored.");
         }
@@ -213,7 +213,7 @@ export async function restoreItemCommand(
           .from(apps)
           .where(eq(apps.id, appId))
           .limit(1);
-        const flags = appRecord?.featureFlags || DEFAULT_APP_FEATURE_FLAGS;
+        const flags = resolveEffectiveAppFlags(appId, appRecord?.featureFlags);
         if (!flags.privateMode) {
           throw new Error("Private Mode is currently disabled for this application. Private items cannot be restored.");
         }

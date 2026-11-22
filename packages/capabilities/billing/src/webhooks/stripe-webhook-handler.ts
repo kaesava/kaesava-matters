@@ -4,7 +4,7 @@
  */
 import Stripe from "stripe";
 import { validateEnv } from "@money-matters/config";
-import { type DbOrTx, processedWebhooks } from "@money-matters/db";
+import { type DbOrTx, processedWebhooks } from "@money-matters/db/rings/capabilities";
 import { handleCheckoutSessionCompleted } from "./handlers/checkout-completed.js";
 import { handleSubscriptionUpdated, handleSubscriptionDeleted } from "./handlers/subscription-updated.js";
 import { handleInvoicePaymentSucceeded, handleInvoicePaymentFailed } from "./handlers/invoice-events.js";
