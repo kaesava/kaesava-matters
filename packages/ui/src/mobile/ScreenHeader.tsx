@@ -41,7 +41,7 @@ export function ScreenHeader({
   const askWrapRef = React.useRef<View>(null);
   return (
     <View style={styles.header}>
-      {/* Left Area: Back Button or Clickable Money Matters Home Link */}
+      {/* Left Area: Back Button or Clickable App Home Link */}
       <View style={styles.leftContainer}>
         {showBack ? (
           <TouchableOpacity
@@ -80,7 +80,7 @@ export function ScreenHeader({
         ) : null}
       </View>
 
-      {/* Right Area: Ask Penny + Person / Profile Icon */}
+      {/* Right Area: AI Assistant + Person / Profile Icon */}
       <View style={[styles.rightContainer, { flexDirection: "row", alignItems: "center", gap: 8 }]}>
         {onOpenAsk && (
           <View

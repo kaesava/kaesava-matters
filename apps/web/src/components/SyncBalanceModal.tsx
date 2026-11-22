@@ -29,7 +29,6 @@ export interface SyncBalanceModalProps {
     actualBalance: string,
     reason?: string
   ) => Promise<void>;
-  onOpenTransferModal?: () => void;
 }
 
 export const SyncBalanceModal: React.FC<SyncBalanceModalProps> = ({
@@ -42,7 +41,6 @@ export const SyncBalanceModal: React.FC<SyncBalanceModalProps> = ({
   unbudgetedBuffer = 0,
   pools,
   onConfirm,
-  onOpenTransferModal,
 }) => {
   const { fmt, currency, currencySymbol, minorUnits } = useLocale();
   const fmtMoney = (num: number) => fmt(Math.abs(num));
@@ -299,19 +297,6 @@ export const SyncBalanceModal: React.FC<SyncBalanceModalProps> = ({
             currencySymbol={currencySymbol}
             minorUnits={minorUnits}
           />
-        )}
-
-        {/* Unconditional Transfer Hyperlink */}
-        {onOpenTransferModal && (
-          <div className="text-right">
-            <button
-              type="button"
-              onClick={onOpenTransferModal}
-              className="text-xs font-bold text-[#2563eb] dark:text-blue-400 hover:underline cursor-pointer inline-flex items-center gap-1"
-            >
-              <span>{t("bankAccounts.reconcile.transferBetweenEnvelopesLink")}</span>
-            </button>
-          </div>
         )}
 
         {/* Footer Actions */}

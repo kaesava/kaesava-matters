@@ -41,7 +41,9 @@ export async function handleFileNotesRequest(
 
   if (url.pathname === '/api/file-notes/upload' && request.method === 'PUT') {
     const fileKey = url.searchParams.get('key') || '';
-    if (!fileKey || !fileKey.startsWith(`tenants/${ctx.tenantId}/`)) {
+    const appScopedPrefix = `apps/${ctx.appId}/tenants/${ctx.tenantId}/`;
+    const legacyPrefix = `tenants/${ctx.tenantId}/`;
+    if (!fileKey || (!fileKey.startsWith(appScopedPrefix) && !fileKey.startsWith(legacyPrefix))) {
       return new Response(JSON.stringify({ error: 'Forbidden file key' }), {
         status: 403,
         headers: { 'Content-Type': 'application/json', ...baseHeaders },

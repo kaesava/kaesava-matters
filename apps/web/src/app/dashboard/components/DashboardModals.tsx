@@ -32,7 +32,6 @@ export interface DashboardModalsProps {
     actualBalance: string,
     reason?: string
   ) => Promise<void>;
-  onOpenTransferModal: () => void;
 }
 
 export function DashboardModals({
@@ -50,7 +49,6 @@ export function DashboardModals({
   reconcileState,
   onCloseReconcile,
   onConfirmReconcile,
-  onOpenTransferModal,
 }: DashboardModalsProps) {
   return (
     <>
@@ -101,7 +99,6 @@ export function DashboardModals({
           unbudgetedBuffer={reconcileState.unbudgetedBuffer}
           pools={reconcileState.pools}
           onConfirm={onConfirmReconcile}
-          onOpenTransferModal={onOpenTransferModal}
         />
       )}
     </>

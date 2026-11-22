@@ -213,12 +213,22 @@ export function useMobileQuickAction(
     if (preset.name) setName(preset.name);
     if (preset.amount) setAmount(preset.amount);
     if (preset.categoryId) {
-      setSelectedPoolId(preset.categoryId);
+      const match = pools.find((p) => p.id === preset.categoryId);
+      setSelectedPoolId(match ? match.id : '');
       setSelectedSubCategoryId(null);
     }
-    if (preset.sourceCategoryId) setSelectedPoolId(preset.sourceCategoryId);
-    if (preset.destinationCategoryId) setDestPoolId(preset.destinationCategoryId);
-    if (preset.receivingAccountId) setReceivingAccountId(preset.receivingAccountId);
+    if (preset.sourceCategoryId) {
+      const srcMatch = pools.find((p) => p.id === preset.sourceCategoryId);
+      setSelectedPoolId(srcMatch ? srcMatch.id : '');
+    }
+    if (preset.destinationCategoryId) {
+      const dstMatch = pools.find((p) => p.id === preset.destinationCategoryId);
+      setDestPoolId(dstMatch ? dstMatch.id : '');
+    }
+    if (preset.receivingAccountId) {
+      const accMatch = bankAccounts.find((a) => a.id === preset.receivingAccountId);
+      setReceivingAccountId(accMatch ? accMatch.id : '');
+    }
   };
 
   const handleTabChange = (newType: QuickActionType) => {

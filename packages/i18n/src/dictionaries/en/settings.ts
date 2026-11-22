@@ -64,7 +64,8 @@ export const settings = {
         "disconnectConfirmTitle": "Disconnect Google?",
         "disconnectConfirmBody": "You will no longer be able to sign in with Google unless you reconnect it later. You can still sign in with your email and password.",
         "googleDisconnectedSuccess": "Google account disconnected.",
-        "googleDisconnectFailed": "Failed to disconnect Google account."
+        "googleDisconnectFailed": "Failed to disconnect Google account.",
+        "sessionNotFresh": "For your security, please sign out and sign back in before disconnecting Google."
       }
     },
     "household": {

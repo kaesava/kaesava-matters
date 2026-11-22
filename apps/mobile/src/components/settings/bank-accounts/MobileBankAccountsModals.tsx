@@ -112,10 +112,6 @@ export function MobileBankAccountsModals({
         account={reconcileAccount}
         onClose={() => setReconcileAccount(null)}
         onSuccess={onRefetchAll}
-        onOpenTransfer={() => {
-          setReconcileAccount(null);
-          setTransferModalVisible(true);
-        }}
       />
 
       {poolsSheetAccount && (

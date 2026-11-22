@@ -184,7 +184,7 @@ export function useQuickActionState(
       if (!poolMatch) {
         poolMatch = categories.find((p) => p.categories?.some((cat: { id: string }) => cat.id === preset.categoryId));
       }
-      setCategoryId(poolMatch ? poolMatch.id : preset.categoryId);
+      setCategoryId(poolMatch ? poolMatch.id : "");
 
       const hasSubCat = poolMatch?.categories?.some((cat: { id: string }) => cat.id === preset.categoryId);
       if (hasSubCat) {
@@ -197,15 +197,16 @@ export function useQuickActionState(
     if (preset.sourceCategoryId) {
       const srcPoolMatch = categories.find((c) => c.id === preset.sourceCategoryId) ||
         categories.find((p) => p.categories?.some((cat: { id: string }) => cat.id === preset.sourceCategoryId));
-      setSourceCategoryId(srcPoolMatch ? srcPoolMatch.id : preset.sourceCategoryId);
+      setSourceCategoryId(srcPoolMatch ? srcPoolMatch.id : "");
     }
     if (preset.destinationCategoryId) {
       const dstPoolMatch = categories.find((c) => c.id === preset.destinationCategoryId) ||
         categories.find((p) => p.categories?.some((cat: { id: string }) => cat.id === preset.destinationCategoryId));
-      setDestinationCategoryId(dstPoolMatch ? dstPoolMatch.id : preset.destinationCategoryId);
+      setDestinationCategoryId(dstPoolMatch ? dstPoolMatch.id : "");
     }
     if (preset.receivingAccountId) {
-      setReceivingAccountId(preset.receivingAccountId);
+      const accMatch = bankAccounts.find((a) => a.id === preset.receivingAccountId);
+      setReceivingAccountId(accMatch ? accMatch.id : "");
     }
   }
 

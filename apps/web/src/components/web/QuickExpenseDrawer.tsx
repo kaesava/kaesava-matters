@@ -294,10 +294,12 @@ export function QuickActionDrawer({ onClose, initialTab = "DEBIT", initialData }
                     !amount.trim() ||
                     parseFloat(amount) <= 0 ||
                     (isTransfer
-                      ? !sourceCategoryId || !destinationCategoryId || sourceCategoryId === destinationCategoryId
+                      ? !categories.some((c) => c.id === sourceCategoryId) ||
+                        !categories.some((c) => c.id === destinationCategoryId) ||
+                        sourceCategoryId === destinationCategoryId
                       : isIncome
-                      ? !receivingAccountId
-                      : !categoryId)
+                      ? !bankAccounts.some((a) => a.id === receivingAccountId)
+                      : !categories.some((c) => c.id === categoryId))
                   }
                   variant="primary"
                 >

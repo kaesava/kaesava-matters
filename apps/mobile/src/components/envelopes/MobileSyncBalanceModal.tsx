@@ -34,7 +34,6 @@ export interface MobileSyncBalanceModalProps {
   } | null;
   onClose: () => void;
   onSuccess?: () => void;
-  onOpenTransfer?: () => void;
 }
 
 export function MobileSyncBalanceModal({
@@ -42,7 +41,6 @@ export function MobileSyncBalanceModal({
   account,
   onClose,
   onSuccess,
-  onOpenTransfer,
 }: MobileSyncBalanceModalProps) {
   const toast = useMobileToast();
   const utils = trpc.useUtils();
@@ -295,7 +293,6 @@ export function MobileSyncBalanceModal({
               sumAdjustments={sumAdjustments}
               absVariance={absVariance}
               isSumValid={isSumValid}
-              onOpenTransfer={onOpenTransfer}
             />
           </View>
         )}

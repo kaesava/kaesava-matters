@@ -342,10 +342,6 @@ export default function DashboardPage() {
         reconcileState={reconcileState}
         onCloseReconcile={() => setReconcileState(null)}
         onConfirmReconcile={handleConfirmReconcile}
-        onOpenTransferModal={() => {
-          setReconcileState(null);
-          setIsMoveMoneyOpen(true);
-        }}
       />
     </div>
   );

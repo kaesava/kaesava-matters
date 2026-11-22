@@ -202,7 +202,6 @@ export function BankAccountsSection() {
           unbudgetedBuffer={list.reconcileState.unbudgetedBuffer ?? 0}
           pools={list.reconcileState.linkedPools}
           onConfirm={list.handleConfirmReconcile}
-          onOpenTransferModal={() => list.setMoveMoneyOpen(true)}
         />
       )}
 

@@ -151,7 +151,7 @@ export const settingsSections = {
       "allocatedSplitTotal": "Allocated Split Total:",
       "matches": "✓ Matches",
       "remaining": "({amount} remaining)",
-      "transferBetweenEnvelopesLink": "Transfer funds between envelopes →"
+      "exceeded": "({amount} over)"
     },
     "privacyWarningTitle": "Privacy Settings Warning",
     "privacyWarningMakePrivate": "Marking this account as Private will hide it completely from other household members; this includes the name, balance, linked envelopes and linked history. Are you sure?",

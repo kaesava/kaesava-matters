@@ -94,7 +94,14 @@ export function useSignInMethods() {
         });
       }
       if (result?.error) {
-        toast.error(result.error.message || t("settings.profile.signInMethods.googleDisconnectFailed"));
+        const isNotFresh =
+          result.error.code === "SESSION_IS_NOT_FRESH" ||
+          /session is not fresh/i.test(result.error.message || "");
+        toast.error(
+          isNotFresh
+            ? t("settings.profile.signInMethods.sessionNotFresh")
+            : result.error.message || t("settings.profile.signInMethods.googleDisconnectFailed")
+        );
         return;
       }
       await utils.getAuthMethods.invalidate();

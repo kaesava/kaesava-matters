@@ -33,7 +33,7 @@ export function AffordCheckModal({ isOpen, onClose, initialAmount = "" }: Afford
   const parsedAmount = parseFloat(deferredAmount);
   const isValidAmount = !isNaN(parsedAmount) && parsedAmount > 0;
 
-  const { data, isLoading } = trpc.canAfford.useQuery(
+  const { data, isLoading, isError, error } = trpc.canAfford.useQuery(
     {
       amount: deferredAmount,
       mode,
@@ -154,6 +154,11 @@ export function AffordCheckModal({ isOpen, onClose, initialAmount = "" }: Afford
         {isValidAmount && (
           <div className="space-y-3">
             {isLoading && <AffordCheckSkeleton />}
+            {isError && (
+              <div className="p-3.5 rounded-xl bg-rose-50 border border-rose-200 text-rose-800 dark:bg-rose-950/40 dark:border-rose-800 dark:text-rose-200 text-xs">
+                {error.message}
+              </div>
+            )}
             {data && (
               <div className="space-y-3 animate-in fade-in duration-200">
                 <AffordCheckVerdict data={data} />

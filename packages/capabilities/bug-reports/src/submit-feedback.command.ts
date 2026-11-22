@@ -55,9 +55,12 @@ function formatDiagnostics(input: SubmitFeedbackInput, ctx: SubmitFeedbackContex
 function buildHtmlEmail(
   title: string,
   diagnostics: string,
-  description: string
+  description: string,
+  appName: string,
+  appId?: string | null
 ): string {
   const safeTitle = escapeHtml(title);
+  const safeAppName = escapeHtml(appName);
   const safeDiagnostics = escapeHtml(diagnostics).replace(/\n/g, "<br />");
   const safeDescription = escapeHtml(description).replace(/\n/g, "<br />");
 
@@ -68,7 +71,7 @@ function buildHtmlEmail(
           <h2 style="margin: 0; font-size: 18px; font-weight: 600;">Feedback: ${safeTitle}</h2>
         </div>
         <div style="padding: 20px;">
-          ${buildBrandEmailHeader("light")}
+          ${buildBrandEmailHeader("light", appId)}
           <h3 style="margin-top: 0; font-size: 14px; text-transform: uppercase; color: #64748b;">Diagnostic Details</h3>
           <div style="background-color: #F7F8FA; padding: 12px; border-radius: 6px; font-family: monospace; font-size: 12px; line-height: 1.6; border: 1px solid #e2e8f0;">
             ${safeDiagnostics}
@@ -79,7 +82,7 @@ function buildHtmlEmail(
           </div>
         </div>
         <div style="padding: 12px 20px; background-color: #F7F8FA; border-top: 1px solid #e2e8f0; font-size: 11px; color: #64748b;">
-          Money Matters Feedback Dispatcher • Serene Finance Platform
+          ${safeAppName} Feedback Dispatcher
         </div>
       </div>
     </div>
@@ -99,17 +102,19 @@ export async function submitFeedbackCommand(
     throw new Error("Rate limit exceeded. You can submit up to 5 feedback reports per hour.");
   }
 
+  const app = resolveAppConfigOrDefault(ctx.appId);
+  const safeAppName = escapeHtml(app.name);
   const diagnostics = formatDiagnostics(input, ctx);
   const subject = `[Feedback] [${input.severity}] ${input.title}`;
   const plainText = `${diagnostics}\n\nDescription:\n${input.description}`;
-  const html = buildHtmlEmail(input.title, diagnostics, input.description);
+  const html = buildHtmlEmail(input.title, diagnostics, input.description, app.name, ctx.appId);
 
-  const app = resolveAppConfigOrDefault(ctx.appId);
   const result = await sendEmail({
     to: app.branding.supportEmail,
     subject,
     text: plainText,
     html,
+    appId: ctx.appId ?? undefined,
   });
 
   const senderEmail = input.email || ctx.userEmail;
@@ -122,8 +127,8 @@ export async function submitFeedbackCommand(
             <h2 style="margin: 0; font-size: 18px; font-weight: 600;">We received your feedback</h2>
           </div>
           <div style="padding: 20px;">
-            ${buildBrandEmailHeader("light")}
-            <p style="margin-top: 0; font-size: 14px; line-height: 1.6;">Thank you for helping us improve Money Matters. Our team has received your report:</p>
+            ${buildBrandEmailHeader("light", ctx.appId)}
+            <p style="margin-top: 0; font-size: 14px; line-height: 1.6;">Thank you for helping us improve ${safeAppName}. Our team has received your report:</p>
             <div style="background-color: #F7F8FA; padding: 12px; border-radius: 6px; font-size: 13px; line-height: 1.6; border: 1px solid #e2e8f0; margin-bottom: 16px;">
               <strong>${escapeHtml(input.title)}</strong><br />
               <span style="color: #64748b;">${escapeHtml(input.description)}</span>
@@ -131,7 +136,7 @@ export async function submitFeedbackCommand(
             <p style="font-size: 13px; color: #64748b; line-height: 1.6;">If further information is needed, we will follow up with you directly.</p>
           </div>
           <div style="padding: 12px 20px; background-color: #F7F8FA; border-top: 1px solid #e2e8f0; font-size: 11px; color: #64748b;">
-            Money Matters • Serene Finance Platform
+            ${safeAppName}
           </div>
         </div>
       </div>
@@ -140,8 +145,9 @@ export async function submitFeedbackCommand(
     await sendEmail({
       to: senderEmail,
       subject: confirmationSubject,
-      text: `We received your feedback: ${input.title}\n\n${input.description}\n\nThank you for helping us improve Money Matters.`,
+      text: `We received your feedback: ${input.title}\n\n${input.description}\n\nThank you for helping us improve ${app.name}.`,
       html: confirmationHtml,
+      appId: ctx.appId ?? undefined,
     }).catch((err) => logger.warn("[BugReports] Failed to send sender confirmation receipt:", { err }));
   }
 

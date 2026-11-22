@@ -132,7 +132,7 @@ export async function sendEmail(payload: SendEmailPayload): Promise<{ success: b
 }
 
 /**
- * Returns the canonical Money Matters email header HTML block using the hosted brand lockup.
+ * Returns the canonical app-branded email header HTML block using the hosted brand lockup.
  */
 export function buildBrandEmailHeader(
   variant: "light" | "dark" = "light",

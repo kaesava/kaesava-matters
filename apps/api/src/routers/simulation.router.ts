@@ -2,6 +2,7 @@ import { privateTenantProcedure } from '../trpc/trpc.js';
 import { canAffordSimulationQuery } from '@money-matters/capability-simulation';
 import { runCumulativeProjection, getActiveAllocationStrategyQuery } from '@money-matters/capability-budgeting';
 import { CanAffordQuery, DEFAULT_APP_FEATURE_FLAGS } from '@money-matters/types';
+import { resolveEffectiveAppFlags } from '@money-matters/config';
 import { apps } from '@money-matters/db';
 import { eq } from 'drizzle-orm';
 import { TRPCError } from '@trpc/server';
@@ -16,7 +17,10 @@ export const simulationRouter = {
         .where(eq(apps.id, ctx.appId!))
         .limit(1);
 
-      const flags = appRecord?.featureFlags || DEFAULT_APP_FEATURE_FLAGS;
+      const flags = {
+        ...DEFAULT_APP_FEATURE_FLAGS,
+        ...resolveEffectiveAppFlags(ctx.appId!, appRecord?.featureFlags as unknown as Record<string, unknown> | undefined),
+      };
       if (!flags.simulation) {
         throw new TRPCError({
           code: 'FORBIDDEN',

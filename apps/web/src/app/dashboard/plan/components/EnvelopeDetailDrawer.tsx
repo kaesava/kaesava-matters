@@ -2,7 +2,7 @@
 
 import { useState, useMemo } from "react";
 import Link from "next/link";
-import { ArrowDownCircle, Wallet, Receipt, Target } from "lucide-react";
+import { ArrowDownCircle, Wallet, Receipt, Target, Pencil } from "lucide-react";
 import { t } from "@money-matters/i18n";
 import { trpc } from "../../../../lib/trpc";
 import { Tabs, SlideOverDrawer, formatRecurrenceLabel } from "@money-matters/ui/web";
@@ -159,35 +159,38 @@ export function EnvelopeDetailDrawer({
             </span>
           )}
           {onEditPool && targetPool && (
-            <button
-              type="button"
-              onClick={() => {
-                onEditPool({
-                  id: targetPool.id,
-                  name: targetPool.name,
-                  envelopeType: targetPool.envelopeType,
-                  fundingMode: targetPool.fundingMode,
-                  isPriority: targetPool.isPriority,
-                  currentBalance: String(targetPool.currentBalance ?? "0.00"),
-                  bankAccountId: targetPool.bankAccountId,
-                  bankAccountName: targetPool.bankAccountName,
-                  isPrivate: targetPool.isPrivate,
-                  targetAmount: targetPool.targetAmount ? String(targetPool.targetAmount) : null,
-                  enteredAmount: targetPool.enteredAmount ? String(targetPool.enteredAmount) : null,
-                  monthlyAmount: targetPool.monthlyAmount ? String(targetPool.monthlyAmount) : null,
-                  budgetFrequency: targetPool.budgetFrequency,
-                  startDate: targetPool.startDate,
-                  endDate: targetPool.endDate,
-                  rrule: targetPool.rrule,
-                  isSurplusTarget: targetPool.isSurplusTarget,
-                  safetyBufferFloor: targetPool.safetyBufferFloor ? String(targetPool.safetyBufferFloor) : null,
-                  generateEvents: targetPool.generateEvents,
-                });
-              }}
-              className="px-2 py-0.5 text-xs font-bold text-[#2563eb] hover:text-blue-700 bg-blue-50 dark:bg-blue-950/60 rounded-md border border-blue-200 dark:border-blue-800 transition-colors cursor-pointer"
-            >
-              {t("common.edit")}
-            </button>
+            <div className="w-full pt-1.5">
+              <button
+                type="button"
+                onClick={() => {
+                  onEditPool({
+                    id: targetPool.id,
+                    name: targetPool.name,
+                    envelopeType: targetPool.envelopeType,
+                    fundingMode: targetPool.fundingMode,
+                    isPriority: targetPool.isPriority,
+                    currentBalance: String(targetPool.currentBalance ?? "0.00"),
+                    bankAccountId: targetPool.bankAccountId,
+                    bankAccountName: targetPool.bankAccountName,
+                    isPrivate: targetPool.isPrivate,
+                    targetAmount: targetPool.targetAmount ? String(targetPool.targetAmount) : null,
+                    enteredAmount: targetPool.enteredAmount ? String(targetPool.enteredAmount) : null,
+                    monthlyAmount: targetPool.monthlyAmount ? String(targetPool.monthlyAmount) : null,
+                    budgetFrequency: targetPool.budgetFrequency,
+                    startDate: targetPool.startDate,
+                    endDate: targetPool.endDate,
+                    rrule: targetPool.rrule,
+                    isSurplusTarget: targetPool.isSurplusTarget,
+                    safetyBufferFloor: targetPool.safetyBufferFloor ? String(targetPool.safetyBufferFloor) : null,
+                    generateEvents: targetPool.generateEvents,
+                  });
+                }}
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-bold text-white bg-[#2563eb] hover:bg-blue-700 rounded-lg shadow-xs transition-colors cursor-pointer"
+              >
+                <Pencil className="w-3.5 h-3.5" aria-hidden="true" />
+                <span>{t("common.edit")}</span>
+              </button>
+            </div>
           )}
         </div>
       }

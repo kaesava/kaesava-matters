@@ -1,6 +1,5 @@
 import React from 'react';
-import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
-import { Feather } from '@expo/vector-icons';
+import { View, Text, StyleSheet } from 'react-native';
 import { DESIGN_TOKENS } from '@money-matters/ui/mobile';
 import { t } from '@money-matters/i18n';
 import { formatMobileCurrency } from '../../../lib/format';
@@ -9,15 +8,14 @@ interface SyncBalanceValidationFooterProps {
   sumAdjustments: number;
   absVariance: number;
   isSumValid: boolean;
-  onOpenTransfer?: () => void;
 }
 
 export const SyncBalanceValidationFooter: React.FC<SyncBalanceValidationFooterProps> = ({
   sumAdjustments,
   absVariance,
   isSumValid,
-  onOpenTransfer,
 }) => {
+  const isExceeded = !isSumValid && sumAdjustments > absVariance;
   return (
     <View style={styles.container}>
       <View style={styles.validationRow}>
@@ -25,25 +23,18 @@ export const SyncBalanceValidationFooter: React.FC<SyncBalanceValidationFooterPr
           {t('bankAccounts.reconcile.allocatedSplitTotal')}
         </Text>
         <View style={styles.validationRight}>
-          <Text style={[styles.validationAmount, isSumValid ? styles.textSurplus : styles.textShortfall]}>
+          <Text style={[styles.validationAmount, isSumValid ? styles.textSurplus : isExceeded ? styles.textExceeded : styles.textShortfall]}>
             {formatMobileCurrency(sumAdjustments)} / {formatMobileCurrency(absVariance)}
           </Text>
-          <Text style={[styles.validationBadge, isSumValid ? styles.textSurplus : styles.textShortfall]}>
+          <Text style={[styles.validationBadge, isSumValid ? styles.textSurplus : isExceeded ? styles.textExceeded : styles.textShortfall]}>
             {isSumValid
               ? t('bankAccounts.reconcile.matches')
-              : t('bankAccounts.reconcile.remaining', { amount: formatMobileCurrency(Math.abs(absVariance - sumAdjustments)) })}
+              : isExceeded
+              ? t('bankAccounts.reconcile.exceeded', { amount: formatMobileCurrency(sumAdjustments - absVariance) })
+              : t('bankAccounts.reconcile.remaining', { amount: formatMobileCurrency(absVariance - sumAdjustments) })}
           </Text>
         </View>
       </View>
-
-      {onOpenTransfer && (
-        <TouchableOpacity onPress={onOpenTransfer} style={styles.transferLinkBtn}>
-          <Text style={styles.transferLinkText}>
-            {t('bankAccounts.reconcile.transferBetweenEnvelopesLink')}
-          </Text>
-          <Feather name="arrow-right" size={14} color={DESIGN_TOKENS.colors.accent} />
-        </TouchableOpacity>
-      )}
     </View>
   );
 };
@@ -84,16 +75,7 @@ const styles = StyleSheet.create({
   textShortfall: {
     color: DESIGN_TOKENS.colors.warningDark,
   },
-  transferLinkBtn: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'flex-end',
-    gap: 4,
-    paddingVertical: 4,
-  },
-  transferLinkText: {
-    fontSize: 12,
-    fontWeight: '700',
-    color: DESIGN_TOKENS.colors.accent,
+  textExceeded: {
+    color: DESIGN_TOKENS.colors.criticalDark,
   },
 });

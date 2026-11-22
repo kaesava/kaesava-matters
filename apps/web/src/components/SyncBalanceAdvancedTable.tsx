@@ -130,9 +130,13 @@ export const SyncBalanceAdvancedTable: React.FC<SyncBalanceAdvancedTableProps> =
           </span>
           {isSumValid ? (
             <span className="text-emerald-600 dark:text-emerald-400 font-bold">{t("bankAccounts.reconcile.matches")}</span>
+          ) : sumAdjustments > absVariance ? (
+            <span className="text-rose-600 dark:text-rose-400 font-bold text-[10px]">
+              {t("bankAccounts.reconcile.exceeded", { amount: fmtMoney(sumAdjustments - absVariance) })}
+            </span>
           ) : (
             <span className="text-amber-600 dark:text-amber-400 font-bold text-[10px]">
-              {t("bankAccounts.reconcile.remaining", { amount: fmtMoney(Math.abs(absVariance - sumAdjustments)) })}
+              {t("bankAccounts.reconcile.remaining", { amount: fmtMoney(absVariance - sumAdjustments) })}
             </span>
           )}
         </div>

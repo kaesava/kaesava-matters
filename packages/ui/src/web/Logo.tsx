@@ -3,9 +3,17 @@ export interface LogoProps {
   size?: "sm" | "md" | "lg" | "xl";
   className?: string;
   showText?: boolean;
+  brandName?: string;
+  src?: string;
 }
 
-export function Logo({ size = "md", className = "", showText = false }: LogoProps) {
+export function Logo({
+  size = "md",
+  className = "",
+  showText = false,
+  brandName = "Kaesava",
+  src = "/icon-512x512.png?v=2",
+}: LogoProps) {
   const sizeMap = {
     sm: "w-6 h-6",
     md: "w-8 h-8",
@@ -19,13 +27,13 @@ export function Logo({ size = "md", className = "", showText = false }: LogoProp
     <div className={`inline-flex items-center gap-3 ${className}`}>
       {/* Brand Icon Image */}
       <img
-        src="/icon-512x512.png?v=2"
-        alt="Money Matters Logo"
+        src={src}
+        alt={`${brandName} Logo`}
         className={`${imageSizeClass} rounded-xl object-contain shadow-sm border border-white/10 shrink-0 transition-transform duration-300 hover:scale-105`}
       />
       {showText && (
         <span className="font-extrabold tracking-tight text-[#1B2B4B] dark:text-white select-none">
-          Money Matters
+          {brandName}
         </span>
       )}
     </div>
