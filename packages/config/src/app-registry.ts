@@ -14,6 +14,10 @@ export interface AppBrandingConfig {
   supportEmail: string;
   fromEmail: string;
   logoUrl: string;
+  legalAddress?: string;
+  notificationSettingsPath?: string;
+  billingSettingsPath?: string;
+  signInPath?: string;
 }
 
 export interface AppTerminologyConfig {
@@ -29,6 +33,15 @@ export interface AppRoleOption {
   description?: string;
 }
 
+export interface AppBillingConfig {
+  priceIds?: {
+    monthly?: string;
+    annual?: string;
+    foundingAnnual?: string;
+    [key: string]: string | undefined;
+  };
+}
+
 export interface AppConfig {
   id: string;
   name: string;
@@ -36,24 +49,25 @@ export interface AppConfig {
   trialDays: number;
   maxOwnedTenantsPerUser?: number;
   storageKeyPrefix?: string;
+  authStoragePrefix?: string;
   easProjectId?: string;
   roles?: readonly AppRoleOption[];
   branding: AppBrandingConfig;
   terminology: AppTerminologyConfig;
+  billing?: AppBillingConfig;
   allowedRedirectHosts: readonly string[];
   features: {
     premiumEnabled: boolean;
-    partnerInvite: boolean;
+    memberInvite?: boolean;
+    partnerInvite?: boolean;
     offlineSync: boolean;
-    canAffordCalculator: boolean;
     foundingMemberPromo: boolean;
     aiAssistant: boolean;
     privateMode: boolean;
     fileNotes: boolean;
-    simulation: boolean;
-    customAllocationRules: boolean;
-    reports: boolean;
     bankAccounts?: boolean;
+    appFlags?: Record<string, unknown>;
+    [key: string]: unknown;
   };
 }
 
@@ -69,6 +83,7 @@ const REGISTRY: Record<string, AppConfig> = {
     trialDays: 60,
     maxOwnedTenantsPerUser: 1,
     storageKeyPrefix: "money_matters",
+    authStoragePrefix: "money-matters",
     easProjectId: "5cf01baf-7dc6-43bf-aa23-a72da2de4aaf",
     branding: {
       companyName: "Kaesava AU",
@@ -79,6 +94,10 @@ const REGISTRY: Record<string, AppConfig> = {
       supportEmail: "info@moneymatters.kaesava.au",
       fromEmail: "Money Matters <info@moneymatters.kaesava.au>",
       logoUrl: "https://moneymatters.kaesava.au/email-header-logo.png",
+      legalAddress: "VIC 3030, Australia",
+      notificationSettingsPath: "/dashboard/settings/notifications",
+      billingSettingsPath: "/dashboard/settings?tab=subscription",
+      signInPath: "/sign-in",
     },
     terminology: {
       tenantSingular: "Household",
@@ -107,9 +126,21 @@ export function resolveAppConfig(appId: string): AppConfig | null {
   return REGISTRY[appId] || null;
 }
 
+export function resolveAppConfigOrThrow(appId?: string | null): AppConfig {
+  const effectiveId = appId || process.env["DEFAULT_APP_ID"];
+  if (effectiveId && REGISTRY[effectiveId]) {
+    return REGISTRY[effectiveId];
+  }
+  throw new Error(`Unregistered or missing appId: ${effectiveId ?? "(none)"}. Register an AppManifest via registerAppManifest().`);
+}
+
 export function resolveAppConfigOrDefault(appId?: string | null): AppConfig {
   if (appId && REGISTRY[appId]) {
     return REGISTRY[appId];
+  }
+  const envDefault = process.env["DEFAULT_APP_ID"];
+  if (envDefault && REGISTRY[envDefault]) {
+    return REGISTRY[envDefault];
   }
   return REGISTRY[DEFAULT_APP_ID];
 }

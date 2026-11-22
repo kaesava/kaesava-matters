@@ -14,6 +14,8 @@ export interface TelemetryClientLike {
 export interface ConsentGatedTelemetryDeps<TDb> {
   client: TelemetryClientLike | null;
   isUserTelemetryGranted: (db: TDb, userId: string) => Promise<boolean>;
+  appId?: string;
+  appSlug?: string;
 }
 
 export function createConsentGatedTelemetry<TDb>(deps: ConsentGatedTelemetryDeps<TDb>) {
@@ -26,7 +28,12 @@ export function createConsentGatedTelemetry<TDb>(deps: ConsentGatedTelemetryDeps
     if (!deps.client || !userId) return;
     try {
       if (!(await deps.isUserTelemetryGranted(db, userId))) return;
-      deps.client.capture({ distinctId: userId, event, properties });
+      const enriched = {
+        ...(deps.appId ? { app_id: deps.appId } : {}),
+        ...(deps.appSlug ? { app_slug: deps.appSlug } : {}),
+        ...properties,
+      };
+      deps.client.capture({ distinctId: userId, event, properties: enriched });
       await deps.client.flush();
     } catch {
       // Never let telemetry errors break API mutations

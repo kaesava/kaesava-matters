@@ -45,7 +45,7 @@ async function executeResendFetch(
       html: payload.html,
       text: payload.text,
       headers: {
-        "List-Unsubscribe": `<${resolveAppConfigOrDefault(payload.appId).branding.appUrl}/dashboard/settings/notifications>`,
+        "List-Unsubscribe": `<${resolveAppConfigOrDefault(payload.appId).branding.appUrl}${resolveAppConfigOrDefault(payload.appId).branding.notificationSettingsPath ?? "/dashboard/settings/notifications"}>`,
       },
     }),
     signal: AbortSignal.timeout(5000),
@@ -162,10 +162,12 @@ export async function sendNotificationEmail(
 ): Promise<{ success: boolean; id?: string }> {
   const app = resolveAppConfigOrDefault(appId);
   const headerHtml = buildBrandEmailHeader("light", appId);
+  const legalAddress = app.branding.legalAddress ? ` • ${escapeHtml(app.branding.legalAddress)}` : "";
+  const notifPath = app.branding.notificationSettingsPath ?? "/dashboard/settings/notifications";
   const footerHtml = `
     <div style="margin-top: 32px; padding-top: 16px; border-top: 1px solid #e2e8f0; font-size: 11px; color: #64748b; line-height: 1.5;">
-      ${escapeHtml(app.name)} by ${escapeHtml(app.branding.companyName)} • VIC 3030, Australia • ${escapeHtml(app.branding.supportEmail)}<br />
-      <a href="${app.branding.appUrl}/dashboard/settings/notifications" style="color: #2563eb; text-decoration: underline;">Manage Notification Preferences & Unsubscribe</a>
+      ${escapeHtml(app.name)} by ${escapeHtml(app.branding.companyName)}${legalAddress} • ${escapeHtml(app.branding.supportEmail)}<br />
+      <a href="${app.branding.appUrl}${notifPath}" style="color: #2563eb; text-decoration: underline;">Manage Notification Preferences & Unsubscribe</a>
     </div>
   `;
   const safeBody = escapeHtml(bodyText).replace(/\n/g, "<br />");

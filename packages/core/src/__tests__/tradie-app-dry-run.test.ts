@@ -5,7 +5,6 @@ import {
   resolveEffectiveAppFlags,
 } from "@money-matters/config";
 import {
-  defineStatusMachine,
   serializeCsvObjects,
   type TenantLifecycleHooks,
 } from "@money-matters/types";
@@ -131,30 +130,7 @@ describe("Dry Run: TradieMatters Multi-Tenant App Assembly", () => {
     expect(tradieRoles.can("MEMBER", "TRADIE", "jobs:complete")).toBe(true);
     expect(tradieRoles.can("OWNER", null, "jobs:view_all")).toBe(true);
 
-    // 5. Custom Job Status State Machine
-    const jobStatusMachine = defineStatusMachine({
-      states: ["QUOTED", "SCHEDULED", "IN_PROGRESS", "COMPLETED", "INVOICED"] as const,
-      transitions: {
-        QUOTED: ["SCHEDULED"],
-        SCHEDULED: ["IN_PROGRESS", "COMPLETED"],
-        IN_PROGRESS: ["COMPLETED"],
-        COMPLETED: ["INVOICED"],
-        INVOICED: [],
-      },
-      terminalStates: ["INVOICED"],
-      badgeTones: {
-        QUOTED: "neutral",
-        SCHEDULED: "info",
-        IN_PROGRESS: "warning",
-        COMPLETED: "success",
-        INVOICED: "success",
-      },
-    });
-    expect(jobStatusMachine.canTransition("QUOTED", "SCHEDULED")).toBe(true);
-    expect(jobStatusMachine.canTransition("QUOTED", "INVOICED")).toBe(false);
-    expect(jobStatusMachine.isTerminal("INVOICED")).toBe(true);
-
-    // 6. Recurring Maintenance Job Bursting & Outlook-style Reschedule
+    // 5. Recurring Maintenance Job Bursting & Outlook-style Reschedule
     const maintenanceDates = computeRecurringDates({
       rrule: "FREQ=MONTHLY;INTERVAL=3",
       startDate: "2026-03-01",

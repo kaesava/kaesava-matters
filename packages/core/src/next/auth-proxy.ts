@@ -15,6 +15,9 @@ export interface AuthEdgeProxyOptions {
   allowRoot?: boolean;
   isAuthEnabled?: boolean;
   sessionCookieNames?: readonly string[];
+  earlyAccessAllowedPrefixes?: readonly string[];
+  earlyAccessRedirectPath?: string;
+  signInPath?: string;
 }
 
 export interface AuthEdgeDecision {
@@ -28,8 +31,9 @@ export function evaluateAuthEdgeProxy(
   options: AuthEdgeProxyOptions
 ): AuthEdgeDecision {
   const isAuthEnabled = options.isAuthEnabled ?? true;
-  if (!isAuthEnabled && pathname !== "/" && !pathname.startsWith("/blog")) {
-    return { action: "redirect", redirectPath: "/?early_access=true" };
+  const earlyAccessAllowed = options.earlyAccessAllowedPrefixes ?? ["/blog"];
+  if (!isAuthEnabled && pathname !== "/" && !earlyAccessAllowed.some((p) => pathname.startsWith(p))) {
+    return { action: "redirect", redirectPath: options.earlyAccessRedirectPath ?? "/?early_access=true" };
   }
 
   if ((options.allowRoot ?? true) && pathname === "/") {
@@ -44,9 +48,10 @@ export function evaluateAuthEdgeProxy(
   const hasSession = cookieNames.some((name) => hasCookie(name));
 
   if (!hasSession) {
+    const signInPath = options.signInPath ?? "/sign-in";
     return {
       action: "redirect",
-      redirectPath: `/sign-in?redirect=${encodeURIComponent(pathname)}`,
+      redirectPath: `${signInPath}?redirect=${encodeURIComponent(pathname)}`,
     };
   }
 

@@ -5,7 +5,7 @@ export interface AuthSession {
   userId: string;
   tenantId: string;
   appId: string;
-  role: "OWNER" | "MEMBER";
+  role: "OWNER" | "MEMBER" | "VIEWER";
   email: string;
 }
 

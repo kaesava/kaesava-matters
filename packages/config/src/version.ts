@@ -29,7 +29,7 @@ export function buildAppVersionInfo(params: {
     : "development";
 
   const info: Omit<AppVersionInfo, "formattedVersion"> = {
-    appId: params.appId || "01908bde-34bb-7b19-a178-574211bc93aa",
+    appId: params.appId || "unknown-app",
     appName: params.appName,
     version: params.version || "1.0.0-beta.1",
     buildNumber: params.buildNumber || "1",

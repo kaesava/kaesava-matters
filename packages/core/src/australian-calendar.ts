@@ -44,8 +44,9 @@ export function calendarDaysBetween(fromDate: string, toDate: string): number {
 
 export function formatInstantInZone(
   instant: Date,
-  timeZone: string = "Australia/Sydney",
-  options?: Intl.DateTimeFormatOptions
+  timeZone: string = "UTC",
+  options?: Intl.DateTimeFormatOptions,
+  locale: string = "en"
 ): string {
-  return getCachedDateFormat("en-AU", { timeZone, ...options }).format(instant);
+  return getCachedDateFormat(locale, { timeZone, ...options }).format(instant);
 }
