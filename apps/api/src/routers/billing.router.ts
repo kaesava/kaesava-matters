@@ -1,16 +1,5 @@
 import { tenantProcedure, ownerProcedure } from '../trpc/trpc.js';
-import {
-  CreateCheckoutSessionCommand,
-  CreateCustomerPortalCommand,
-  VerifyCheckoutSessionCommand,
-} from '@money-matters/types';
-import {
-  createCheckoutSessionCommand,
-  createCustomerPortalSessionCommand,
-  verifyCheckoutSessionCommand,
-  listInvoicesQuery,
-  syncSubscriptionCommand,
-} from '@money-matters/capability-billing';
+import { billingProcedures } from '@money-matters/capability-billing/router';
 import { captureIfConsented } from '../lib/posthog.js';
 
 export const billingRouter = {
@@ -19,11 +8,11 @@ export const billingRouter = {
   }),
 
   createCheckoutSession: ownerProcedure
-    .input(CreateCheckoutSessionCommand)
+    .input(billingProcedures.createCheckoutSession.input)
     .mutation(async ({ ctx, input }) => {
       const tenantId = ctx.tenantId!;
       const userEmail = ctx.session?.email || 'info@moneymatters.kaesava.au';
-      const result = await createCheckoutSessionCommand(ctx.db, tenantId, userEmail, input);
+      const result = await billingProcedures.createCheckoutSession.execute(ctx.db, tenantId, userEmail, input);
       await captureIfConsented(ctx.db, ctx.userId, 'checkout_session_created', {
         tenant_id: tenantId,
         priceId: input.priceId,
@@ -32,10 +21,10 @@ export const billingRouter = {
     }),
 
   verifyCheckoutSession: ownerProcedure
-    .input(VerifyCheckoutSessionCommand)
+    .input(billingProcedures.verifyCheckoutSession.input)
     .mutation(async ({ ctx, input }) => {
       const tenantId = ctx.tenantId!;
-      const result = await verifyCheckoutSessionCommand(ctx.db, tenantId, input.sessionId);
+      const result = await billingProcedures.verifyCheckoutSession.execute(ctx.db, tenantId, input.sessionId);
       if (result.verified) {
         await captureIfConsented(ctx.db, ctx.userId, 'subscription_checkout_verified', {
           tenant_id: tenantId,
@@ -46,20 +35,20 @@ export const billingRouter = {
     }),
 
   createCustomerPortalSession: ownerProcedure
-    .input(CreateCustomerPortalCommand)
+    .input(billingProcedures.createCustomerPortalSession.input)
     .mutation(async ({ ctx, input }) => {
       const tenantId = ctx.tenantId!;
       const userEmail = ctx.session?.email || undefined;
-      return createCustomerPortalSessionCommand(ctx.db, tenantId, input, userEmail);
+      return billingProcedures.createCustomerPortalSession.execute(ctx.db, tenantId, input, userEmail);
     }),
 
   listInvoices: tenantProcedure.query(async ({ ctx }) => {
-    return await listInvoicesQuery(ctx.db, ctx.tenantId!, ctx.appId);
+    return await billingProcedures.listInvoices.execute(ctx.db, ctx.tenantId!, ctx.appId);
   }),
 
   syncSubscription: ownerProcedure.mutation(async ({ ctx }) => {
     const tenantId = ctx.tenantId!;
-    return await syncSubscriptionCommand(ctx.db, tenantId);
+    return await billingProcedures.syncSubscription.execute(ctx.db, tenantId);
   }),
 };
 

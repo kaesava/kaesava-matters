@@ -1,29 +1,12 @@
-import { z } from "zod";
 import { router, privateTenantProcedure } from "../trpc/trpc.js";
-import {
-  CreatePreSignedUrlInput,
-  CreateFileNoteInput,
-  UpdateFileNoteCommentInput,
-  FileNotesListInput,
-  FileNoteDto,
-  StorageQuotaDto,
-} from "@money-matters/types";
-import {
-  createPreSignedUrlHandler,
-  createFileNoteHandler,
-  listFileNotesHandler,
-  getDownloadUrlHandler,
-  updateFileNoteCommentHandler,
-  archiveFileNoteHandler,
-  getStorageQuotaHandler,
-} from "@money-matters/capability-file-notes";
+import { fileNotesProcedures } from "@money-matters/capability-file-notes/router";
 import { moneyMattersFileNotePrivacyResolvers } from "@money-matters/capability-budgeting";
 
 export const fileNotesRouter = router({
   createPreSignedUrl: privateTenantProcedure
-    .input(CreatePreSignedUrlInput)
+    .input(fileNotesProcedures.createPreSignedUrl.input)
     .mutation(async ({ ctx, input }) => {
-      return createPreSignedUrlHandler(ctx.db, {
+      return fileNotesProcedures.createPreSignedUrl.execute(ctx.db, {
         tenantId: ctx.tenantId,
         userId: ctx.userId,
         appId: ctx.appId,
@@ -32,10 +15,10 @@ export const fileNotesRouter = router({
     }),
 
   create: privateTenantProcedure
-    .input(CreateFileNoteInput)
-    .output(FileNoteDto)
+    .input(fileNotesProcedures.create.input)
+    .output(fileNotesProcedures.create.output)
     .mutation(async ({ ctx, input }) => {
-      return createFileNoteHandler(ctx.db, {
+      return fileNotesProcedures.create.execute(ctx.db, {
         tenantId: ctx.tenantId,
         userId: ctx.userId,
         appId: ctx.appId,
@@ -44,10 +27,10 @@ export const fileNotesRouter = router({
     }),
 
   list: privateTenantProcedure
-    .input(FileNotesListInput)
-    .output(z.array(FileNoteDto))
+    .input(fileNotesProcedures.list.input)
+    .output(fileNotesProcedures.list.output)
     .query(async ({ ctx, input }) => {
-      return listFileNotesHandler(ctx.db, {
+      return fileNotesProcedures.list.execute(ctx.db, {
         tenantId: ctx.tenantId,
         userId: ctx.userId,
         appId: ctx.appId,
@@ -56,9 +39,9 @@ export const fileNotesRouter = router({
     }),
 
   getDownloadUrl: privateTenantProcedure
-    .input(z.object({ id: z.string().uuid() }).strict())
+    .input(fileNotesProcedures.getDownloadUrl.input)
     .query(async ({ ctx, input }) => {
-      return getDownloadUrlHandler(ctx.db, {
+      return fileNotesProcedures.getDownloadUrl.execute(ctx.db, {
         tenantId: ctx.tenantId,
         userId: ctx.userId,
         appId: ctx.appId,
@@ -66,10 +49,10 @@ export const fileNotesRouter = router({
     }),
 
   updateComment: privateTenantProcedure
-    .input(UpdateFileNoteCommentInput)
-    .output(FileNoteDto)
+    .input(fileNotesProcedures.updateComment.input)
+    .output(fileNotesProcedures.updateComment.output)
     .mutation(async ({ ctx, input }) => {
-      return updateFileNoteCommentHandler(ctx.db, {
+      return fileNotesProcedures.updateComment.execute(ctx.db, {
         tenantId: ctx.tenantId,
         userId: ctx.userId,
         appId: ctx.appId,
@@ -77,9 +60,9 @@ export const fileNotesRouter = router({
     }),
 
   archive: privateTenantProcedure
-    .input(z.object({ id: z.string().uuid() }).strict())
+    .input(fileNotesProcedures.archive.input)
     .mutation(async ({ ctx, input }) => {
-      return archiveFileNoteHandler(ctx.db, {
+      return fileNotesProcedures.archive.execute(ctx.db, {
         tenantId: ctx.tenantId,
         userId: ctx.userId,
         appId: ctx.appId,
@@ -87,9 +70,9 @@ export const fileNotesRouter = router({
     }),
 
   getStorageQuota: privateTenantProcedure
-    .output(StorageQuotaDto)
+    .output(fileNotesProcedures.getStorageQuota.output)
     .query(async ({ ctx }) => {
-      return getStorageQuotaHandler(ctx.db, {
+      return fileNotesProcedures.getStorageQuota.execute(ctx.db, {
         tenantId: ctx.tenantId,
         userId: ctx.userId,
         appId: ctx.appId,

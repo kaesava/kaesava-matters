@@ -1,55 +1,36 @@
 import { tenantProcedure, requiresWriteAccess } from '../trpc/trpc.js';
-import {
-  registerDeviceTokenHandler,
-  removeDeviceTokenHandler,
-  getNotificationChannelStatusHandler,
-} from "@money-matters/capability-notifications";
+import { notificationsProcedures } from "@money-matters/capability-notifications/router";
 import { sendNotificationEmail } from "@money-matters/core";
 import { resolveAppConfigOrDefault } from "@money-matters/config";
 import { inngest } from "../inngest/client.js";
-import { z } from 'zod';
 
 export const notificationsRouter = {
   getNotificationChannelStatus: tenantProcedure.query(async ({ ctx }) => {
-    const handler = getNotificationChannelStatusHandler(ctx.db);
+    const handler = notificationsProcedures.getNotificationChannelStatus.execute(ctx.db);
     return await handler(ctx.tenantId!, ctx.userId!, ctx.email!, ctx.appId);
   }),
 
   registerToken: tenantProcedure
-    .input(
-      z.object({
-        platform: z.enum(['ios', 'android', 'web']),
-        token: z.string().min(1, 'Push token is required'),
-      }).strict()
-    )
+    .input(notificationsProcedures.registerToken.input)
     .mutation(async ({ ctx, input }) => {
       requiresWriteAccess(ctx);
-      const handler = registerDeviceTokenHandler(ctx.db);
+      const handler = notificationsProcedures.registerToken.execute(ctx.db);
       return await handler(input, ctx.tenantId!, ctx.appId!, ctx.userId!);
     }),
 
   removeToken: tenantProcedure
-    .input(
-      z.object({
-        platform: z.enum(['ios', 'android', 'web']),
-        token: z.string().optional(),
-      }).strict()
-    )
+    .input(notificationsProcedures.removeToken.input)
     .mutation(async ({ ctx, input }) => {
       requiresWriteAccess(ctx);
-      const handler = removeDeviceTokenHandler(ctx.db);
+      const handler = notificationsProcedures.removeToken.execute(ctx.db);
       return await handler(input, ctx.tenantId!, ctx.userId!, ctx.appId);
     }),
 
   sendTestNotification: tenantProcedure
-    .input(
-      z.object({
-        channel: z.enum(['email', 'push', 'all']),
-      }).strict()
-    )
+    .input(notificationsProcedures.sendTestNotification.input)
     .mutation(async ({ ctx, input }) => {
       requiresWriteAccess(ctx);
-      const status = await getNotificationChannelStatusHandler(ctx.db)(
+      const status = await notificationsProcedures.getNotificationChannelStatus.execute(ctx.db)(
         ctx.tenantId!,
         ctx.userId!,
         ctx.email!,

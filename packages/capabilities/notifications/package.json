@@ -15,6 +15,11 @@
       "types": "./src/mobile/index.ts",
       "import": "./src/mobile/index.ts",
       "require": "./src/mobile/index.ts"
+    },
+    "./router": {
+      "types": "./src/router/index.ts",
+      "import": "./src/router/index.ts",
+      "require": "./src/router/index.ts"
     }
   },
   "dependencies": {
