@@ -8,10 +8,7 @@ import { MarkPaidModal, MarkPaidEvent } from '../MarkPaidModal';
 import { QuickExpenseModal, QuickActionInitialData } from '../QuickExpenseModal';
 import { EventOverrideModal, EventToOverride } from '../EventOverrideModal';
 import { MobileTransferModal, TransferEventData } from './MobileTransferModal';
-import {
-  MobileCategoryDetailSheet,
-  MobileCategoryDetailItem,
-} from '@money-matters/ui/mobile';
+import { MobileCategoryDetailSheet, MobileCategoryDetailItem } from "@money-matters/capability-budgeting/mobile";
 import {
   MobileBurstModal,
   BurstSourceItem,

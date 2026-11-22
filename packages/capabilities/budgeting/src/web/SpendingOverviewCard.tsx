@@ -1,9 +1,7 @@
 "use client";
 
 import { SpendingAnalyticsDTO, SpendingTimeframe } from "@money-matters/types";
-import { DonutChart } from "./DonutChart";
-import { BarTrendChart } from "./BarTrendChart";
-import { HorizontalRankedBarChart } from "./HorizontalRankedBarChart";
+import { DonutChart, BarTrendChart, HorizontalRankedBarChart } from "@money-matters/ui/web";
 import { t } from "@money-matters/i18n";
 import { BarChart3, Info } from "lucide-react";
 

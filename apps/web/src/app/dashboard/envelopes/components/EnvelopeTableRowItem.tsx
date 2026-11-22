@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect } from "react";
 import Link from "next/link";
-import { InfoTooltip, formatRecurrenceLabel } from "@money-matters/ui/web";
+import { InfoTooltip } from "@money-matters/ui/web";
+import { formatRecurrenceLabel } from "@money-matters/capability-schedules/web";
 import { t } from "@money-matters/i18n";
 import { MoreVertical, Edit2, History, Receipt, ArrowDownCircle, Target, Wallet } from "lucide-react";
 import { useAppFeatures } from "../../../../hooks/useAppFeatures";

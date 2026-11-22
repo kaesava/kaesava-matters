@@ -1,7 +1,5 @@
 export { default as MobileBadge } from './Badge';
 export type { BadgeProps as MobileBadgeProps } from './Badge';
-export { default as MobileBankProviderBadge, BankProviderBadge } from './BankProviderBadge';
-export type { BankProviderBadgeProps } from './BankProviderBadge';
 export { default as MobileButton } from './Button';
 export type { ButtonProps as MobileButtonProps } from './Button';
 export { default as MobileInput } from './Input';
@@ -34,9 +32,6 @@ export * from './ToastContext';
 export * from './Toast';
 export * from './AlertBanner';
 
-export * from './fields/RecurrenceBuilder';
-export * from '../hooks/useRecurrenceBuilder';
-export * from '../dates/recurrence';
 export * from '../dates/date-formatting';
 export { fmtDateTime, formatCurrency, getCurrencySymbol } from '../lib/format';
 
@@ -83,11 +78,6 @@ export { RecordFilterBadge } from './RecordFilterBadge';
 export type { RecordFilterBadgeProps } from './RecordFilterBadge';
 export { FilterPill } from './FilterPill';
 export type { FilterPillProps } from './FilterPill';
-export { MobileEnvelopePicker } from './MobileEnvelopePicker';
-export type { MobileEnvelopePickerProps, MobileEnvelopeOption } from './MobileEnvelopePicker';
-
-export { MobileBankPicker } from './MobileBankPicker';
-export type { MobileBankPickerProps, MobileBankOption } from './MobileBankPicker';
 export { CardDrawerIndicator } from './CardDrawerIndicator';
 export type { CardDrawerIndicatorProps } from './CardDrawerIndicator';
 export { EntityLinkChip } from './EntityLinkChip';
@@ -103,21 +93,6 @@ export type { SwitchRowProps } from './SwitchRow';
 export { TypedConfirmDialog, TypedConfirmDialog as MobileTypedConfirmDialog } from './TypedConfirmDialog';
 export type { TypedConfirmDialogProps, TypedConfirmDialogProps as MobileTypedConfirmDialogProps } from './TypedConfirmDialog';
 
-export {
-  MobileEnvelopeDetailSheet,
-  MobileEnvelopeDetailSheet as MobileCategoryDetailSheet,
-} from './MobileEnvelopeDetailSheet';
-export type {
-  MobileEnvelopeDetailSheetProps,
-  MobileEnvelopeDetailSheetProps as MobileCategoryDetailSheetProps,
-  MobileEnvelopeDetailItem,
-  MobileEnvelopeDetailItem as MobileCategoryDetailItem,
-  MobileActivityItem,
-} from './MobileEnvelopeDetailSheet';
-
-export { MobileEnvelopeModeToggle } from './EnvelopeModeToggle';
-export type { MobileEnvelopeModeToggleProps } from './EnvelopeModeToggle';
-
 export { MobileProductTourSheet } from './MobileProductTourSheet';
 export type { MobileProductTourSheetProps, MobileTourStepConfig } from './MobileProductTourSheet';
 export { MobileProductTourSpotlight } from './MobileProductTourSpotlight';
@@ -126,10 +101,7 @@ export type { MobileProductTourSpotlightProps, TargetLayoutRect } from './Mobile
 export { MobileDonutChart } from './charts/MobileDonutChart';
 export { MobileBarTrendChart } from './charts/MobileBarTrendChart';
 export { MobileHorizontalRankedBarChart } from './charts/MobileHorizontalRankedBarChart';
-export { MobileSpendingOverviewCard } from './charts/MobileSpendingOverviewCard';
-export type { MobileSpendingOverviewLabels } from './charts/MobileSpendingOverviewCard';
 
-export { MobileAiUsageCard } from './MobileAiUsageCard';
 export { MobileCommandPaletteSheet } from './MobileCommandPaletteSheet';
 export type {
   MobileCommandPaletteSheetProps,
@@ -140,9 +112,3 @@ export type {
   SearchResultTransaction,
   CommandPaletteCategory,
 } from './MobileCommandPaletteSheet';
-export { MobileCelebrationBanner } from './MobileCelebrationBanner';
-export type { MobileCelebrationBannerProps } from './MobileCelebrationBanner';
-export { MobileHouseholdContributionSection } from './HouseholdContributionSection';
-export type { MobileHouseholdContributionSectionProps } from './HouseholdContributionSection';
-export * from '../lib/householdContribution';
-export * from './notifications/index';

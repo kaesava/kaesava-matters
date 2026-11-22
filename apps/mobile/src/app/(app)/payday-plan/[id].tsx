@@ -9,11 +9,8 @@ import {
 } from 'react-native';
 import { useLocalSearchParams, useRouter, type Href } from 'expo-router';
 import { Feather } from '@expo/vector-icons';
-import {
-  DESIGN_TOKENS,
-  MobileScreenWrapper,
-  MobileCategoryDetailSheet,
-} from '@money-matters/ui/mobile';
+import { DESIGN_TOKENS, MobileScreenWrapper } from "@money-matters/ui/mobile";
+import { MobileCategoryDetailSheet } from "@money-matters/capability-budgeting/mobile";
 import { t } from '@money-matters/i18n';
 import { MobileIncomeEventInlineCard } from '../../../components/plan/MobileIncomeEventInlineCard';
 import { MobilePaydayCelebrationCard } from '../../../components/plan/MobilePaydayCelebrationCard';

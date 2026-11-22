@@ -3,20 +3,9 @@
 import React, { useState, useEffect, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import { Info } from "lucide-react";
-import {
-  ModalDialog,
-  ConfirmDialog,
-  Input,
-  DatePickerField,
-  AmountField,
-  Button,
-  FormErrorBanner,
-  HouseholdContributionSection,
-  validateHouseholdContribution,
-  resolveHouseholdContributionPayload,
-  ContributionMode,
-  useToast,
-} from "@money-matters/ui/web";
+import { ModalDialog, ConfirmDialog, Input, DatePickerField, AmountField, Button, FormErrorBanner, useToast } from "@money-matters/ui/web";
+import { validateHouseholdContribution, resolveHouseholdContributionPayload } from "@money-matters/capability-budgeting/web";
+import { HouseholdContributionSection, ContributionMode } from "@money-matters/capability-budgeting/web";
 import { t } from "@money-matters/i18n";
 import { trpc } from "../../lib/trpc";
 import type { TimelineEventItem } from "../../app/dashboard/plan/components/UpcomingTimelineTab";

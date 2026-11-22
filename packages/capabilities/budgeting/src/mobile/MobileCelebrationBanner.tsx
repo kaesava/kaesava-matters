@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
-import { DESIGN_TOKENS } from '../tokens';
+import { DESIGN_TOKENS } from '@money-matters/ui/tokens';
 import { t } from '@money-matters/i18n';
 import type { TargetCelebrationItem } from '@money-matters/types';
 

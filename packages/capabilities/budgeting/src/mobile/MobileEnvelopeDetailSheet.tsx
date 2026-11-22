@@ -1,11 +1,11 @@
 import { useState } from 'react';
 import { View, Text, TouchableOpacity, ScrollView, StyleSheet } from 'react-native';
 import { Feather } from '@expo/vector-icons';
-import { DESIGN_TOKENS } from '../tokens';
-import { MobileModalDialog } from './MobileModalDialog';
-import { SegmentedTabs } from './SegmentedTabs';
-import { useCurrencyLocale } from '../hooks/CurrencyLocaleContext';
-import { formatRecurrenceLabel, formatRecurrenceSuffix } from '../dates/recurrence';
+import { DESIGN_TOKENS } from '@money-matters/ui/tokens';
+import { MobileModalDialog } from '@money-matters/ui/mobile';
+import { SegmentedTabs } from '@money-matters/ui/mobile';
+import { useCurrencyLocale } from '@money-matters/ui/mobile';
+import { formatRecurrenceLabel, formatRecurrenceSuffix } from '@money-matters/capability-schedules/mobile';
 import { t } from '@money-matters/i18n';
 
 export interface MobileEnvelopeDetailItem {

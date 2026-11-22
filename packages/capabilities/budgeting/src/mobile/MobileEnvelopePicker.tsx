@@ -10,8 +10,8 @@ import {
 } from 'react-native';
 import { Feather } from '@expo/vector-icons';
 import { t } from '@money-matters/i18n';
-import { useCurrencyLocale } from '../hooks/CurrencyLocaleContext';
-import { FilterPill } from './FilterPill';
+import { useCurrencyLocale } from '@money-matters/ui/mobile';
+import { FilterPill } from '@money-matters/ui/mobile';
 import { styles } from './picker/MobileEnvelopePickerStyles';
 import {
   MobileEnvelopePickerItem,
@@ -138,7 +138,7 @@ export const MobileEnvelopePicker: React.FC<MobileEnvelopePickerProps> = ({
   const renderSearchInput = () => (
     <View style={styles.searchWrap}>
       <Feather name="search" size={14} color="#94A3B8" />
-      <TextInput
+      <TextInput // mm-allow-interaction: embedded search input inside picker modal
         style={styles.searchInput}
         placeholder={t('categories.searchPlaceholder')}
         placeholderTextColor="#94A3B8"

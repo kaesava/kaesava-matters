@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useEffect, useRef } from 'react';
-import { DESIGN_TOKENS } from '../tokens.js';
+import { DESIGN_TOKENS } from '@money-matters/ui/tokens';
 import { t } from '@money-matters/i18n';
 import type { TargetCelebrationItem } from '@money-matters/types';
 

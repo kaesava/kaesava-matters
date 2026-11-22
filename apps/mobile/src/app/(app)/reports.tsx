@@ -9,12 +9,8 @@ import {
 } from 'react-native';
 import { useRouter, useLocalSearchParams, type Href } from 'expo-router';
 import { Feather } from '@expo/vector-icons';
-import {
-  SegmentedTabs,
-  MobileSpendingOverviewCard,
-  SearchInput,
-  DESIGN_TOKENS,
-} from '@money-matters/ui/mobile';
+import { SegmentedTabs, SearchInput, DESIGN_TOKENS } from "@money-matters/ui/mobile";
+import { MobileSpendingOverviewCard } from "@money-matters/capability-budgeting/mobile";
 import { ReportsFilterSheets } from '../../components/reports/ReportsFilterSheets';
 import { AppScreenWrapper } from '../../components/AppScreenWrapper';
 import { t } from '@money-matters/i18n';

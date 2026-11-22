@@ -5,17 +5,8 @@ import { PostHogProvider } from 'posthog-react-native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { trpc, buildTrpcClient } from '../lib/trpc';
 import { authClient } from '../lib/auth';
-import {
-  IconVisibilityProvider,
-  MobileToastProvider,
-  MobileToastContainer,
-  MobileConfirmContainer,
-  DateLocaleProvider,
-  CurrencyLocaleProvider,
-  NotificationServiceProvider,
-  AppThemeProvider,
-  createDesignTokens,
-} from '@money-matters/ui/mobile';
+import { IconVisibilityProvider, MobileToastProvider, MobileToastContainer, MobileConfirmContainer, DateLocaleProvider, CurrencyLocaleProvider, AppThemeProvider, createDesignTokens } from "@money-matters/ui/mobile";
+import { NotificationServiceProvider } from "@money-matters/capability-notifications/mobile";
 
 const moneyMattersMobileTheme = createDesignTokens();
 import { setLanguage, SupportedLanguage } from '@money-matters/i18n';

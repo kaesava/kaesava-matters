@@ -4,7 +4,8 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { trpc } from "../../../lib/trpc";
 import posthog from "../../../lib/posthog-client";
-import { useToast, buildRecurrenceRule, useCurrencyLocale } from "@money-matters/ui/web";
+import { useToast, useCurrencyLocale } from "@money-matters/ui/web";
+import { buildRecurrenceRule } from "@money-matters/capability-schedules/web";
 import { t } from "@money-matters/i18n";
 import {
   IncomeItem,

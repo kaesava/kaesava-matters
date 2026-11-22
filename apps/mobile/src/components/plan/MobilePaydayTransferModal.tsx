@@ -1,12 +1,7 @@
 import React, { useState, useMemo } from 'react';
 import { View, Text, StyleSheet, Share } from 'react-native';
-import {
-  DESIGN_TOKENS,
-  MobileModalDialog,
-  MobileButton,
-  MobileCelebrationBanner,
-  useCurrencyLocale,
-} from '@money-matters/ui/mobile';
+import { DESIGN_TOKENS, MobileModalDialog, MobileButton, useCurrencyLocale } from "@money-matters/ui/mobile";
+import { MobileCelebrationBanner } from "@money-matters/capability-budgeting/mobile";
 import { t } from '@money-matters/i18n';
 import { RollupRetainedCard } from './rollup/RollupRetainedCard';
 import { RollupTransferItem } from './rollup/RollupTransferItem';

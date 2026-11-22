@@ -1,5 +1,5 @@
 import { t } from "@money-matters/i18n";
-import { fmtDate as defaultFmtDate } from "./date-formatting";
+import { fmtDate as defaultFmtDate } from "@money-matters/ui";
 
 export type RecurrenceFrequency = "WEEKLY" | "FORTNIGHTLY" | "MONTHLY" | "QUARTERLY" | "ANNUALLY";
 

@@ -4,7 +4,8 @@ import { getTenantDateString } from "@money-matters/types";
 
 import { useState } from "react";
 import { t } from "@money-matters/i18n";
-import { InfoTooltip, AmountField, EnvelopeModeToggle, ConfirmDialog } from "@money-matters/ui/web";
+import { InfoTooltip, AmountField, ConfirmDialog } from "@money-matters/ui/web";
+import { EnvelopeModeToggle } from "@money-matters/capability-budgeting/web";
 import type { UserGoalItem } from "@money-matters/types";
 import { SetupGoalsPresetsGrid, GoalPresetConfig } from "./SetupGoalsPresetsGrid";
 import { SetupGoalItemRow } from "./SetupGoalItemRow";

@@ -165,9 +165,24 @@ importers:
       '@expo/vector-icons':
         specifier: 15.1.1
         version: 15.1.1(expo-font@14.0.12(expo@54.0.37(@babel/core@7.29.7)(@expo/metro-runtime@6.1.2)(expo-router@6.0.24)(react-native@0.81.5(@babel/core@7.29.7)(@react-native/metro-config@0.86.2(@babel/core@7.29.7))(@types/react@19.1.17)(react@19.1.0))(react@19.1.0)(typescript@6.0.3))(react-native@0.81.5(@babel/core@7.29.7)(@react-native/metro-config@0.86.2(@babel/core@7.29.7))(@types/react@19.1.17)(react@19.1.0))(react@19.1.0))(react-native@0.81.5(@babel/core@7.29.7)(@react-native/metro-config@0.86.2(@babel/core@7.29.7))(@types/react@19.1.17)(react@19.1.0))(react@19.1.0)
+      '@money-matters/capability-assistant':
+        specifier: workspace:*
+        version: link:../../packages/capabilities/assistant
+      '@money-matters/capability-bank-accounts':
+        specifier: workspace:*
+        version: link:../../packages/capabilities/bank-accounts
+      '@money-matters/capability-budgeting':
+        specifier: workspace:*
+        version: link:../../packages/capabilities/budgeting
       '@money-matters/capability-file-notes':
         specifier: workspace:*
         version: link:../../packages/capabilities/file-notes
+      '@money-matters/capability-notifications':
+        specifier: workspace:*
+        version: link:../../packages/capabilities/notifications
+      '@money-matters/capability-schedules':
+        specifier: workspace:*
+        version: link:../../packages/capabilities/schedules
       '@money-matters/config':
         specifier: workspace:*
         version: link:../../packages/config
@@ -307,9 +322,18 @@ importers:
 
   apps/web:
     dependencies:
+      '@money-matters/capability-assistant':
+        specifier: workspace:*
+        version: link:../../packages/capabilities/assistant
+      '@money-matters/capability-budgeting':
+        specifier: workspace:*
+        version: link:../../packages/capabilities/budgeting
       '@money-matters/capability-file-notes':
         specifier: workspace:*
         version: link:../../packages/capabilities/file-notes
+      '@money-matters/capability-schedules':
+        specifier: workspace:*
+        version: link:../../packages/capabilities/schedules
       '@money-matters/config':
         specifier: workspace:*
         version: link:../../packages/config
@@ -413,16 +437,37 @@ importers:
       '@money-matters/db':
         specifier: workspace:*
         version: link:../../db
+      '@money-matters/i18n':
+        specifier: workspace:*
+        version: link:../../i18n
       '@money-matters/types':
         specifier: workspace:*
         version: link:../../types
+      '@money-matters/ui':
+        specifier: workspace:*
+        version: link:../../ui
       drizzle-orm:
         specifier: ^0.39.0
         version: 0.39.3(@neondatabase/serverless@0.9.5)(@opentelemetry/api@1.9.1)(@types/pg@8.15.6)(expo-sqlite@16.0.10(expo@54.0.37(@babel/core@7.29.7)(@expo/metro-runtime@6.1.2)(expo-router@6.0.24)(react-native@0.81.5(@babel/core@7.29.7)(@react-native/metro-config@0.86.2(@babel/core@7.29.7))(@types/react@19.1.17)(react@19.1.0))(react@19.1.0)(typescript@6.0.3))(react-native@0.81.5(@babel/core@7.29.7)(@react-native/metro-config@0.86.2(@babel/core@7.29.7))(@types/react@19.1.17)(react@19.1.0))(react@19.1.0))(kysely@0.29.4)
+      lucide-react:
+        specifier: ^0.470.0
+        version: 0.470.0(react@19.1.0)
+      react:
+        specifier: 19.1.0
+        version: 19.1.0
       zod:
         specifier: ^3.23.8
         version: 3.25.76
     devDependencies:
+      '@expo/vector-icons':
+        specifier: 15.1.1
+        version: 15.1.1(expo-font@14.0.12(expo@54.0.37(@babel/core@7.29.7)(@expo/metro-runtime@6.1.2)(expo-router@6.0.24)(react-native@0.81.5(@babel/core@7.29.7)(@react-native/metro-config@0.86.2(@babel/core@7.29.7))(@types/react@19.1.17)(react@19.1.0))(react@19.1.0)(typescript@6.0.3))(react-native@0.81.5(@babel/core@7.29.7)(@react-native/metro-config@0.86.2(@babel/core@7.29.7))(@types/react@19.1.17)(react@19.1.0))(react@19.1.0))(react-native@0.81.5(@babel/core@7.29.7)(@react-native/metro-config@0.86.2(@babel/core@7.29.7))(@types/react@19.1.17)(react@19.1.0))(react@19.1.0)
+      '@types/react':
+        specifier: ~19.1.10
+        version: 19.1.17
+      react-native:
+        specifier: 0.81.5
+        version: 0.81.5(@babel/core@7.29.7)(@react-native/metro-config@0.86.2(@babel/core@7.29.7))(@types/react@19.1.17)(react@19.1.0)
       typescript:
         specifier: ^6.0.3
         version: 6.0.3
@@ -438,16 +483,34 @@ importers:
       '@money-matters/db':
         specifier: workspace:*
         version: link:../../db
+      '@money-matters/i18n':
+        specifier: workspace:*
+        version: link:../../i18n
       '@money-matters/types':
         specifier: workspace:*
         version: link:../../types
+      '@money-matters/ui':
+        specifier: workspace:*
+        version: link:../../ui
       drizzle-orm:
         specifier: ^0.39.0
         version: 0.39.3(@neondatabase/serverless@0.9.5)(@opentelemetry/api@1.9.1)(@types/pg@8.15.6)(expo-sqlite@16.0.10(expo@54.0.37(@babel/core@7.29.7)(@expo/metro-runtime@6.1.2)(expo-router@6.0.24)(react-native@0.81.5(@babel/core@7.29.7)(@react-native/metro-config@0.86.2(@babel/core@7.29.7))(@types/react@19.1.17)(react@19.1.0))(react@19.1.0)(typescript@6.0.3))(react-native@0.81.5(@babel/core@7.29.7)(@react-native/metro-config@0.86.2(@babel/core@7.29.7))(@types/react@19.1.17)(react@19.1.0))(react@19.1.0))(kysely@0.29.4)
+      react:
+        specifier: 19.1.0
+        version: 19.1.0
       zod:
         specifier: ^3.23.8
         version: 3.25.76
     devDependencies:
+      '@expo/vector-icons':
+        specifier: 15.1.1
+        version: 15.1.1(expo-font@14.0.12(expo@54.0.37(@babel/core@7.29.7)(@expo/metro-runtime@6.1.2)(expo-router@6.0.24)(react-native@0.81.5(@babel/core@7.29.7)(@react-native/metro-config@0.86.2(@babel/core@7.29.7))(@types/react@19.1.17)(react@19.1.0))(react@19.1.0)(typescript@6.0.3))(react-native@0.81.5(@babel/core@7.29.7)(@react-native/metro-config@0.86.2(@babel/core@7.29.7))(@types/react@19.1.17)(react@19.1.0))(react@19.1.0))(react-native@0.81.5(@babel/core@7.29.7)(@react-native/metro-config@0.86.2(@babel/core@7.29.7))(@types/react@19.1.17)(react@19.1.0))(react@19.1.0)
+      '@types/react':
+        specifier: ~19.1.10
+        version: 19.1.17
+      react-native:
+        specifier: 0.81.5
+        version: 0.81.5(@babel/core@7.29.7)(@react-native/metro-config@0.86.2(@babel/core@7.29.7))(@types/react@19.1.17)(react@19.1.0)
       typescript:
         specifier: ^6.0.3
         version: 6.0.3
@@ -494,6 +557,9 @@ importers:
 
   packages/capabilities/budgeting:
     dependencies:
+      '@money-matters/capability-schedules':
+        specifier: workspace:*
+        version: link:../schedules
       '@money-matters/config':
         specifier: workspace:*
         version: link:../../config
@@ -509,9 +575,18 @@ importers:
       '@money-matters/types':
         specifier: workspace:*
         version: link:../../types
+      '@money-matters/ui':
+        specifier: workspace:*
+        version: link:../../ui
       drizzle-orm:
         specifier: ^0.39.0
         version: 0.39.3(@neondatabase/serverless@0.9.5)(@opentelemetry/api@1.9.1)(@types/pg@8.15.6)(expo-sqlite@16.0.10(expo@54.0.37(@babel/core@7.29.7)(@expo/metro-runtime@6.1.2)(expo-router@6.0.24)(react-native@0.81.5(@babel/core@7.29.7)(@react-native/metro-config@0.86.2(@babel/core@7.29.7))(@types/react@19.1.17)(react@19.1.0))(react@19.1.0)(typescript@6.0.3))(react-native@0.81.5(@babel/core@7.29.7)(@react-native/metro-config@0.86.2(@babel/core@7.29.7))(@types/react@19.1.17)(react@19.1.0))(react@19.1.0))(kysely@0.29.4)
+      lucide-react:
+        specifier: ^0.470.0
+        version: 0.470.0(react@19.1.0)
+      react:
+        specifier: 19.1.0
+        version: 19.1.0
       rrule:
         specifier: ^2.8.1
         version: 2.8.1
@@ -519,6 +594,15 @@ importers:
         specifier: ^3.23.8
         version: 3.25.76
     devDependencies:
+      '@expo/vector-icons':
+        specifier: 15.1.1
+        version: 15.1.1(expo-font@14.0.12(expo@54.0.37(@babel/core@7.29.7)(@expo/metro-runtime@6.1.2)(expo-router@6.0.24)(react-native@0.81.5(@babel/core@7.29.7)(@react-native/metro-config@0.86.2(@babel/core@7.29.7))(@types/react@19.1.17)(react@19.1.0))(react@19.1.0)(typescript@6.0.3))(react-native@0.81.5(@babel/core@7.29.7)(@react-native/metro-config@0.86.2(@babel/core@7.29.7))(@types/react@19.1.17)(react@19.1.0))(react@19.1.0))(react-native@0.81.5(@babel/core@7.29.7)(@react-native/metro-config@0.86.2(@babel/core@7.29.7))(@types/react@19.1.17)(react@19.1.0))(react@19.1.0)
+      '@types/react':
+        specifier: ~19.1.10
+        version: 19.1.17
+      react-native:
+        specifier: 0.81.5
+        version: 0.81.5(@babel/core@7.29.7)(@react-native/metro-config@0.86.2(@babel/core@7.29.7))(@types/react@19.1.17)(react@19.1.0)
       typescript:
         specifier: ^6.0.3
         version: 6.0.3
@@ -632,10 +716,28 @@ importers:
       inngest:
         specifier: ^3.12.0
         version: 3.54.2(@opentelemetry/core@2.10.0(@opentelemetry/api@1.9.1))(express@5.2.1)(fastify@4.29.1)(next@16.4.6(@babel/core@7.29.7)(@opentelemetry/api@1.9.1)(@playwright/test@1.62.1)(@types/node@20.19.43)(babel-plugin-react-compiler@1.0.0)(react-dom@19.1.0(react@19.1.0))(react@19.1.0))(typescript@6.0.3)(zod@3.25.76)
+      react:
+        specifier: 19.1.0
+        version: 19.1.0
       zod:
         specifier: ^3.22.4
         version: 3.25.76
     devDependencies:
+      '@types/react':
+        specifier: ~19.1.10
+        version: 19.1.17
+      expo-constants:
+        specifier: ~18.0.14
+        version: 18.0.14(expo@54.0.37)(react-native@0.81.5(@babel/core@7.29.7)(@react-native/metro-config@0.86.2(@babel/core@7.29.7))(@types/react@19.1.17)(react@19.1.0))
+      expo-device:
+        specifier: ~8.0.10
+        version: 8.0.10(expo@54.0.37(@babel/core@7.29.7)(@expo/metro-runtime@6.1.2)(expo-router@6.0.24)(react-native@0.81.5(@babel/core@7.29.7)(@react-native/metro-config@0.86.2(@babel/core@7.29.7))(@types/react@19.1.17)(react@19.1.0))(react@19.1.0)(typescript@6.0.3))
+      expo-notifications:
+        specifier: ~0.32.17
+        version: 0.32.17(expo@54.0.37(@babel/core@7.29.7)(@expo/metro-runtime@6.1.2)(expo-router@6.0.24)(react-native@0.81.5(@babel/core@7.29.7)(@react-native/metro-config@0.86.2(@babel/core@7.29.7))(@types/react@19.1.17)(react@19.1.0))(react@19.1.0)(typescript@6.0.3))(react-native@0.81.5(@babel/core@7.29.7)(@react-native/metro-config@0.86.2(@babel/core@7.29.7))(@types/react@19.1.17)(react@19.1.0))(react@19.1.0)(typescript@6.0.3)
+      react-native:
+        specifier: 0.81.5
+        version: 0.81.5(@babel/core@7.29.7)(@react-native/metro-config@0.86.2(@babel/core@7.29.7))(@types/react@19.1.17)(react@19.1.0)
       typescript:
         specifier: ^6.0.3
         version: 6.0.3
@@ -648,13 +750,28 @@ importers:
       '@money-matters/core':
         specifier: workspace:*
         version: link:../../core
+      '@money-matters/i18n':
+        specifier: workspace:*
+        version: link:../../i18n
       '@money-matters/types':
         specifier: workspace:*
         version: link:../../types
+      '@money-matters/ui':
+        specifier: workspace:*
+        version: link:../../ui
+      react:
+        specifier: 19.1.0
+        version: 19.1.0
       zod:
         specifier: ^3.23.8
         version: 3.25.76
     devDependencies:
+      '@types/react':
+        specifier: ~19.1.10
+        version: 19.1.17
+      react-native:
+        specifier: 0.81.5
+        version: 0.81.5(@babel/core@7.29.7)(@react-native/metro-config@0.86.2(@babel/core@7.29.7))(@types/react@19.1.17)(react@19.1.0)
       typescript:
         specifier: ^6.0.3
         version: 6.0.3
@@ -888,15 +1005,6 @@ importers:
       '@types/react':
         specifier: ~19.1.10
         version: 19.1.17
-      expo-constants:
-        specifier: ~18.0.14
-        version: 18.0.14(expo@54.0.37)(react-native@0.81.5(@babel/core@7.29.7)(@react-native/metro-config@0.86.2(@babel/core@7.29.7))(@types/react@19.1.17)(react@19.1.0))
-      expo-device:
-        specifier: ~8.0.10
-        version: 8.0.10(expo@54.0.37(@babel/core@7.29.7)(@expo/metro-runtime@6.1.2)(expo-router@6.0.24)(react-native@0.81.5(@babel/core@7.29.7)(@react-native/metro-config@0.86.2(@babel/core@7.29.7))(@types/react@19.1.17)(react@19.1.0))(react@19.1.0)(typescript@6.0.3))
-      expo-notifications:
-        specifier: ~0.32.17
-        version: 0.32.17(expo@54.0.37(@babel/core@7.29.7)(@expo/metro-runtime@6.1.2)(expo-router@6.0.24)(react-native@0.81.5(@babel/core@7.29.7)(@react-native/metro-config@0.86.2(@babel/core@7.29.7))(@types/react@19.1.17)(react@19.1.0))(react@19.1.0)(typescript@6.0.3))(react-native@0.81.5(@babel/core@7.29.7)(@react-native/metro-config@0.86.2(@babel/core@7.29.7))(@types/react@19.1.17)(react@19.1.0))(react@19.1.0)(typescript@6.0.3)
       react-native-safe-area-context:
         specifier: ^5.6.0
         version: 5.6.2(react-native@0.81.5(@babel/core@7.29.7)(@react-native/metro-config@0.86.2(@babel/core@7.29.7))(@types/react@19.1.17)(react@19.1.0))(react@19.1.0)

@@ -1,17 +1,9 @@
 import React from 'react';
 import { View, StyleSheet } from 'react-native';
-import {
-  MobileInput,
-  AmountInput,
-  MobileBankPicker,
-  MobileEnvelopePicker,
-  MobileEnvelopeOption,
-  RecurrenceBuilder,
-  useRecurrenceBuilder,
-  FormErrorBanner,
-  MobileHouseholdContributionSection,
-  useCurrencyLocale,
-} from '@money-matters/ui/mobile';
+import { MobileInput, AmountInput, FormErrorBanner, useCurrencyLocale } from "@money-matters/ui/mobile";
+import { MobileBankPicker } from "@money-matters/capability-bank-accounts/mobile";
+import { MobileEnvelopePicker, MobileEnvelopeOption, MobileHouseholdContributionSection } from "@money-matters/capability-budgeting/mobile";
+import { RecurrenceBuilder, useRecurrenceBuilder } from "@money-matters/capability-schedules/mobile";
 import { t } from '@money-matters/i18n';
 
 export interface IncomeExpenseBankAccountOption {

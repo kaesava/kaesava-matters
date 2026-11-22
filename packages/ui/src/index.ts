@@ -5,7 +5,5 @@ export * from './lib/format';
 export * from './lib/phone-validation';
 export * from './lib/is-dirty';
 export * from './dates/date-formatting';
-export * from './dates/recurrence';
-export * from './hooks/useRecurrenceBuilder';
 export * from './hooks/DateLocaleContext';
 export * from './hooks/CurrencyLocaleContext';

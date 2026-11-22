@@ -32,8 +32,6 @@ export * from './AlertBanner';
 export * from './NetworkErrorBanner';
 export * from './ConfirmDialog';
 export * from './SkeletonTable';
-export * from './EnvelopePicker';
-export * from './envelopePickerUtils';
 export * from './RecordFilterBadge';
 export * from './modalStack';
 
@@ -43,21 +41,11 @@ export * from './FormErrorBanner';
 export * from './ModalDialog';
 export * from './OtpInput';
 
-
 export * from './TypedConfirmDialog';
-export * from './fields/RecurrenceBuilder';
-export * from '../hooks/useRecurrenceBuilder';
-export * from '../dates/recurrence';
-export * from './EnvelopeModeToggle';
 export * from './ProductTourPopover';
 export * from './ProductTourSpotlight';
 
 export * from './charts/DonutChart';
 export * from './charts/BarTrendChart';
 export * from './charts/HorizontalRankedBarChart';
-export * from './charts/SpendingOverviewCard';
-export * from './AiUsageCard';
 export * from './CommandPaletteModal';
-export * from './CelebrationBanner';
-export * from './HouseholdContributionSection';
-export * from '../lib/householdContribution';

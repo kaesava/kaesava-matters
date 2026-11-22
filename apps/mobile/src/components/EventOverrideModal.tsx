@@ -1,19 +1,8 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, ActivityIndicator } from 'react-native';
-import {
-  DESIGN_TOKENS,
-  MobileModalDialog,
-  MobileDatePickerField,
-  MobileInput,
-  AmountInput,
-  useMobileToast,
-  showMobileConfirm,
-  FormErrorBanner,
-  MobileHouseholdContributionSection,
-  ContributionMode,
-  validateHouseholdContribution,
-  resolveHouseholdContributionPayload,
-} from '@money-matters/ui/mobile';
+import { DESIGN_TOKENS, MobileModalDialog, MobileDatePickerField, MobileInput, AmountInput, useMobileToast, showMobileConfirm, FormErrorBanner } from "@money-matters/ui/mobile";
+import { validateHouseholdContribution, resolveHouseholdContributionPayload } from "@money-matters/capability-budgeting/mobile";
+import { MobileHouseholdContributionSection, ContributionMode } from "@money-matters/capability-budgeting/mobile";
 import { t } from '@money-matters/i18n';
 import { trpc } from '../lib/trpc';
 import { formatIsoDate } from '../lib/format';

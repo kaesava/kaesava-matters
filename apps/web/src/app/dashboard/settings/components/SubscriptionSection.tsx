@@ -3,7 +3,8 @@
 import React, { useState } from "react";
 import { trpc } from "../../../../lib/trpc";
 import { useAppFeatures } from "../../../../hooks/useAppFeatures";
-import { Spinner, useToast, AiUsageCard } from "@money-matters/ui/web";
+import { Spinner, useToast } from "@money-matters/ui/web";
+import { AiUsageCard } from "@money-matters/capability-assistant/web";
 import { t } from "@money-matters/i18n";
 import type { inferRouterOutputs } from "@trpc/server";
 import type { AppRouter } from "../../../../../../api/src/routers/_app";

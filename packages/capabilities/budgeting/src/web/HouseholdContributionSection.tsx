@@ -1,10 +1,10 @@
 'use client';
 
 import { t } from '@money-matters/i18n';
-import { FormLabel } from './FormLabel';
-import { Input } from './Input';
-import { AmountField } from './fields/AmountField';
-import { ContributionMode } from '../lib/householdContribution';
+import { FormLabel } from '@money-matters/ui/web';
+import { Input } from '@money-matters/ui/web';
+import { AmountField } from '@money-matters/ui/web';
+import { ContributionMode } from '../shared/householdContribution';
 
 export interface HouseholdContributionSectionProps {
   hasPrivateEnvelopes: boolean;

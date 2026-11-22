@@ -10,7 +10,7 @@ import {
   BankProvider,
   AccountType,
 } from "@money-matters/types";
-import { parseRecurrenceRule } from "@money-matters/ui/web";
+import { parseRecurrenceRule } from "@money-matters/capability-schedules/web";
 import { UserGoalItem } from "../components/SetupGoalsStep";
 import { BankAccountRowItem } from "../components/SetupBankAccountRow";
 

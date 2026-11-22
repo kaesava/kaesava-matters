@@ -10,16 +10,31 @@
       "types": "./src/index.ts",
       "import": "./src/index.ts",
       "require": "./src/index.ts"
+    },
+    "./mobile": {
+      "types": "./src/mobile/index.ts",
+      "import": "./src/mobile/index.ts",
+      "require": "./src/mobile/index.ts"
     }
   },
   "dependencies": {
     "@money-matters/core": "workspace:*",
     "@money-matters/db": "workspace:*",
+    "@money-matters/i18n": "workspace:*",
     "@money-matters/types": "workspace:*",
+    "@money-matters/ui": "workspace:*",
     "drizzle-orm": "^0.39.0",
     "zod": "^3.23.8"
   },
+  "peerDependencies": {
+    "@expo/vector-icons": "^15.0.0 || ^14.0.0",
+    "react": "^19.0.0 || ^18.0.0",
+    "react-native": "*"
+  },
   "devDependencies": {
+    "@expo/vector-icons": "^15.1.1",
+    "@types/react": "^19.1.0",
+    "react-native": "0.81.5",
     "typescript": "^6.0.3",
     "vitest": "^4.1.10"
   },

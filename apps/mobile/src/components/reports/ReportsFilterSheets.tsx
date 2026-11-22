@@ -1,5 +1,6 @@
 import React from 'react';
-import { MobileFilterSheet, MobileBankPicker } from '@money-matters/ui/mobile';
+import { MobileFilterSheet } from "@money-matters/ui/mobile";
+import { MobileBankPicker } from "@money-matters/capability-bank-accounts/mobile";
 import { t } from '@money-matters/i18n';
 import type { SpendingFlowType } from '@money-matters/types';
 

@@ -1,12 +1,7 @@
 import React, { useState } from 'react';
 import { View, StyleSheet } from 'react-native';
-import {
-  AmountInput,
-  MobileDatePickerField,
-  MobileInput,
-  MobileButton,
-  MobileEnvelopePicker,
-} from '@money-matters/ui/mobile';
+import { AmountInput, MobileDatePickerField, MobileInput, MobileButton } from "@money-matters/ui/mobile";
+import { MobileEnvelopePicker } from "@money-matters/capability-budgeting/mobile";
 import { t } from '@money-matters/i18n';
 import { QuickPresetItem } from './useMobileQuickAction';
 import { QuickPresetsRow } from './QuickPresetsRow';

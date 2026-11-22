@@ -2,7 +2,8 @@
 
 import React, { useMemo } from "react";
 import Link from "next/link";
-import { ResizableTh, useResizableColumns, formatScheduleSummary } from "@money-matters/ui/web";
+import { ResizableTh, useResizableColumns } from "@money-matters/ui/web";
+import { formatScheduleSummary } from "@money-matters/capability-schedules/web";
 import { t } from "@money-matters/i18n";
 import { useLocale } from "../../../../providers/LocaleProvider";
 import { ScheduleBurstModal, type ScheduleBurstSource } from "./ScheduleBurstModal";

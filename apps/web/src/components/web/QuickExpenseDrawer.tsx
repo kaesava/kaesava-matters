@@ -1,17 +1,7 @@
 import { t } from "@money-matters/i18n";
-import {
-  SlideOverDrawer,
-  PoolPicker,
-  ConfirmDialog,
-  Button,
-  Input,
-  DatePickerField,
-  GenericSelectField,
-  AmountField,
-  FormErrorBanner,
-  FormLabel,
-  HouseholdContributionSection,
-} from "@money-matters/ui/web";
+import { SlideOverDrawer, ConfirmDialog, Button, Input, DatePickerField, GenericSelectField, AmountField, FormErrorBanner, FormLabel } from "@money-matters/ui/web";
+import { PoolPicker } from "@money-matters/capability-budgeting/web";
+import { HouseholdContributionSection } from "@money-matters/capability-budgeting/web";
 import { useQuickActionState } from "./quick/useQuickActionState";
 import { QuickPickBadges } from "./quick/QuickPickBadges";
 import { CrossBankTransferModal } from "./CrossBankTransferModal";

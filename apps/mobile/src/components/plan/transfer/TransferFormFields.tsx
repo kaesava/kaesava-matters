@@ -1,11 +1,7 @@
 import React from 'react';
 import { View, StyleSheet } from 'react-native';
-import {
-  MobileDatePickerField,
-  AmountInput,
-  MobileInput,
-  MobileEnvelopePicker,
-} from '@money-matters/ui/mobile';
+import { MobileDatePickerField, AmountInput, MobileInput } from "@money-matters/ui/mobile";
+import { MobileEnvelopePicker } from "@money-matters/capability-budgeting/mobile";
 import { t } from '@money-matters/i18n';
 import type { PoolOption } from '../MobileTransferModal';
 

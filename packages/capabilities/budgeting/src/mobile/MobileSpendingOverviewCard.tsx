@@ -1,11 +1,11 @@
 import { useState } from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import { SpendingAnalyticsDTO, SpendingTimeframe } from '@money-matters/types';
-import { MobileDonutChart } from './MobileDonutChart';
-import { MobileBarTrendChart } from './MobileBarTrendChart';
-import { MobileHorizontalRankedBarChart } from './MobileHorizontalRankedBarChart';
-import { DESIGN_TOKENS } from '../../tokens';
-import { SkeletonCard } from '../SkeletonCard';
+import { MobileDonutChart } from '@money-matters/ui/mobile';
+import { MobileBarTrendChart } from '@money-matters/ui/mobile';
+import { MobileHorizontalRankedBarChart } from '@money-matters/ui/mobile';
+import { DESIGN_TOKENS } from '@money-matters/ui/tokens';
+import { SkeletonCard } from '@money-matters/ui/mobile';
 import { t } from '@money-matters/i18n';
 import {
   ChartTab,
@@ -195,7 +195,7 @@ const styles = StyleSheet.create({
     marginTop: 8,
   },
   noticeText: {
-    fontSize: 11,
+    fontSize: 12,
     color: DESIGN_TOKENS.colors.slate[600],
     textAlign: 'center',
   },

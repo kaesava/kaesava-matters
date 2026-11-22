@@ -1,16 +1,8 @@
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
-import {
-  DESIGN_TOKENS,
-  MobileInput,
-  ChipSelect,
-  FormLabel,
-  AmountInput,
-  MobileEnvelopeModeToggle,
-  MobileCheckbox,
-  RecurrenceFrequency,
-  InfoTooltip,
-} from '@money-matters/ui/mobile';
+import { DESIGN_TOKENS, MobileInput, ChipSelect, FormLabel, AmountInput, MobileCheckbox, InfoTooltip } from "@money-matters/ui/mobile";
+import { MobileEnvelopeModeToggle } from "@money-matters/capability-budgeting/mobile";
+import { RecurrenceFrequency } from "@money-matters/capability-schedules/mobile";
 import { t } from '@money-matters/i18n';
 import { EnvelopeRecurrenceFields } from './EnvelopeRecurrenceFields';
 import { EnvelopeEventsToggleSection } from './EnvelopeEventsToggleSection';

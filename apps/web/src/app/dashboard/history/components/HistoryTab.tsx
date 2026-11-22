@@ -3,14 +3,8 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { BarChart3 } from "lucide-react";
 import { t } from "@money-matters/i18n";
-import {
-  SearchInput,
-  PaginationBar,
-  ResizableTh,
-  SkeletonTable,
-  PoolPicker,
-  RecordFilterBadge,
-} from "@money-matters/ui/web";
+import { SearchInput, PaginationBar, ResizableTh, SkeletonTable, RecordFilterBadge } from "@money-matters/ui/web";
+import { PoolPicker } from "@money-matters/capability-budgeting/web";
 import { useAppFeatures } from "../../../../hooks/useAppFeatures";
 import {
   useHistoryTransactionsData,

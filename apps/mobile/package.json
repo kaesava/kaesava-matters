@@ -21,7 +21,12 @@
   "dependencies": {
     "@better-auth/expo": "^1.6.23",
     "@expo/vector-icons": "^15.1.1",
+    "@money-matters/capability-assistant": "workspace:*",
+    "@money-matters/capability-bank-accounts": "workspace:*",
+    "@money-matters/capability-budgeting": "workspace:*",
     "@money-matters/capability-file-notes": "workspace:*",
+    "@money-matters/capability-notifications": "workspace:*",
+    "@money-matters/capability-schedules": "workspace:*",
     "@money-matters/config": "workspace:*",
     "@money-matters/i18n": "workspace:*",
     "@money-matters/types": "workspace:^",

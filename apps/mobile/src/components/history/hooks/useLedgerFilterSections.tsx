@@ -1,6 +1,8 @@
 import { useMemo } from 'react';
 import { t } from '@money-matters/i18n';
-import { FilterSection, MobileEnvelopePicker, MobileBankPicker } from '@money-matters/ui/mobile';
+import { FilterSection } from "@money-matters/ui/mobile";
+import { MobileEnvelopePicker } from "@money-matters/capability-budgeting/mobile";
+import { MobileBankPicker } from "@money-matters/capability-bank-accounts/mobile";
 
 interface PoolOption {
   id: string;

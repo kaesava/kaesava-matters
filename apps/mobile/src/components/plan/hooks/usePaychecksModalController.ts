@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { SourceToEdit } from '../../IncomeExpenseFormModal';
 import { MarkPaidEvent } from '../../MarkPaidModal';
 import { TransferEventData } from '../MobileTransferModal';
-import { MobileCategoryDetailItem } from '@money-matters/ui/mobile';
+import { MobileCategoryDetailItem } from "@money-matters/capability-budgeting/mobile";
 import { BurstSourceItem } from '../MobileBurstModal';
 import { EventToOverride } from '../../EventOverrideModal';
 

@@ -10,10 +10,10 @@ import {
 } from 'react-native';
 import { Feather } from '@expo/vector-icons';
 import { t } from '@money-matters/i18n';
-import { FilterPill } from './FilterPill';
-import { styles } from './picker/MobileBankPickerStyles';
-import { useCurrencyLocale } from '../hooks/CurrencyLocaleContext';
-import { formatCurrency } from '../lib/format';
+import { FilterPill } from '@money-matters/ui/mobile';
+import { styles } from './MobileBankPickerStyles';
+import { useCurrencyLocale } from '@money-matters/ui/mobile';
+import { formatCurrency } from '@money-matters/ui/mobile';
 
 export interface MobileBankOption {
   id: string;
@@ -167,7 +167,8 @@ export const MobileBankPicker: React.FC<MobileBankPickerProps> = ({
             {banks.length > 5 && (
               <View style={styles.searchWrap}>
                 <Feather name="search" size={14} color="#94A3B8" />
-                <TextInput
+                {/* mm-allow-interaction: embedded search input inside picker modal */}
+                <TextInput // mm-allow-interaction: embedded search input inside picker modal
                   style={styles.searchInput}
                   placeholder="Search bank accounts..."
                   placeholderTextColor="#94A3B8"

@@ -3,7 +3,8 @@
 import { useState, useMemo } from "react";
 import Link from "next/link";
 import { t } from "@money-matters/i18n";
-import { ModalDialog, Button, CelebrationBanner, InfoTooltip } from "@money-matters/ui/web";
+import { ModalDialog, Button, InfoTooltip } from "@money-matters/ui/web";
+import { CelebrationBanner } from "@money-matters/capability-budgeting/web";
 import type { TargetCelebrationItem } from "@money-matters/types";
 import { useLocale } from "../../../../providers/LocaleProvider";
 import { DestinationTransferItem, DestinationTransferGroup } from "./DestinationTransferItem";

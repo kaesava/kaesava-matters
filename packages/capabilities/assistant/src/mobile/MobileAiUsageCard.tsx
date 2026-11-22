@@ -1,10 +1,9 @@
 import React from "react";
 import { View, Text, StyleSheet } from "react-native";
 import { Feather } from "@expo/vector-icons";
-import { DESIGN_TOKENS } from "../tokens";
+import { DESIGN_TOKENS } from "@money-matters/ui/tokens";
 import { t } from "@money-matters/i18n";
-import { useDateLocale } from "../hooks/DateLocaleContext";
-import { fmtDateMedium } from "../dates/date-formatting";
+import { useDateLocale, fmtDateMedium } from "@money-matters/ui/mobile";
 
 export interface MobileAiUsageCardProps {
   used: number;

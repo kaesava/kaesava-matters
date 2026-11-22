@@ -2,7 +2,8 @@ import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import { Feather } from '@expo/vector-icons';
 import { t } from '@money-matters/i18n';
-import { DESIGN_TOKENS, CardDrawerIndicator, InfoTooltip, SwipeableCard, formatRecurrenceSuffix } from '@money-matters/ui/mobile';
+import { DESIGN_TOKENS, CardDrawerIndicator, InfoTooltip, SwipeableCard } from "@money-matters/ui/mobile";
+import { formatRecurrenceSuffix } from "@money-matters/capability-schedules/mobile";
 import { formatMobileCurrency } from '../../lib/format';
 import { useRouter, type Href } from 'expo-router';
 

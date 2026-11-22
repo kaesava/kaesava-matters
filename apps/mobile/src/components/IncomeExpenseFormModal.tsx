@@ -1,14 +1,8 @@
 import React, { useMemo } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
-import {
-  DESIGN_TOKENS,
-  MobileModalDialog,
-  MobileButton,
-  showMobileConfirm,
-  MobileEnvelopeOption,
-  validateHouseholdContribution,
-  resolveHouseholdContributionPayload,
-} from '@money-matters/ui/mobile';
+import { DESIGN_TOKENS, MobileModalDialog, MobileButton, showMobileConfirm } from "@money-matters/ui/mobile";
+import { validateHouseholdContribution, resolveHouseholdContributionPayload } from "@money-matters/capability-budgeting/mobile";
+import { MobileEnvelopeOption } from "@money-matters/capability-budgeting/mobile";
 import { t } from '@money-matters/i18n';
 import { trpc } from '../lib/trpc';
 import { formatDate } from '../lib/format';

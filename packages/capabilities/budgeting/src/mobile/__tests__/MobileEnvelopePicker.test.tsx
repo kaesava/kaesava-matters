@@ -23,6 +23,12 @@ vi.mock('@expo/vector-icons', () => ({
   AntDesign: () => null,
 }));
 
+vi.mock('@money-matters/ui/mobile', () => ({
+  useCurrencyLocale: () => ({ currency: 'AUD', locale: 'en-AU' }),
+  FilterPill: (props: Record<string, unknown>) => React.createElement('FilterPill', props),
+  PLATFORM_STYLE: { minTouch: 48, borderRadius: 12 },
+}));
+
 import { MobileEnvelopePicker as MobilePoolPicker, MobileEnvelopeOption as MobilePoolOption } from '../MobileEnvelopePicker';
 
 describe('MobilePoolPicker', () => {

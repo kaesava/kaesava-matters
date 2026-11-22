@@ -3,7 +3,7 @@
 import { useState, useId, useRef, useEffect, useMemo } from "react";
 import { Lock, ChevronDown, Search, X, Check } from "lucide-react";
 import { t } from "@money-matters/i18n";
-import { useCurrencyLocale } from "../hooks/CurrencyLocaleContext";
+import { useCurrencyLocale } from "@money-matters/ui/web";
 import {
   PoolOption,
   PoolPickerProps,

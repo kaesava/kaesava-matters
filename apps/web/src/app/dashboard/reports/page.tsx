@@ -4,13 +4,9 @@ import { useState, useMemo, useEffect, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { trpc } from "../../../lib/trpc";
 import { t } from "@money-matters/i18n";
-import {
-  Tabs,
-  Spinner,
-  PoolPicker,
-  SearchInput,
-  SpendingOverviewCard,
-} from "@money-matters/ui/web";
+import { Tabs, Spinner, SearchInput } from "@money-matters/ui/web";
+import { PoolPicker } from "@money-matters/capability-budgeting/web";
+import { SpendingOverviewCard } from "@money-matters/capability-budgeting/web";
 import { useLocale } from "../../../providers/LocaleProvider";
 import { useAppFeatures } from "../../../hooks/useAppFeatures";
 import type { SpendingTimeframe, SpendingFlowType } from "@money-matters/types";

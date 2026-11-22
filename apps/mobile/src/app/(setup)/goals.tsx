@@ -4,7 +4,8 @@ import { View, Text, TouchableOpacity, ScrollView, StyleSheet } from 'react-nati
 import { useRouter } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { t } from '@money-matters/i18n';
-import { DESIGN_TOKENS, AmountInput, MobileEnvelopeModeToggle, MobileDatePickerField, showMobileConfirm, InfoTooltip, MobileInput } from '@money-matters/ui/mobile';
+import { DESIGN_TOKENS, AmountInput, MobileDatePickerField, showMobileConfirm, InfoTooltip, MobileInput } from "@money-matters/ui/mobile";
+import { MobileEnvelopeModeToggle } from "@money-matters/capability-budgeting/mobile";
 import { useSetupWizard } from '../../context/SetupWizardContext';
 import { SetupGoalCard } from '../../components/setup/SetupGoalCard';
 import { getMobileLocaleConfig } from '../../lib/format';

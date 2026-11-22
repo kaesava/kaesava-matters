@@ -1,10 +1,10 @@
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import { t } from '@money-matters/i18n';
-import { DESIGN_TOKENS } from '../tokens';
-import { FormLabel } from './FormLabel';
-import MobileInput from './Input';
-import { AmountInput } from './AmountInput';
-import { ContributionMode } from '../lib/householdContribution';
+import { DESIGN_TOKENS } from '@money-matters/ui/tokens';
+import { FormLabel } from '@money-matters/ui/mobile';
+import { MobileInput } from '@money-matters/ui/mobile';
+import { AmountInput } from '@money-matters/ui/mobile';
+import { ContributionMode } from '../shared/householdContribution';
 
 export interface MobileHouseholdContributionSectionProps {
   hasPrivateEnvelopes: boolean;

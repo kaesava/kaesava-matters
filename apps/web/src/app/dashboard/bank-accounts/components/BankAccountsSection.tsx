@@ -3,7 +3,8 @@
 import React from "react";
 import { t } from "@money-matters/i18n";
 import { trpc } from "../../../../lib/trpc";
-import { InfoTooltip, SearchInput, RecordFilterBadge, PoolPicker } from "@money-matters/ui/web";
+import { InfoTooltip, SearchInput, RecordFilterBadge } from "@money-matters/ui/web";
+import { PoolPicker } from "@money-matters/capability-budgeting/web";
 import { BankAccountTable } from "./BankAccountTable";
 import { BankAccountFormModal } from "./BankAccountFormModal";
 import { SyncBalanceModal } from "../../../../components/SyncBalanceModal";

@@ -1,12 +1,5 @@
-import {
-  Input,
-  FormLabel,
-  GenericSelectField,
-  DatePickerField,
-  AmountField,
-  EnvelopeModeToggle,
-  InfoTooltip,
-} from '@money-matters/ui/web';
+import { Input, FormLabel, GenericSelectField, DatePickerField, AmountField, InfoTooltip } from "@money-matters/ui/web";
+import { EnvelopeModeToggle } from "@money-matters/capability-budgeting/web";
 import { t } from '@money-matters/i18n';
 import { EnvelopeRecurrenceFields } from './EnvelopeRecurrenceFields';
 import { EnvelopeEventsToggleSection } from './EnvelopeEventsToggleSection';

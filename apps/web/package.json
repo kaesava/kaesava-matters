@@ -15,7 +15,10 @@
     "test:coverage": "vitest run --exclude=\"e2e/**\" --passWithNoTests --coverage"
   },
   "dependencies": {
+    "@money-matters/capability-assistant": "workspace:*",
+    "@money-matters/capability-budgeting": "workspace:*",
     "@money-matters/capability-file-notes": "workspace:*",
+    "@money-matters/capability-schedules": "workspace:*",
     "@money-matters/config": "workspace:*",
     "@money-matters/core": "workspace:*",
     "@money-matters/i18n": "workspace:^",

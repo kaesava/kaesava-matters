@@ -1,7 +1,7 @@
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { Feather } from '@expo/vector-icons';
 import { SpendingTimeframe } from '@money-matters/types';
-import { DESIGN_TOKENS } from '../../tokens';
+import { DESIGN_TOKENS } from '@money-matters/ui/tokens';
 import { t } from '@money-matters/i18n';
 
 export type ChartTab = 'HORIZON' | 'CASH_FLOW' | 'TOP_POOLS';
@@ -170,7 +170,7 @@ const styles = StyleSheet.create({
     color: DESIGN_TOKENS.colors.slate[800],
   },
   subtitle: {
-    fontSize: 11,
+    fontSize: 12,
     color: DESIGN_TOKENS.colors.slate[500],
     marginTop: 1,
   },
@@ -194,7 +194,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#FFFFFF',
   },
   tfText: {
-    fontSize: 11,
+    fontSize: 12,
     fontWeight: '700',
     color: DESIGN_TOKENS.colors.slate[500],
   },
@@ -221,7 +221,7 @@ const styles = StyleSheet.create({
     borderColor: DESIGN_TOKENS.colors.slate[200],
   },
   tabText: {
-    fontSize: 11,
+    fontSize: 12,
     fontWeight: '600',
     color: DESIGN_TOKENS.colors.slate[500],
   },

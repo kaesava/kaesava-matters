@@ -3,7 +3,7 @@ import { getTenantDateString } from "@money-matters/types";
 
 
 import { useState, useEffect, useMemo } from "react";
-import { parseRecurrenceRule, buildRecurrenceRule, RecurrenceFrequency } from "@money-matters/ui/web";
+import { parseRecurrenceRule, buildRecurrenceRule, RecurrenceFrequency } from "@money-matters/capability-schedules/web";
 import { t } from "@money-matters/i18n";
 
 import type { EnvelopeModalItem, UseEnvelopeFormModalStateParams } from "./envelopeFormTypes";

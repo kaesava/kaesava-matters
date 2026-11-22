@@ -2,7 +2,7 @@ import { useState, useMemo, useEffect } from 'react';
 import { trpc } from '../../lib/trpc';
 import { formatIsoDate } from '../../lib/format';
 import { usePostHog } from 'posthog-react-native';
-import { ContributionMode } from '@money-matters/ui/mobile';
+import { ContributionMode } from "@money-matters/capability-budgeting/mobile";
 import {
   QuickPresetItem,
   QuickActionInitialData,

@@ -1,11 +1,8 @@
 import React, { useState, useMemo } from 'react';
 import { View, StyleSheet } from 'react-native';
-import {
-  SegmentedTabs,
-  MobileFilterSheet,
-  MobileBankPicker,
-  MobileEnvelopePicker,
-} from '@money-matters/ui/mobile';
+import { SegmentedTabs, MobileFilterSheet } from "@money-matters/ui/mobile";
+import { MobileBankPicker } from "@money-matters/capability-bank-accounts/mobile";
+import { MobileEnvelopePicker } from "@money-matters/capability-budgeting/mobile";
 import { t } from '@money-matters/i18n';
 import { SourceToEdit } from '../IncomeExpenseFormModal';
 import { useRecurringSchedules } from './useRecurringSchedules';
