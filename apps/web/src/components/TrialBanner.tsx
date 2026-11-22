@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useSubscriptionStatus } from "../hooks/useSubscriptionStatus";
-import { t } from "@money-matters/i18n";
+import { t } from "@kaesava/i18n";
 
 export function TrialBanner() {
   const router = useRouter();

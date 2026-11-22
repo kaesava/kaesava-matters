@@ -62,54 +62,54 @@ importers:
 
   apps/api:
     dependencies:
-      '@money-matters/capability-assistant':
+      '@kaesava/capability-assistant':
         specifier: workspace:*
         version: link:../../packages/capabilities/assistant
-      '@money-matters/capability-auth':
+      '@kaesava/capability-auth':
         specifier: workspace:*
         version: link:../../packages/capabilities/auth
-      '@money-matters/capability-bank-accounts':
+      '@kaesava/capability-bank-accounts':
         specifier: workspace:*
         version: link:../../packages/capabilities/bank-accounts
-      '@money-matters/capability-billing':
+      '@kaesava/capability-billing':
         specifier: workspace:*
         version: link:../../packages/capabilities/billing
+      '@kaesava/capability-bug-reports':
+        specifier: workspace:*
+        version: link:../../packages/capabilities/bug-reports
+      '@kaesava/capability-file-notes':
+        specifier: workspace:*
+        version: link:../../packages/capabilities/file-notes
+      '@kaesava/capability-notifications':
+        specifier: workspace:*
+        version: link:../../packages/capabilities/notifications
+      '@kaesava/capability-tenant':
+        specifier: workspace:*
+        version: link:../../packages/capabilities/tenant
+      '@kaesava/capability-transactions':
+        specifier: workspace:*
+        version: link:../../packages/capabilities/transactions
+      '@kaesava/config':
+        specifier: workspace:*
+        version: link:../../packages/config
+      '@kaesava/core':
+        specifier: workspace:*
+        version: link:../../packages/core
+      '@kaesava/db':
+        specifier: workspace:*
+        version: link:../../packages/db
+      '@kaesava/i18n':
+        specifier: workspace:*
+        version: link:../../packages/i18n
+      '@kaesava/types':
+        specifier: workspace:*
+        version: link:../../packages/types
       '@money-matters/capability-budgeting':
         specifier: workspace:*
         version: link:../../packages/capabilities/budgeting
-      '@money-matters/capability-bug-reports':
-        specifier: workspace:*
-        version: link:../../packages/capabilities/bug-reports
-      '@money-matters/capability-file-notes':
-        specifier: workspace:*
-        version: link:../../packages/capabilities/file-notes
-      '@money-matters/capability-notifications':
-        specifier: workspace:*
-        version: link:../../packages/capabilities/notifications
       '@money-matters/capability-simulation':
         specifier: workspace:*
         version: link:../../packages/capabilities/simulation
-      '@money-matters/capability-tenant':
-        specifier: workspace:*
-        version: link:../../packages/capabilities/tenant
-      '@money-matters/capability-transactions':
-        specifier: workspace:*
-        version: link:../../packages/capabilities/transactions
-      '@money-matters/config':
-        specifier: workspace:*
-        version: link:../../packages/config
-      '@money-matters/core':
-        specifier: workspace:*
-        version: link:../../packages/core
-      '@money-matters/db':
-        specifier: workspace:*
-        version: link:../../packages/db
-      '@money-matters/i18n':
-        specifier: workspace:*
-        version: link:../../packages/i18n
-      '@money-matters/types':
-        specifier: workspace:*
-        version: link:../../packages/types
       '@neondatabase/serverless':
         specifier: ^0.9.0
         version: 0.9.5
@@ -168,39 +168,39 @@ importers:
       '@expo/vector-icons':
         specifier: 15.1.1
         version: 15.1.1(expo-font@14.0.12(expo@54.0.37(@babel/core@7.29.7)(@expo/metro-runtime@6.1.2)(expo-router@6.0.24)(react-native@0.81.5(@babel/core@7.29.7)(@react-native/metro-config@0.86.2(@babel/core@7.29.7))(@types/react@19.1.17)(react@19.1.0))(react@19.1.0)(typescript@6.0.3))(react-native@0.81.5(@babel/core@7.29.7)(@react-native/metro-config@0.86.2(@babel/core@7.29.7))(@types/react@19.1.17)(react@19.1.0))(react@19.1.0))(react-native@0.81.5(@babel/core@7.29.7)(@react-native/metro-config@0.86.2(@babel/core@7.29.7))(@types/react@19.1.17)(react@19.1.0))(react@19.1.0)
-      '@money-matters/capability-assistant':
+      '@kaesava/capability-assistant':
         specifier: workspace:*
         version: link:../../packages/capabilities/assistant
-      '@money-matters/capability-auth':
+      '@kaesava/capability-auth':
         specifier: workspace:*
         version: link:../../packages/capabilities/auth
-      '@money-matters/capability-bank-accounts':
+      '@kaesava/capability-bank-accounts':
         specifier: workspace:*
         version: link:../../packages/capabilities/bank-accounts
+      '@kaesava/capability-file-notes':
+        specifier: workspace:*
+        version: link:../../packages/capabilities/file-notes
+      '@kaesava/capability-notifications':
+        specifier: workspace:*
+        version: link:../../packages/capabilities/notifications
+      '@kaesava/capability-schedules':
+        specifier: workspace:*
+        version: link:../../packages/capabilities/schedules
+      '@kaesava/config':
+        specifier: workspace:*
+        version: link:../../packages/config
+      '@kaesava/i18n':
+        specifier: workspace:*
+        version: link:../../packages/i18n
+      '@kaesava/types':
+        specifier: workspace:^
+        version: link:../../packages/types
+      '@kaesava/ui':
+        specifier: workspace:*
+        version: link:../../packages/ui
       '@money-matters/capability-budgeting':
         specifier: workspace:*
         version: link:../../packages/capabilities/budgeting
-      '@money-matters/capability-file-notes':
-        specifier: workspace:*
-        version: link:../../packages/capabilities/file-notes
-      '@money-matters/capability-notifications':
-        specifier: workspace:*
-        version: link:../../packages/capabilities/notifications
-      '@money-matters/capability-schedules':
-        specifier: workspace:*
-        version: link:../../packages/capabilities/schedules
-      '@money-matters/config':
-        specifier: workspace:*
-        version: link:../../packages/config
-      '@money-matters/i18n':
-        specifier: workspace:*
-        version: link:../../packages/i18n
-      '@money-matters/types':
-        specifier: workspace:^
-        version: link:../../packages/types
-      '@money-matters/ui':
-        specifier: workspace:*
-        version: link:../../packages/ui
       '@react-native-community/datetimepicker':
         specifier: 8.4.4
         version: 8.4.4(expo@54.0.37(@babel/core@7.29.7)(@expo/metro-runtime@6.1.2)(expo-router@6.0.24)(react-native@0.81.5(@babel/core@7.29.7)(@react-native/metro-config@0.86.2(@babel/core@7.29.7))(@types/react@19.1.17)(react@19.1.0))(react@19.1.0)(typescript@6.0.3))(react-native@0.81.5(@babel/core@7.29.7)(@react-native/metro-config@0.86.2(@babel/core@7.29.7))(@types/react@19.1.17)(react@19.1.0))(react@19.1.0)
@@ -328,36 +328,36 @@ importers:
 
   apps/web:
     dependencies:
-      '@money-matters/capability-assistant':
+      '@kaesava/capability-assistant':
         specifier: workspace:*
         version: link:../../packages/capabilities/assistant
-      '@money-matters/capability-auth':
+      '@kaesava/capability-auth':
         specifier: workspace:*
         version: link:../../packages/capabilities/auth
+      '@kaesava/capability-file-notes':
+        specifier: workspace:*
+        version: link:../../packages/capabilities/file-notes
+      '@kaesava/capability-schedules':
+        specifier: workspace:*
+        version: link:../../packages/capabilities/schedules
+      '@kaesava/config':
+        specifier: workspace:*
+        version: link:../../packages/config
+      '@kaesava/core':
+        specifier: workspace:*
+        version: link:../../packages/core
+      '@kaesava/i18n':
+        specifier: workspace:^
+        version: link:../../packages/i18n
+      '@kaesava/types':
+        specifier: workspace:*
+        version: link:../../packages/types
+      '@kaesava/ui':
+        specifier: workspace:^
+        version: link:../../packages/ui
       '@money-matters/capability-budgeting':
         specifier: workspace:*
         version: link:../../packages/capabilities/budgeting
-      '@money-matters/capability-file-notes':
-        specifier: workspace:*
-        version: link:../../packages/capabilities/file-notes
-      '@money-matters/capability-schedules':
-        specifier: workspace:*
-        version: link:../../packages/capabilities/schedules
-      '@money-matters/config':
-        specifier: workspace:*
-        version: link:../../packages/config
-      '@money-matters/core':
-        specifier: workspace:*
-        version: link:../../packages/core
-      '@money-matters/i18n':
-        specifier: workspace:^
-        version: link:../../packages/i18n
-      '@money-matters/types':
-        specifier: workspace:*
-        version: link:../../packages/types
-      '@money-matters/ui':
-        specifier: workspace:^
-        version: link:../../packages/ui
       '@sentry/nextjs':
         specifier: ^10.69.0
         version: 10.69.0(@opentelemetry/core@2.10.0(@opentelemetry/api@1.9.1))(@opentelemetry/exporter-trace-otlp-http@0.221.0(@opentelemetry/api@1.9.1))(@opentelemetry/sdk-trace-base@2.10.0(@opentelemetry/api@1.9.1))(next@16.4.6(@babel/core@7.29.7)(@opentelemetry/api@1.9.1)(@playwright/test@1.62.1)(@types/node@20.19.43)(babel-plugin-react-compiler@1.0.0)(react-dom@19.1.0(react@19.1.0))(react@19.1.0))(react@19.1.0)(webpack@5.109.2(lightningcss@1.33.0))
@@ -437,22 +437,22 @@ importers:
 
   packages/capabilities/assistant:
     dependencies:
-      '@money-matters/config':
+      '@kaesava/config':
         specifier: workspace:*
         version: link:../../config
-      '@money-matters/core':
+      '@kaesava/core':
         specifier: workspace:*
         version: link:../../core
-      '@money-matters/db':
+      '@kaesava/db':
         specifier: workspace:*
         version: link:../../db
-      '@money-matters/i18n':
+      '@kaesava/i18n':
         specifier: workspace:*
         version: link:../../i18n
-      '@money-matters/types':
+      '@kaesava/types':
         specifier: workspace:*
         version: link:../../types
-      '@money-matters/ui':
+      '@kaesava/ui':
         specifier: workspace:*
         version: link:../../ui
       drizzle-orm:
@@ -486,19 +486,19 @@ importers:
 
   packages/capabilities/auth:
     dependencies:
-      '@money-matters/core':
+      '@kaesava/core':
         specifier: workspace:*
         version: link:../../core
-      '@money-matters/db':
+      '@kaesava/db':
         specifier: workspace:*
         version: link:../../db
-      '@money-matters/i18n':
+      '@kaesava/i18n':
         specifier: workspace:*
         version: link:../../i18n
-      '@money-matters/types':
+      '@kaesava/types':
         specifier: workspace:*
         version: link:../../types
-      '@money-matters/ui':
+      '@kaesava/ui':
         specifier: workspace:*
         version: link:../../ui
       drizzle-orm:
@@ -526,19 +526,19 @@ importers:
 
   packages/capabilities/bank-accounts:
     dependencies:
-      '@money-matters/core':
+      '@kaesava/core':
         specifier: workspace:*
         version: link:../../core
-      '@money-matters/db':
+      '@kaesava/db':
         specifier: workspace:*
         version: link:../../db
-      '@money-matters/i18n':
+      '@kaesava/i18n':
         specifier: workspace:*
         version: link:../../i18n
-      '@money-matters/types':
+      '@kaesava/types':
         specifier: workspace:*
         version: link:../../types
-      '@money-matters/ui':
+      '@kaesava/ui':
         specifier: workspace:*
         version: link:../../ui
       drizzle-orm:
@@ -569,19 +569,19 @@ importers:
 
   packages/capabilities/billing:
     dependencies:
-      '@money-matters/config':
+      '@kaesava/config':
         specifier: workspace:*
         version: link:../../config
-      '@money-matters/core':
+      '@kaesava/core':
         specifier: workspace:*
         version: link:../../core
-      '@money-matters/db':
+      '@kaesava/db':
         specifier: workspace:*
         version: link:../../db
-      '@money-matters/i18n':
+      '@kaesava/i18n':
         specifier: workspace:*
         version: link:../../i18n
-      '@money-matters/types':
+      '@kaesava/types':
         specifier: workspace:*
         version: link:../../types
       drizzle-orm:
@@ -606,25 +606,25 @@ importers:
 
   packages/capabilities/budgeting:
     dependencies:
-      '@money-matters/capability-schedules':
+      '@kaesava/capability-schedules':
         specifier: workspace:*
         version: link:../schedules
-      '@money-matters/config':
+      '@kaesava/config':
         specifier: workspace:*
         version: link:../../config
-      '@money-matters/core':
+      '@kaesava/core':
         specifier: workspace:*
         version: link:../../core
-      '@money-matters/db':
+      '@kaesava/db':
         specifier: workspace:*
         version: link:../../db
-      '@money-matters/i18n':
+      '@kaesava/i18n':
         specifier: workspace:*
         version: link:../../i18n
-      '@money-matters/types':
+      '@kaesava/types':
         specifier: workspace:*
         version: link:../../types
-      '@money-matters/ui':
+      '@kaesava/ui':
         specifier: workspace:*
         version: link:../../ui
       drizzle-orm:
@@ -661,13 +661,13 @@ importers:
 
   packages/capabilities/bug-reports:
     dependencies:
-      '@money-matters/config':
+      '@kaesava/config':
         specifier: workspace:*
         version: link:../../config
-      '@money-matters/core':
+      '@kaesava/core':
         specifier: workspace:*
         version: link:../../core
-      '@money-matters/types':
+      '@kaesava/types':
         specifier: workspace:*
         version: link:../../types
       zod:
@@ -686,22 +686,22 @@ importers:
 
   packages/capabilities/file-notes:
     dependencies:
-      '@money-matters/config':
+      '@kaesava/config':
         specifier: workspace:*
         version: link:../../config
-      '@money-matters/core':
+      '@kaesava/core':
         specifier: workspace:*
         version: link:../../core
-      '@money-matters/db':
+      '@kaesava/db':
         specifier: workspace:*
         version: link:../../db
-      '@money-matters/i18n':
+      '@kaesava/i18n':
         specifier: workspace:*
         version: link:../../i18n
-      '@money-matters/types':
+      '@kaesava/types':
         specifier: workspace:*
         version: link:../../types
-      '@money-matters/ui':
+      '@kaesava/ui':
         specifier: workspace:*
         version: link:../../ui
       drizzle-orm:
@@ -744,19 +744,19 @@ importers:
 
   packages/capabilities/notifications:
     dependencies:
-      '@money-matters/config':
+      '@kaesava/config':
         specifier: workspace:*
         version: link:../../config
-      '@money-matters/core':
+      '@kaesava/core':
         specifier: workspace:*
         version: link:../../core
-      '@money-matters/db':
+      '@kaesava/db':
         specifier: workspace:*
         version: link:../../db
-      '@money-matters/i18n':
+      '@kaesava/i18n':
         specifier: workspace:*
         version: link:../../i18n
-      '@money-matters/types':
+      '@kaesava/types':
         specifier: workspace:*
         version: link:../../types
       drizzle-orm:
@@ -796,16 +796,16 @@ importers:
 
   packages/capabilities/schedules:
     dependencies:
-      '@money-matters/core':
+      '@kaesava/core':
         specifier: workspace:*
         version: link:../../core
-      '@money-matters/i18n':
+      '@kaesava/i18n':
         specifier: workspace:*
         version: link:../../i18n
-      '@money-matters/types':
+      '@kaesava/types':
         specifier: workspace:*
         version: link:../../types
-      '@money-matters/ui':
+      '@kaesava/ui':
         specifier: workspace:*
         version: link:../../ui
       react:
@@ -830,16 +830,16 @@ importers:
 
   packages/capabilities/simulation:
     dependencies:
-      '@money-matters/core':
+      '@kaesava/core':
         specifier: workspace:*
         version: link:../../core
-      '@money-matters/db':
+      '@kaesava/db':
         specifier: workspace:*
         version: link:../../db
-      '@money-matters/i18n':
+      '@kaesava/i18n':
         specifier: workspace:*
         version: link:../../i18n
-      '@money-matters/types':
+      '@kaesava/types':
         specifier: workspace:*
         version: link:../../types
       drizzle-orm:
@@ -858,19 +858,19 @@ importers:
 
   packages/capabilities/tenant:
     dependencies:
-      '@money-matters/config':
+      '@kaesava/config':
         specifier: workspace:*
         version: link:../../config
-      '@money-matters/core':
+      '@kaesava/core':
         specifier: workspace:*
         version: link:../../core
-      '@money-matters/db':
+      '@kaesava/db':
         specifier: workspace:*
         version: link:../../db
-      '@money-matters/i18n':
+      '@kaesava/i18n':
         specifier: workspace:*
         version: link:../../i18n
-      '@money-matters/types':
+      '@kaesava/types':
         specifier: workspace:*
         version: link:../../types
       drizzle-orm:
@@ -892,7 +892,7 @@ importers:
 
   packages/capabilities/transactions:
     dependencies:
-      '@money-matters/types':
+      '@kaesava/types':
         specifier: workspace:*
         version: link:../../types
       zod:
@@ -908,7 +908,7 @@ importers:
 
   packages/config:
     dependencies:
-      '@money-matters/types':
+      '@kaesava/types':
         specifier: workspace:*
         version: link:../types
       zod:
@@ -930,13 +930,13 @@ importers:
       '@aws-sdk/client-s3':
         specifier: ^3.984.0
         version: 3.984.0
-      '@money-matters/config':
+      '@kaesava/config':
         specifier: workspace:*
         version: link:../config
-      '@money-matters/db':
+      '@kaesava/db':
         specifier: workspace:*
         version: link:../db
-      '@money-matters/types':
+      '@kaesava/types':
         specifier: workspace:*
         version: link:../types
       '@neondatabase/serverless':
@@ -958,7 +958,7 @@ importers:
 
   packages/db:
     dependencies:
-      '@money-matters/types':
+      '@kaesava/types':
         specifier: workspace:*
         version: link:../types
       '@neondatabase/serverless':
@@ -977,7 +977,7 @@ importers:
         specifier: ^3.22.0
         version: 3.25.76
     devDependencies:
-      '@money-matters/config':
+      '@kaesava/config':
         specifier: workspace:*
         version: link:../config
       '@types/uuid':
@@ -1023,10 +1023,10 @@ importers:
       '@hookform/resolvers':
         specifier: ^3.3.4
         version: 3.10.0(react-hook-form@7.84.0(react@19.1.0))
-      '@money-matters/i18n':
+      '@kaesava/i18n':
         specifier: workspace:*
         version: link:../i18n
-      '@money-matters/types':
+      '@kaesava/types':
         specifier: workspace:*
         version: link:../types
       lucide-react:

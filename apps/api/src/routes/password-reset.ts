@@ -1,4 +1,4 @@
-import { resolveAppConfigOrDefault } from "@money-matters/config";
+import { resolveAppConfigOrDefault } from "@kaesava/config";
 
 export function isValidRedirectUrl(target: string, appId?: string | null): boolean {
   if (!target) return false;

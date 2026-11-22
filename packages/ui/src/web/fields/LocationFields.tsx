@@ -1,5 +1,5 @@
 import { CountrySelect } from "./CountrySelect";
-import { t } from "@money-matters/i18n";
+import { t } from "@kaesava/i18n";
 
 export interface LocationFieldsProps {
   country: string;

@@ -1,7 +1,7 @@
 import React from "react";
 import { View, Text, StyleSheet } from "react-native";
-import { t } from "@money-matters/i18n";
-import { DESIGN_TOKENS, SettingsCard, MobileButton } from "@money-matters/ui/mobile";
+import { t } from "@kaesava/i18n";
+import { DESIGN_TOKENS, SettingsCard, MobileButton } from "@kaesava/ui/mobile";
 import { useMobileSignInMethods } from "./profile/useMobileSignInMethods";
 import { MobileAccountPasswordModal } from "./MobileAccountPasswordModal";
 

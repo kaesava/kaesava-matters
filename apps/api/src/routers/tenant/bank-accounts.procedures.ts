@@ -1,5 +1,5 @@
 import { privateTenantProcedure, requiresWriteAccess } from '../../trpc/trpc.js';
-import { bankAccounts } from "@money-matters/db";
+import { bankAccounts } from "@kaesava/db";
 import { and, eq, sql, or } from "drizzle-orm";
 import {
   createBankAccountHandler,
@@ -8,9 +8,9 @@ import {
   getBankAccountsWithMappingsHandler,
   listBankAccountsWithExpectedHandler,
   syncBankBalanceHandler,
-} from "@money-matters/capability-bank-accounts";
+} from "@kaesava/capability-bank-accounts";
 import { moneyMattersBankAccountHooks } from "@money-matters/capability-budgeting";
-import { CreateBankAccountCommand, UpdateBankAccountCommand } from "@money-matters/types";
+import { CreateBankAccountCommand, UpdateBankAccountCommand } from "@kaesava/types";
 import { z } from 'zod';
 import { captureIfConsented } from '../../lib/posthog.js';
 

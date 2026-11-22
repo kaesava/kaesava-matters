@@ -1,4 +1,4 @@
-import { createAppI18n, registerAppDictionary } from '@money-matters/i18n';
+import { createAppI18n, registerAppDictionary } from '@kaesava/i18n';
 import { dashboard } from './dashboard';
 import { envelopes } from './envelopes';
 import { payday } from './payday';

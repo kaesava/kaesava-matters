@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import type { DbOrTx } from '@money-matters/db';
+import type { DbOrTx } from '@kaesava/db';
 import { createCheckoutSessionCommand, getSubscriptionStatus } from './index';
 
 describe('billing capability', () => {

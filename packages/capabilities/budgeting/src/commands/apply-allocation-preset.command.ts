@@ -1,5 +1,5 @@
-import { DbOrTx, allocationStrategies, allocationStrategySteps } from "@money-matters/db";
-import { CANONICAL_ALLOCATION_PRESETS } from "@money-matters/types";
+import { DbOrTx, allocationStrategies, allocationStrategySteps } from "@kaesava/db";
+import { CANONICAL_ALLOCATION_PRESETS } from "@kaesava/types";
 import { eq, and, sql } from "drizzle-orm";
 import { seedDefaultAllocationStrategy } from "./seed-allocation-strategy.command.js";
 

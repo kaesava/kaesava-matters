@@ -1,8 +1,8 @@
 "use client";
 
-import { t } from "@money-matters/i18n";
-import { InfoTooltip } from "@money-matters/ui/web";
-import { COMMON_TIMEZONES } from "@money-matters/types";
+import { t } from "@kaesava/i18n";
+import { InfoTooltip } from "@kaesava/ui/web";
+import { COMMON_TIMEZONES } from "@kaesava/types";
 
 interface ProfilePreferencesFieldsProps {
   language: "en";

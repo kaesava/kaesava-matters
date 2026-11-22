@@ -1,9 +1,9 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { t } from "@money-matters/i18n";
-import { useToast } from "@money-matters/ui/web";
-import { SetAccountPasswordFormSchema, ChangeAccountPasswordFormSchema } from "@money-matters/types";
+import { t } from "@kaesava/i18n";
+import { useToast } from "@kaesava/ui/web";
+import { SetAccountPasswordFormSchema, ChangeAccountPasswordFormSchema } from "@kaesava/types";
 import { trpc } from "../../../../lib/trpc";
 import { authClient } from "../../../../lib/auth";
 

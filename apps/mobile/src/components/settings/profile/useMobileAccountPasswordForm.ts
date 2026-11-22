@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
-import { t } from "@money-matters/i18n";
-import { useMobileToast } from "@money-matters/ui/mobile";
-import { SetAccountPasswordFormSchema, ChangeAccountPasswordFormSchema } from "@money-matters/types";
+import { t } from "@kaesava/i18n";
+import { useMobileToast } from "@kaesava/ui/mobile";
+import { SetAccountPasswordFormSchema, ChangeAccountPasswordFormSchema } from "@kaesava/types";
 import { trpc } from "../../../lib/trpc";
 import { authClient } from "../../../lib/auth";
 

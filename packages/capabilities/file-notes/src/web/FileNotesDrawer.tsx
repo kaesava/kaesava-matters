@@ -1,8 +1,8 @@
 import React, { useState, useRef, useId } from 'react';
 import { Paperclip, Download, Trash2, Edit2, X } from 'lucide-react';
-import { t } from '@money-matters/i18n';
+import { t } from '@kaesava/i18n';
 import { useFileNotes } from './useFileNotes.js';
-import { SlideOverDrawer, ConfirmDialog, FormErrorBanner, Button } from '@money-matters/ui/web';
+import { SlideOverDrawer, ConfirmDialog, FormErrorBanner, Button } from '@kaesava/ui/web';
 
 export interface FileNotesPanelProps {
   entityType: 'ENVELOPE' | 'BANK_ACCOUNT';

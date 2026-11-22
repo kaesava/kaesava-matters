@@ -1,15 +1,15 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, ActivityIndicator } from 'react-native';
 import { useRouter, useLocalSearchParams, type Href } from 'expo-router';
-import { t } from '@money-matters/i18n';
-import { DESIGN_TOKENS, MobileButton, showMobileConfirm, useMobileToast } from '@money-matters/ui/mobile';
+import { t } from '@kaesava/i18n';
+import { DESIGN_TOKENS, MobileButton, showMobileConfirm, useMobileToast } from '@kaesava/ui/mobile';
 import { trpc } from '../../../lib/trpc';
 import { AppScreenWrapper } from '../../../components/AppScreenWrapper';
 import {
   AllocationStepType,
   CANONICAL_ALLOCATION_PRESETS,
   detectMatchingAllocationPreset,
-} from '@money-matters/types';
+} from '@kaesava/types';
 import { useAppFeatures } from '../../../context/useAppFeatures';
 import {
   AllocationRuleStepCard,

@@ -1,7 +1,7 @@
 'use client';
 
-import { t } from '@money-matters/i18n';
-import { GoalDelayImpact } from '@money-matters/types';
+import { t } from '@kaesava/i18n';
+import { GoalDelayImpact } from '@kaesava/types';
 import { Calendar, ShieldAlert, Sparkles } from 'lucide-react';
 import { useLocale } from '../../../../providers/LocaleProvider';
 

@@ -1,5 +1,5 @@
-import { DEFAULT_TIMEZONE } from "@money-matters/types";
-import { DbOrTx, expenseEvents, envelopes } from "@money-matters/db";
+import { DEFAULT_TIMEZONE } from "@kaesava/types";
+import { DbOrTx, expenseEvents, envelopes } from "@kaesava/db";
 import { and, eq, sql } from "drizzle-orm";
 import {
   EnvelopeScheduleCandidate,

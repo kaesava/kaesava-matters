@@ -1,5 +1,5 @@
 import { tenantProcedure, ownerProcedure } from '../trpc/trpc.js';
-import { billingProcedures } from '@money-matters/capability-billing/router';
+import { billingProcedures } from '@kaesava/capability-billing/router';
 import { captureIfConsented } from '../lib/posthog.js';
 
 export const billingRouter = {

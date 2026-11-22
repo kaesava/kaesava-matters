@@ -4,15 +4,15 @@ import {
   AssistantAskInputSchema,
   AssistantResultSchema,
   AssistantUsageSchema,
-} from "@money-matters/types";
+} from "@kaesava/types";
 import {
   askAssistant,
   DbUsageStore,
   CloudflareGatewayLlmProvider,
-} from "@money-matters/capability-assistant";
-import { checkAiTenantRateLimit } from "@money-matters/core";
-import { AI_TIER_LIMITS, resolveEffectiveAppFlags } from "@money-matters/config";
-import { apps } from "@money-matters/db";
+} from "@kaesava/capability-assistant";
+import { checkAiTenantRateLimit } from "@kaesava/core";
+import { AI_TIER_LIMITS, resolveEffectiveAppFlags } from "@kaesava/config";
+import { apps } from "@kaesava/db";
 import { createAssistantIntentHandler } from "./assistant-adapters.js";
 import { loadTenantFormatting } from "./assistant-context.js";
 

@@ -1,7 +1,7 @@
 import React from "react";
 import { Sparkles } from "lucide-react";
-import { t } from "@money-matters/i18n";
-import { useDateLocale, fmtDateMedium } from "@money-matters/ui/web";
+import { t } from "@kaesava/i18n";
+import { useDateLocale, fmtDateMedium } from "@kaesava/ui/web";
 
 export interface AiUsageCardProps {
   used: number;

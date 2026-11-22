@@ -2,8 +2,8 @@
 
 import { useMemo } from "react";
 import Link from "next/link";
-import { t } from "@money-matters/i18n";
-import { SlideOverDrawer, Button } from "@money-matters/ui/web";
+import { t } from "@kaesava/i18n";
+import { SlideOverDrawer, Button } from "@kaesava/ui/web";
 import { useLocale } from "../../providers/LocaleProvider";
 
 export interface PaydayPlanLineRecord {

@@ -1,9 +1,9 @@
 import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import { Feather } from '@expo/vector-icons';
-import { DESIGN_TOKENS } from '@money-matters/ui/mobile';
+import { DESIGN_TOKENS } from '@kaesava/ui/mobile';
 import { formatMobileCurrency, formatDate } from '../../../lib/format';
-import { t } from '@money-matters/i18n';
+import { t } from '@kaesava/i18n';
 import { MobilePaydayAllocationRecord } from '../../plan/MobilePaydayPlanDetailModal';
 
 export interface PaydayPlanHistoryRowProps {

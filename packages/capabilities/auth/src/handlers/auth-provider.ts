@@ -1,5 +1,5 @@
-import { DbOrTx } from "@money-matters/db/rings/capabilities";
-import { AccountAuthMethods, CheckEmailAuthProviderResult } from "@money-matters/types";
+import { DbOrTx } from "@kaesava/db/rings/capabilities";
+import { AccountAuthMethods, CheckEmailAuthProviderResult } from "@kaesava/types";
 import { sql } from "drizzle-orm";
 
 function extractRows<T>(result: unknown): T[] {

@@ -1,5 +1,5 @@
-import { getCachedDateFormat } from "@money-matters/core";
-import { DEFAULT_LOCALE } from "@money-matters/types";
+import { getCachedDateFormat } from "@kaesava/core";
+import { DEFAULT_LOCALE } from "@kaesava/types";
 import { EngineBucket, AllocationStrategyStepItem } from "./allocation-engine.js";
 import {
   runCumulativeProjection,

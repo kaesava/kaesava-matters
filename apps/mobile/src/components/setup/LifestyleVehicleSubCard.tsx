@@ -1,8 +1,8 @@
 import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
-import { VehicleConfig, CarSize } from '@money-matters/types';
-import { DESIGN_TOKENS, MobileInput } from '@money-matters/ui/mobile';
-import { t } from '@money-matters/i18n';
+import { VehicleConfig, CarSize } from '@kaesava/types';
+import { DESIGN_TOKENS, MobileInput } from '@kaesava/ui/mobile';
+import { t } from '@kaesava/i18n';
 
 interface LifestyleVehicleSubCardProps {
   vehicle: VehicleConfig;

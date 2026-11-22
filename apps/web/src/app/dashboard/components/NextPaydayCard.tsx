@@ -2,8 +2,8 @@
 
 import React, { useMemo } from 'react';
 import Link from 'next/link';
-import { t } from '@money-matters/i18n';
-import { getEarliestPendingIncomeId } from '@money-matters/types';
+import { t } from '@kaesava/i18n';
+import { getEarliestPendingIncomeId } from '@kaesava/types';
 import { useLocale } from '../../../providers/LocaleProvider';
 
 export interface WebIncomeItem {

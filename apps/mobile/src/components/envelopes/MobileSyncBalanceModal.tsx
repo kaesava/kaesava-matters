@@ -7,8 +7,8 @@ import {
   MobileInput,
   AmountInput,
   useMobileToast,
-} from '@money-matters/ui/mobile';
-import { t } from '@money-matters/i18n';
+} from '@kaesava/ui/mobile';
+import { t } from '@kaesava/i18n';
 import { trpc } from '../../lib/trpc';
 import { SyncBalanceEnvelopeRow } from './SyncBalanceEnvelopeRow';
 import { SyncBalanceMetrics } from './sync-balance/SyncBalanceMetrics';

@@ -1,9 +1,9 @@
 "use client";
 
 import React, { useState } from "react";
-import { EstimatedCategoryItem } from "@money-matters/types";
-import { AmountField, ConfirmDialog, InfoTooltip } from "@money-matters/ui/web";
-import { t } from "@money-matters/i18n";
+import { EstimatedCategoryItem } from "@kaesava/types";
+import { AmountField, ConfirmDialog, InfoTooltip } from "@kaesava/ui/web";
+import { t } from "@kaesava/i18n";
 import { useLocale } from "../../../providers/LocaleProvider";
 
 interface SetupReviewEnvelopeListProps {

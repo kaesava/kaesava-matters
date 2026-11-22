@@ -1,13 +1,13 @@
 "use client";
-import { getTenantDateString } from "@money-matters/types";
+import { getTenantDateString } from "@kaesava/types";
 
 
 import React, { useState, useEffect, useMemo } from "react";
-import { useToast, ConfirmDialog, Button, AmountField, ModalDialog, Input, GenericSelectField, FormErrorBanner } from "@money-matters/ui/web";
+import { useToast, ConfirmDialog, Button, AmountField, ModalDialog, Input, GenericSelectField, FormErrorBanner } from "@kaesava/ui/web";
 import { validateHouseholdContribution, resolveHouseholdContributionPayload } from "@money-matters/capability-budgeting/web";
-import { RecurrenceBuilder, useRecurrenceBuilder, parseRecurrenceRule } from "@money-matters/capability-schedules/web";
+import { RecurrenceBuilder, useRecurrenceBuilder, parseRecurrenceRule } from "@kaesava/capability-schedules/web";
 import { HouseholdContributionSection, ContributionMode } from "@money-matters/capability-budgeting/web";
-import { t } from "@money-matters/i18n";
+import { t } from "@kaesava/i18n";
 import { trpc } from "../../lib/trpc";
 import { useLocale } from "../../providers/LocaleProvider";
 

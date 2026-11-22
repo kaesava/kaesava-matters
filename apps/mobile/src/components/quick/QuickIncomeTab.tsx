@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import { View, StyleSheet } from 'react-native';
-import { AmountInput, MobileDatePickerField, MobileInput, MobileButton, DESIGN_TOKENS } from "@money-matters/ui/mobile";
-import { MobileBankPicker } from "@money-matters/capability-bank-accounts/mobile";
+import { AmountInput, MobileDatePickerField, MobileInput, MobileButton, DESIGN_TOKENS } from "@kaesava/ui/mobile";
+import { MobileBankPicker } from "@kaesava/capability-bank-accounts/mobile";
 import { MobileHouseholdContributionSection, ContributionMode } from "@money-matters/capability-budgeting/mobile";
-import { t } from '@money-matters/i18n';
+import { t } from '@kaesava/i18n';
 import { QuickPresetItem } from './useMobileQuickAction';
 import { QuickPresetsRow } from './QuickPresetsRow';
 

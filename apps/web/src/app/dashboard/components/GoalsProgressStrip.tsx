@@ -2,7 +2,7 @@
 
 import React, { useMemo } from 'react';
 import Link from 'next/link';
-import { t } from '@money-matters/i18n';
+import { t } from '@kaesava/i18n';
 import { useLocale } from '../../../providers/LocaleProvider';
 
 export interface GoalCategoryItem {

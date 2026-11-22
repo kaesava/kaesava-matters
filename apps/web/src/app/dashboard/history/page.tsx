@@ -3,8 +3,8 @@
 import { useState, useMemo, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { trpc } from "../../../lib/trpc";
-import { t } from "@money-matters/i18n";
-import { Tabs, Spinner } from "@money-matters/ui/web";
+import { t } from "@kaesava/i18n";
+import { Tabs, Spinner } from "@kaesava/ui/web";
 import { HistoryTab } from "./components/HistoryTab";
 import { PaydayPlansTab } from "./components/PaydayPlansTab";
 

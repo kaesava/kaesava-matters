@@ -1,7 +1,7 @@
 import React from "react";
 import Link from "next/link";
-import { PaginationBar, SkeletonTable, ResizableTh } from "@money-matters/ui/web";
-import { t } from "@money-matters/i18n";
+import { PaginationBar, SkeletonTable, ResizableTh } from "@kaesava/ui/web";
+import { t } from "@kaesava/i18n";
 import { useLocale } from "../../../../../providers/LocaleProvider";
 import { TimelineEventItem } from "./types";
 

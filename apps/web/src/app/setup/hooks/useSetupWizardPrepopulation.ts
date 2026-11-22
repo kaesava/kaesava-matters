@@ -1,5 +1,5 @@
 "use client";
-import { getTenantDateString } from "@money-matters/types";
+import { getTenantDateString } from "@kaesava/types";
 
 
 import { useEffect } from "react";
@@ -9,8 +9,8 @@ import {
   EstimatedCategoryItem,
   BankProvider,
   AccountType,
-} from "@money-matters/types";
-import { parseRecurrenceRule } from "@money-matters/capability-schedules/web";
+} from "@kaesava/types";
+import { parseRecurrenceRule } from "@kaesava/capability-schedules/web";
 import { UserGoalItem } from "../components/SetupGoalsStep";
 import { BankAccountRowItem } from "../components/SetupBankAccountRow";
 

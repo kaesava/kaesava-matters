@@ -1,8 +1,8 @@
 "use client";
 
-import { t } from "@money-matters/i18n";
-import { Logo } from "@money-matters/ui/web";
-import type { AppVersionInfo } from "@money-matters/types";
+import { t } from "@kaesava/i18n";
+import { Logo } from "@kaesava/ui/web";
+import type { AppVersionInfo } from "@kaesava/types";
 
 export interface DashboardFooterProps {
   versionInfo: AppVersionInfo;

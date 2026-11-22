@@ -1,9 +1,9 @@
 "use client";
-import { getTenantDateString } from "@money-matters/types";
+import { getTenantDateString } from "@kaesava/types";
 
 
 import { useState } from "react";
-import { IncomeItem } from "@money-matters/types";
+import { IncomeItem } from "@kaesava/types";
 
 export interface UseSetupIncomeStateOptions {
   onProceedToNextStep: () => void;

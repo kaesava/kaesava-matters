@@ -6,7 +6,7 @@
 > - Zero `any`, `as any`, `as never`, `@ts-ignore`, `@ts-expect-error` (production or tests).
 > - Files `<= 400` lines; React components/hooks `<= 100` lines; domain functions/utilities `<= 30` lines.
 > - Zero inline hex colors outside `packages/ui/src/tokens.ts` and `globals.css`.
-> - Zero uncached `new Intl.*` calls and zero hardcoded `"Australia/Sydney"` / `"en-AU"` in domain/UI formatting (use `DEFAULT_TIMEZONE` / `DEFAULT_LOCALE` from `@money-matters/types` or tenant/user locale).
+> - Zero uncached `new Intl.*` calls and zero hardcoded `"Australia/Sydney"` / `"en-AU"` in domain/UI formatting (use `DEFAULT_TIMEZONE` / `DEFAULT_LOCALE` from `@kaesava/types` or tenant/user locale).
 > - Never read `.env*`, `.dev.vars*`, `seed_credentials.local.md`, or `.aider*`.
 > - Always run `rm -f apps/mobile/.tsbuildinfo` before `pnpm --filter @money-matters/mobile typecheck`.
 > - Do NOT stage or modify pre-existing dirty files outside this plan's scope.
@@ -32,7 +32,7 @@
 1. **Split `packages/i18n/src/dictionaries/en/settings.ts` (419 lines -> `<= 400` lines):**
    - Move `subscription`, `notifications`, and `bankAccounts` blocks (`L243–L418`) into `packages/i18n/src/dictionaries/en/settings-sections.ts` (`~180` lines).
    - Import and spread `...settingsSections` inside `packages/i18n/src/dictionaries/en/settings.ts` (`~245` lines), preserving the exact exported `settings` object shape and `as const` inference.
-   - Verify with `pnpm check-i18n` and `pnpm --filter @money-matters/i18n test`.
+   - Verify with `pnpm check-i18n` and `pnpm --filter @kaesava/i18n test`.
 
 ---
 
@@ -46,20 +46,20 @@
 1. **Remove `as any` in production code:**
    - `packages/capabilities/budgeting/src/commands/move-money.command.ts:40,70`: Replace `(sourceRow as any).envelope ?? sourceRow` and `(destRow as any).envelope ?? destRow` with a typed union/narrowing helper (`"envelope" in row ? row.envelope : row`).
 2. **Eliminate uncached `new Intl.DateTimeFormat` and hardcoded `"Australia/Sydney"` / `"en-AU"`:**
-   - Replace `new Intl.DateTimeFormat("en-CA", ...)` with `getTenantDateString` from `@money-matters/core` in:
+   - Replace `new Intl.DateTimeFormat("en-CA", ...)` with `getTenantDateString` from `@kaesava/core` in:
      - `packages/capabilities/budgeting/src/commands/save-setup-budget-incomes.ts:49`
      - `packages/capabilities/budgeting/src/commands/income-schedule.ts:35`
      - `packages/capabilities/budgeting/src/commands/save-setup-budget-calculators.ts:22,26,30,143`
      - `packages/capabilities/budgeting/src/engine/allocation-engine.ts:104`
      - `packages/capabilities/simulation/src/queries/simulation-steps/one-off-simulation.ts:124`
      - `packages/capabilities/simulation/src/queries/simulation-steps/recurring-simulation.ts:210`
-   - Replace `new Intl.DateTimeFormat(...)` with `getCachedDateFormat(...)` from `@money-matters/core` in:
+   - Replace `new Intl.DateTimeFormat(...)` with `getCachedDateFormat(...)` from `@kaesava/core` in:
      - `packages/capabilities/budgeting/src/engine/matrix-projection-engine.ts:107`
-     - `packages/capabilities/budgeting/src/queries/income-split-analytics-buckets.ts:12` (accept `locale = DEFAULT_LOCALE` from `@money-matters/types` instead of hardcoded `"en-AU"`)
+     - `packages/capabilities/budgeting/src/queries/income-split-analytics-buckets.ts:12` (accept `locale = DEFAULT_LOCALE` from `@kaesava/types` instead of hardcoded `"en-AU"`)
      - `packages/capabilities/transactions/src/queries/spending-analytics-buckets.ts:12` (accept `locale = DEFAULT_LOCALE` instead of hardcoded `"en-AU"`)
      - `packages/capabilities/assistant/src/matcher/date.parser.ts:6` (accept `timeZone = DEFAULT_TIMEZONE` and use `getCachedDateFormat("en-CA", { timeZone })`)
    - `packages/capabilities/billing/src/webhooks/handlers/invoice-events.ts:69`: Replace `currentPeriodEnd.toLocaleDateString("en-AU")` with `getCachedDateFormat(tenantLocale, { dateStyle: "medium", timeZone: tenantTz }).format(currentPeriodEnd)`.
-   - Replace `"Australia/Sydney"` string literals in `packages/capabilities/budgeting/*`, `transactions/*`, and `tenant/*` with `DEFAULT_TIMEZONE` from `@money-matters/types` (where a fallback is required).
+   - Replace `"Australia/Sydney"` string literals in `packages/capabilities/budgeting/*`, `transactions/*`, and `tenant/*` with `DEFAULT_TIMEZONE` from `@kaesava/types` (where a fallback is required).
 3. **Hard-delete audit (`AGENTS.md §3`):**
    - Replace `db.delete(expenseEvents)` / `db.delete(incomeEvents)` on `PENDING` generated schedule rows with soft-archive (`archivedAt: new Date()`, `archivedBy: userId`) or verify and document in `FUNCTIONAL_SPEC.md` if unconfirmed future `PENDING` schedule regeneration intentionally purges unconfirmed generated rows. Affected files:
      - `packages/capabilities/budgeting/src/commands/archive-envelope.command.ts:51`
@@ -115,7 +115,7 @@
    - `apps/web/src/app/dashboard/components/DashboardMobileHeader.tsx:76` -> `DESIGN_TOKENS.colors.brandBlue`
    - `apps/web/src/app/dashboard/income-split/components/PaydayCelebrationCard.tsx:119,148` -> `DESIGN_TOKENS.colors.emeraldGreen` / `brandBlue` / `white`
 3. **Replace uncached `new Intl.DateTimeFormat` & `"Australia/Sydney"` / `"en-AU"` (`UI-04` / `AGENTS.md §5`):**
-   - Use `getTenantDateString` / `getCachedDateFormat` from `@money-matters/core` and `DEFAULT_TIMEZONE` / `DEFAULT_LOCALE` from `@money-matters/types` in:
+   - Use `getTenantDateString` / `getCachedDateFormat` from `@kaesava/core` and `DEFAULT_TIMEZONE` / `DEFAULT_LOCALE` from `@kaesava/types` in:
      - `apps/web/src/app/dashboard/income-and-bills/components/MarkPaidModal.tsx:62`
      - `apps/web/src/app/dashboard/components/AttentionItemsList.tsx:80`
      - `apps/web/src/app/dashboard/income-split/components/useIncomeSplitState.ts:33,44,119`
@@ -135,9 +135,9 @@
 
 ## 8. `apps/mobile`
 1. **Remove `any[]` in production hooks:**
-   - `apps/mobile/src/components/paychecks/useIncomeExpenseForm.ts:59-60` -> type `rawPools` and `bankAccounts` using `@money-matters/types` DTOs.
-   - `apps/mobile/src/components/transactions/hooks/useTransactionsFilter.ts:15` -> type `transactions` using `@money-matters/types` `TransactionItemDto[]` (or explicit interface).
-2. **Replace inline hex colors (`UI-02`) with `DESIGN_TOKENS.colors` from `@money-matters/ui/tokens`:**
+   - `apps/mobile/src/components/paychecks/useIncomeExpenseForm.ts:59-60` -> type `rawPools` and `bankAccounts` using `@kaesava/types` DTOs.
+   - `apps/mobile/src/components/transactions/hooks/useTransactionsFilter.ts:15` -> type `transactions` using `@kaesava/types` `TransactionItemDto[]` (or explicit interface).
+2. **Replace inline hex colors (`UI-02`) with `DESIGN_TOKENS.colors` from `@kaesava/ui/tokens`:**
    - `apps/mobile/src/components/paychecks/MobilePaydayMetricsGrid.tsx:81-111`
    - `apps/mobile/src/components/paychecks/MobilePaydayCelebrationCard.tsx:107-162`
    - `apps/mobile/src/components/paychecks/MobileUnsavedSplitExitDialog.tsx:34-157`
@@ -146,7 +146,7 @@
    - `apps/mobile/src/components/paychecks/IncomeExpenseFormFields.tsx:286-287`
    - (Add any missing semantic surface/slate tokens to `packages/ui/src/tokens.ts` if not already defined.)
 3. **Replace uncached `new Intl.DateTimeFormat` & `"Australia/Sydney"` / `"en-AU"` (`UI-04` / `AGENTS.md §5`):**
-   - Use `getTenantDateString` from `@money-matters/core` and `DEFAULT_TIMEZONE` / `DEFAULT_LOCALE` from `@money-matters/types` in:
+   - Use `getTenantDateString` from `@kaesava/core` and `DEFAULT_TIMEZONE` / `DEFAULT_LOCALE` from `@kaesava/types` in:
      - `apps/mobile/src/components/paychecks/useIncomeExpenseMutations.ts:7`
      - `apps/mobile/src/components/setup/SetupGoalCard.tsx:62`
      - `apps/mobile/src/app/(setup)/goals.tsx:34,64,116`

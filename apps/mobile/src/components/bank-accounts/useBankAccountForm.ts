@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { trpc } from '../../lib/trpc';
-import { useMobileToast, showMobileConfirm } from '@money-matters/ui/mobile';
-import { t } from '@money-matters/i18n';
+import { useMobileToast, showMobileConfirm } from '@kaesava/ui/mobile';
+import { t } from '@kaesava/i18n';
 import type { BankAccountItemToEdit } from './bankAccountTypes';
 import type { MobileSyncBalanceModalProps } from '../envelopes/MobileSyncBalanceModal';
-import { AccountType } from '@money-matters/types';
+import { AccountType } from '@kaesava/types';
 
 export function useBankAccountForm(
   visible: boolean,

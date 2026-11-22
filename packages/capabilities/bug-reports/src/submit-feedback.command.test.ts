@@ -1,9 +1,9 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { submitFeedbackCommand, escapeHtml } from "./submit-feedback.command.js";
-import * as core from "@money-matters/core";
+import * as core from "@kaesava/core";
 
-vi.mock("@money-matters/core", async () => {
-  const actual = await vi.importActual<typeof core>("@money-matters/core");
+vi.mock("@kaesava/core", async () => {
+  const actual = await vi.importActual<typeof core>("@kaesava/core");
   return {
     ...actual,
     sendEmail: vi.fn().mockResolvedValue({ success: true, id: "msg-123" }),

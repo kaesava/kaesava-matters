@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import { useRouter, type Href } from 'expo-router';
-import { t } from '@money-matters/i18n';
-import { DESIGN_TOKENS } from '@money-matters/ui/mobile';
+import { t } from '@kaesava/i18n';
+import { DESIGN_TOKENS } from '@kaesava/ui/mobile';
 import { trpc } from '../../lib/trpc';
 
 export function TrialBanner() {

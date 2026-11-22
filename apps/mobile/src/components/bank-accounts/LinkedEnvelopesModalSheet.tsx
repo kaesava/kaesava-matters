@@ -2,9 +2,9 @@ import React from 'react';
 import { View, Text, TouchableOpacity, ScrollView, StyleSheet } from 'react-native';
 import { Feather } from '@expo/vector-icons';
 import { useRouter, type Href } from 'expo-router';
-import { DESIGN_TOKENS, MobileModalDialog } from '@money-matters/ui/mobile';
+import { DESIGN_TOKENS, MobileModalDialog } from '@kaesava/ui/mobile';
 import { formatMobileCurrency } from '../../lib/format';
-import { t } from '@money-matters/i18n';
+import { t } from '@kaesava/i18n';
 
 export interface LinkedPoolItem {
   id: string;

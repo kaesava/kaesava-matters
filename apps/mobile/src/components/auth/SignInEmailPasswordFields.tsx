@@ -1,12 +1,12 @@
 import React from "react";
 import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
 import { useRouter } from "expo-router";
-import { t } from "@money-matters/i18n";
+import { t } from "@kaesava/i18n";
 import {
   DESIGN_TOKENS,
   MobileInput,
   FormLabel,
-} from "@money-matters/ui/mobile";
+} from "@kaesava/ui/mobile";
 
 interface SignInEmailPasswordFieldsProps {
   email: string;

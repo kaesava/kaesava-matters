@@ -1,13 +1,13 @@
 "use client";
-import { DEFAULT_TIMEZONE } from "@money-matters/types";
+import { DEFAULT_TIMEZONE } from "@kaesava/types";
 
 
 import React, { useState, Suspense } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { SlidersHorizontal } from "lucide-react";
-import { t } from "@money-matters/i18n";
-import { ConfirmDialog, Button, useToast, PlatformSettingsShell } from "@money-matters/ui/web";
+import { t } from "@kaesava/i18n";
+import { ConfirmDialog, Button, useToast, PlatformSettingsShell } from "@kaesava/ui/web";
 import { authClient } from "../../../lib/auth";
 import posthog from "../../../lib/posthog-client";
 import { trpc } from "../../../lib/trpc";

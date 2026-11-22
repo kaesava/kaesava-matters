@@ -1,9 +1,9 @@
 import { Inngest } from "inngest";
-import { db, envelopes, getEnvelopeBalancesMap, tenants, tenantUsers, users, userPreferences, tenantUserPreferences } from "@money-matters/db";
+import { db, envelopes, getEnvelopeBalancesMap, tenants, tenantUsers, users, userPreferences, tenantUserPreferences } from "@kaesava/db";
 import { eq, and, sql, inArray } from "drizzle-orm";
-import { sendNotificationEmail, formatCurrency, logger } from "@money-matters/core";
-import { t } from "@money-matters/i18n";
-import { isChannelEnabled, isLocalScheduleMatch, readNotificationPrefs, resolveNotificationRecipient } from "@money-matters/capability-notifications";
+import { sendNotificationEmail, formatCurrency, logger } from "@kaesava/core";
+import { t } from "@kaesava/i18n";
+import { isChannelEnabled, isLocalScheduleMatch, readNotificationPrefs, resolveNotificationRecipient } from "@kaesava/capability-notifications";
 
 export function createWeeklyDigestWorkflow(inngest: Inngest) {
   return inngest.createFunction(

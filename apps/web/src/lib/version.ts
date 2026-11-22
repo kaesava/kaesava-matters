@@ -1,5 +1,5 @@
-import { AppVersionInfo } from "@money-matters/types";
-import { getFormattedVersionString } from "@money-matters/config";
+import { AppVersionInfo } from "@kaesava/types";
+import { getFormattedVersionString } from "@kaesava/config";
 
 export function getWebVersionInfo(): AppVersionInfo {
   const appId = process.env.NEXT_PUBLIC_APP_ID || "01908bde-34bb-7b19-a178-574211bc93aa";

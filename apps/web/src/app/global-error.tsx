@@ -3,8 +3,8 @@
 import { useEffect } from 'react';
 import Link from 'next/link';
 import * as Sentry from '@sentry/nextjs';
-import { t } from '@money-matters/i18n';
-import { DESIGN_TOKENS } from '@money-matters/ui';
+import { t } from '@kaesava/i18n';
+import { DESIGN_TOKENS } from '@kaesava/ui';
 
 export default function GlobalError({
   error,

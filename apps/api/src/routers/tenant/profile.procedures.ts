@@ -5,7 +5,7 @@ import {
   updateUserPreferencesHandler,
   getUserProfileHandler,
   updateUserProfileHandler,
-} from "@money-matters/capability-tenant";
+} from "@kaesava/capability-tenant";
 import { z } from 'zod';
 
 export const profileProcedures = {

@@ -2,9 +2,9 @@ import { getTenantDateString } from "../../lib/format";
 import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, ScrollView } from 'react-native';
 import { Feather } from '@expo/vector-icons';
-import { UserGoalItem } from '@money-matters/types';
-import { DESIGN_TOKENS, AmountInput, MobileDatePickerField, InfoTooltip, MobileInput } from '@money-matters/ui/mobile';
-import { t } from '@money-matters/i18n';
+import { UserGoalItem } from '@kaesava/types';
+import { DESIGN_TOKENS, AmountInput, MobileDatePickerField, InfoTooltip, MobileInput } from '@kaesava/ui/mobile';
+import { t } from '@kaesava/i18n';
 import { getMobileLocaleConfig } from '../../lib/format';
 
 interface SetupGoalCardProps {

@@ -1,7 +1,7 @@
 import { useState } from "react";
 import * as WebBrowser from "expo-web-browser";
-import { t } from "@money-matters/i18n";
-import { showMobileConfirm, useMobileToast } from "@money-matters/ui/mobile";
+import { t } from "@kaesava/i18n";
+import { showMobileConfirm, useMobileToast } from "@kaesava/ui/mobile";
 import { trpc } from "../../../lib/trpc";
 import { authClient, DEFAULT_AUTH_ORIGIN } from "../../../lib/auth";
 

@@ -2,7 +2,7 @@ import React, { useEffect, useState, useRef } from 'react';
 import { View, ScrollView, StyleSheet } from 'react-native';
 import { useLocalSearchParams, useRouter, type Href } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { DESIGN_TOKENS, MobileLogo } from '@money-matters/ui/mobile';
+import { DESIGN_TOKENS, MobileLogo } from '@kaesava/ui/mobile';
 import { trpc, setActiveSessionToken } from '../../../lib/trpc';
 import { setActiveTenantId } from '../../../lib/trpc-session';
 import { authClient } from '../../../lib/auth';

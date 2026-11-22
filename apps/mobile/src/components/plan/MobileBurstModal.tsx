@@ -11,8 +11,8 @@ import {
   DESIGN_TOKENS,
   MobileModalDialog,
   showMobileConfirm,
-} from '@money-matters/ui/mobile';
-import { t } from '@money-matters/i18n';
+} from '@kaesava/ui/mobile';
+import { t } from '@kaesava/i18n';
 import { formatMobileCurrency, formatIsoDate } from '../../lib/format';
 import { BurstSourceItem, BurstEventItem, parseFrequencyLabel } from './burst-types';
 import { BurstSourceHeaderCard } from './BurstSourceHeaderCard';

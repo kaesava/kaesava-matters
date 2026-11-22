@@ -2,8 +2,8 @@ import { describe, it, expect, vi } from "vitest";
 import { createEnvelopeCommand } from "./create-envelope.command.js";
 import { updateEnvelopeCommand } from "./update-envelope.command.js";
 import { overrideEventCommand } from "./override-event.command.js";
-import { envelopes, expenseEvents, tenants } from "@money-matters/db";
-import type { DbOrTx } from "@money-matters/db";
+import { envelopes, expenseEvents, tenants } from "@kaesava/db";
+import type { DbOrTx } from "@kaesava/db";
 
 describe("Envelope Lifecycle & Event Sync", () => {
   const tenantId = "00000000-0000-0000-0000-000000000001";

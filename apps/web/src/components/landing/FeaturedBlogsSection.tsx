@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { t } from "@money-matters/i18n";
+import { t } from "@kaesava/i18n";
 import { BLOG_POSTS } from "../../lib/blog-data";
 import { BookOpen } from "lucide-react";
 

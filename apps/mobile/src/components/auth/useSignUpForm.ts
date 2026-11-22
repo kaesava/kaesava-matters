@@ -1,8 +1,8 @@
-import { DEFAULT_TIMEZONE } from "@money-matters/types";
+import { DEFAULT_TIMEZONE } from "@kaesava/types";
 import { useState, useMemo } from "react";
 import { useRouter, useLocalSearchParams, type Href } from "expo-router";
-import { t } from "@money-matters/i18n";
-import { SignUpInputSchema, isValidEmail, getCountryDefaults, detectBestGuessCountry } from "@money-matters/types";
+import { t } from "@kaesava/i18n";
+import { SignUpInputSchema, isValidEmail, getCountryDefaults, detectBestGuessCountry } from "@kaesava/types";
 import { authClient } from "../../lib/auth";
 import { trpc, setActiveSessionToken } from "../../lib/trpc";
 import * as SecureStore from "expo-secure-store";

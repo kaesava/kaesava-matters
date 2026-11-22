@@ -1,10 +1,10 @@
 import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { Feather } from '@expo/vector-icons';
-import { BankProviderBadge } from "@money-matters/capability-bank-accounts/mobile";
-import { CardDrawerIndicator, DESIGN_TOKENS } from "@money-matters/ui/mobile";
+import { BankProviderBadge } from "@kaesava/capability-bank-accounts/mobile";
+import { CardDrawerIndicator, DESIGN_TOKENS } from "@kaesava/ui/mobile";
 import { formatMobileCurrency } from '../../lib/format';
-import { t, BANK_ACCOUNT_TYPE_KEYS } from '@money-matters/i18n';
+import { t, BANK_ACCOUNT_TYPE_KEYS } from '@kaesava/i18n';
 
 export interface BankAccountCardHeaderProps {
   name: string;

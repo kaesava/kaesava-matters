@@ -1,7 +1,7 @@
 import { and, eq, inArray, isNull } from "drizzle-orm";
-import { DbOrTx, deviceTokens, userPreferences } from "@money-matters/db/rings/capabilities";
-import { getLocalDayOfWeekInZone, getLocalHourInZone } from "@money-matters/core";
-import type { NotificationChannelStatus } from "@money-matters/types";
+import { DbOrTx, deviceTokens, userPreferences } from "@kaesava/db/rings/capabilities";
+import { getLocalDayOfWeekInZone, getLocalHourInZone } from "@kaesava/core";
+import type { NotificationChannelStatus } from "@kaesava/types";
 
 export function resolveNotificationRecipient(
   loginEmail?: string | null,

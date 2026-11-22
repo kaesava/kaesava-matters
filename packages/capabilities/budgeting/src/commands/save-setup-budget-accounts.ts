@@ -1,4 +1,4 @@
-import { DbOrTx, bankAccounts } from "@money-matters/db";
+import { DbOrTx, bankAccounts } from "@kaesava/db";
 import { eq, and, inArray, sql } from "drizzle-orm";
 import { randomUUID } from "crypto";
 

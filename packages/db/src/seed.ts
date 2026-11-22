@@ -8,8 +8,8 @@ import {
   apps,
   earlyAccessSubscribers,
   billingInvoices,
-} from "@money-matters/db";
-import { DEFAULT_APP_FEATURE_FLAGS } from "@money-matters/types";
+} from "@kaesava/db";
+import { DEFAULT_APP_FEATURE_FLAGS } from "@kaesava/types";
 import { sql } from "drizzle-orm";
 import dotenv from "dotenv";
 import { ensureNeonAuthUser, cleanupTables } from "./seeds/neon-auth-setup.js";

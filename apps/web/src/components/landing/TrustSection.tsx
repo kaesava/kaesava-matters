@@ -1,6 +1,6 @@
 "use client";
 
-import { t } from "@money-matters/i18n";
+import { t } from "@kaesava/i18n";
 import { Lock, ShieldCheck, Scale } from "lucide-react";
 
 export function TrustSection() {

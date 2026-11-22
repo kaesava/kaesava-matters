@@ -2,8 +2,8 @@
 
 import React from "react";
 import { useRouter, usePathname } from "next/navigation";
-import type { QuickActionInitialData } from "@money-matters/types";
-import { CommandPaletteModal } from "@money-matters/ui/web";
+import type { QuickActionInitialData } from "@kaesava/types";
+import { CommandPaletteModal } from "@kaesava/ui/web";
 import { QuickExpenseDrawer } from "../../../components/web/QuickExpenseDrawer";
 import { KeyboardShortcutsModal } from "./KeyboardShortcutsModal";
 import { handlePennyPrefillNavigation } from "./DashboardPennyHandler";

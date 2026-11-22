@@ -1,7 +1,7 @@
 "use client";
 
-import { ConfirmDialog, useCurrencyLocale } from "@money-matters/ui/web";
-import { t } from "@money-matters/i18n";
+import { ConfirmDialog, useCurrencyLocale } from "@kaesava/ui/web";
+import { t } from "@kaesava/i18n";
 import { CrossBankTransferModal } from "./CrossBankTransferModal";
 
 export interface CrossBankPromptState {

@@ -1,9 +1,9 @@
 "use client";
 
 import React from "react";
-import { t } from "@money-matters/i18n";
-import { ModalDialog, FormLabel, Input, FormFieldError, FormErrorBanner, Button } from "@money-matters/ui/web";
-import { PasswordStrengthIndicator } from "@money-matters/capability-auth/web";
+import { t } from "@kaesava/i18n";
+import { ModalDialog, FormLabel, Input, FormFieldError, FormErrorBanner, Button } from "@kaesava/ui/web";
+import { PasswordStrengthIndicator } from "@kaesava/capability-auth/web";
 import { useAccountPasswordForm } from "./useAccountPasswordForm";
 
 interface AccountPasswordModalProps {

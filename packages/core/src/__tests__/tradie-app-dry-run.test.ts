@@ -3,11 +3,11 @@ import {
   registerAppManifest,
   resolveAppConfigOrDefault,
   resolveEffectiveAppFlags,
-} from "@money-matters/config";
+} from "@kaesava/config";
 import {
   serializeCsvObjects,
   type TenantLifecycleHooks,
-} from "@money-matters/types";
+} from "@kaesava/types";
 import {
   createArchiveRegistry,
   computeRecurringDates,

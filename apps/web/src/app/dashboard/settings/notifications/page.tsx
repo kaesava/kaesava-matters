@@ -4,8 +4,8 @@ import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Mail, Clock } from "lucide-react";
-import { t } from "@money-matters/i18n";
-import { useToast, Button } from "@money-matters/ui/web";
+import { t } from "@kaesava/i18n";
+import { useToast, Button } from "@kaesava/ui/web";
 import { trpc } from "../../../../lib/trpc";
 
 function resolvePrefsBlob(raw: unknown, appId?: string): Record<string, unknown> {

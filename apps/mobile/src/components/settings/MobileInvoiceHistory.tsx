@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, ActivityIndicator, Linking } from 'react-native';
 import { Feather } from '@expo/vector-icons';
-import { DESIGN_TOKENS, MobilePaginationBar } from '@money-matters/ui/mobile';
-import { t } from '@money-matters/i18n';
+import { DESIGN_TOKENS, MobilePaginationBar } from '@kaesava/ui/mobile';
+import { t } from '@kaesava/i18n';
 import { formatDate, formatMobileCurrency } from '../../lib/format';
 
 interface InvoiceItem {

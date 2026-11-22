@@ -6,7 +6,7 @@ import {
   incomeSources,
   bankAccounts,
   type DbOrTx,
-} from "@money-matters/db";
+} from "@kaesava/db";
 import { and, eq, sql, desc, inArray } from "drizzle-orm";
 
 /**

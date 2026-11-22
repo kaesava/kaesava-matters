@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 import { ModalDialog } from './ModalDialog';
 import { Button } from './Button';
-import { t } from '@money-matters/i18n';
+import { t } from '@kaesava/i18n';
 
 export interface TypedConfirmDialogProps {
   isOpen: boolean;

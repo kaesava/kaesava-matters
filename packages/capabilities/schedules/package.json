@@ -1,5 +1,5 @@
 {
-  "name": "@money-matters/capability-schedules",
+  "name": "@kaesava/capability-schedules",
   "version": "0.1.0",
   "private": true,
   "type": "module",
@@ -23,10 +23,10 @@
     }
   },
   "dependencies": {
-    "@money-matters/core": "workspace:*",
-    "@money-matters/i18n": "workspace:*",
-    "@money-matters/types": "workspace:*",
-    "@money-matters/ui": "workspace:*",
+    "@kaesava/core": "workspace:*",
+    "@kaesava/i18n": "workspace:*",
+    "@kaesava/types": "workspace:*",
+    "@kaesava/ui": "workspace:*",
     "zod": "^3.23.8"
   },
   "peerDependencies": {

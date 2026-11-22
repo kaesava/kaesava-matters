@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { HousingType, VehicleConfig, ChildConfig } from '@money-matters/types';
+import { HousingType, VehicleConfig, ChildConfig } from '@kaesava/types';
 
 export function useSetupWizardLifestyleState() {
   const [country, setCountry] = useState<'AU' | 'NZ' | 'OTHER'>('AU');

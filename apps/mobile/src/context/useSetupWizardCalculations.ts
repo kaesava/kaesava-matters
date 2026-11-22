@@ -10,7 +10,7 @@ import {
   convertToMonthly,
   convertFromMonthly,
   computeSetupWizardCalculations as computeSharedSetupWizardCalculations,
-} from '@money-matters/types';
+} from '@kaesava/types';
 
 export { convertToMonthly, convertFromMonthly };
 

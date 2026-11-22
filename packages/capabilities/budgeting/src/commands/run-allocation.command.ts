@@ -1,9 +1,9 @@
-import { t } from "@money-matters/i18n";
-import { envelopes, allocationPlans, allocationPlanLines, transactionLedger, incomeEvents, incomeSources, expenseEvents, bankAccounts, getEnvelopeBalancesMap, tenants, userPreferences, DbOrTx } from "@money-matters/db";
+import { t } from "@kaesava/i18n";
+import { envelopes, allocationPlans, allocationPlanLines, transactionLedger, incomeEvents, incomeSources, expenseEvents, bankAccounts, getEnvelopeBalancesMap, tenants, userPreferences, DbOrTx } from "@kaesava/db";
 import { eq, and, sql } from "drizzle-orm";
 import { runAllocationEngine, EngineBucket } from "../engine/allocation-engine.js";
-import { getTenantDateString } from "@money-matters/core";
-import { TargetCelebrationItem } from "@money-matters/types";
+import { getTenantDateString } from "@kaesava/core";
+import { TargetCelebrationItem } from "@kaesava/types";
 
 export function parseRruleFrequencyDays(rrule?: string | null): number {
   if (!rrule) return 14;

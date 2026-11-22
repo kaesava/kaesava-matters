@@ -1,8 +1,8 @@
 import { privateTenantProcedure, requiresWriteAccess } from '../trpc/trpc.js';
-import { envelopes, expenseEvents, bankAccounts } from "@money-matters/db";
+import { envelopes, expenseEvents, bankAccounts } from "@kaesava/db";
 import { and, eq, sql } from "drizzle-orm";
 import { markExpensePaidCommand } from "@money-matters/capability-budgeting";
-import { CreateOneOffExpenseCommand, MarkExpensePaidCommand } from "@money-matters/types";
+import { CreateOneOffExpenseCommand, MarkExpensePaidCommand } from "@kaesava/types";
 import { z } from 'zod';
 import { captureIfConsented } from '../lib/posthog.js';
 

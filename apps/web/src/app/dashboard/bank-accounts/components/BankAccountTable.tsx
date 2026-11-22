@@ -3,10 +3,10 @@
 import React from "react";
 import Link from "next/link";
 import { FileText } from "lucide-react";
-import { PaginationBar, SkeletonTable, ModalDialog, Button } from "@money-matters/ui/web";
-import { t, BANK_ACCOUNT_TYPE_KEYS } from "@money-matters/i18n";
+import { PaginationBar, SkeletonTable, ModalDialog, Button } from "@kaesava/ui/web";
+import { t, BANK_ACCOUNT_TYPE_KEYS } from "@kaesava/i18n";
 import { useAppFeatures } from "../../../../hooks/useAppFeatures";
-import type { AccountType } from "@money-matters/types";
+import type { AccountType } from "@kaesava/types";
 
 export type CategoryType = "EVERYDAY" | "BILL" | "GOAL";
 

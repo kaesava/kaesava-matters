@@ -9,15 +9,15 @@ import {
   tenants,
   userPreferences,
   type DbOrTx,
-} from "@money-matters/db";
+} from "@kaesava/db";
 import {
   formatCurrency,
   formatDate,
   getLocaleFromCountry,
   getTenantDateString,
   type FormatterTenant,
-} from "@money-matters/core";
-import type { IntentContext, SafePennySnapshot } from "@money-matters/capability-assistant";
+} from "@kaesava/core";
+import type { IntentContext, SafePennySnapshot } from "@kaesava/capability-assistant";
 
 export interface TenantFormatting extends FormatterTenant {
   country: string;

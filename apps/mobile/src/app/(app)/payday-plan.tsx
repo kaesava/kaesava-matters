@@ -1,6 +1,6 @@
 import React, { useState, useRef } from 'react';
 import { StyleSheet, View } from 'react-native';
-import { t } from '@money-matters/i18n';
+import { t } from '@kaesava/i18n';
 import { AppScreenWrapper } from '../../components/AppScreenWrapper';
 import { MobileHorizonPlanTab } from '../../components/plan/MobileHorizonPlanTab';
 import { MobileCategoryDetailSheet, MobileCategoryDetailItem } from "@money-matters/capability-budgeting/mobile";

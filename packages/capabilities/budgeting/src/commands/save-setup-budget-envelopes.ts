@@ -1,7 +1,7 @@
-import { DbOrTx, envelopes, transactionLedger, allocationStrategies, allocationStrategySteps, getEnvelopeBalancesMap } from "@money-matters/db";
+import { DbOrTx, envelopes, transactionLedger, allocationStrategies, allocationStrategySteps, getEnvelopeBalancesMap } from "@kaesava/db";
 import { eq, and, isNull, sql } from "drizzle-orm";
 import { randomUUID } from "crypto";
-import { EnvelopeType, DEFAULT_TIMEZONE } from "@money-matters/types";
+import { EnvelopeType, DEFAULT_TIMEZONE } from "@kaesava/types";
 import { deriveRrule, computeBillScheduleAnchorDate } from "./save-setup-budget-calculators.js";
 import { archivePendingExpenseEvents, synchronizeUpdatedEnvelopeEvents } from "./save-setup-budget-sync.js";
 

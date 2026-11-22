@@ -1,8 +1,8 @@
 import { View, Text, StyleSheet } from 'react-native';
 import Svg, { Circle, G } from 'react-native-svg';
-import { HorizonBreakdownDTO } from '@money-matters/types';
+import { HorizonBreakdownDTO } from '@kaesava/types';
 import { DESIGN_TOKENS } from '../../tokens';
-import { t } from '@money-matters/i18n';
+import { t } from '@kaesava/i18n';
 
 interface MobileDonutChartProps {
   data: HorizonBreakdownDTO;

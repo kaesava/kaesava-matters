@@ -1,5 +1,5 @@
-import { DEFAULT_TIMEZONE, type TenantLifecycleHooks } from "@money-matters/types";
-import { tenants, tenantUsers, users, tenantUserPreferences, type DbOrTx } from "@money-matters/db/rings/capabilities";
+import { DEFAULT_TIMEZONE, type TenantLifecycleHooks } from "@kaesava/types";
+import { tenants, tenantUsers, users, tenantUserPreferences, type DbOrTx } from "@kaesava/db/rings/capabilities";
 import { and, eq, sql } from "drizzle-orm";
 
 interface DbMember {

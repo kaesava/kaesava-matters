@@ -1,6 +1,6 @@
 "use client";
 
-import { t } from "@money-matters/i18n";
+import { t } from "@kaesava/i18n";
 import { HeroCtaActions } from "./HeroCtaActions";
 import { PaydayCockpitPreview } from "./PaydayCockpitPreview";
 import { Sparkles, ShieldCheck, Zap } from "lucide-react";

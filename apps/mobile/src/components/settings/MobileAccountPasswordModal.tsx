@@ -1,6 +1,6 @@
 import React from "react";
 import { View, StyleSheet } from "react-native";
-import { t } from "@money-matters/i18n";
+import { t } from "@kaesava/i18n";
 import {
   MobileModalDialog,
   FormLabel,
@@ -8,8 +8,8 @@ import {
   FormFieldError,
   FormErrorBanner,
   MobileButton,
-} from "@money-matters/ui/mobile";
-import { MobilePasswordStrength } from "@money-matters/capability-auth/mobile";
+} from "@kaesava/ui/mobile";
+import { MobilePasswordStrength } from "@kaesava/capability-auth/mobile";
 import { useMobileAccountPasswordForm } from "./profile/useMobileAccountPasswordForm";
 
 interface MobileAccountPasswordModalProps {

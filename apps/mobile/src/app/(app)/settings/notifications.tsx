@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import { View, Text, StyleSheet, ScrollView, Linking } from "react-native";
 import { useRouter } from "expo-router";
-import { DESIGN_TOKENS, MobileScreenWrapper, SwitchRow, MobileButton, useMobileToast, showMobileConfirm } from "@money-matters/ui/mobile";
-import { t } from "@money-matters/i18n";
+import { DESIGN_TOKENS, MobileScreenWrapper, SwitchRow, MobileButton, useMobileToast, showMobileConfirm } from "@kaesava/ui/mobile";
+import { t } from "@kaesava/i18n";
 import { authClient } from "../../../lib/auth";
 import { trpc } from "../../../lib/trpc";
 import { getPushPlatform, registerPushNotificationsAsync, unregisterCachedPushToken } from "../../../lib/push";

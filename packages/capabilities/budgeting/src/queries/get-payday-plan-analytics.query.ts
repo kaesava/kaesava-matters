@@ -6,15 +6,15 @@ import {
   bankAccounts,
   envelopes,
   DbOrTx,
-} from "@money-matters/db";
+} from "@kaesava/db";
 import { eq, and, sql, gte, desc, inArray } from "drizzle-orm";
 import {
   SpendingTimeframe,
   PaydayPlanAnalyticsDTO,
-} from "@money-matters/types";
+} from "@kaesava/types";
 import { getAnalyticsCutoff } from "./payday-plan-analytics-envelopes";
 import { buildIncomeSplitAnalytics } from "./payday-plan-analytics-processors";
-import { getTenantDateString } from "@money-matters/core";
+import { getTenantDateString } from "@kaesava/core";
 
 export interface IncomeSplitAnalyticsFilterParams {
   timeframe: SpendingTimeframe;

@@ -1,8 +1,8 @@
 "use client";
 
 import React, { useId, useState } from "react";
-import { InfoTooltip, isFormDirty, ConfirmDialog, Button, Input, AmountField, ModalDialog } from "@money-matters/ui/web";
-import { t } from "@money-matters/i18n";
+import { InfoTooltip, isFormDirty, ConfirmDialog, Button, Input, AmountField, ModalDialog } from "@kaesava/ui/web";
+import { t } from "@kaesava/i18n";
 import { useLocale } from "../../../../providers/LocaleProvider";
 import { useAppFeatures } from "../../../../hooks/useAppFeatures";
 import {
@@ -10,7 +10,7 @@ import {
   ACCOUNT_TYPES,
   AccountType,
   ACCOUNT_TYPE_LABELS,
-} from "@money-matters/types";
+} from "@kaesava/types";
 
 export interface BankAccountFormModalProps {
   readonly isOpen: boolean;

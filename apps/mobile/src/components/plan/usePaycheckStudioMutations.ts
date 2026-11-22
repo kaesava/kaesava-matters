@@ -1,7 +1,7 @@
 import { trpc } from '../../lib/trpc';
 import { useRouter } from 'expo-router';
-import { useMobileToast, showMobileConfirm } from '@money-matters/ui/mobile';
-import { t } from '@money-matters/i18n';
+import { useMobileToast, showMobileConfirm } from '@kaesava/ui/mobile';
+import { t } from '@kaesava/i18n';
 import { triggerHaptic } from '../../lib/haptics';
 import {
   UsePaycheckStudioMutationsParams,

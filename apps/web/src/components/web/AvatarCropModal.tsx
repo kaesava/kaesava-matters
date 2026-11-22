@@ -1,8 +1,8 @@
 "use client";
 
 import React, { useState, useRef, useEffect, useCallback } from "react";
-import { ModalDialog, ConfirmDialog, Button } from "@money-matters/ui/web";
-import { t } from "@money-matters/i18n";
+import { ModalDialog, ConfirmDialog, Button } from "@kaesava/ui/web";
+import { t } from "@kaesava/i18n";
 
 export interface AvatarCropModalProps {
   isOpen: boolean;

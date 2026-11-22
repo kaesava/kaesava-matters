@@ -2,11 +2,11 @@
 
 import React, { useState } from "react";
 import Link from "next/link";
-import { t } from "@money-matters/i18n";
-import { Button, FormLabel, FormFieldError, FormErrorBanner } from "@money-matters/ui/web";
-import { InviteSignUpInputSchema } from "@money-matters/types";
+import { t } from "@kaesava/i18n";
+import { Button, FormLabel, FormFieldError, FormErrorBanner } from "@kaesava/ui/web";
+import { InviteSignUpInputSchema } from "@kaesava/types";
 import { authClient } from "../../../../lib/auth";
-import { PasswordStrengthIndicator } from "@money-matters/capability-auth/web";
+import { PasswordStrengthIndicator } from "@kaesava/capability-auth/web";
 
 interface InviteNewUserFormProps {
   inviteEmail: string;

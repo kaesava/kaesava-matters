@@ -1,1 +1,1 @@
-export { isAllowedOrigin, buildCorsHeaders } from '@money-matters/core';
+export { isAllowedOrigin, buildCorsHeaders } from '@kaesava/core';

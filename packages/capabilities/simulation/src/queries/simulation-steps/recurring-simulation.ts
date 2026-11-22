@@ -3,10 +3,10 @@ import type {
   ProjectionEngineBucket,
   ProjectionExpenseEvent,
   ProjectionIncomeEvent,
-} from "@money-matters/types";
-import { formatDate } from "@money-matters/core";
-import { t } from "@money-matters/i18n";
-import { getTenantDateString } from "@money-matters/types";
+} from "@kaesava/types";
+import { formatDate } from "@kaesava/core";
+import { t } from "@kaesava/i18n";
+import { getTenantDateString } from "@kaesava/types";
 import { toMonthlyAmount } from "../can-afford-simulation.query.js";
 import type { RecurringSimulationParams } from "./simulation-types.js";
 

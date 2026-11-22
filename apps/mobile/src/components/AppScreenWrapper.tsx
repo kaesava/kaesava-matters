@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { useRouter, type Href } from 'expo-router';
 import { usePostHog } from 'posthog-react-native';
-import { MobileScreenWrapper, MobileScreenWrapperProps } from '@money-matters/ui/mobile';
-import { t } from '@money-matters/i18n';
+import { MobileScreenWrapper, MobileScreenWrapperProps } from '@kaesava/ui/mobile';
+import { t } from '@kaesava/i18n';
 import { authClient } from '../lib/auth';
 import { unregisterCachedPushToken } from '../lib/push';
 import { trpc, setActiveSessionToken, setActiveTenantId } from '../lib/trpc';

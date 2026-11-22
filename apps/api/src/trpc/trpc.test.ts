@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { requiresWriteAccess } from './trpc.js';
-import type { SubscriptionStatusDto } from '@money-matters/types';
+import type { SubscriptionStatusDto } from '@kaesava/types';
 
 describe('requiresWriteAccess Unit Tests', () => {
   const baseStatus: SubscriptionStatusDto = {

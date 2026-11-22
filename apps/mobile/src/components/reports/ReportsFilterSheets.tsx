@@ -1,8 +1,8 @@
 import React from 'react';
-import { MobileFilterSheet } from "@money-matters/ui/mobile";
-import { MobileBankPicker } from "@money-matters/capability-bank-accounts/mobile";
-import { t } from '@money-matters/i18n';
-import type { SpendingFlowType } from '@money-matters/types';
+import { MobileFilterSheet } from "@kaesava/ui/mobile";
+import { MobileBankPicker } from "@kaesava/capability-bank-accounts/mobile";
+import { t } from '@kaesava/i18n';
+import type { SpendingFlowType } from '@kaesava/types';
 
 interface ReportsFilterSheetsProps {
   spendingFilterSheetVisible: boolean;

@@ -6,7 +6,7 @@ import {
   FileNotesListInput,
   FileNoteDto,
   StorageQuotaDto,
-} from "@money-matters/types";
+} from "@kaesava/types";
 import {
   createPreSignedUrlHandler,
   createFileNoteHandler,

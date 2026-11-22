@@ -1,8 +1,8 @@
 "use client";
 
-import { SpendingAnalyticsDTO, SpendingTimeframe } from "@money-matters/types";
-import { DonutChart, BarTrendChart, HorizontalRankedBarChart } from "@money-matters/ui/web";
-import { t } from "@money-matters/i18n";
+import { SpendingAnalyticsDTO, SpendingTimeframe } from "@kaesava/types";
+import { DonutChart, BarTrendChart, HorizontalRankedBarChart } from "@kaesava/ui/web";
+import { t } from "@kaesava/i18n";
 import { BarChart3, Info } from "lucide-react";
 
 export interface SpendingOverviewCardLabels {

@@ -1,4 +1,4 @@
-import { envelopes, incomeSources, bankAccounts, DbOrTx } from "@money-matters/db";
+import { envelopes, incomeSources, bankAccounts, DbOrTx } from "@kaesava/db";
 import { eq, and, sql } from "drizzle-orm";
 
 export async function listArchivedItemsQuery(

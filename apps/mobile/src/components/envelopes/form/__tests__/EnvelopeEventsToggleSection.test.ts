@@ -1,12 +1,12 @@
 import { describe, it, expect, vi } from 'vitest';
-import { t } from '@money-matters/i18n';
+import { t } from '@kaesava/i18n';
 
 vi.mock('react-native', () => ({
   View: 'View',
   StyleSheet: { create: (styles: Record<string, unknown>) => styles },
 }));
 
-vi.mock('@money-matters/ui/mobile', () => ({
+vi.mock('@kaesava/ui/mobile', () => ({
   MobileCheckbox: 'MobileCheckbox',
   MobileAlertBanner: 'MobileAlertBanner',
 }));

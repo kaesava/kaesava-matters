@@ -5,7 +5,7 @@ import {
   TopOutflowPoolDTO,
   MonthlyCashFlowPointDTO,
   EnvelopeType,
-} from "@money-matters/types";
+} from "@kaesava/types";
 import {
   initializeBuckets,
   resolvePointKey,

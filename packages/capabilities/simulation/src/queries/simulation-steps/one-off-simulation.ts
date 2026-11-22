@@ -3,10 +3,10 @@ import type {
   OneOffGoalAlternative,
   ProjectionExpenseEvent,
   ProjectionIncomeEvent,
-} from "@money-matters/types";
-import { getTenantDateString } from "@money-matters/types";
-import { formatDate } from "@money-matters/core";
-import { t } from "@money-matters/i18n";
+} from "@kaesava/types";
+import { getTenantDateString } from "@kaesava/types";
+import { formatDate } from "@kaesava/core";
+import { t } from "@kaesava/i18n";
 import type { OneOffSimulationParams } from "./simulation-types.js";
 
 function fmtMoney(value: number | string, currency: string, locale = "en"): string {

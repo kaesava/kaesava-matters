@@ -2,7 +2,7 @@
 
 import React, { useState } from "react";
 import { FileText, Trash2 } from "lucide-react";
-import { t } from "@money-matters/i18n";
+import { t } from "@kaesava/i18n";
 import { useAppFeatures } from "../../../../hooks/useAppFeatures";
 import { useLocale } from "../../../../providers/LocaleProvider";
 

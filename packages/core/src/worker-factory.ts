@@ -1,4 +1,4 @@
-import { resolveAppConfigOrDefault } from "@money-matters/config";
+import { resolveAppConfigOrDefault } from "@kaesava/config";
 import { logger } from "./logger.js";
 import { CANONICAL_SECURITY_HEADERS, buildCorsHeaders } from "./security-headers.js";
 import { enforceApiRateLimit } from "./rate-limit-middleware.js";

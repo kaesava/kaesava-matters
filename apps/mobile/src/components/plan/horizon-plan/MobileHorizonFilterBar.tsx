@@ -1,6 +1,6 @@
 import { View, Text, TouchableOpacity, ScrollView, StyleSheet } from 'react-native';
-import { DESIGN_TOKENS } from '@money-matters/ui/tokens';
-import { t } from '@money-matters/i18n';
+import { DESIGN_TOKENS } from '@kaesava/ui/tokens';
+import { t } from '@kaesava/i18n';
 
 export interface MobileHorizonFilterBarProps {
   statusFilter: 'ALL' | 'PENDING' | 'CONFIRMED';

@@ -1,7 +1,7 @@
 import React from 'react';
 import { Redirect } from 'expo-router';
 import { View, ActivityIndicator } from 'react-native';
-import { MobileLogo } from '@money-matters/ui/mobile';
+import { MobileLogo } from '@kaesava/ui/mobile';
 import { authClient } from '../lib/auth';
 import { trpc } from '../lib/trpc';
 

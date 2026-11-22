@@ -5,7 +5,7 @@ import {
   incomeSources,
   bankAccounts,
   type DbOrTx,
-} from "@money-matters/db";
+} from "@kaesava/db";
 import { and, eq, sql } from "drizzle-orm";
 import { previewAllocationQuery } from "../queries/preview-allocation.query.js";
 

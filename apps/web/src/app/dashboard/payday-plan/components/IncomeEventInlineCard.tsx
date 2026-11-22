@@ -1,8 +1,8 @@
 "use client";
 
 import { ArrowLeft, Trash2 } from "lucide-react";
-import { t } from "@money-matters/i18n";
-import { AmountField, DatePickerField, FormLabel } from "@money-matters/ui/web";
+import { t } from "@kaesava/i18n";
+import { AmountField, DatePickerField, FormLabel } from "@kaesava/ui/web";
 
 export interface IncomeEventInlineCardProps {
   readonly sourceName: string;

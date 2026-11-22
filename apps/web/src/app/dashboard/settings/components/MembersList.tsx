@@ -1,8 +1,8 @@
 "use client";
 
 import Image from "next/image";
-import { t } from "@money-matters/i18n";
-import { InfoTooltip } from "@money-matters/ui/web";
+import { t } from "@kaesava/i18n";
+import { InfoTooltip } from "@kaesava/ui/web";
 
 export interface HouseholdMemberItem {
   id: string;

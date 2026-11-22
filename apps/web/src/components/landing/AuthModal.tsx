@@ -1,8 +1,8 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { t } from "@money-matters/i18n";
-import { Logo, FormErrorBanner, ModalDialog } from "@money-matters/ui/web";
+import { t } from "@kaesava/i18n";
+import { Logo, FormErrorBanner, ModalDialog } from "@kaesava/ui/web";
 import { SignInForm } from "../auth/SignInForm";
 import { SignUpForm, PendingTenantData } from "../auth/SignUpForm";
 import { SocialAuthButtons } from "../auth/SocialAuthButtons";

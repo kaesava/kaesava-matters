@@ -1,12 +1,12 @@
 import { describe, it, expect, vi } from "vitest";
-import type { DbOrTx } from "@money-matters/db";
+import type { DbOrTx } from "@kaesava/db";
 import {
   registerDeviceTokenHandler,
   removeDeviceTokenHandler,
   createTimezoneAwareNotificationCron,
 } from "./index.js";
 
-vi.mock("@money-matters/db", () => {
+vi.mock("@kaesava/db", () => {
   return {
     deviceTokens: {
       id: "device-tokens-id",

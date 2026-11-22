@@ -1,4 +1,4 @@
-import { expenseEvents, incomeEvents, transferEvents, transactionLedger } from "@money-matters/db";
+import { expenseEvents, incomeEvents, transferEvents, transactionLedger } from "@kaesava/db";
 import type { SeedDb } from "./neon-auth-setup.js";
 
 export async function seedHouseholdEvents(

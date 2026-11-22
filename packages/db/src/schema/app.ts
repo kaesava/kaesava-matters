@@ -1,5 +1,5 @@
 import { pgTable, uuid, varchar, timestamp, jsonb } from "drizzle-orm/pg-core";
-import { type AppFeatureFlags } from "@money-matters/types";
+import { type AppFeatureFlags } from "@kaesava/types";
 
 /**
  * Application registry. Each row represents a distinct product (e.g. Money Matters).

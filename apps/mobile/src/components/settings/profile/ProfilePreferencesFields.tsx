@@ -1,8 +1,8 @@
 import React from 'react';
 import { View, Text, TouchableOpacity, ScrollView, StyleSheet } from 'react-native';
-import { FormLabel, SwitchRow, DESIGN_TOKENS } from '@money-matters/ui/mobile';
-import { t } from '@money-matters/i18n';
-import { COMMON_TIMEZONES } from '@money-matters/types';
+import { FormLabel, SwitchRow, DESIGN_TOKENS } from '@kaesava/ui/mobile';
+import { t } from '@kaesava/i18n';
+import { COMMON_TIMEZONES } from '@kaesava/types';
 
 interface ProfilePreferencesFieldsProps {
   timezone: string;

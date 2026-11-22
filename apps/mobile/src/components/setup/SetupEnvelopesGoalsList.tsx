@@ -1,8 +1,8 @@
 import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
-import { t } from '@money-matters/i18n';
-import { DESIGN_TOKENS, InfoTooltip } from '@money-matters/ui/mobile';
-import { EstimatedCategoryItem, UserGoalItem } from '@money-matters/types';
+import { t } from '@kaesava/i18n';
+import { DESIGN_TOKENS, InfoTooltip } from '@kaesava/ui/mobile';
+import { EstimatedCategoryItem, UserGoalItem } from '@kaesava/types';
 import { formatMobileCurrency, formatDate } from '../../lib/format';
 
 interface SetupEnvelopesGoalsListProps {

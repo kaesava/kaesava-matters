@@ -1,4 +1,4 @@
-import { AppVersionInfo } from "@money-matters/types";
+import { AppVersionInfo } from "@kaesava/types";
 
 const RELEASE_CHANNELS = new Set<AppVersionInfo["channel"]>([
   "development",

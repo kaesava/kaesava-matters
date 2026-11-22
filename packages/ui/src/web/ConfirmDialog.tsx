@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState, useId } from "react";
 import { createPortal } from "react-dom";
-import { t } from "@money-matters/i18n";
+import { t } from "@kaesava/i18n";
 import { Button } from "./Button";
 import { useModalDismiss } from "./modalStack";
 

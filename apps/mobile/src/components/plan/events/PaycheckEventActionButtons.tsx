@@ -1,8 +1,8 @@
 import React from 'react';
 import { Text, TouchableOpacity, StyleSheet } from 'react-native';
 import { Feather } from '@expo/vector-icons';
-import { DESIGN_TOKENS } from '@money-matters/ui/mobile';
-import { t } from '@money-matters/i18n';
+import { DESIGN_TOKENS } from '@kaesava/ui/mobile';
+import { t } from '@kaesava/i18n';
 import type { TimelineEventItem, PaycheckTransferEvent } from '../PaycheckEventSection';
 
 interface PaycheckEventActionButtonsProps {

@@ -1,9 +1,9 @@
 "use client";
 
 import { useState } from "react";
-import { t } from "@money-matters/i18n";
-import { FormErrorBanner, FormLabel } from "@money-matters/ui/web";
-import { InviteAccountStatus } from "@money-matters/types";
+import { t } from "@kaesava/i18n";
+import { FormErrorBanner, FormLabel } from "@kaesava/ui/web";
+import { InviteAccountStatus } from "@kaesava/types";
 import { SocialAuthButtons } from "../../../../components/auth/SocialAuthButtons";
 import { OtpVerificationView } from "../../../../components/auth/OtpVerificationView";
 import { InviteNewUserForm } from "./InviteNewUserForm";

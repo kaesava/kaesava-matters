@@ -2,8 +2,8 @@
 
 import { useState, useId, useRef, useEffect, useMemo } from "react";
 import { Lock, ChevronDown, Search, X, Check } from "lucide-react";
-import { t } from "@money-matters/i18n";
-import { useCurrencyLocale } from "@money-matters/ui/web";
+import { t } from "@kaesava/i18n";
+import { useCurrencyLocale } from "@kaesava/ui/web";
 import {
   PoolOption,
   PoolPickerProps,

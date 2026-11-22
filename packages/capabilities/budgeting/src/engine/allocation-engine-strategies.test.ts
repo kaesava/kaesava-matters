@@ -1,6 +1,6 @@
 import { describe, it, expect } from "vitest";
 import { runAllocationEngine, EngineBucket } from "./allocation-engine.js";
-import { CANONICAL_ALLOCATION_PRESETS } from "@money-matters/types";
+import { CANONICAL_ALLOCATION_PRESETS } from "@kaesava/types";
 
 describe("paycheck cascade allocation engine", () => {
   describe("Household Contribution Modes & Multi-Earner Guardrails", () => {

@@ -1,12 +1,12 @@
 import { useState, useMemo, useEffect } from "react";
 import { useRouter, type Href } from "expo-router";
-import { t } from "@money-matters/i18n";
+import { t } from "@kaesava/i18n";
 import {
   CompleteProfileInputSchema,
   DEFAULT_TIMEZONE,
   detectBestGuessCountry,
   getCountryDefaults,
-} from "@money-matters/types";
+} from "@kaesava/types";
 import { authClient } from "../../lib/auth";
 import { trpc, setActiveTenantId, switchActiveTenant } from "../../lib/trpc";
 

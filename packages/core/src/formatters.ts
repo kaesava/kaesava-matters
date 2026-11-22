@@ -7,7 +7,7 @@ import {
   getTenantDateString,
   toCents,
   toDollars,
-} from "@money-matters/types";
+} from "@kaesava/types";
 
 export {
   DEFAULT_TENANT_FORMATTER,

@@ -1,8 +1,8 @@
 "use client";
 
 import React from "react";
-import { t } from "@money-matters/i18n";
-import { Button, ConfirmDialog } from "@money-matters/ui/web";
+import { t } from "@kaesava/i18n";
+import { Button, ConfirmDialog } from "@kaesava/ui/web";
 import { useSignInMethods } from "./useSignInMethods";
 import { AccountPasswordModal } from "./AccountPasswordModal";
 

@@ -1,8 +1,8 @@
 "use client";
 
-import { HousingType, VehicleConfig, ChildConfig } from "@money-matters/types";
-import { InfoTooltip } from "@money-matters/ui/web";
-import { t } from "@money-matters/i18n";
+import { HousingType, VehicleConfig, ChildConfig } from "@kaesava/types";
+import { InfoTooltip } from "@kaesava/ui/web";
+import { t } from "@kaesava/i18n";
 import { LifestyleHousingTransport } from "./LifestyleHousingTransport";
 import { LifestyleFamilyObligations } from "./LifestyleFamilyObligations";
 import { LifestyleDiscretionarySliders } from "./LifestyleDiscretionarySliders";

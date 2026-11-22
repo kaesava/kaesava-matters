@@ -2,14 +2,14 @@
 
 import { useState, useEffect, useMemo } from "react";
 import { Sparkles, ShieldCheck, Target, Wallet } from "lucide-react";
-import { ModalDialog, AmountField, Button, InfoTooltip } from "@money-matters/ui/web";
+import { ModalDialog, AmountField, Button, InfoTooltip } from "@kaesava/ui/web";
 import {
   EstimatedCategoryItem,
   IncomeItem,
   UserGoalItem,
   simulateSetupPaydaySandbox,
-} from "@money-matters/types";
-import { t } from "@money-matters/i18n";
+} from "@kaesava/types";
+import { t } from "@kaesava/i18n";
 import { useLocale } from "../../../providers/LocaleProvider";
 import { BankAccountRowItem } from "./SetupBankAccountRow";
 

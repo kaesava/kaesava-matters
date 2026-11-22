@@ -9,7 +9,7 @@ import {
 } from "react-native";
 import { useRouter, useLocalSearchParams } from "expo-router";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { t } from "@money-matters/i18n";
+import { t } from "@kaesava/i18n";
 import {
   DESIGN_TOKENS,
   MobileButton,
@@ -17,10 +17,10 @@ import {
   FormLabel,
   FormFieldError,
   FormErrorBanner,  PLATFORM_STYLE,
-} from "@money-matters/ui/mobile";
-import { evaluatePasswordStrength } from "@money-matters/types";
+} from "@kaesava/ui/mobile";
+import { evaluatePasswordStrength } from "@kaesava/types";
 import { authClient } from "../../lib/auth";
-import { MobilePasswordStrength } from "@money-matters/capability-auth/mobile";
+import { MobilePasswordStrength } from "@kaesava/capability-auth/mobile";
 
 export default function ResetPasswordScreen() {
   const insets = useSafeAreaInsets();

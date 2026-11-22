@@ -2,8 +2,8 @@ import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import { useRouter, type Href } from 'expo-router';
 import { Feather } from '@expo/vector-icons';
-import { DESIGN_TOKENS } from '@money-matters/ui/mobile';
-import { t } from '@money-matters/i18n';
+import { DESIGN_TOKENS } from '@kaesava/ui/mobile';
+import { t } from '@kaesava/i18n';
 
 interface SyncBalanceNudgeCardProps {
   onPress?: () => void;

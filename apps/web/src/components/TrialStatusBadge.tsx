@@ -1,7 +1,7 @@
 "use client";
 
 import { useSubscriptionStatus } from "../hooks/useSubscriptionStatus";
-import { t } from "@money-matters/i18n";
+import { t } from "@kaesava/i18n";
 
 export function SidebarTrialNavItem({ collapsed, onNavigate }: { collapsed: boolean; onNavigate?: () => void }) {
   const { status, isLoading } = useSubscriptionStatus();

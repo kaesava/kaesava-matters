@@ -1,8 +1,8 @@
 import { describe, it, expect } from "vitest";
-import type { ScheduleOccurrenceRecord, ScheduleSeriesDefinition } from "@money-matters/types";
+import type { ScheduleOccurrenceRecord, ScheduleSeriesDefinition } from "@kaesava/types";
 import { createSchedulesCapability, type ScheduleStoreAdapter } from "./index.js";
 
-describe("@money-matters/capability-schedules", () => {
+describe("@kaesava/capability-schedules", () => {
   it("bursts quarterly HVAC maintenance jobs for TradieMatters and plans THIS_AND_FOLLOWING edits", async () => {
     const tenantId = "00000000-0000-0000-0000-000000000001";
     const appId = "01908bde-9999-7b19-a178-574211bc93ff";

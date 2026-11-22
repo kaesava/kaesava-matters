@@ -1,10 +1,10 @@
 "use client";
-import { getTenantDateString } from "@money-matters/types";
+import { getTenantDateString } from "@kaesava/types";
 
 
 import { useState, useEffect, useMemo } from "react";
-import { t } from "@money-matters/i18n";
-import { Button, AmountField, DatePickerField, ModalDialog } from "@money-matters/ui/web";
+import { t } from "@kaesava/i18n";
+import { Button, AmountField, DatePickerField, ModalDialog } from "@kaesava/ui/web";
 import { useLocale } from "../../../../providers/LocaleProvider";
 import { MarkPaidShortfallSection } from "./MarkPaidShortfallSection";
 

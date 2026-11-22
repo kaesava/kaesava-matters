@@ -6,8 +6,8 @@ import {
   StyleSheet,
   Share,
 } from 'react-native';
-import { DESIGN_TOKENS, MobileModalDialog, MobileButton, useCurrencyLocale } from '@money-matters/ui/mobile';
-import { t } from '@money-matters/i18n';
+import { DESIGN_TOKENS, MobileModalDialog, MobileButton, useCurrencyLocale } from '@kaesava/ui/mobile';
+import { t } from '@kaesava/i18n';
 import { formatMobileCurrency } from '../lib/format';
 
 export interface CrossBankTransferModalProps {

@@ -1,10 +1,10 @@
-import { envelopes, incomeEvents, incomeSources, expenseEvents, bankAccounts, tenants, allocationPlans, allocationPlanLines, getEnvelopeBalancesMap, DbOrTx } from "@money-matters/db";
+import { envelopes, incomeEvents, incomeSources, expenseEvents, bankAccounts, tenants, allocationPlans, allocationPlanLines, getEnvelopeBalancesMap, DbOrTx } from "@kaesava/db";
 import { eq, and, sql, inArray } from "drizzle-orm";
 import { runAllocationEngine, EngineBucket } from "../engine/allocation-engine.js";
 import { runCumulativeProjection, CumulativeProjectionIncomeEvent } from "../engine/cumulative-projection.js";
 import { parseRruleFrequencyDays } from "../commands/run-allocation.command.js";
-import { getTenantDateString } from "@money-matters/core";
-import { SUPPORTED_CURRENCIES, DEFAULT_TIMEZONE } from "@money-matters/types";
+import { getTenantDateString } from "@kaesava/core";
+import { SUPPORTED_CURRENCIES, DEFAULT_TIMEZONE } from "@kaesava/types";
 
 export async function previewAllocationQuery(
   tenantId: string,

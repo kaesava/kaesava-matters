@@ -2,8 +2,8 @@ import React, { useState, useEffect, useRef } from 'react';
 import { Text, View, StyleSheet } from 'react-native';
 import * as SecureStore from 'expo-secure-store';
 import { usePostHog } from 'posthog-react-native';
-import { MobileModalDialog, MobileButton, DESIGN_TOKENS } from '@money-matters/ui/mobile';
-import { t } from '@money-matters/i18n';
+import { MobileModalDialog, MobileButton, DESIGN_TOKENS } from '@kaesava/ui/mobile';
+import { t } from '@kaesava/i18n';
 import { authClient } from '../lib/auth';
 import { trpc } from '../lib/trpc';
 

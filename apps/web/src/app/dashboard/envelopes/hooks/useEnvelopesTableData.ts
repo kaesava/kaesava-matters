@@ -1,10 +1,10 @@
 "use client";
-import { getTenantDateString } from "@money-matters/types";
+import { getTenantDateString } from "@kaesava/types";
 
 
 import { useState, useMemo, useEffect } from "react";
-import { t } from "@money-matters/i18n";
-import { computeEnvelopeStatus, type EnvelopeStatusResult } from "@money-matters/types";
+import { t } from "@kaesava/i18n";
+import { computeEnvelopeStatus, type EnvelopeStatusResult } from "@kaesava/types";
 import type { EnvelopeSummaryItem, PoolTableRow, EnvelopeType, FundingMode } from "../types";
 
 export type PoolTypeFilter = "ALL" | "EVERYDAY" | "BILL" | "GOAL";

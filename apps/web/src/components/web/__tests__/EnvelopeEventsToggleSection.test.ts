@@ -3,7 +3,7 @@ import {
   EnvelopeEventsToggleSection,
   shouldShowPastStartDateWarning,
 } from '../EnvelopeEventsToggleSection';
-import { t } from '@money-matters/i18n';
+import { t } from '@kaesava/i18n';
 
 describe('EnvelopeEventsToggleSection (Web)', () => {
   it('is exported and defined', () => {

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { View, StyleSheet } from 'react-native';
-import { DESIGN_TOKENS } from '@money-matters/ui/mobile';
+import { DESIGN_TOKENS } from '@kaesava/ui/mobile';
 import { PaydayEnvelopeGroupHeader } from './payday-envelope/PaydayEnvelopeGroupHeader';
 import { PaydayEnvelopeRow } from './payday-envelope/PaydayEnvelopeRow';
 

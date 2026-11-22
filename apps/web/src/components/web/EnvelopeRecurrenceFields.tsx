@@ -1,5 +1,5 @@
-import { AmountField, GenericSelectField, DatePickerField, FormLabel, useCurrencyLocale } from '@money-matters/ui/web';
-import { t } from '@money-matters/i18n';
+import { AmountField, GenericSelectField, DatePickerField, FormLabel, useCurrencyLocale } from '@kaesava/ui/web';
+import { t } from '@kaesava/i18n';
 
 export interface EnvelopeRecurrenceFieldsProps {
   amountLabel: string;

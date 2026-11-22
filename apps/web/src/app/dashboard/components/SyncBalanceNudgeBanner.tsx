@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { RefreshCw, ArrowRight, X } from 'lucide-react';
-import { t } from '@money-matters/i18n';
+import { t } from '@kaesava/i18n';
 
 export interface SyncBalanceNudgeBannerProps {
   readonly onOpenMatch?: () => void;

@@ -13,9 +13,9 @@ import {
   SearchTransactionsQuery,
   ListEnvelopeTransactionsQuery,
   GetSpendingAnalyticsQuery,
-} from "@money-matters/types";
-import { resolveEffectiveAppFlags } from "@money-matters/config";
-import { apps } from "@money-matters/db";
+} from "@kaesava/types";
+import { resolveEffectiveAppFlags } from "@kaesava/config";
+import { apps } from "@kaesava/db";
 import { eq } from "drizzle-orm";
 import { TRPCError } from "@trpc/server";
 

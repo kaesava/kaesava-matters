@@ -1,8 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import { RecordFilterBadge } from "@money-matters/ui/web";
-import type { QuickActionInitialData } from "@money-matters/types";
+import { RecordFilterBadge } from "@kaesava/ui/web";
+import type { QuickActionInitialData } from "@kaesava/types";
 import { QuickActionDrawer } from "../../../../components/web/QuickExpenseDrawer";
 import { TimelineEventItem } from "./timeline/types";
 import { useUpcomingTimelineData } from "./timeline/useUpcomingTimelineData";

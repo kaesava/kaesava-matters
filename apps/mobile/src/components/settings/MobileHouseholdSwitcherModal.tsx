@@ -1,8 +1,8 @@
 import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, ActivityIndicator } from 'react-native';
 import { Feather } from '@expo/vector-icons';
-import { t } from '@money-matters/i18n';
-import { MobileModalDialog, useMobileToast, DESIGN_TOKENS } from '@money-matters/ui/mobile';
+import { t } from '@kaesava/i18n';
+import { MobileModalDialog, useMobileToast, DESIGN_TOKENS } from '@kaesava/ui/mobile';
 import { trpc, switchActiveTenant } from '../../lib/trpc';
 
 interface MobileHouseholdSwitcherModalProps {

@@ -1,4 +1,4 @@
-import { allocationPlans, allocationPlanLines, type DbOrTx } from "@money-matters/db";
+import { allocationPlans, allocationPlanLines, type DbOrTx } from "@kaesava/db";
 import { and, eq, inArray, sql } from "drizzle-orm";
 
 /**

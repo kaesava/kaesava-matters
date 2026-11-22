@@ -2,7 +2,7 @@
 
 import React from "react";
 import Link from "next/link";
-import { t } from "@money-matters/i18n";
+import { t } from "@kaesava/i18n";
 import {
   Button,
   FormLabel,
@@ -10,11 +10,11 @@ import {
   FormErrorBanner,
   OtpInput,
   Spinner,
-} from "@money-matters/ui/web";
-import { isValidEmail } from "@money-matters/types";
+} from "@kaesava/ui/web";
+import { isValidEmail } from "@kaesava/types";
 import { PublicHeader } from "../../components/public/PublicHeader";
 import { PublicFooter } from "../../components/public/PublicFooter";
-import { PasswordStrengthIndicator } from "@money-matters/capability-auth/web";
+import { PasswordStrengthIndicator } from "@kaesava/capability-auth/web";
 import { useForgotPassword } from "./useForgotPassword";
 
 export default function ForgotPasswordPage() {

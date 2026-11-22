@@ -1,10 +1,10 @@
 import { tenantProcedure, authenticatedProcedure, privateOwnerProcedure, publicProcedure, privateTenantProcedure, requiresWriteAccess } from '../../trpc/trpc.js';
 import { MONEY_MATTERS_APP_ID, clearEdgeContextCache } from '../../trpc/edge-context.js';
-import { db, tenants, tenantUsers, earlyAccessSubscribers, apps } from "@money-matters/db";
+import { db, tenants, tenantUsers, earlyAccessSubscribers, apps } from "@kaesava/db";
 import { and, eq, sql, asc, isNull } from "drizzle-orm";
 import { inngest } from '../../inngest/client.js';
-import { createTenantHandler, cancelSetupHandler, getTenantHandler, exportDataHandler, deleteMyAccountHandler } from "@money-matters/capability-tenant";
-import { checkEmailAuthProviderHandler, getAuthMethodsHandler, setAccountPasswordHandler } from "@money-matters/capability-auth";
+import { createTenantHandler, cancelSetupHandler, getTenantHandler, exportDataHandler, deleteMyAccountHandler } from "@kaesava/capability-tenant";
+import { checkEmailAuthProviderHandler, getAuthMethodsHandler, setAccountPasswordHandler } from "@kaesava/capability-auth";
 import {
   createMoneyMattersTenantLifecycleHooks,
   createMoneyMattersExportContributor,
@@ -14,10 +14,10 @@ import {
   CheckEmailAuthProviderInputSchema,
   SetAccountPasswordInputSchema,
   DEFAULT_APP_FEATURE_FLAGS,
-} from "@money-matters/types";
-import { resolveEffectiveAppFlags } from "@money-matters/config";
+} from "@kaesava/types";
+import { resolveEffectiveAppFlags } from "@kaesava/config";
 import { hashPassword } from "better-auth/crypto";
-import { checkRateLimit, deleteFileFromBucket, getPresignedDownloadUrl } from "@money-matters/core";
+import { checkRateLimit, deleteFileFromBucket, getPresignedDownloadUrl } from "@kaesava/core";
 import { TRPCError } from '@trpc/server';
 import { z } from 'zod';
 import { captureIfConsented, identifyIfConsented } from '../../lib/posthog.js';

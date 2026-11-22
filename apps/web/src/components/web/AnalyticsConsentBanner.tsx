@@ -2,8 +2,8 @@
 
 import { useState, useEffect, useRef } from 'react';
 import posthog from '../../lib/posthog-client';
-import { Button } from '@money-matters/ui/web';
-import { t } from '@money-matters/i18n';
+import { Button } from '@kaesava/ui/web';
+import { t } from '@kaesava/i18n';
 import { authClient } from '../../lib/auth';
 import { trpc } from '../../lib/trpc';
 

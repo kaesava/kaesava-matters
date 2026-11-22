@@ -1,4 +1,4 @@
-import { DEFAULT_LOCALE, getCachedDateFormat } from "@money-matters/types";
+import { DEFAULT_LOCALE, getCachedDateFormat } from "@kaesava/types";
 export function formatDateShort(
   dateStr?: string,
   fallbackLabel?: string,

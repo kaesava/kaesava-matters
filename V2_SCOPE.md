@@ -9,7 +9,7 @@
 
 | Feature | Reason deferred | Design consideration |
 |---|---|---|
-| **Partner invite / household member invite** | **DELIVERED** | Implemented via `invitePartner` and `acceptInvite` commands in `@money-matters/capability-tenant` with auto-redirect |
+| **Partner invite / household member invite** | **DELIVERED** | Implemented via `invitePartner` and `acceptInvite` commands in `@kaesava/capability-tenant` with auto-redirect |
 | **Tenant Switcher** | **DELIVERED** | Sidebar component allowing users to switch between multiple household contexts seamlessly |
 | **Apple Sign-In** | Deferred to Release 2 | Social authentication via Apple ID deferred to Release 2; complete Web and Mobile components, SVGs, and styles archived in `FEAT-V2-009-APPLE-AUTHENTICATION` |
 | **5-step waterfall logic details** | **DELIVERED** | Fully implemented in cascading steps: Deficit Repair, Bills, Everyday, Goals, Surplus Sweep |
@@ -157,8 +157,8 @@ The following types were defined for V2 offline/sync or alternative pathways:
 
 ## V1 Active Capabilities (Previously Deferred, Now Live)
 
-- **In-App Bug Reports (`bug_reports` + `@money-matters/capability-bug-reports` + `trpc.submitFeedback`)**: Live in V1 with PostgreSQL `FORCE ROW LEVEL SECURITY` (`0058`).
-- **File Notes & Attachments (`file_notes` + `@money-matters/capability-file-notes` + `trpc.fileNotes.*`)**: Live in V1 with PostgreSQL `FORCE ROW LEVEL SECURITY` (`0058`) and parent-entity stealth privacy enforcement.
+- **In-App Bug Reports (`bug_reports` + `@kaesava/capability-bug-reports` + `trpc.submitFeedback`)**: Live in V1 with PostgreSQL `FORCE ROW LEVEL SECURITY` (`0058`).
+- **File Notes & Attachments (`file_notes` + `@kaesava/capability-file-notes` + `trpc.fileNotes.*`)**: Live in V1 with PostgreSQL `FORCE ROW LEVEL SECURITY` (`0058`) and parent-entity stealth privacy enforcement.
 
 ---
 
@@ -468,7 +468,7 @@ In Release 2, Japanese support will be officially reintroduced to support Japane
 3. **User Preferences UI & API**:
    - **Web App**: Re-enable `<option value="ja">日本語 (ja)</option>` in `ProfilePreferencesFields.tsx` and dynamic language state in `ProfileReadOnlyView.tsx` / `useProfileForm.ts`.
    - **Mobile App**: Re-enable the Japanese chip (`日本語 (ja)`) in `MobileProfileEditView.tsx` and the `JA` toggle in `PreferencesSection.tsx`.
-   - **API & Schemas**: Re-enable `z.enum(["en", "ja"])` in `UserPreferencesSchema` (`@money-matters/types`) and `tenantRouter.updateUserPreferences` (`apps/api`).
+   - **API & Schemas**: Re-enable `z.enum(["en", "ja"])` in `UserPreferencesSchema` (`@kaesava/types`) and `tenantRouter.updateUserPreferences` (`apps/api`).
 
 ---
 

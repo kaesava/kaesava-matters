@@ -1,6 +1,6 @@
 import { useState, useEffect, useMemo } from 'react';
 import { formatIsoDate } from '../../lib/format';
-import { useRecurrenceBuilder } from "@money-matters/capability-schedules/mobile";
+import { useRecurrenceBuilder } from "@kaesava/capability-schedules/mobile";
 import { SourceToEdit } from '../IncomeExpenseFormModal';
 
 export function parseSourceRecurrence(source?: SourceToEdit | null) {

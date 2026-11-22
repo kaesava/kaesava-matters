@@ -10,7 +10,7 @@
  * - Provides clear Start Advice when ongoing recurring commitments fit the budget but Day-1 cash is tight
  *
  * Architecture note: Fully decoupled pure-computation layer with zero DB writes,
- * relying solely on @money-matters/types, @money-matters/core, and @money-matters/db.
+ * relying solely on @kaesava/types, @kaesava/core, and @kaesava/db.
  */
 import {
   envelopes,
@@ -22,14 +22,14 @@ import {
   userPreferences,
   getEnvelopeBalancesMap,
   type DbOrTx,
-} from "@money-matters/db";
+} from "@kaesava/db";
 import { eq, and, sql } from "drizzle-orm";
 import type {
   CanAffordVerdictType,
   ProjectionEngineFn,
   ProjectionEngineBucket,
-} from "@money-matters/types";
-import { getTenantDateString, getLocaleFromCountry } from "@money-matters/core";
+} from "@kaesava/types";
+import { getTenantDateString, getLocaleFromCountry } from "@kaesava/core";
 import { simulateRecurringCommitment } from "./simulation-steps/recurring-simulation.js";
 import { simulateOneOffPurchase } from "./simulation-steps/one-off-simulation.js";
 

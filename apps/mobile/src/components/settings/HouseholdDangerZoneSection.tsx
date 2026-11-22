@@ -6,9 +6,9 @@ import {
 } from 'react-native';
 import { useRouter, type Href } from 'expo-router';
 import { Feather } from '@expo/vector-icons';
-import { useMobileToast, MobileButton, TypedConfirmDialog, DESIGN_TOKENS } from '@money-matters/ui/mobile';
+import { useMobileToast, MobileButton, TypedConfirmDialog, DESIGN_TOKENS } from '@kaesava/ui/mobile';
 import { usePostHog } from 'posthog-react-native';
-import { t } from '@money-matters/i18n';
+import { t } from '@kaesava/i18n';
 import * as SecureStore from 'expo-secure-store';
 import { trpc, setActiveSessionToken, setActiveTenantId } from '../../lib/trpc';
 import { authClient } from '../../lib/auth';

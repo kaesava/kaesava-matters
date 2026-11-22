@@ -1,9 +1,9 @@
 "use client";
 
 import React, { useState } from "react";
-import { t } from "@money-matters/i18n";
-import { EstimatedCategoryItem } from "@money-matters/types";
-import { InfoTooltip, Button } from "@money-matters/ui/web";
+import { t } from "@kaesava/i18n";
+import { EstimatedCategoryItem } from "@kaesava/types";
+import { InfoTooltip, Button } from "@kaesava/ui/web";
 import { useLocale } from "../../../providers/LocaleProvider";
 import { UserGoalItem } from "./SetupGoalsStep";
 import { SetupReviewSummaryCards } from "./SetupReviewSummaryCards";

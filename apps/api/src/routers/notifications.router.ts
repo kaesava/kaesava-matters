@@ -1,7 +1,7 @@
 import { tenantProcedure, requiresWriteAccess } from '../trpc/trpc.js';
-import { notificationsProcedures } from "@money-matters/capability-notifications/router";
-import { sendNotificationEmail } from "@money-matters/core";
-import { resolveAppConfigOrDefault } from "@money-matters/config";
+import { notificationsProcedures } from "@kaesava/capability-notifications/router";
+import { sendNotificationEmail } from "@kaesava/core";
+import { resolveAppConfigOrDefault } from "@kaesava/config";
 import { inngest } from "../inngest/client.js";
 
 export const notificationsRouter = {

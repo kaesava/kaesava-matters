@@ -1,12 +1,12 @@
 "use client";
 
 import React, { useState } from "react";
-import { t } from "@money-matters/i18n";
+import { t } from "@kaesava/i18n";
 import { trpc } from "../../../../lib/trpc";
 import { useSubscriptionStatus } from "../../../../hooks/useSubscriptionStatus";
 import { useAppFeatures } from "../../../../hooks/useAppFeatures";
-import { useToast, ConfirmDialog } from "@money-matters/ui/web";
-import { TypedConfirmDialog } from "@money-matters/ui/web";
+import { useToast, ConfirmDialog } from "@kaesava/ui/web";
+import { TypedConfirmDialog } from "@kaesava/ui/web";
 import { MembersList, type HouseholdMemberItem } from "./MembersList";
 import { InviteMemberCard } from "./InviteMemberCard";
 

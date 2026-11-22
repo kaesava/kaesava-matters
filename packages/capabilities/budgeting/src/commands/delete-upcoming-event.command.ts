@@ -1,7 +1,7 @@
-import { incomeEvents, expenseEvents, DbOrTx } from "@money-matters/db";
+import { incomeEvents, expenseEvents, DbOrTx } from "@kaesava/db";
 import { and, eq } from "drizzle-orm";
 import { z } from "zod";
-import { DeleteUpcomingEventCommand } from "@money-matters/types";
+import { DeleteUpcomingEventCommand } from "@kaesava/types";
 import { archivePendingPlansForIncomeEvent } from "./archive-pending-plans.helper.js";
 
 export async function deleteUpcomingEventCommand(

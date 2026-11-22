@@ -1,7 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { t } from "@money-matters/i18n";
+import { t } from "@kaesava/i18n";
 import { formatDateShort } from "./formatDateShort";
 
 export interface MatrixColumnItem {

@@ -1,4 +1,4 @@
-import type { DbOrTx } from "@money-matters/db";
+import type { DbOrTx } from "@kaesava/db";
 import { describe, it, expect, vi } from "vitest";
 import { resetAllocationPlanCommand } from "./reset-allocation-plan.command.js";
 

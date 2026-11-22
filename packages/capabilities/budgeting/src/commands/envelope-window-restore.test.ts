@@ -1,8 +1,8 @@
 import { describe, it, expect, vi } from "vitest";
 import { maintainRollingWindowCommand } from "./maintain-rolling-window.command.js";
 import { restoreItemCommand } from "./restore-item.command.js";
-import { envelopes, incomeSources, tenants } from "@money-matters/db";
-import type { DbOrTx } from "@money-matters/db";
+import { envelopes, incomeSources, tenants } from "@kaesava/db";
+import type { DbOrTx } from "@kaesava/db";
 
 describe("Envelope Lifecycle & Event Sync", () => {
   const tenantId = "00000000-0000-0000-0000-000000000001";

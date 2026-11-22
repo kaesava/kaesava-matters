@@ -1,5 +1,5 @@
 import { privateTenantProcedure, requiresWriteAccess } from '../../trpc/trpc.js';
-import { incomeEvents, incomeSources, bankAccounts, apps } from "@money-matters/db";
+import { incomeEvents, incomeSources, bankAccounts, apps } from "@kaesava/db";
 import { and, eq, sql } from "drizzle-orm";
 import { captureIfConsented } from '../../lib/posthog.js';
 import {
@@ -12,8 +12,8 @@ import {
 import {
   ConfirmPaydayCommand,
   GetPaydayPlanAnalyticsQuerySchema,
-} from "@money-matters/types";
-import { resolveEffectiveAppFlags } from "@money-matters/config";
+} from "@kaesava/types";
+import { resolveEffectiveAppFlags } from "@kaesava/config";
 import { TRPCError } from '@trpc/server';
 import { z } from 'zod';
 

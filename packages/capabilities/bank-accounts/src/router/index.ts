@@ -2,7 +2,7 @@ import {
   createBankAccountHandler,
   updateBankAccountHandler,
   archiveBankAccountHandler,
-  listBankAccountsHandler,
+  listBankAccountsWithExpectedHandler,
   syncBankBalanceHandler,
 } from "../index";
 
@@ -10,6 +10,6 @@ export const bankAccountsProcedures = {
   create: { execute: createBankAccountHandler },
   update: { execute: updateBankAccountHandler },
   archive: { execute: archiveBankAccountHandler },
-  list: { execute: listBankAccountsHandler },
+  list: { execute: listBankAccountsWithExpectedHandler },
   syncBalance: { execute: syncBankBalanceHandler },
 } as const;

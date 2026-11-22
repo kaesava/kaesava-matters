@@ -1,9 +1,9 @@
 import { useState, useEffect, useRef } from "react";
-import { t } from "@money-matters/i18n";
+import { t } from "@kaesava/i18n";
 import { trpc } from "../../../../lib/trpc";
 import { authClient } from "../../../../lib/auth";
-import { validateMobileNumber, useToast } from "@money-matters/ui/web";
-import { useIconVisibility } from "@money-matters/ui";
+import { validateMobileNumber, useToast } from "@kaesava/ui/web";
+import { useIconVisibility } from "@kaesava/ui";
 
 export interface ProfileFormData {
   displayName: string;

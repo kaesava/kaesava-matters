@@ -1,5 +1,5 @@
-import { DbOrTx, tenants } from "@money-matters/db/rings/platform";
-import { resolveAppConfigOrDefault } from "@money-matters/config";
+import { DbOrTx, tenants } from "@kaesava/db/rings/platform";
+import { resolveAppConfigOrDefault } from "@kaesava/config";
 import { eq } from "drizzle-orm";
 
 /**

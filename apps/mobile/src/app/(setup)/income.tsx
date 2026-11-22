@@ -9,7 +9,7 @@ import {
 } from 'react-native';
 import { useRouter } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { t } from '@money-matters/i18n';
+import { t } from '@kaesava/i18n';
 import {
   DESIGN_TOKENS,
   InfoTooltip,
@@ -18,9 +18,9 @@ import {
   showMobileConfirm,
   SkeletonCard,
   MobileInput,
-} from '@money-matters/ui/mobile';
+} from '@kaesava/ui/mobile';
 import { useSetupWizard } from '../../context/SetupWizardContext';
-import { IncomeItem } from '@money-matters/types';
+import { IncomeItem } from '@kaesava/types';
 import { getMobileLocaleConfig } from '../../lib/format';
 import { SetupProgressBar } from '../../components/setup/SetupProgressBar';
 

@@ -2,8 +2,8 @@ import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import { useRouter } from 'expo-router';
 import { Feather } from '@expo/vector-icons';
-import { t } from '@money-matters/i18n';
-import { DESIGN_TOKENS, MobileButton } from '@money-matters/ui/mobile';
+import { t } from '@kaesava/i18n';
+import { DESIGN_TOKENS, MobileButton } from '@kaesava/ui/mobile';
 
 export default function NotFoundScreen() {
   const router = useRouter();

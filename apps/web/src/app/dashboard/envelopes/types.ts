@@ -1,4 +1,4 @@
-import { EnvelopeType, FundingMode } from "@money-matters/types";
+import { EnvelopeType, FundingMode } from "@kaesava/types";
 
 export type { EnvelopeType, FundingMode };
 

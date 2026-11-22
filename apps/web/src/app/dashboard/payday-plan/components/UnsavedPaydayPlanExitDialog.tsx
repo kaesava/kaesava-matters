@@ -1,7 +1,7 @@
 "use client";
 
-import { t } from "@money-matters/i18n";
-import { ConfirmDialog } from "@money-matters/ui/web";
+import { t } from "@kaesava/i18n";
+import { ConfirmDialog } from "@kaesava/ui/web";
 
 export interface UnsavedPaydayPlanExitDialogProps {
   isOpen: boolean;

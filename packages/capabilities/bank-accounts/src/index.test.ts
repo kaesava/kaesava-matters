@@ -1,12 +1,12 @@
 import { describe, it, expect, vi } from "vitest";
-import type { DbOrTx } from "@money-matters/db";
+import type { DbOrTx } from "@kaesava/db";
 import {
   createBankAccountHandler,
   archiveBankAccountHandler,
   getBankAccountsWithMappingsHandler,
 } from "./index.js";
 
-describe("@money-matters/capability-bank-accounts", () => {
+describe("@kaesava/capability-bank-accounts", () => {
   const tenantId = "22222222-2222-4222-8222-222222222222";
   const appId = "01908bde-34bb-7b19-a178-574211bc93aa";
   const userId = "11111111-1111-4111-8111-111111111111";

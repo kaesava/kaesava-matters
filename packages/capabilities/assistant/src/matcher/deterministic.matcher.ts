@@ -1,4 +1,4 @@
-import type { AssistantClassifiedIntent } from "@money-matters/types";
+import type { AssistantClassifiedIntent } from "@kaesava/types";
 import { parseAmount } from "./amount.parser.js";
 import { parseDate } from "./date.parser.js";
 

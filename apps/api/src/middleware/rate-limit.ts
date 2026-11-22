@@ -1,1 +1,1 @@
-export { enforceApiRateLimit } from "@money-matters/core";
+export { enforceApiRateLimit } from "@kaesava/core";

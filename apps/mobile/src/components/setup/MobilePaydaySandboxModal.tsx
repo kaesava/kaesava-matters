@@ -1,13 +1,13 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { View, Text, StyleSheet } from 'react-native';
-import { DESIGN_TOKENS, MobileModalDialog, AmountInput, MobileButton, InfoTooltip } from '@money-matters/ui/mobile';
+import { DESIGN_TOKENS, MobileModalDialog, AmountInput, MobileButton, InfoTooltip } from '@kaesava/ui/mobile';
 import {
   EstimatedCategoryItem,
   IncomeItem,
   UserGoalItem,
   simulateSetupPaydaySandbox,
-} from '@money-matters/types';
-import { t } from '@money-matters/i18n';
+} from '@kaesava/types';
+import { t } from '@kaesava/i18n';
 import { formatMobileCurrency } from '../../lib/format';
 import { MobileBankAccountItem } from '../../context/setup-wizard-types';
 

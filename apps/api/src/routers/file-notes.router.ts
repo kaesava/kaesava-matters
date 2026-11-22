@@ -1,5 +1,5 @@
 import { router, privateTenantProcedure } from "../trpc/trpc.js";
-import { fileNotesProcedures } from "@money-matters/capability-file-notes/router";
+import { fileNotesProcedures } from "@kaesava/capability-file-notes/router";
 import { moneyMattersFileNotePrivacyResolvers } from "@money-matters/capability-budgeting";
 
 export const fileNotesRouter = router({

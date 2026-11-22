@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, Text, TouchableOpacity, ActivityIndicator, StyleSheet } from 'react-native';
-import { DESIGN_TOKENS } from '@money-matters/ui/mobile';
-import { t, ARCHIVED_ITEM_TYPE_KEYS } from '@money-matters/i18n';
+import { DESIGN_TOKENS } from '@kaesava/ui/mobile';
+import { t, ARCHIVED_ITEM_TYPE_KEYS } from '@kaesava/i18n';
 import { formatDate } from '../../../lib/format';
 
 export type RestorableItemType =

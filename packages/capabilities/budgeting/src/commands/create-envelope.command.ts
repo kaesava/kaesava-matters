@@ -1,7 +1,7 @@
-import { envelopes, bankAccounts, tenants, DbOrTx } from "@money-matters/db";
+import { envelopes, bankAccounts, tenants, DbOrTx } from "@kaesava/db";
 import { eq, and } from "drizzle-orm";
 import { z } from "zod";
-import { CreateEnvelopeCommand, DEFAULT_TIMEZONE } from "@money-matters/types";
+import { CreateEnvelopeCommand, DEFAULT_TIMEZONE } from "@kaesava/types";
 import { deriveRruleFromFrequency, computeDefaultStartDate, burstEnvelopeEvents } from "./envelope-schedule.js";
 
 export async function createEnvelopeCommand(

@@ -6,7 +6,7 @@ import { StatusBar } from 'expo-status-bar';
 import * as NavigationBar from 'expo-navigation-bar';
 import { initPushNotificationHandlers } from '../lib/push';
 import { AppProviders } from '../providers/AppProviders';
-import { DESIGN_TOKENS } from '@money-matters/ui/mobile';
+import { DESIGN_TOKENS } from '@kaesava/ui/mobile';
 import { logger } from '../lib/logger';
 import { posthog } from '../config/posthog';
 import {

@@ -1,8 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import { t } from "@money-matters/i18n";
-import { Logo, Button } from "@money-matters/ui/web";
+import { t } from "@kaesava/i18n";
+import { Logo, Button } from "@kaesava/ui/web";
 import { authClient } from "../lib/auth";
 
 export default function NotFoundPage() {

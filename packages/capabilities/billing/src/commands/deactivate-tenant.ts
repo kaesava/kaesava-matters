@@ -2,7 +2,7 @@
  * Deactivates or sets subscription status to PAST_DUE / DEACTIVATED upon Stripe payment failure.
  */
 import { eq } from "drizzle-orm";
-import { tenants, type DbOrTx } from "@money-matters/db/rings/capabilities";
+import { tenants, type DbOrTx } from "@kaesava/db/rings/capabilities";
 
 export async function deactivateTenantCommand(
   db: DbOrTx,

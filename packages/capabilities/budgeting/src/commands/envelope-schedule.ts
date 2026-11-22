@@ -1,7 +1,7 @@
-import { DEFAULT_TIMEZONE } from "@money-matters/types";
-import { expenseEvents, envelopes, DbOrTx } from "@money-matters/db";
+import { DEFAULT_TIMEZONE } from "@kaesava/types";
+import { expenseEvents, envelopes, DbOrTx } from "@kaesava/db";
 import { and, eq } from "drizzle-orm";
-import { getTenantDateString } from "@money-matters/core";
+import { getTenantDateString } from "@kaesava/core";
 import { generateBurstDates } from "../engine/burst-engine.js";
 
 export function deriveRruleFromFrequency(freq?: string | null): string {

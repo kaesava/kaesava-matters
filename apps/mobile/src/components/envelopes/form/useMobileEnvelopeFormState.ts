@@ -1,6 +1,6 @@
 import { getTenantDateString } from "../../../lib/format";
 import { useState, useEffect, useMemo } from "react";
-import { parseRecurrenceRule, buildRecurrenceRule, RecurrenceFrequency } from "@money-matters/capability-schedules/mobile";
+import { parseRecurrenceRule, buildRecurrenceRule, RecurrenceFrequency } from "@kaesava/capability-schedules/mobile";
 import { formatIsoDate } from "../../../lib/format";
 import type { EnvelopeItem } from "../../EnvelopeFormModal";
 

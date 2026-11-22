@@ -4,15 +4,15 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { trpc } from "../../../lib/trpc";
 import posthog from "../../../lib/posthog-client";
-import { useToast, useCurrencyLocale } from "@money-matters/ui/web";
-import { buildRecurrenceRule } from "@money-matters/capability-schedules/web";
-import { t } from "@money-matters/i18n";
+import { useToast, useCurrencyLocale } from "@kaesava/ui/web";
+import { buildRecurrenceRule } from "@kaesava/capability-schedules/web";
+import { t } from "@kaesava/i18n";
 import {
   IncomeItem,
   EstimatedCategoryItem,
   AccountType,
   resolveDefaultSetupBankAccountId,
-} from "@money-matters/types";
+} from "@kaesava/types";
 import { UserGoalItem } from "../components/SetupGoalsStep";
 import { BankAccountRowItem } from "../components/SetupBankAccountRow";
 

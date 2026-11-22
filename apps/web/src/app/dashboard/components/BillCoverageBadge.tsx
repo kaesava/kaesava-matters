@@ -1,6 +1,6 @@
-import { t } from '@money-matters/i18n';
-import { Badge, useCurrencyLocale } from '@money-matters/ui/web';
-import { formatCurrency } from '@money-matters/ui/format';
+import { t } from '@kaesava/i18n';
+import { Badge, useCurrencyLocale } from '@kaesava/ui/web';
+import { formatCurrency } from '@kaesava/ui/format';
 
 export interface BillCoverageBadgeProps {
   status: 'COVERED' | 'SHORT_BY' | 'NO_SCHEDULE';

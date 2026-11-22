@@ -1,9 +1,9 @@
 import React, { useState, useMemo } from 'react';
 import { View, StyleSheet } from 'react-native';
-import { SegmentedTabs, MobileFilterSheet } from "@money-matters/ui/mobile";
-import { MobileBankPicker } from "@money-matters/capability-bank-accounts/mobile";
+import { SegmentedTabs, MobileFilterSheet } from "@kaesava/ui/mobile";
+import { MobileBankPicker } from "@kaesava/capability-bank-accounts/mobile";
 import { MobileEnvelopePicker } from "@money-matters/capability-budgeting/mobile";
-import { t } from '@money-matters/i18n';
+import { t } from '@kaesava/i18n';
 import { SourceToEdit } from '../IncomeExpenseFormModal';
 import { useRecurringSchedules } from './useRecurringSchedules';
 import { RecurringSchedulesCards } from './RecurringSchedulesCards';

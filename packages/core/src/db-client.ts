@@ -1,7 +1,7 @@
 import { Pool } from "@neondatabase/serverless";
 import { drizzle } from "drizzle-orm/neon-serverless";
-import * as defaultSchema from "@money-matters/db";
-import type { DbClient } from "@money-matters/db";
+import * as defaultSchema from "@kaesava/db";
+import type { DbClient } from "@kaesava/db";
 
 export function createDbClient<TSchema extends Record<string, unknown>>(
   connectionString: string | undefined,

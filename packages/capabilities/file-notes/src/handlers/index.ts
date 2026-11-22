@@ -1,7 +1,7 @@
-import { CapabilityError, getPresignedUploadUrl, getPresignedDownloadUrl } from "@money-matters/core";
+import { CapabilityError, getPresignedUploadUrl, getPresignedDownloadUrl } from "@kaesava/core";
 import { eq, and, or, isNull, isNotNull, desc, sql } from "drizzle-orm";
-import { fileNotes, users, apps, type DbOrTx } from "@money-matters/db/rings/capabilities";
-import { resolveEffectiveAppFlags } from "@money-matters/config";
+import { fileNotes, users, apps, type DbOrTx } from "@kaesava/db/rings/capabilities";
+import { resolveEffectiveAppFlags } from "@kaesava/config";
 import {
   CreatePreSignedUrlInput,
   CreateFileNoteInput,
@@ -13,7 +13,7 @@ import {
   type AppFeatureFlags,
   type EntityPrivacyResolverMap,
   type EntityPrivacyResolution,
-} from "@money-matters/types";
+} from "@kaesava/types";
 
 function privacyFilter(userId: string) {
   return or(eq(fileNotes.isPrivate, false), eq(fileNotes.userId, userId));

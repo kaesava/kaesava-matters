@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Text, TouchableOpacity, StyleSheet } from 'react-native';
 import { Feather } from '@expo/vector-icons';
 import { useIconVisibility } from '../hooks/IconVisibilityContext';
-import { t } from '@money-matters/i18n';
+import { t } from '@kaesava/i18n';
 import { DESIGN_TOKENS } from '../tokens';
 import MobileModalDialog from './MobileModalDialog';
 import MobileButton from './Button';

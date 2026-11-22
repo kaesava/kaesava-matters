@@ -1,5 +1,5 @@
-import { isFeatureEnabled } from "@money-matters/config";
-import type { AssistantResult, AssistantClassifiedIntent } from "@money-matters/types";
+import { isFeatureEnabled } from "@kaesava/config";
+import type { AssistantResult, AssistantClassifiedIntent } from "@kaesava/types";
 import { matchDeterministicIntent } from "../matcher/deterministic.matcher.js";
 import type {
   IntentHandlerPort,

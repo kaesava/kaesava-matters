@@ -2,7 +2,7 @@ import { inngest } from "./client.js";
 import {
   createNotificationFunctions,
   createRetentionWorkflows,
-} from "@money-matters/capability-notifications";
+} from "@kaesava/capability-notifications";
 import { createWeeklyDigestWorkflow } from "./workflows/weekly-digest.workflow.js";
 import { createPaydayAlertWorkflow } from "./workflows/payday-alert.workflow.js";
 import { createBillAlertWorkflow } from "./workflows/bill-alert.workflow.js";

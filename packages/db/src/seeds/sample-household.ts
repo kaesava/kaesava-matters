@@ -6,7 +6,7 @@ import {
   allocationPlans,
   allocationPlanLines,
   transactionLedger,
-} from "@money-matters/db";
+} from "@kaesava/db";
 import type { SeedDb } from "./neon-auth-setup.js";
 import { seedHouseholdEvents } from "./household-events.js";
 import { seedStrategiesDraftsAndNotes } from "./household-strategies-and-notes.js";

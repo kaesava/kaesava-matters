@@ -1,7 +1,7 @@
-import { DEFAULT_TIMEZONE } from "@money-matters/types";
-import { DbOrTx, incomeSources, envelopes, tenants } from "@money-matters/db";
+import { DEFAULT_TIMEZONE } from "@kaesava/types";
+import { DbOrTx, incomeSources, envelopes, tenants } from "@kaesava/db";
 import { and, eq, sql } from "drizzle-orm";
-import { getTenantDateString } from "@money-matters/core";
+import { getTenantDateString } from "@kaesava/core";
 import { burstEnvelopeEvents } from "./envelope-schedule.js";
 import { burstIncomeEvents } from "./income-schedule.js";
 

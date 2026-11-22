@@ -2,8 +2,8 @@
 
 import Image from "next/image";
 import { User } from "lucide-react";
-import { t } from "@money-matters/i18n";
-import { Button, InfoTooltip } from "@money-matters/ui/web";
+import { t } from "@kaesava/i18n";
+import { Button, InfoTooltip } from "@kaesava/ui/web";
 
 interface ProfileReadOnlyViewProps {
   displayName: string;

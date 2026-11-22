@@ -1,10 +1,10 @@
 "use client";
-import { getTenantDateString } from "@money-matters/types";
+import { getTenantDateString } from "@kaesava/types";
 
 
 import { useState, useEffect, useMemo } from "react";
-import { parseRecurrenceRule, buildRecurrenceRule, RecurrenceFrequency } from "@money-matters/capability-schedules/web";
-import { t } from "@money-matters/i18n";
+import { parseRecurrenceRule, buildRecurrenceRule, RecurrenceFrequency } from "@kaesava/capability-schedules/web";
+import { t } from "@kaesava/i18n";
 
 import type { EnvelopeModalItem, UseEnvelopeFormModalStateParams } from "./envelopeFormTypes";
 export type { EnvelopeModalItem, UseEnvelopeFormModalStateParams };

@@ -1,8 +1,8 @@
 import { describe, it, expect } from "vitest";
 import { runAllocationEngine } from "@money-matters/capability-budgeting";
-import { RecordExpenseCommand } from "@money-matters/types";
+import { RecordExpenseCommand } from "@kaesava/types";
 import { generateBurstDates } from "@money-matters/capability-budgeting";
-import { ensurePremiumAccess } from "@money-matters/core";
+import { ensurePremiumAccess } from "@kaesava/core";
 
 describe("E2E Core Monorepo Integration & Multi-Tenant Isolation Suite", () => {
   it("E2E-01: Full Paycheck Waterfall Allocation Engine Execution Flow", () => {

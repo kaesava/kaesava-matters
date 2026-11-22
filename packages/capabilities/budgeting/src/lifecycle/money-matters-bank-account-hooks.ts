@@ -6,8 +6,8 @@ import {
   incomeEvents,
   transactionLedger,
   type DbOrTx,
-} from "@money-matters/db";
-import type { BankAccountLifecycleHooks } from "@money-matters/types";
+} from "@kaesava/db";
+import type { BankAccountLifecycleHooks } from "@kaesava/types";
 import { and, eq, inArray, or, sql } from "drizzle-orm";
 import { listEnvelopesQuery } from "../queries/list-envelopes.query.js";
 

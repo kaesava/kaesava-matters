@@ -1,5 +1,5 @@
 import React, { createContext, useContext } from 'react';
-import type { FileNoteDto, CreatePreSignedUrlInput, CreateFileNoteInput, UpdateFileNoteCommentInput } from '@money-matters/types';
+import type { FileNoteDto, CreatePreSignedUrlInput, CreateFileNoteInput, UpdateFileNoteCommentInput } from '@kaesava/types';
 
 export type ClientFileNoteDto = Omit<FileNoteDto, 'createdAt' | 'updatedAt' | 'archivedAt'> & {
   createdAt: string | Date;

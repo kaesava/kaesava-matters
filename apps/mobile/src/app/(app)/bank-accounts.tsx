@@ -1,8 +1,8 @@
 import React from 'react';
 import { ScrollView, StyleSheet, View } from 'react-native';
 import { useRouter } from 'expo-router';
-import { t } from '@money-matters/i18n';
-import { DESIGN_TOKENS } from '@money-matters/ui/mobile';
+import { t } from '@kaesava/i18n';
+import { DESIGN_TOKENS } from '@kaesava/ui/mobile';
 import { AppScreenWrapper } from '../../components/AppScreenWrapper';
 import { MobileBankAccountsSection } from '../../components/settings/MobileBankAccountsSection';
 import { useMobileProductTour } from '../../context/ProductTourContext';

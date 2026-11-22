@@ -1,9 +1,9 @@
 'use client';
 
-import { t } from '@money-matters/i18n';
-import { FormLabel } from '@money-matters/ui/web';
-import { Input } from '@money-matters/ui/web';
-import { AmountField } from '@money-matters/ui/web';
+import { t } from '@kaesava/i18n';
+import { FormLabel } from '@kaesava/ui/web';
+import { Input } from '@kaesava/ui/web';
+import { AmountField } from '@kaesava/ui/web';
 import { ContributionMode } from '../shared/householdContribution';
 
 export interface HouseholdContributionSectionProps {

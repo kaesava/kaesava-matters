@@ -2,7 +2,7 @@
 import React, { useEffect } from "react";
 import { useParams, useRouter, useSearchParams } from "next/navigation";
 import { logger } from "@/lib/logger";
-import { t } from "@money-matters/i18n";
+import { t } from "@kaesava/i18n";
 
 function isAllowedHost(hostname: string): boolean {
   return (

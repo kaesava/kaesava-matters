@@ -1,5 +1,5 @@
 {
-  "name": "@money-matters/capability-bug-reports",
+  "name": "@kaesava/capability-bug-reports",
   "version": "0.1.0",
   "private": true,
   "type": "module",
@@ -18,9 +18,9 @@
     }
   },
   "dependencies": {
-    "@money-matters/config": "workspace:*",
-    "@money-matters/core": "workspace:*",
-    "@money-matters/types": "workspace:*",
+    "@kaesava/config": "workspace:*",
+    "@kaesava/core": "workspace:*",
+    "@kaesava/types": "workspace:*",
     "zod": "^3.23.8"
   },
   "devDependencies": {

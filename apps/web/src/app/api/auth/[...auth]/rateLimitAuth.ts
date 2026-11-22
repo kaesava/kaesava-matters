@@ -1,4 +1,4 @@
-import { checkRateLimit, logger } from "@money-matters/core";
+import { checkRateLimit, logger } from "@kaesava/core";
 
 const OTP_SEND_PATHS = new Set([
   "/email-otp/request-password-reset",

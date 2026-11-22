@@ -1,7 +1,7 @@
-import { DbOrTx, tenants } from "@money-matters/db";
+import { DbOrTx, tenants } from "@kaesava/db";
 import { eq } from "drizzle-orm";
 import { z } from "zod";
-import { SaveSetupBudgetCommand, DEFAULT_TIMEZONE } from "@money-matters/types";
+import { SaveSetupBudgetCommand, DEFAULT_TIMEZONE } from "@kaesava/types";
 import { processSetupBankAccounts } from "./save-setup-budget-accounts.js";
 import { processSetupEnvelopes } from "./save-setup-budget-envelopes.js";
 import { allocateSetupOpeningBalances } from "./save-setup-budget-opening-balances.js";

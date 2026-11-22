@@ -1,7 +1,7 @@
 import * as FileSystem from 'expo-file-system/legacy';
 import * as Sharing from 'expo-sharing';
-import { t } from '@money-matters/i18n';
-import { serializeCsvRows } from '@money-matters/types';
+import { t } from '@kaesava/i18n';
+import { serializeCsvRows } from '@kaesava/types';
 import { formatDate, formatIsoDate } from '../../../lib/format';
 import { LedgerTxItem } from '../LedgerHistoryTab';
 import { MobilePaydayAllocationRecord } from '../../plan/MobilePaydayPlanDetailModal';

@@ -1,8 +1,8 @@
 import React from "react";
 import { View, Text, ScrollView, TouchableOpacity, StyleSheet, KeyboardAvoidingView } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { t } from "@money-matters/i18n";
-import { SUPPORTED_COUNTRIES } from "@money-matters/types";
+import { t } from "@kaesava/i18n";
+import { SUPPORTED_COUNTRIES } from "@kaesava/types";
 import {
   DESIGN_TOKENS,
   MobileLogo,
@@ -10,7 +10,7 @@ import {
   MobileInput,
   FormLabel,
   FormErrorBanner,  PLATFORM_STYLE,
-} from "@money-matters/ui/mobile";
+} from "@kaesava/ui/mobile";
 import { SignUpTermsCheckbox } from "../../components/auth/SignUpTermsCheckbox";
 import { useCompleteProfile } from "../../components/auth/useCompleteProfile";
 

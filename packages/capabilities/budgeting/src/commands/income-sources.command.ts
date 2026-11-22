@@ -1,6 +1,6 @@
-import { DEFAULT_TIMEZONE } from "@money-matters/types";
-import { incomeSources, incomeEvents, bankAccounts, tenants, type DbOrTx } from "@money-matters/db";
-import { getTenantDateString } from "@money-matters/core";
+import { DEFAULT_TIMEZONE } from "@kaesava/types";
+import { incomeSources, incomeEvents, bankAccounts, tenants, type DbOrTx } from "@kaesava/db";
+import { getTenantDateString } from "@kaesava/core";
 import { and, eq, sql, inArray } from "drizzle-orm";
 import { burstIncomeEvents } from "./income-schedule.js";
 import { resolveValidatedIncomeContribution } from "./income-contribution.helper.js";

@@ -1,5 +1,5 @@
 import { Inngest } from "inngest";
-import { db, tenants, tenantUsers, users, userPreferences, tenantUserPreferences } from "@money-matters/db/rings/capabilities";
+import { db, tenants, tenantUsers, users, userPreferences, tenantUserPreferences } from "@kaesava/db/rings/capabilities";
 import { eq, and, sql, inArray } from "drizzle-orm";
 import { isLocalScheduleMatch, readNotificationPrefs, resolveNotificationRecipient } from "./helpers.js";
 

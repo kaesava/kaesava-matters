@@ -1,4 +1,4 @@
-import { bankAccounts, type DbOrTx } from "@money-matters/db";
+import { bankAccounts, type DbOrTx } from "@kaesava/db";
 import { and, eq, sql } from "drizzle-orm";
 import type { ContributionMode } from "./income-sources.command.js";
 

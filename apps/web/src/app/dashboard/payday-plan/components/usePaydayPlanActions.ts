@@ -1,8 +1,8 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useToast } from "@money-matters/ui/web";
-import { t } from "@money-matters/i18n";
+import { useToast } from "@kaesava/ui/web";
+import { t } from "@kaesava/i18n";
 import { trpc } from "../../../../lib/trpc";
 import type { AllocationLineItem, PaydayPreviewData } from "./usePaydayPlanState";
 
@@ -35,7 +35,7 @@ export interface UseIncomeSplitActionsParams {
   setShowRecalculateConfirm: (show: boolean) => void;
   setShowExitDialog: (show: boolean) => void;
   setShowTransferModal: (show: boolean) => void;
-  setCelebrationTargets?: (targets: import("@money-matters/types").TargetCelebrationItem[]) => void;
+  setCelebrationTargets?: (targets: import("@kaesava/types").TargetCelebrationItem[]) => void;
   returnTo: string;
   previewData?: PaydayPreviewData | null;
   applyPreviewData: (data: PaydayPreviewData) => void;

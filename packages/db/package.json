@@ -1,5 +1,5 @@
 {
-  "name": "@money-matters/db",
+  "name": "@kaesava/db",
   "version": "0.1.0",
   "private": true,
   "type": "module",
@@ -33,7 +33,7 @@
     }
   },
   "dependencies": {
-    "@money-matters/types": "workspace:*",
+    "@kaesava/types": "workspace:*",
     "@neondatabase/serverless": "^0.9.0",
     "drizzle-orm": "^0.39.0",
     "uuid": "^9.0.1",
@@ -42,7 +42,7 @@
   },
   "devDependencies": {
     "@types/uuid": "^9.0.8",
-    "@money-matters/config": "workspace:*",
+    "@kaesava/config": "workspace:*",
     "dotenv-cli": "^8.0.0",
     "drizzle-kit": "^0.31.10",
     "tsx": "4.7.1",

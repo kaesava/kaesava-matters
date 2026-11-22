@@ -1,4 +1,4 @@
-import { DEFAULT_TIMEZONE } from "@money-matters/types";
+import { DEFAULT_TIMEZONE } from "@kaesava/types";
 import {
   allocationPlans,
   allocationPlanLines,
@@ -10,8 +10,8 @@ import {
   tenants,
   getEnvelopeBalancesMap,
   type DbOrTx,
-} from "@money-matters/db";
-import { getTenantDateString } from "@money-matters/core";
+} from "@kaesava/db";
+import { getTenantDateString } from "@kaesava/core";
 import { and, eq, sql, inArray } from "drizzle-orm";
 import { computeMatrixProjection } from "../engine/horizon-projection-engine.js";
 import { mapEnvelopeToEngineBucket } from "../engine/envelope-engine-mapper.js";

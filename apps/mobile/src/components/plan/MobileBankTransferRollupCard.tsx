@@ -1,8 +1,8 @@
 import React, { useState, useMemo } from 'react';
 import { View, Text, StyleSheet, Share, TouchableOpacity } from 'react-native';
 import { Feather } from '@expo/vector-icons';
-import { DESIGN_TOKENS, useCurrencyLocale } from '@money-matters/ui/mobile';
-import { t } from '@money-matters/i18n';
+import { DESIGN_TOKENS, useCurrencyLocale } from '@kaesava/ui/mobile';
+import { t } from '@kaesava/i18n';
 import { RollupRetainedCard } from './rollup/RollupRetainedCard';
 import { RollupTransferItem } from './rollup/RollupTransferItem';
 import { computeBankTransferRollup } from './rollup/computeRollup';

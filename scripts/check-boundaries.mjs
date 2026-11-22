@@ -32,7 +32,7 @@ const PROTECTED_PACKAGES = [
 const FORBIDDEN_PATTERNS = [
   { label: "@money-matters/capability-budgeting", regex: /@money-matters\/capability-budgeting/ },
   { label: "@money-matters/capability-simulation", regex: /@money-matters\/capability-simulation/ },
-  { label: "@money-matters/db/rings/money-matters", regex: /@money-matters\/db\/rings\/money-matters/ },
+  { label: "@kaesava/db/rings/money-matters", regex: /@money-matters\/db\/rings\/money-matters/ },
   {
     label: "cross-Ring-2 capability import",
     regex: /from\s+["']@money-matters\/capability-(tenant|bank-accounts|billing|bug-reports|file-notes|notifications|schedules|assistant|auth|transactions)(\/[^"']*)?["']/,
@@ -42,7 +42,7 @@ const FORBIDDEN_PATTERNS = [
     regex: /from\s+["']@trpc\/server["']/,
   },
   {
-    label: "monolithic root @money-matters/db import (use @money-matters/db/rings/platform or /rings/capabilities)",
+    label: "monolithic root @kaesava/db import (use @kaesava/db/rings/platform or /rings/capabilities)",
     regex: /from\s+["']@money-matters\/db["']/,
   },
   {

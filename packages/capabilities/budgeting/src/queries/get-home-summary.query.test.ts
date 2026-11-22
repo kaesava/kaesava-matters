@@ -10,7 +10,7 @@ import {
   userPreferences,
   tenants,
   transactionLedger,
-} from "@money-matters/db";
+} from "@kaesava/db";
 
 describe("getHomeSummaryQuery", () => {
   it("computes safe to spend, daily pace, and groups attention items cleanly", async () => {

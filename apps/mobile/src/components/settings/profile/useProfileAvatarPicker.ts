@@ -1,6 +1,6 @@
 import * as ImagePicker from 'expo-image-picker';
-import { useMobileToast } from '@money-matters/ui/mobile';
-import { t } from '@money-matters/i18n';
+import { useMobileToast } from '@kaesava/ui/mobile';
+import { t } from '@kaesava/i18n';
 
 interface UseProfileAvatarPickerProps {
   setAvatarUri: (uri: string | null) => void;

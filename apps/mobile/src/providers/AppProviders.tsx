@@ -1,15 +1,15 @@
-import { DEFAULT_CURRENCY, DEFAULT_TIMEZONE, DEFAULT_LOCALE } from "@money-matters/types";
+import { DEFAULT_CURRENCY, DEFAULT_TIMEZONE, DEFAULT_LOCALE } from "@kaesava/types";
 import React, { useState } from 'react';
 import { QueryCache, MutationCache, QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { PostHogProvider } from 'posthog-react-native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { trpc, buildTrpcClient } from '../lib/trpc';
 import { authClient } from '../lib/auth';
-import { IconVisibilityProvider, MobileToastProvider, MobileToastContainer, MobileConfirmContainer, DateLocaleProvider, CurrencyLocaleProvider, AppThemeProvider, createDesignTokens } from "@money-matters/ui/mobile";
-import { NotificationServiceProvider } from "@money-matters/capability-notifications/mobile";
+import { IconVisibilityProvider, MobileToastProvider, MobileToastContainer, MobileConfirmContainer, DateLocaleProvider, CurrencyLocaleProvider, AppThemeProvider, createDesignTokens } from "@kaesava/ui/mobile";
+import { NotificationServiceProvider } from "@kaesava/capability-notifications/mobile";
 
 const moneyMattersMobileTheme = createDesignTokens();
-import { setLanguage, SupportedLanguage } from '@money-matters/i18n';
+import { setLanguage, SupportedLanguage } from '@kaesava/i18n';
 import { setMobileLocaleConfig } from '../lib/format';
 import { posthog } from '../config/posthog';
 import { MobileAnalyticsConsentPrompt } from '../components/MobileAnalyticsConsentPrompt';

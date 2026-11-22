@@ -2,7 +2,7 @@
 
 import React from "react";
 import { ArrowRight } from "lucide-react";
-import { t } from "@money-matters/i18n";
+import { t } from "@kaesava/i18n";
 import { COMMAND_PALETTE_CHIPS } from "../hooks/useCommandPaletteState";
 import { CommandPaletteActionRow, type PaletteActionItem } from "./CommandPaletteActionRow";
 

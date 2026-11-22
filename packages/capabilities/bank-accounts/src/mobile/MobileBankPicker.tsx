@@ -9,11 +9,11 @@ import {
   SafeAreaView,
 } from 'react-native';
 import { Feather } from '@expo/vector-icons';
-import { t } from '@money-matters/i18n';
-import { FilterPill } from '@money-matters/ui/mobile';
+import { t } from '@kaesava/i18n';
+import { FilterPill } from '@kaesava/ui/mobile';
 import { styles } from './MobileBankPickerStyles';
-import { useCurrencyLocale } from '@money-matters/ui/mobile';
-import { formatCurrency } from '@money-matters/ui/mobile';
+import { useCurrencyLocale } from '@kaesava/ui/mobile';
+import { formatCurrency } from '@kaesava/ui/mobile';
 
 export interface MobileBankOption {
   id: string;

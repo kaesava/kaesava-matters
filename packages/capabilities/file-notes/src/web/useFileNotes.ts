@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useFileNotesService } from '../context.js';
-import { t } from '@money-matters/i18n';
+import { t } from '@kaesava/i18n';
 
 export function useFileNotes(entityType: 'ENVELOPE' | 'BANK_ACCOUNT', entityId?: string) {
   const service = useFileNotesService();

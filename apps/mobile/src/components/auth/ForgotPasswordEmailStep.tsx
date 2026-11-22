@@ -1,15 +1,15 @@
 import React from "react";
 import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
 import { useRouter } from "expo-router";
-import { t } from "@money-matters/i18n";
+import { t } from "@kaesava/i18n";
 import {
   DESIGN_TOKENS,
   MobileButton,
   MobileInput,
   FormLabel,
   FormErrorBanner,
-} from "@money-matters/ui/mobile";
-import { isValidEmail } from "@money-matters/types";
+} from "@kaesava/ui/mobile";
+import { isValidEmail } from "@kaesava/types";
 
 interface ForgotPasswordEmailStepProps {
   email: string;

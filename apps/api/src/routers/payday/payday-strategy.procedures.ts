@@ -8,9 +8,9 @@ import {
   ApplyAllocationPresetCommand,
   UpdateAllocationStrategyStepsCommand,
   CANONICAL_ALLOCATION_PRESETS,
-} from "@money-matters/types";
-import { resolveEffectiveAppFlags } from "@money-matters/config";
-import { allocationStrategies, apps } from "@money-matters/db";
+} from "@kaesava/types";
+import { resolveEffectiveAppFlags } from "@kaesava/config";
+import { allocationStrategies, apps } from "@kaesava/db";
 import { eq, and, sql } from "drizzle-orm";
 import { TRPCError } from "@trpc/server";
 import { z } from "zod";

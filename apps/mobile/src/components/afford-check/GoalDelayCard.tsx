@@ -1,8 +1,8 @@
 import { View, Text, StyleSheet } from 'react-native';
 import { Feather } from '@expo/vector-icons';
-import { DESIGN_TOKENS } from '@money-matters/ui/tokens';
-import { t } from '@money-matters/i18n';
-import type { GoalDelayImpact } from '@money-matters/types';
+import { DESIGN_TOKENS } from '@kaesava/ui/tokens';
+import { t } from '@kaesava/i18n';
+import type { GoalDelayImpact } from '@kaesava/types';
 
 export interface GoalDelayCardProps {
   goalDelays: GoalDelayImpact[];

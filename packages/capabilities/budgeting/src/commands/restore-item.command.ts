@@ -1,6 +1,6 @@
-import { envelopes, expenseEvents, incomeSources, incomeEvents, bankAccounts, apps, DbOrTx } from "@money-matters/db";
+import { envelopes, expenseEvents, incomeSources, incomeEvents, bankAccounts, apps, DbOrTx } from "@kaesava/db";
 import { eq, and, sql, gte, lte, inArray } from "drizzle-orm";
-import { resolveEffectiveAppFlags } from "@money-matters/config";
+import { resolveEffectiveAppFlags } from "@kaesava/config";
 
 const CASCADE_WINDOW_MS = 2000;
 

@@ -1,7 +1,7 @@
 import { useRouter, type Href } from 'expo-router';
-import { useMobileToast } from "@money-matters/ui/mobile";
+import { useMobileToast } from "@kaesava/ui/mobile";
 import { validateHouseholdContribution, resolveHouseholdContributionPayload } from "@money-matters/capability-budgeting/mobile";
-import { t } from '@money-matters/i18n';
+import { t } from '@kaesava/i18n';
 import { useMobileQuickAction } from './useMobileQuickAction';
 
 type QuickActionState = ReturnType<typeof useMobileQuickAction>;

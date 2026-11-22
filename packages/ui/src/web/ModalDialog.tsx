@@ -3,7 +3,7 @@
 import React, { useEffect, useState, useCallback, useId } from 'react';
 import { createPortal } from 'react-dom';
 import { X, AlertTriangle } from 'lucide-react';
-import { t } from '@money-matters/i18n';
+import { t } from '@kaesava/i18n';
 import { Button } from './Button';
 import { useModalDismiss } from './modalStack';
 

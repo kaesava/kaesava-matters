@@ -2,20 +2,20 @@
 
 import { useState, useEffect, useMemo, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { t, ALLOCATION_STEP_TYPE_KEYS, ALLOCATION_STEP_DESC_KEYS } from "@money-matters/i18n";
+import { t, ALLOCATION_STEP_TYPE_KEYS, ALLOCATION_STEP_DESC_KEYS } from "@kaesava/i18n";
 import {
   Button,
   useToast,
   ConfirmDialog,
   InfoTooltip,
   GenericSelectField,
-} from "@money-matters/ui/web";
+} from "@kaesava/ui/web";
 import { trpc } from "../../../../lib/trpc";
 import {
   AllocationStepType,
   CANONICAL_ALLOCATION_PRESETS,
   detectMatchingAllocationPreset,
-} from "@money-matters/types";
+} from "@kaesava/types";
 import { useAppFeatures } from "../../../../hooks/useAppFeatures";
 
 interface EditableStep {

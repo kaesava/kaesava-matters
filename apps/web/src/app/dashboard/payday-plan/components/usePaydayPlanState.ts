@@ -1,12 +1,12 @@
 "use client";
-import { DEFAULT_TIMEZONE } from "@money-matters/types";
-import { getTenantDateString } from "@money-matters/types";
+import { DEFAULT_TIMEZONE } from "@kaesava/types";
+import { getTenantDateString } from "@kaesava/types";
 
 
 import { useState, useEffect, useMemo, useCallback } from "react";
 import { useRouter } from "next/navigation";
-import { t } from "@money-matters/i18n";
-import { computePaydayAllocationSummary, sanitizeDecimalInput } from "@money-matters/types";
+import { t } from "@kaesava/i18n";
+import { computePaydayAllocationSummary, sanitizeDecimalInput } from "@kaesava/types";
 import { trpc } from "../../../../lib/trpc";
 import { useLocale } from "../../../../providers/LocaleProvider";
 import type { EnvelopeFormModal } from "../../../../components/web/EnvelopeFormModal";
@@ -60,7 +60,7 @@ export function usePaydayPlanState({ incomeEventId, returnTo = "/dashboard" }: {
   const [isPoolModalOpen, setIsPoolModalOpen] = useState(false);
   const [showTableDetails, setShowTableDetails] = useState(false);
   const [showTransferModal, setShowTransferModal] = useState(false);
-  const [celebrationTargets, setCelebrationTargets] = useState<import("@money-matters/types").TargetCelebrationItem[]>([]);
+  const [celebrationTargets, setCelebrationTargets] = useState<import("@kaesava/types").TargetCelebrationItem[]>([]);
   const [showExitDialog, setShowExitDialog] = useState(false);
   const [pendingExitHref, setPendingExitHref] = useState<string | null>(null);
 

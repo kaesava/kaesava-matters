@@ -1,6 +1,6 @@
 import { z } from "zod";
-import { checkRateLimit, sendEmail, logger, buildBrandEmailHeader } from "@money-matters/core";
-import { resolveAppConfigOrDefault } from "@money-matters/config";
+import { checkRateLimit, sendEmail, logger, buildBrandEmailHeader } from "@kaesava/core";
+import { resolveAppConfigOrDefault } from "@kaesava/config";
 
 export const SubmitFeedbackInputSchema = z
   .object({

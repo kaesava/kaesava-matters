@@ -1,4 +1,4 @@
-import { getMonthLabel, SpendingTimeframe, TopPayeeItemDTO } from "@money-matters/types";
+import { getMonthLabel, SpendingTimeframe, TopPayeeItemDTO } from "@kaesava/types";
 
 export { getMonthLabel };
 

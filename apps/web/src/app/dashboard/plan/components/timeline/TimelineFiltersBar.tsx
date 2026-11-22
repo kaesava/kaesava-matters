@@ -1,5 +1,5 @@
-import { SearchInput } from "@money-matters/ui/web";
-import { t } from "@money-matters/i18n";
+import { SearchInput } from "@kaesava/ui/web";
+import { t } from "@kaesava/i18n";
 import { useAppFeatures } from "../../../../../hooks/useAppFeatures";
 
 interface TimelineFiltersBarProps {

@@ -2,8 +2,8 @@
 
 import React, { useState } from "react";
 import Link from "next/link";
-import { t } from "@money-matters/i18n";
-import { Button, FormLabel, FormErrorBanner } from "@money-matters/ui/web";
+import { t } from "@kaesava/i18n";
+import { Button, FormLabel, FormErrorBanner } from "@kaesava/ui/web";
 import { authClient } from "../../../../lib/auth";
 
 interface InviteExistingUserFormProps {

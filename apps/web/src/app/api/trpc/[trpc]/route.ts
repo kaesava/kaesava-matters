@@ -1,6 +1,6 @@
 import { NextRequest } from "next/server";
-import { buildTrpcProxyHeaders } from "@money-matters/core";
-import { DEFAULT_APP_ID } from "@money-matters/config";
+import { buildTrpcProxyHeaders } from "@kaesava/core";
+import { DEFAULT_APP_ID } from "@kaesava/config";
 
 export async function GET(req: NextRequest) {
   return handleProxy(req);

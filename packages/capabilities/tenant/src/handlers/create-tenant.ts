@@ -1,13 +1,13 @@
 import { z } from "zod";
-import { tenants, tenantUsers, apps, users, userAppTrials, userPreferences, type DbOrTx } from "@money-matters/db/rings/capabilities";
-import { resolveAppConfigOrDefault } from "@money-matters/config";
+import { tenants, tenantUsers, apps, users, userAppTrials, userPreferences, type DbOrTx } from "@kaesava/db/rings/capabilities";
+import { resolveAppConfigOrDefault } from "@kaesava/config";
 import {
   CreateTenantCommand,
   COUNTRY_DEFAULTS,
   CURRENT_TERMS_VERSION,
   CURRENT_PRIVACY_VERSION,
   type TenantLifecycleHooks,
-} from "@money-matters/types";
+} from "@kaesava/types";
 import { eq, and, isNull } from "drizzle-orm";
 
 /**

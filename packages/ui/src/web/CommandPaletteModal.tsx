@@ -2,8 +2,8 @@
 
 import React, { useState, useEffect, useRef, useMemo, useCallback } from "react";
 import { Search, Sparkles, Loader2, X } from "lucide-react";
-import { t, ASSISTANT_UNAVAILABLE_KEYS } from "@money-matters/i18n";
-import type { AssistantResult } from "@money-matters/types";
+import { t, ASSISTANT_UNAVAILABLE_KEYS } from "@kaesava/i18n";
+import type { AssistantResult } from "@kaesava/types";
 import {
   useCommandPaletteState,
   type SearchResultAccount,

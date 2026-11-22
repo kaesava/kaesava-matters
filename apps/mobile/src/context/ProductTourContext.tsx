@@ -4,15 +4,15 @@ import * as Haptics from 'expo-haptics';
 import { trpc } from '../lib/trpc';
 import { authClient } from '../lib/auth';
 import { usePostHog } from 'posthog-react-native';
-import { useMobileToast } from '@money-matters/ui/mobile';
-import { t } from '@money-matters/i18n';
+import { useMobileToast } from '@kaesava/ui/mobile';
+import { t } from '@kaesava/i18n';
 import { useAppFeatures } from './useAppFeatures';
 import {
   MobileProductTourSheet,
   MobileConfirmDialog,
   MobileTourStepConfig,
   TargetLayoutRect,
-} from '@money-matters/ui/mobile';
+} from '@kaesava/ui/mobile';
 
 export interface MobileTourContextValue {
   isTourActive: boolean;

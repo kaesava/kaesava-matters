@@ -1,8 +1,8 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { t } from "@money-matters/i18n";
-import { Spinner } from "@money-matters/ui/web";
+import { t } from "@kaesava/i18n";
+import { Spinner } from "@kaesava/ui/web";
 import { authClient } from "../../../../lib/auth";
 
 interface InviteStatusCardProps {

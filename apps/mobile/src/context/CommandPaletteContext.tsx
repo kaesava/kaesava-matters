@@ -1,11 +1,11 @@
 import React, { createContext, useContext, useState, useMemo, useCallback } from 'react';
 import { useRouter, type Href } from 'expo-router';
-import { t } from '@money-matters/i18n';
-import type { AssistantResult, QuickActionInitialData } from '@money-matters/types';
+import { t } from '@kaesava/i18n';
+import type { AssistantResult, QuickActionInitialData } from '@kaesava/types';
 import {
   MobileCommandPaletteSheet,
   type SearchResultPage,
-} from '@money-matters/ui/mobile';
+} from '@kaesava/ui/mobile';
 import { trpc } from '../lib/trpc';
 import { authClient } from '../lib/auth';
 import { useAppFeatures } from './useAppFeatures';

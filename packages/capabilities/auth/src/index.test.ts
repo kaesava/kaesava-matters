@@ -1,5 +1,5 @@
 import { describe, it, expect, vi } from 'vitest';
-import type { DbOrTx } from '@money-matters/db/rings/capabilities';
+import type { DbOrTx } from '@kaesava/db/rings/capabilities';
 import {
   checkEmailAuthProviderHandler,
   getAuthMethodsHandler,

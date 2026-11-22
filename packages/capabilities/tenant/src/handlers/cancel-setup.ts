@@ -1,5 +1,5 @@
-import { tenants, type DbOrTx } from "@money-matters/db/rings/capabilities";
-import type { TenantLifecycleHooks } from "@money-matters/types";
+import { tenants, type DbOrTx } from "@kaesava/db/rings/capabilities";
+import type { TenantLifecycleHooks } from "@kaesava/types";
 import { and, eq } from "drizzle-orm";
 
 export interface CancelSetupResult {

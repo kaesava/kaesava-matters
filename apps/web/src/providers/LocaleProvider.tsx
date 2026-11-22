@@ -1,9 +1,9 @@
 "use client";
-import { DEFAULT_CURRENCY, DEFAULT_TIMEZONE, DEFAULT_LOCALE } from "@money-matters/types";
+import { DEFAULT_CURRENCY, DEFAULT_TIMEZONE, DEFAULT_LOCALE } from "@kaesava/types";
 
 
 import React, { createContext, useContext, useEffect, useMemo, useState } from "react";
-import { setLanguage, SupportedLanguage } from "@money-matters/i18n";
+import { setLanguage, SupportedLanguage } from "@kaesava/i18n";
 import {
   formatCurrency,
   fmtDate as formatBaseDate,
@@ -15,7 +15,7 @@ import {
   IconVisibilityProvider,
   DateLocaleProvider,
   CurrencyLocaleProvider,
-} from "@money-matters/ui";
+} from "@kaesava/ui";
 import { authClient } from "../lib/auth";
 import { trpc } from "../lib/trpc";
 

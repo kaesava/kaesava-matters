@@ -1,8 +1,8 @@
 "use client";
 
 import React, { useCallback, useEffect } from "react";
-import { t } from "@money-matters/i18n";
-import type { SearchResultPage } from "@money-matters/ui/web";
+import { t } from "@kaesava/i18n";
+import type { SearchResultPage } from "@kaesava/ui/web";
 import { trpc } from "../../../lib/trpc";
 
 interface UseDashboardSearchAndShortcutsProps {

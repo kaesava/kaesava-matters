@@ -1,6 +1,6 @@
 import { z } from "zod";
-import { registerAppManifest, type AppManifest } from "@money-matters/config";
-import { defineAppRolePolicy } from "@money-matters/core";
+import { registerAppManifest, type AppManifest } from "@kaesava/config";
+import { defineAppRolePolicy } from "@kaesava/core";
 
 export const MONEY_MATTERS_MANIFEST_ID = "01908bde-34bb-7b19-a178-574211bc93aa";
 

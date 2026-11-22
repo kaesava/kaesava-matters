@@ -1,4 +1,4 @@
-import { DEFAULT_TIMEZONE } from "@money-matters/types";
+import { DEFAULT_TIMEZONE } from "@kaesava/types";
 import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import { Feather } from '@expo/vector-icons';
@@ -6,9 +6,9 @@ import {
   DESIGN_TOKENS,
   SettingsCard,
   ReadOnlyField,
-} from '@money-matters/ui/mobile';
-import { t } from '@money-matters/i18n';
-import { SUPPORTED_CURRENCIES, SUPPORTED_COUNTRIES } from '@money-matters/types';
+} from '@kaesava/ui/mobile';
+import { t } from '@kaesava/i18n';
+import { SUPPORTED_CURRENCIES, SUPPORTED_COUNTRIES } from '@kaesava/types';
 
 interface HouseholdReadOnlyViewProps {
   householdName: string;

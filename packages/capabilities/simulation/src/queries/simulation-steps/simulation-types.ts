@@ -3,7 +3,7 @@ import type {
   ProjectionEngineBucket,
   EnvelopeType,
   FundingMode,
-} from "@money-matters/types";
+} from "@kaesava/types";
 
 export interface SimulationEnvelopeItem {
   id: string;

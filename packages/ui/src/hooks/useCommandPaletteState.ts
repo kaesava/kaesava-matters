@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo, useCallback, useRef } from "react";
-import type { AssistantResult } from "@money-matters/types";
+import type { AssistantResult } from "@kaesava/types";
 import { useCurrencyLocale } from "./CurrencyLocaleContext";
 import {
   filterPagesByQuery,

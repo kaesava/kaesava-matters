@@ -2,8 +2,8 @@
 
 import React, { useState, useDeferredValue } from "react";
 import { ShoppingBag, Repeat } from "lucide-react";
-import { ModalDialog, AmountField, Input } from "@money-matters/ui/web";
-import { t } from "@money-matters/i18n";
+import { ModalDialog, AmountField, Input } from "@kaesava/ui/web";
+import { t } from "@kaesava/i18n";
 import { trpc } from "../../lib/trpc";
 import { useLocale } from "../../providers/LocaleProvider";
 import { AffordCheckVerdict } from "../../app/dashboard/afford-check/components/AffordCheckVerdict";

@@ -4,8 +4,7 @@ import {
   cancelSetupHandler,
   invitePartnerHandler,
   acceptInviteHandler,
-  updateMemberRoleHandler,
-  exportTenantDataHandler,
+  exportDataHandler,
   deleteMyAccountHandler,
 } from "../index";
 
@@ -15,7 +14,6 @@ export const tenantProcedures = {
   cancelSetup: { execute: cancelSetupHandler },
   invitePartner: { execute: invitePartnerHandler },
   acceptInvite: { execute: acceptInviteHandler },
-  updateMemberRole: { execute: updateMemberRoleHandler },
-  exportData: { execute: exportTenantDataHandler },
+  exportData: { execute: exportDataHandler },
   deleteMyAccount: { execute: deleteMyAccountHandler },
 } as const;

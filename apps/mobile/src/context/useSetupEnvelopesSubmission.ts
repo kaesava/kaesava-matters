@@ -1,10 +1,10 @@
 import { useState } from 'react';
 import { useRouter } from 'expo-router';
 import { usePostHog } from 'posthog-react-native';
-import { t } from '@money-matters/i18n';
-import { useMobileToast } from "@money-matters/ui/mobile";
-import { buildRecurrenceRule } from "@money-matters/capability-schedules/mobile";
-import { resolveDefaultSetupBankAccountId } from '@money-matters/types';
+import { t } from '@kaesava/i18n';
+import { useMobileToast } from "@kaesava/ui/mobile";
+import { buildRecurrenceRule } from "@kaesava/capability-schedules/mobile";
+import { resolveDefaultSetupBankAccountId } from '@kaesava/types';
 import { trpc } from '../lib/trpc';
 import { formatMobileCurrency } from '../lib/format';
 import { useSetupWizard } from './SetupWizardContext';

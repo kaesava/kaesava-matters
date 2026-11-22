@@ -5,13 +5,13 @@
  * and relative date labeling (Today, Yesterday) synchronized with active user locale preferences.
  */
 
-import { t } from '@money-matters/i18n';
+import { t } from '@kaesava/i18n';
 import {
   formatCurrency,
   getCurrencySymbol,
   fmtDate as uiFmtDate,
   fmtDateIso as uiFmtDateIso,
-} from '@money-matters/ui/format';
+} from '@kaesava/ui/format';
 
 import {
   setMobileLocaleConfig,

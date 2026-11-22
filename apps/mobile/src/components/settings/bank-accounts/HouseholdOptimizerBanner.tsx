@@ -1,7 +1,7 @@
 import React from "react";
 import { View, Text, TouchableOpacity } from "react-native";
 import { useRouter, type Href } from "expo-router";
-import { t } from "@money-matters/i18n";
+import { t } from "@kaesava/i18n";
 import { styles } from "./MobileBankAccountsStyles";
 
 export function HouseholdOptimizerBanner() {

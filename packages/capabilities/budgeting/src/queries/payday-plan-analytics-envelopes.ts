@@ -1,5 +1,5 @@
-import { DEFAULT_LOCALE, SpendingTimeframe } from "@money-matters/types";
-import { getCachedDateFormat } from "@money-matters/core";
+import { DEFAULT_LOCALE, SpendingTimeframe } from "@kaesava/types";
+import { getCachedDateFormat } from "@kaesava/core";
 
 export interface AnalyticsBucketItem {
   key: string;

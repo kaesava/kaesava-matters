@@ -2,8 +2,8 @@
 export const dynamic = 'force-dynamic';
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { t } from "@money-matters/i18n";
-import { Button } from "@money-matters/ui/web";
+import { t } from "@kaesava/i18n";
+import { Button } from "@kaesava/ui/web";
 import { authClient } from "../../../lib/auth";
 import { trpc } from "../../../lib/trpc";
 import posthog from "../../../lib/posthog-client";

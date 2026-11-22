@@ -1,9 +1,9 @@
 'use client';
 
-import { t } from '@money-matters/i18n';
+import { t } from '@kaesava/i18n';
 import { Sparkles, ArrowRight } from 'lucide-react';
 import { authClient } from '../../lib/auth';
-import { ModalDialog, Button } from '@money-matters/ui/web';
+import { ModalDialog, Button } from '@kaesava/ui/web';
 
 export interface TourWelcomeModalProps {
   isOpen: boolean;

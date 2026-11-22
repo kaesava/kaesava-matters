@@ -2,9 +2,9 @@
 
 import React, { useState } from "react";
 import Link from "next/link";
-import { t } from "@money-matters/i18n";
-import { Button, FormLabel, FormFieldError, FormErrorBanner } from "@money-matters/ui/web";
-import { SignInInputSchema, isValidEmail } from "@money-matters/types";
+import { t } from "@kaesava/i18n";
+import { Button, FormLabel, FormFieldError, FormErrorBanner } from "@kaesava/ui/web";
+import { SignInInputSchema, isValidEmail } from "@kaesava/types";
 import { authClient } from "../../lib/auth";
 import { trpc } from "../../lib/trpc";
 

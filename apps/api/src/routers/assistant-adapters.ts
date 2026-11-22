@@ -6,11 +6,11 @@ import {
   expenseEvents,
   getEnvelopeBalancesMap,
   type DbOrTx,
-} from "@money-matters/db";
+} from "@kaesava/db";
 import { listBillCoverageQuery, previewPaydayQuery } from "@money-matters/capability-budgeting";
-import { getTenantDateString } from "@money-matters/core";
-import type { IntentHandlerPort, IntentContext } from "@money-matters/capability-assistant";
-import type { AssistantResult } from "@money-matters/types";
+import { getTenantDateString } from "@kaesava/core";
+import type { IntentHandlerPort, IntentContext } from "@kaesava/capability-assistant";
+import type { AssistantResult } from "@kaesava/types";
 import {
   buildSafePennyContext,
   fetchVisibleEnvelopes,

@@ -1,6 +1,6 @@
 "use client";
 
-import { t } from "@money-matters/i18n";
+import { t } from "@kaesava/i18n";
 import { CalendarRange, Users, Sparkles, CheckCircle2, Smartphone } from "lucide-react";
 
 export function ProductFeaturesGrid() {

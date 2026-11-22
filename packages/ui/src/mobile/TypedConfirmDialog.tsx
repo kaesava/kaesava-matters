@@ -4,7 +4,7 @@ import MobileModalDialog from './MobileModalDialog';
 import MobileInput from './Input';
 import MobileButton from './Button';
 import { DESIGN_TOKENS } from '../tokens';
-import { t } from '@money-matters/i18n';
+import { t } from '@kaesava/i18n';
 
 export interface TypedConfirmDialogProps {
   visible: boolean;

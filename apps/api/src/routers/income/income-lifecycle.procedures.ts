@@ -1,5 +1,5 @@
 import { privateTenantProcedure, requiresWriteAccess } from '../../trpc/trpc.js';
-import { incomeSources, incomeEvents, bankAccounts } from "@money-matters/db";
+import { incomeSources, incomeEvents, bankAccounts } from "@kaesava/db";
 import { and, eq, sql, inArray } from "drizzle-orm";
 import { z } from 'zod';
 

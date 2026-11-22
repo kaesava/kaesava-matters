@@ -1,7 +1,7 @@
 import { FetchCreateContextFnOptions } from '@trpc/server/adapters/fetch';
-import { verifyJwt, upsertUserFromJwt, logger, createDbClient } from '@money-matters/core';
-import { resolveAppConfig } from '@money-matters/config';
-import { db, tenantUsers, tenants } from '@money-matters/db';
+import { verifyJwt, upsertUserFromJwt, logger, createDbClient } from '@kaesava/core';
+import { resolveAppConfig } from '@kaesava/config';
+import { db, tenantUsers, tenants } from '@kaesava/db';
 import { eq, and, isNull, sql, asc } from 'drizzle-orm';
 
 export const MONEY_MATTERS_APP_ID = '01908bde-34bb-7b19-a178-574211bc93aa';

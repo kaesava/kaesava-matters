@@ -1,6 +1,6 @@
 import { Platform } from 'react-native';
 import Constants, { ExecutionEnvironment } from 'expo-constants';
-import { resolveAppConfigOrDefault } from '@money-matters/config';
+import { resolveAppConfigOrDefault } from '@kaesava/config';
 
 export function getPushPlatform(): 'ios' | 'android' {
   return Platform.OS === 'ios' ? 'ios' : 'android';

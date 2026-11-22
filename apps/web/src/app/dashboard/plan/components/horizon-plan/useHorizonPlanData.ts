@@ -2,9 +2,9 @@
 
 import { useState, useMemo } from "react";
 import { usePathname } from "next/navigation";
-import { t } from "@money-matters/i18n";
+import { t } from "@kaesava/i18n";
 import { trpc } from "../../../../../lib/trpc";
-import { useToast } from "@money-matters/ui/web";
+import { useToast } from "@kaesava/ui/web";
 import type { CategoryScheduledEvent } from "../EnvelopeDetailDrawer";
 
 export interface CategoryData {

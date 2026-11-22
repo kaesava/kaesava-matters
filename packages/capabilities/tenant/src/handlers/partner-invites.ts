@@ -1,13 +1,13 @@
-import { tenantUsers, tenants, users, type DbOrTx } from "@money-matters/db/rings/capabilities";
+import { tenantUsers, tenants, users, type DbOrTx } from "@kaesava/db/rings/capabilities";
 import { eq, and, sql, isNull } from "drizzle-orm";
-import { ensurePremiumAccess } from "@money-matters/core";
+import { ensurePremiumAccess } from "@kaesava/core";
 import {
   GetInviteDetailsResult,
   InviteAccountStatus,
   CURRENT_TERMS_VERSION,
   CURRENT_PRIVACY_VERSION,
   type TenantLifecycleHooks,
-} from "@money-matters/types";
+} from "@kaesava/types";
 
 function extractRows<T>(result: unknown): T[] {
   return Array.isArray(result)

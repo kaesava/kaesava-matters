@@ -5,7 +5,7 @@ import { MutationCache, QueryCache, QueryClient, QueryClientProvider } from "@ta
 import { trpc, buildTrpcClient } from "../lib/trpc";
 import { authClient } from "../lib/auth";
 import posthog from "../lib/posthog-client";
-import { ToastProvider, ToastContainer, NetworkErrorBanner, AppThemeProvider, createDesignTokens } from "@money-matters/ui/web";
+import { ToastProvider, ToastContainer, NetworkErrorBanner, AppThemeProvider, createDesignTokens } from "@kaesava/ui/web";
 import { LocaleProvider } from "./LocaleProvider";
 import { AnalyticsConsentBanner } from "../components/web/AnalyticsConsentBanner";
 

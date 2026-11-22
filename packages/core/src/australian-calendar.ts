@@ -2,7 +2,7 @@
  * Timezone and Calendar Utilities for scheduled notification crons and date deltas.
  */
 
-import { getCachedDateFormat } from "@money-matters/types";
+import { getCachedDateFormat } from "@kaesava/types";
 
 export function todayInZone(timeZone: string = "UTC", now: Date = new Date()): string {
   return getCachedDateFormat("en-CA", { timeZone }).format(now);

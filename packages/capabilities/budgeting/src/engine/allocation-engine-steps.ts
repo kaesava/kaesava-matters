@@ -1,4 +1,4 @@
-import { t } from "@money-matters/i18n";
+import { t } from "@kaesava/i18n";
 import { EngineBucket, UpcomingExpenseItem } from "./allocation-engine.js";
 import { toCents, toDollars } from "./allocation-engine-utils.js";
 

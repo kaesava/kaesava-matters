@@ -1,8 +1,8 @@
-import { DEFAULT_CURRENCY, DEFAULT_TIMEZONE } from "@money-matters/types";
+import { DEFAULT_CURRENCY, DEFAULT_TIMEZONE } from "@kaesava/types";
 import React, { useState, useEffect, useRef } from 'react';
 import { View, ActivityIndicator, StyleSheet } from 'react-native';
-import { useMobileToast, showMobileConfirm, DESIGN_TOKENS } from '@money-matters/ui/mobile';
-import { t } from '@money-matters/i18n';
+import { useMobileToast, showMobileConfirm, DESIGN_TOKENS } from '@kaesava/ui/mobile';
+import { t } from '@kaesava/i18n';
 import { trpc } from '../../lib/trpc';
 import { HouseholdReadOnlyView } from './HouseholdReadOnlyView';
 import { HouseholdEditView } from './HouseholdEditView';

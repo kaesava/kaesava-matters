@@ -2,7 +2,7 @@ import { useMemo } from "react";
 import {
   computeRecentAndFrequentPresets,
   isPaydayOrAdjustment,
-} from "@money-matters/types";
+} from "@kaesava/types";
 
 export interface TransactionSummaryItem {
   id: string;

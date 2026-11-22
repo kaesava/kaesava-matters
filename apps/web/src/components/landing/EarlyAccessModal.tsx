@@ -1,8 +1,8 @@
 "use client";
 
 import React, { useState, useId } from "react";
-import { t } from "@money-matters/i18n";
-import { Button, ModalDialog } from "@money-matters/ui/web";
+import { t } from "@kaesava/i18n";
+import { Button, ModalDialog } from "@kaesava/ui/web";
 import { z } from "zod";
 
 const emailSchema = z.string().email();

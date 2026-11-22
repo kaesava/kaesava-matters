@@ -1,9 +1,9 @@
 import { Inngest } from "inngest";
-import { db, incomeEvents, incomeSources, bankAccounts, tenants, tenantUsers, users, userPreferences, tenantUserPreferences } from "@money-matters/db";
+import { db, incomeEvents, incomeSources, bankAccounts, tenants, tenantUsers, users, userPreferences, tenantUserPreferences } from "@kaesava/db";
 import { eq, and, sql, inArray } from "drizzle-orm";
-import { sendNotificationEmail, todayInZone, getLocalHourInZone, formatCurrency } from "@money-matters/core";
-import { t } from "@money-matters/i18n";
-import { isChannelEnabled, readNotificationPrefs, resolveNotificationRecipient } from "@money-matters/capability-notifications";
+import { sendNotificationEmail, todayInZone, getLocalHourInZone, formatCurrency } from "@kaesava/core";
+import { t } from "@kaesava/i18n";
+import { isChannelEnabled, readNotificationPrefs, resolveNotificationRecipient } from "@kaesava/capability-notifications";
 
 export function createPaydayAlertWorkflow(inngest: Inngest) {
   return inngest.createFunction(

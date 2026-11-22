@@ -1,8 +1,8 @@
 import React from 'react';
 import { View, Text, TouchableOpacity, ActivityIndicator, StyleSheet } from 'react-native';
 import { Feather } from '@expo/vector-icons';
-import { DESIGN_TOKENS, MobileButton } from '@money-matters/ui/mobile';
-import { t } from '@money-matters/i18n';
+import { DESIGN_TOKENS, MobileButton } from '@kaesava/ui/mobile';
+import { t } from '@kaesava/i18n';
 import { formatDate } from '../../../lib/format';
 
 export interface SubscriptionStatusCardProps {

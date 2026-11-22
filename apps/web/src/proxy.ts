@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { evaluateAuthEdgeProxy } from "@money-matters/core";
+import { evaluateAuthEdgeProxy } from "@kaesava/core";
 
 const PUBLIC_PREFIXES = [
   "/sign-in",

@@ -3,8 +3,8 @@
  * Immediately activates the subscription and records initial invoice without waiting for webhooks.
  */
 import Stripe from "stripe";
-import { billingInvoices, type DbOrTx } from "@money-matters/db/rings/capabilities";
-import { validateEnv } from "@money-matters/config";
+import { billingInvoices, type DbOrTx } from "@kaesava/db/rings/capabilities";
+import { validateEnv } from "@kaesava/config";
 import { z } from "zod";
 import { activateSubscriptionCommand } from "./activate-subscription.js";
 

@@ -1,5 +1,5 @@
 import { describe, it, expect, vi } from 'vitest';
-import { DbOrTx, tenants } from '@money-matters/db';
+import { DbOrTx, tenants } from '@kaesava/db';
 import {
   createTenantHandler,
   cancelSetupHandler,

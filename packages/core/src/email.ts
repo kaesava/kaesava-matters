@@ -1,5 +1,5 @@
 import { logger } from "./logger.js";
-import { resolveAppConfigOrDefault } from "@money-matters/config";
+import { resolveAppConfigOrDefault } from "@kaesava/config";
 
 export interface SendEmailPayload {
   to: string;

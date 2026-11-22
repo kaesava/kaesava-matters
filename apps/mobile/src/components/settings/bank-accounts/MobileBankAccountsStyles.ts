@@ -1,5 +1,5 @@
 import { StyleSheet } from "react-native";
-import { DESIGN_TOKENS } from "@money-matters/ui/mobile";
+import { DESIGN_TOKENS } from "@kaesava/ui/mobile";
 
 export const styles = StyleSheet.create({
   tipCard: {

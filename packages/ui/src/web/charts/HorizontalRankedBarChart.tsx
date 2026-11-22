@@ -1,6 +1,6 @@
-import { TopOutflowPoolDTO, TopPayeeItemDTO } from "@money-matters/types";
+import { TopOutflowPoolDTO, TopPayeeItemDTO } from "@kaesava/types";
 import { DESIGN_TOKENS } from "../../tokens";
-import { t } from "@money-matters/i18n";
+import { t } from "@kaesava/i18n";
 
 interface HorizontalRankedBarChartProps {
   topPools: TopOutflowPoolDTO[];

@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { serializeCsvObjects } from "@money-matters/types";
+import { serializeCsvObjects } from "@kaesava/types";
 
 export const LedgerDirectionSchema = z.enum(["DEBIT", "CREDIT"]);
 export type LedgerDirection = z.infer<typeof LedgerDirectionSchema>;

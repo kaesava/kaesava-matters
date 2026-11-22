@@ -9,7 +9,7 @@ import {
 import {
   OverrideEventCommand,
   DeleteUpcomingEventCommand,
-} from "@money-matters/types";
+} from "@kaesava/types";
 import { z } from 'zod';
 
 export const paydayHorizonProcedures = {

@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { View, Text, StyleSheet } from 'react-native';
-import { t } from '@money-matters/i18n';
-import { DESIGN_TOKENS, MobileButton, MobileInput, FormLabel, FormErrorBanner } from '@money-matters/ui/mobile';
-import { InviteAccountStatus, InviteSignUpInputSchema } from '@money-matters/types';
+import { t } from '@kaesava/i18n';
+import { DESIGN_TOKENS, MobileButton, MobileInput, FormLabel, FormErrorBanner } from '@kaesava/ui/mobile';
+import { InviteAccountStatus, InviteSignUpInputSchema } from '@kaesava/types';
 import { authClient } from '../../lib/auth';
 import { MobileSocialAuthButtons } from './MobileSocialAuthButtons';
 import { MobileOtpVerificationView } from './MobileOtpVerificationView';

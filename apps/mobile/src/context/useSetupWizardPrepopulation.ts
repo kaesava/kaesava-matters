@@ -1,8 +1,8 @@
 import { getTenantDateString } from "../lib/format";
 import { useEffect } from 'react';
 import { trpc } from '../lib/trpc';
-import { IncomeItem, UserGoalItem, EstimatedCategoryItem, SetupFrequency } from '@money-matters/types';
-import { parseRecurrenceRule } from "@money-matters/capability-schedules/mobile";
+import { IncomeItem, UserGoalItem, EstimatedCategoryItem, SetupFrequency } from '@kaesava/types';
+import { parseRecurrenceRule } from "@kaesava/capability-schedules/mobile";
 import { getMobileLocaleConfig } from '../lib/format';
 import { MobileBankAccountItem } from './setup-wizard-types';
 

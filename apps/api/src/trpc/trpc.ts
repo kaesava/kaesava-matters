@@ -2,10 +2,10 @@ import { initTRPC, TRPCError } from '@trpc/server';
 import type { EdgeContext as Context } from './edge-context.js';
 
 import { sql } from 'drizzle-orm';
-import { logger, canRolePerform } from '@money-matters/core';
-import { resolveAppConfigOrDefault } from '@money-matters/config';
-import { getSubscriptionStatus, evaluateSubscriptionWriteAccess } from '@money-matters/capability-billing';
-import type { SubscriptionStatusDto } from '@money-matters/types';
+import { logger, canRolePerform } from '@kaesava/core';
+import { resolveAppConfigOrDefault } from '@kaesava/config';
+import { getSubscriptionStatus, evaluateSubscriptionWriteAccess } from '@kaesava/capability-billing';
+import type { SubscriptionStatusDto } from '@kaesava/types';
 
 const t = initTRPC.context<Context>().create({
   errorFormatter({ shape, error }) {

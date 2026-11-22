@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { View, StyleSheet, TouchableOpacity, Text } from 'react-native';
 import { Feather } from '@expo/vector-icons';
-import { DESIGN_TOKENS, PLATFORM_STYLE, MobileModalDialog, MobileDetailLinkRow } from '@money-matters/ui/mobile';
-import { t } from '@money-matters/i18n';
+import { DESIGN_TOKENS, PLATFORM_STYLE, MobileModalDialog, MobileDetailLinkRow } from '@kaesava/ui/mobile';
+import { t } from '@kaesava/i18n';
 
 interface AddScheduleButtonRowProps {
   setupSubSegment: 'INCOME' | 'EXPENSE';

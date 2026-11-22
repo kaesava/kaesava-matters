@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import type { QuickActionInitialData } from "@money-matters/types";
+import type { QuickActionInitialData } from "@kaesava/types";
 
 export function useQuickInitialMatching(
   initialData: QuickActionInitialData | undefined,

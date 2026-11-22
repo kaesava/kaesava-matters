@@ -11,7 +11,7 @@
  */
 import { createTRPCReact } from "@trpc/react-query";
 import { httpBatchLink } from "@trpc/client";
-import { resolveAppConfigOrDefault } from "@money-matters/config";
+import { resolveAppConfigOrDefault } from "@kaesava/config";
 import type { AppRouter } from "../../../api/src/routers/_app";
 
 export const trpc: ReturnType<typeof createTRPCReact<AppRouter>> = createTRPCReact<AppRouter>();

@@ -1,11 +1,11 @@
 import { tenantProcedure, authenticatedProcedure, ownerProcedure, privateOwnerProcedure, privateTenantProcedure, publicProcedure, requiresWriteAccess } from '../../trpc/trpc.js';
-import { apps } from "@money-matters/db";
+import { apps } from "@kaesava/db";
 import { eq } from "drizzle-orm";
 import { inngest } from '../../inngest/client.js';
-import { logAuditEvent, logger, sendEmail, buildBrandEmailHeader, checkRateLimit } from '@money-matters/core';
-import { resolveAppConfigOrDefault, resolveEffectiveAppFlags } from '@money-matters/config';
+import { logAuditEvent, logger, sendEmail, buildBrandEmailHeader, checkRateLimit } from '@kaesava/core';
+import { resolveAppConfigOrDefault, resolveEffectiveAppFlags } from '@kaesava/config';
 import { createMoneyMattersTenantLifecycleHooks } from '@money-matters/capability-budgeting';
-import { t } from '@money-matters/i18n';
+import { t } from '@kaesava/i18n';
 import {
   invitePartnerHandler,
   acceptInviteHandler,
@@ -15,8 +15,8 @@ import {
   getHouseholdGovernanceInfoHandler,
   removeHouseholdMemberHandler,
   updateHouseholdHandler,
-} from "@money-matters/capability-tenant";
-import { UpdateHouseholdMemberRoleCommand, GetInviteDetailsInputSchema } from "@money-matters/types";
+} from "@kaesava/capability-tenant";
+import { UpdateHouseholdMemberRoleCommand, GetInviteDetailsInputSchema } from "@kaesava/types";
 import { clearEdgeContextCache } from '../../trpc/edge-context.js';
 import { TRPCError } from '@trpc/server';
 import { z } from 'zod';

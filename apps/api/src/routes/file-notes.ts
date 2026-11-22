@@ -1,7 +1,7 @@
 import type { FetchCreateContextFnOptions } from '@trpc/server/adapters/fetch';
 import { createEdgeContext, EdgeContextEnv } from '../trpc/edge-context.js';
-import { uploadObjectToStorage, downloadObjectFromStorage } from '@money-matters/core';
-import { fileNotes } from '@money-matters/db';
+import { uploadObjectToStorage, downloadObjectFromStorage } from '@kaesava/core';
+import { fileNotes } from '@kaesava/db';
 import { and, eq, or, sql } from 'drizzle-orm';
 
 const MAX_UPLOAD_BYTES = 10 * 1024 * 1024; // 10MB safety ceiling

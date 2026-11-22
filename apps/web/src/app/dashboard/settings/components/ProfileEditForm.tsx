@@ -3,8 +3,8 @@
 import Image from "next/image";
 import React, { useRef } from "react";
 import { User } from "lucide-react";
-import { t } from "@money-matters/i18n";
-import { PhoneInput, Button } from "@money-matters/ui/web";
+import { t } from "@kaesava/i18n";
+import { PhoneInput, Button } from "@kaesava/ui/web";
 import { ProfilePreferencesFields } from "./ProfilePreferencesFields";
 
 interface ProfileEditFormProps {

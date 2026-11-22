@@ -1,6 +1,6 @@
 import { useState, useMemo, useEffect } from "react";
-import { useResizableColumns } from "@money-matters/ui/web";
-import { getTenantDateString } from "@money-matters/types";
+import { useResizableColumns } from "@kaesava/ui/web";
+import { getTenantDateString } from "@kaesava/types";
 import { TimelineEventItem } from "./types";
 
 export interface UseUpcomingTimelineDataOptions {

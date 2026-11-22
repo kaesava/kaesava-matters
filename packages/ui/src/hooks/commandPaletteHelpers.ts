@@ -1,4 +1,4 @@
-import type { AssistantResult } from "@money-matters/types";
+import type { AssistantResult } from "@kaesava/types";
 
 export interface SearchResultPage {
   id: string;

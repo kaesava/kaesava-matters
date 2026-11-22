@@ -1,4 +1,4 @@
-import { DESIGN_TOKENS } from '@money-matters/ui/mobile';
+import { DESIGN_TOKENS } from '@kaesava/ui/mobile';
 import type { GoalItem } from '../GoalsProgressStrip';
 
 export interface GoalPacingCalculation {

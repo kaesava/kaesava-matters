@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
 import { View, TouchableOpacity, StyleSheet } from 'react-native';
 import { Feather } from '@expo/vector-icons';
-import { DESIGN_TOKENS, PLATFORM_STYLE } from '@money-matters/ui/mobile';
+import { DESIGN_TOKENS, PLATFORM_STYLE } from '@kaesava/ui/mobile';
 import { QuickExpenseModal } from './QuickExpenseModal';
 
 import { triggerHaptic } from '../lib/haptics';
-import { t } from '@money-matters/i18n';
+import { t } from '@kaesava/i18n';
 import { useMobileProductTour } from '../context/ProductTourContext';
 
 export interface QuickActionFabProps {

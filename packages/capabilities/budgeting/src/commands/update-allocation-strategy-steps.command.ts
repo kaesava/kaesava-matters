@@ -1,5 +1,5 @@
-import { DbOrTx, allocationStrategies, allocationStrategySteps, envelopes, bankAccounts } from "@money-matters/db";
-import { AllocationStepType, detectMatchingAllocationPreset } from "@money-matters/types";
+import { DbOrTx, allocationStrategies, allocationStrategySteps, envelopes, bankAccounts } from "@kaesava/db";
+import { AllocationStepType, detectMatchingAllocationPreset } from "@kaesava/types";
 import { eq, and, isNull, ne, sql } from "drizzle-orm";
 
 export interface StrategyStepInputItem {

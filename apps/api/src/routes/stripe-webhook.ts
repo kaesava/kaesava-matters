@@ -1,5 +1,5 @@
-import { createDbClient } from '@money-matters/core';
-import { handleStripeWebhook } from '@money-matters/capability-billing';
+import { createDbClient } from '@kaesava/core';
+import { handleStripeWebhook } from '@kaesava/capability-billing';
 
 export interface StripeWebhookEnv {
   DATABASE_URL?: string;

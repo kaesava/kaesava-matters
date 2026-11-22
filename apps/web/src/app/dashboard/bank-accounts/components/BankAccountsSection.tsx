@@ -1,9 +1,9 @@
 "use client";
 
 import React from "react";
-import { t } from "@money-matters/i18n";
+import { t } from "@kaesava/i18n";
 import { trpc } from "../../../../lib/trpc";
-import { InfoTooltip, SearchInput, RecordFilterBadge } from "@money-matters/ui/web";
+import { InfoTooltip, SearchInput, RecordFilterBadge } from "@kaesava/ui/web";
 import { PoolPicker } from "@money-matters/capability-budgeting/web";
 import { BankAccountTable } from "./BankAccountTable";
 import { BankAccountFormModal } from "./BankAccountFormModal";
@@ -11,7 +11,7 @@ import { SyncBalanceModal } from "../../../../components/SyncBalanceModal";
 import { QuickExpenseDrawer } from "../../../../components/web/QuickExpenseDrawer";
 import { useLocale } from "../../../../providers/LocaleProvider";
 import { useAppFeatures } from "../../../../hooks/useAppFeatures";
-import { FileNotesDrawer } from "@money-matters/capability-file-notes/web";
+import { FileNotesDrawer } from "@kaesava/capability-file-notes/web";
 import { useBankAccountsList } from "./useBankAccountsList";
 
 export function BankAccountsSection() {

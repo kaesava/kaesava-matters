@@ -1,8 +1,8 @@
 import { inngest } from "./client.js";
-import { db, tenants } from "@money-matters/db";
+import { db, tenants } from "@kaesava/db";
 import { and, eq, isNull } from "drizzle-orm";
 import { maintainRollingWindowCommand } from "@money-matters/capability-budgeting";
-import { logger } from "@money-matters/core";
+import { logger } from "@kaesava/core";
 import { MONEY_MATTERS_APP_ID } from "../trpc/edge-context.js";
 
 export const maintainRollingWindowWorkflow = inngest.createFunction(

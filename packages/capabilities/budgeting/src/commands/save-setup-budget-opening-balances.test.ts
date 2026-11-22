@@ -1,10 +1,10 @@
-import type { DbOrTx } from "@money-matters/db";
+import type { DbOrTx } from "@kaesava/db";
 import { describe, it, expect, vi } from "vitest";
 import { saveSetupBudgetHandler } from "./save-setup-budget.command";
-import { transactionLedger, bankAccounts, envelopes, tenants } from "@money-matters/db";
+import { transactionLedger, bankAccounts, envelopes, tenants } from "@kaesava/db";
 
-vi.mock("@money-matters/db", async (importOriginal) => {
-  const actual = await importOriginal<typeof import("@money-matters/db")>();
+vi.mock("@kaesava/db", async (importOriginal) => {
+  const actual = await importOriginal<typeof import("@kaesava/db")>();
   return {
     ...actual,
     getEnvelopeBalancesMap: vi.fn().mockResolvedValue({}),

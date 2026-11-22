@@ -36,7 +36,7 @@ function getJwks(jwksUrl?: string): ReturnType<typeof createRemoteJWKSet> {
  * Verifies a Neon Auth (Better Auth) JWT and returns the raw identity claims.
  *
  * IMPORTANT: This function performs NO database queries and has NO dependency on
- * @money-matters/db. Tenant resolution (userId → tenantId) happens in the
+ * @kaesava/db. Tenant resolution (userId → tenantId) happens in the
  * API layer's createContext() after this call returns.
  *
  * Returns null if the token is missing, expired, or fails signature verification.

@@ -3,8 +3,8 @@
 import React, { useState, useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { X } from "lucide-react";
-import { useToast, RecordFilterBadge } from "@money-matters/ui/web";
-import { t } from "@money-matters/i18n";
+import { useToast, RecordFilterBadge } from "@kaesava/ui/web";
+import { t } from "@kaesava/i18n";
 
 import { trpc } from "../../../lib/trpc";
 import posthog from "../../../lib/posthog-client";

@@ -4,11 +4,11 @@ import {
   allocationPlans,
   allocationPlanLines,
   DbOrTx,
-} from "@money-matters/db";
+} from "@kaesava/db";
 import { eq, and, sql } from "drizzle-orm";
 import { previewAllocationQuery } from "./preview-allocation.query.js";
 
-import { bankAccounts } from "@money-matters/db";
+import { bankAccounts } from "@kaesava/db";
 
 export async function previewPaydayQuery(
   incomeEventId: string,

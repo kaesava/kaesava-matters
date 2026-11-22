@@ -1,9 +1,9 @@
 'use client';
 
 import React, { useEffect, useRef } from 'react';
-import { DESIGN_TOKENS } from '@money-matters/ui/tokens';
-import { t } from '@money-matters/i18n';
-import type { TargetCelebrationItem } from '@money-matters/types';
+import { DESIGN_TOKENS } from '@kaesava/ui/tokens';
+import { t } from '@kaesava/i18n';
+import type { TargetCelebrationItem } from '@kaesava/types';
 
 export interface CelebrationBannerProps {
   readonly targetsHit: readonly TargetCelebrationItem[];

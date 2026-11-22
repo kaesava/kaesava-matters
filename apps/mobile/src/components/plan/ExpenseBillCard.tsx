@@ -1,8 +1,8 @@
 import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { useRouter, type Href } from 'expo-router';
-import { CardDrawerIndicator, EntityLinkChip, SwipeableCard, DESIGN_TOKENS } from '@money-matters/ui/mobile';
-import { t } from '@money-matters/i18n';
+import { CardDrawerIndicator, EntityLinkChip, SwipeableCard, DESIGN_TOKENS } from '@kaesava/ui/mobile';
+import { t } from '@kaesava/i18n';
 import { formatMobileCurrency, formatScheduleDetail } from '../../lib/format';
 
 export interface ExpenseSourceItem {

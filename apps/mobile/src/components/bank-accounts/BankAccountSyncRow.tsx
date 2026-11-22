@@ -1,8 +1,8 @@
 import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
-import { DESIGN_TOKENS } from '@money-matters/ui/mobile';
+import { DESIGN_TOKENS } from '@kaesava/ui/mobile';
 import { formatMobileCurrency } from '../../lib/format';
-import { t } from '@money-matters/i18n';
+import { t } from '@kaesava/i18n';
 
 export interface BankAccountSyncRowProps {
   linkedPoolsCount: number;

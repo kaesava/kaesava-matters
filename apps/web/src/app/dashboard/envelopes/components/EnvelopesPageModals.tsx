@@ -1,7 +1,7 @@
 "use client";
 
-import { ConfirmDialog } from "@money-matters/ui/web";
-import { t } from "@money-matters/i18n";
+import { ConfirmDialog } from "@kaesava/ui/web";
+import { t } from "@kaesava/i18n";
 import { trpc } from "../../../../lib/trpc";
 import { QuickExpenseDrawer as QuickActionDrawer } from "../../../../components/web/QuickExpenseDrawer";
 import { EnvelopeFormModal } from "../../../../components/web/EnvelopeFormModal";

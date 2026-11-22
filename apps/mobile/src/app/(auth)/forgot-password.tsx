@@ -9,8 +9,8 @@ import {
 } from "react-native";
 import { useRouter } from "expo-router";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { t } from "@money-matters/i18n";
-import { DESIGN_TOKENS, PLATFORM_STYLE } from "@money-matters/ui/mobile";
+import { t } from "@kaesava/i18n";
+import { DESIGN_TOKENS, PLATFORM_STYLE } from "@kaesava/ui/mobile";
 import { ForgotPasswordEmailStep } from "../../components/auth/ForgotPasswordEmailStep";
 import { ForgotPasswordOtpStep } from "../../components/auth/ForgotPasswordOtpStep";
 import { ForgotPasswordSuccessStep } from "../../components/auth/ForgotPasswordSuccessStep";

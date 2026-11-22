@@ -1,9 +1,9 @@
 "use client";
 
 import React from "react";
-import { Button, FormFieldError, InfoTooltip, LocationFields } from "@money-matters/ui/web";
-import { SUPPORTED_CURRENCIES, COMMON_TIMEZONES } from "@money-matters/types";
-import { t } from "@money-matters/i18n";
+import { Button, FormFieldError, InfoTooltip, LocationFields } from "@kaesava/ui/web";
+import { SUPPORTED_CURRENCIES, COMMON_TIMEZONES } from "@kaesava/types";
+import { t } from "@kaesava/i18n";
 
 interface HouseholdEditFormProps {
   householdName: string;

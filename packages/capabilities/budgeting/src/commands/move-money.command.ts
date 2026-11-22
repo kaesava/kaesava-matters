@@ -1,7 +1,7 @@
-import { transactionLedger, envelopes, bankAccounts, DbOrTx, getEnvelopeBalancesMap } from "@money-matters/db";
+import { transactionLedger, envelopes, bankAccounts, DbOrTx, getEnvelopeBalancesMap } from "@kaesava/db";
 import { eq, and } from "drizzle-orm";
 import { z } from "zod";
-import { MoveMoneyCommand } from "@money-matters/types";
+import { MoveMoneyCommand } from "@kaesava/types";
 import { randomUUID } from "crypto";
 
 export async function moveMoneyCommand(

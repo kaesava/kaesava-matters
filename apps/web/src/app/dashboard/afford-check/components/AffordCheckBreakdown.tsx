@@ -1,8 +1,8 @@
 'use client';
 
 import { useState } from 'react';
-import { t } from '@money-matters/i18n';
-import { CanAffordVerdictType } from '@money-matters/types';
+import { t } from '@kaesava/i18n';
+import { CanAffordVerdictType } from '@kaesava/types';
 import { ChevronDown, ChevronUp, FileText } from 'lucide-react';
 import { useLocale } from '../../../../providers/LocaleProvider';
 

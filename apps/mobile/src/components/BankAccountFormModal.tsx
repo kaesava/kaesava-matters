@@ -14,8 +14,8 @@ import {
   FormErrorBanner,
   SwitchRow,
   showMobileConfirm,
-} from '@money-matters/ui/mobile';
-import { t } from '@money-matters/i18n';
+} from '@kaesava/ui/mobile';
+import { t } from '@kaesava/i18n';
 import { useAppFeatures } from '../context/useAppFeatures';
 import { BankAccountBalanceCard } from './bank-accounts/BankAccountBalanceCard';
 import {

@@ -1,7 +1,7 @@
 "use client";
 
-import { PaginationBar, SkeletonTable } from "@money-matters/ui/web";
-import { t } from "@money-matters/i18n";
+import { PaginationBar, SkeletonTable } from "@kaesava/ui/web";
+import { t } from "@kaesava/i18n";
 import { useLocale } from "../../../../providers/LocaleProvider";
 import { PoolTableRow } from "../types";
 import { EnvelopeTableRowItem } from "./EnvelopeTableRowItem";

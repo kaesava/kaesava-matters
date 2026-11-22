@@ -5,8 +5,8 @@ import { EnvelopeDetailDrawer } from "./EnvelopeDetailDrawer";
 import { EditUpcomingEventModal } from "../../../../components/web/EditUpcomingEventModal";
 import type { TimelineEventItem } from "./timeline/types";
 import { trpc } from "../../../../lib/trpc";
-import { t } from "@money-matters/i18n";
-import { InfoTooltip, ConfirmDialog } from "@money-matters/ui/web";
+import { t } from "@kaesava/i18n";
+import { InfoTooltip, ConfirmDialog } from "@kaesava/ui/web";
 import { useLocale } from "../../../../providers/LocaleProvider";
 import {
   useHorizonPlanData,

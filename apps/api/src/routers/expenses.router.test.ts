@@ -1,6 +1,6 @@
 import type { createEdgeContext } from "../trpc/edge-context";
 import { describe, it, expect } from "vitest";
-import type { DbOrTx } from "@money-matters/db";
+import type { DbOrTx } from "@kaesava/db";
 import { appRouter } from "./_app.js";
 
 function createMockDb(): DbOrTx {

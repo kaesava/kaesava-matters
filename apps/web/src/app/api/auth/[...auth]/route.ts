@@ -1,6 +1,6 @@
 import { NextRequest } from "next/server";
 import { getCloudflareContext } from "@opennextjs/cloudflare";
-import { logger } from "@money-matters/core";
+import { logger } from "@kaesava/core";
 import { enforceAuthProxyRateLimit, type RateLimitEnv } from "./rateLimitAuth";
 
 export async function GET(req: NextRequest) {

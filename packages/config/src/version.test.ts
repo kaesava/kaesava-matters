@@ -1,6 +1,6 @@
 import { describe, it, expect } from "vitest";
 import { buildAppVersionInfo, getFormattedVersionString } from "./version";
-import { AppVersionInfo } from "@money-matters/types";
+import { AppVersionInfo } from "@kaesava/types";
 
 describe("Version Config Utilities", () => {
   it("formats version info into readable string", () => {

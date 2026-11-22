@@ -1,9 +1,9 @@
 import { privateTenantProcedure } from '../trpc/trpc.js';
 import { canAffordSimulationQuery } from '@money-matters/capability-simulation';
 import { runCumulativeProjection, getActiveAllocationStrategyQuery } from '@money-matters/capability-budgeting';
-import { CanAffordQuery } from '@money-matters/types';
-import { resolveEffectiveAppFlags } from '@money-matters/config';
-import { apps } from '@money-matters/db';
+import { CanAffordQuery } from '@kaesava/types';
+import { resolveEffectiveAppFlags } from '@kaesava/config';
+import { apps } from '@kaesava/db';
 import { eq } from 'drizzle-orm';
 import { TRPCError } from '@trpc/server';
 
@@ -44,7 +44,7 @@ export const simulationRouter = {
             targetEnvelopeId: s.targetEnvelopeId,
             config: s.config as Record<string, unknown> | null,
           })),
-        })) as unknown as import('@money-matters/types').ProjectionEngineFn;
+        })) as unknown as import('@kaesava/types').ProjectionEngineFn;
 
       return await canAffordSimulationQuery(
         input,

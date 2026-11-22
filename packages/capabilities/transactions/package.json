@@ -1,5 +1,5 @@
 {
-  "name": "@money-matters/capability-transactions",
+  "name": "@kaesava/capability-transactions",
   "version": "0.1.0",
   "private": true,
   "type": "module",
@@ -13,7 +13,7 @@
     }
   },
   "dependencies": {
-    "@money-matters/types": "workspace:*",
+    "@kaesava/types": "workspace:*",
     "zod": "^3.23.8"
   },
   "devDependencies": {

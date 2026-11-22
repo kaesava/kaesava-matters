@@ -4,7 +4,7 @@ import { useEffect, useState, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import { authClient } from "../../lib/auth";
 import { trpc } from "../../lib/trpc";
-import { t } from "@money-matters/i18n";
+import { t } from "@kaesava/i18n";
 
 interface ExchangedSessionPayload {
   user?: { id?: string } | null;

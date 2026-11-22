@@ -13,10 +13,10 @@
     }
   },
   "dependencies": {
-    "@money-matters/core": "workspace:*",
-    "@money-matters/db": "workspace:*",
-    "@money-matters/i18n": "workspace:*",
-    "@money-matters/types": "workspace:*",
+    "@kaesava/core": "workspace:*",
+    "@kaesava/db": "workspace:*",
+    "@kaesava/i18n": "workspace:*",
+    "@kaesava/types": "workspace:*",
     "drizzle-orm": "^0.39.0",
     "zod": "^3.23.8"
   },

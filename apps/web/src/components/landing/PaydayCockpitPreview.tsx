@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { t } from "@money-matters/i18n";
+import { t } from "@kaesava/i18n";
 import { useLocale } from "../../providers/LocaleProvider";
 import { ShieldCheck, Target, ShoppingBag, Sparkles, Lock } from "lucide-react";
 

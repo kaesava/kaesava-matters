@@ -5,7 +5,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { trpc } from "../../../../lib/trpc";
 import { useSubscriptionStatus } from "../../../../hooks/useSubscriptionStatus";
 import type { BankAccountItem, CategoryType } from "./BankAccountTable";
-import type { AccountType } from "@money-matters/types";
+import type { AccountType } from "@kaesava/types";
 
 export function useBankAccountsList() {
   const router = useRouter();

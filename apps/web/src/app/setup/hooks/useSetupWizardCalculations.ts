@@ -6,7 +6,7 @@ import {
   EstimatedCategoryItem,
   UserGoalItem,
   computeSetupWizardCalculations,
-} from "@money-matters/types";
+} from "@kaesava/types";
 
 interface CalculationsProps {
   quizAnswers: QuizAnswers;

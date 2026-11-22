@@ -1,16 +1,16 @@
 "use client";
 import React, { useState, useCallback, useEffect } from "react";
 import { useRouter, usePathname } from "next/navigation";
-import { t, setLanguage } from "@money-matters/i18n";
+import { t, setLanguage } from "@kaesava/i18n";
 import { authClient } from "../../lib/auth";
 import posthog from "../../lib/posthog-client";
 
 import { TrialBanner } from "../../components/TrialBanner";
 import { useSubscriptionStatus } from "../../hooks/useSubscriptionStatus";
 import { useAppFeatures } from "../../hooks/useAppFeatures";
-import { Spinner } from "@money-matters/ui/web";
+import { Spinner } from "@kaesava/ui/web";
 import { useNetworkStatus } from "../../providers/AppProviders";
-import type { QuickActionInitialData } from "@money-matters/types";
+import type { QuickActionInitialData } from "@kaesava/types";
 import { trpc } from "../../lib/trpc";
 import { SidebarContent } from "./components/SidebarContent";
 import { DashboardDesktopSidebar } from "./components/DashboardDesktopSidebar";

@@ -1,4 +1,4 @@
-import { EnvelopeType, FundingMode } from "@money-matters/types";
+import { EnvelopeType, FundingMode } from "@kaesava/types";
 import { EngineBucket, BucketType } from "./allocation-engine.js";
 
 export function isBillsBucket(b: { type?: string; envelopeType?: EnvelopeType }): boolean {

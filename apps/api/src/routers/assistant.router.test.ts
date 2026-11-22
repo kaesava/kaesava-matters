@@ -1,12 +1,12 @@
 import { describe, it, expect, vi } from "vitest";
-import type { DbOrTx } from "@money-matters/db";
-import * as dbModule from "@money-matters/db";
+import type { DbOrTx } from "@kaesava/db";
+import * as dbModule from "@kaesava/db";
 import { appRouter } from "./_app.js";
 import { createAssistantIntentHandler } from "./assistant-adapters.js";
 import type { createEdgeContext } from "../trpc/edge-context";
 
-vi.mock("@money-matters/db", async (importOriginal) => {
-  const actual = await importOriginal<typeof import("@money-matters/db")>();
+vi.mock("@kaesava/db", async (importOriginal) => {
+  const actual = await importOriginal<typeof import("@kaesava/db")>();
   return {
     ...actual,
     getEnvelopeBalancesMap: vi.fn().mockResolvedValue({ "env-everyday-1": 450, "env-goal-1": 1200 }),

@@ -7,7 +7,7 @@ description: Critical architecture interrogation and unambiguous implementation 
 
 1. **Read Canonical Registries First (Token Optimization & Zero Hallucination):**
    * Ground all architectural choices in `AGENTS.md` and read the MECE registries **before** scanning the codebase:
-     - `FUNCTIONAL_CAPABILITIES_INVENTORY.md`: Web/Mobile routes, Modals/Drawers/Confirm Dialogs, Screen-by-Screen Parity Matrix, `@money-matters/ui` primitives, and `@money-matters/i18n` dictionary namespaces.
+     - `FUNCTIONAL_CAPABILITIES_INVENTORY.md`: Web/Mobile routes, Modals/Drawers/Confirm Dialogs, Screen-by-Screen Parity Matrix, `@kaesava/ui` primitives, and `@kaesava/i18n` dictionary namespaces.
      - `TECHNICAL_SPEC.md` (`§9–§10`): All 12 tRPC routers / 103 procedures, HTTP/webhook endpoints, Inngest workflows, and feature flags.
      - `SCHEMA_DATA_DICTIONARY.md`: All 23 Drizzle tables, columns, RLS policies (`ENABLE`/`FORCE`), session variables, and table consumers.
      - `FUNCTIONAL_SPEC.md`: Two-Horizon Waterfall math, 12-Month projection rules, and simulation formulas.

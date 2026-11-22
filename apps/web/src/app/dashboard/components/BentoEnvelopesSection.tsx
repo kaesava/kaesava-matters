@@ -1,8 +1,8 @@
 'use client';
 
 import React from 'react';
-import { t } from '@money-matters/i18n';
-import { InfoTooltip } from '@money-matters/ui/web';
+import { t } from '@kaesava/i18n';
+import { InfoTooltip } from '@kaesava/ui/web';
 import { BillCoverageBadge } from './BillCoverageBadge';
 import { useLocale } from '../../../providers/LocaleProvider';
 

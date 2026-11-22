@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, StyleSheet, Text } from 'react-native';
-import { SkeletonCard, MobilePaginationBar, DESIGN_TOKENS } from '@money-matters/ui/mobile';
-import { t } from '@money-matters/i18n';
+import { SkeletonCard, MobilePaginationBar, DESIGN_TOKENS } from '@kaesava/ui/mobile';
+import { t } from '@kaesava/i18n';
 import { IncomeSourceCard, IncomeSourceItem } from './IncomeSourceCard';
 import { ExpenseBillCard, ExpenseSourceItem } from './ExpenseBillCard';
 import { SourceToEdit } from '../IncomeExpenseFormModal';

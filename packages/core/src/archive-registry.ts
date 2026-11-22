@@ -1,4 +1,4 @@
-import type { ArchivableEntityAdapter, ArchivableItemSummary } from "@money-matters/types";
+import type { ArchivableEntityAdapter, ArchivableItemSummary } from "@kaesava/types";
 
 export const CASCADE_ARCHIVE_WINDOW_MS = 2000;
 

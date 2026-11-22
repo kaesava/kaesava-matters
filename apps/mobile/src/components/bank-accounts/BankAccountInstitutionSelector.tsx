@@ -1,12 +1,12 @@
 import React from 'react';
 import { View, Text, TouchableOpacity, ScrollView, StyleSheet } from 'react-native';
-import { FormLabel, MobileInput, DESIGN_TOKENS } from '@money-matters/ui/mobile';
-import { t } from '@money-matters/i18n';
+import { FormLabel, MobileInput, DESIGN_TOKENS } from '@kaesava/ui/mobile';
+import { t } from '@kaesava/i18n';
 import {
   ACCOUNT_TYPES,
   type AccountType,
   ACCOUNT_TYPE_LABELS,
-} from '@money-matters/types';
+} from '@kaesava/types';
 
 interface BankAccountInstitutionSelectorProps {
   provider: string;

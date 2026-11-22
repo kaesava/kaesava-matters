@@ -11,14 +11,14 @@ import {
 import * as DocumentPicker from 'expo-document-picker';
 import * as ImagePicker from 'expo-image-picker';
 import { Feather } from '@expo/vector-icons';
-import { t } from '@money-matters/i18n';
+import { t } from '@kaesava/i18n';
 import {
   DESIGN_TOKENS,
   MobileModalDialog,
   showMobileConfirm,
   useDateLocale,
   fmtDate,
-} from '@money-matters/ui/mobile';
+} from '@kaesava/ui/mobile';
 import { useFileNotesService } from '../context.js';
 import { styles } from './NotesFeedModal.styles.js';
 

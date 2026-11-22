@@ -4,7 +4,7 @@ import type {
   ScheduleOccurrenceRecord,
   ScheduleSeriesDefinition,
   SeriesEditPlan,
-} from "@money-matters/types";
+} from "@kaesava/types";
 
 interface ParsedRule {
   freq: "WEEKLY" | "MONTHLY" | "YEARLY";

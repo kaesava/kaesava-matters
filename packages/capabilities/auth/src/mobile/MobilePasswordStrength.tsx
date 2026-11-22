@@ -1,8 +1,8 @@
 import React from "react";
 import { View, Text, StyleSheet } from "react-native";
-import { evaluatePasswordStrength } from "@money-matters/types";
-import { t } from "@money-matters/i18n";
-import { DESIGN_TOKENS } from "@money-matters/ui/mobile";
+import { evaluatePasswordStrength } from "@kaesava/types";
+import { t } from "@kaesava/i18n";
+import { DESIGN_TOKENS } from "@kaesava/ui/mobile";
 
 interface MobilePasswordStrengthProps {
   password: string;

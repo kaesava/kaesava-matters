@@ -3,16 +3,16 @@
 import React, { Suspense, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
-import { t } from "@money-matters/i18n";
+import { t } from "@kaesava/i18n";
 import {
   Button,
   FormLabel,
   FormFieldError,
   FormErrorBanner,
-} from "@money-matters/ui/web";
-import { evaluatePasswordStrength } from "@money-matters/types";
+} from "@kaesava/ui/web";
+import { evaluatePasswordStrength } from "@kaesava/types";
 import { authClient } from "../../lib/auth";
-import { PasswordStrengthIndicator } from "@money-matters/capability-auth/web";
+import { PasswordStrengthIndicator } from "@kaesava/capability-auth/web";
 
 function ResetPasswordForm() {
   const router = useRouter();

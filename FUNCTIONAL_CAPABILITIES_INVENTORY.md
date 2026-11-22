@@ -1,7 +1,7 @@
 # FUNCTIONAL_CAPABILITIES_INVENTORY.md — Canonical UI, Route, Modal, i18n & Web/Mobile Parity Registry
 
 > **Purpose & Agent Protocol (Token Optimization & Zero Hallucination):**  
-> This file is the **single source of truth** for every Web route, Mobile route, Modal/Drawer/Bottom Sheet, Confirm Dialog, Screen-by-Screen Web/Mobile Parity mapping, `@money-matters/ui` primitive export, and `@money-matters/i18n` dictionary namespace.  
+> This file is the **single source of truth** for every Web route, Mobile route, Modal/Drawer/Bottom Sheet, Confirm Dialog, Screen-by-Screen Web/Mobile Parity mapping, `@kaesava/ui` primitive export, and `@kaesava/i18n` dictionary namespace.  
 > - **Before planning or building:** Read this registry first instead of running broad repo-wide file/grep scans.  
 > - **After every feature build:** Update the exact affected rows in this file whenever a route, screen, modal, UI primitive, or i18n namespace is added, modified, or removed.  
 > - **Zero Redundancy Rule:** Domain math and waterfall/simulation algorithms live in `FUNCTIONAL_SPEC.md`; tRPC procedures, HTTP endpoints, Inngest workflows, and feature flags live in `TECHNICAL_SPEC.md`; database tables, columns, RLS policies, and consumers live in `SCHEMA_DATA_DICTIONARY.md`.
@@ -10,13 +10,13 @@
 
 ## 1. Cross-Platform UX & Component Invariants (Quick Reference)
 
-| Dimension | Web (`apps/web` + `@money-matters/ui/web`) | Mobile (`apps/mobile` + `@money-matters/ui/mobile`) |
+| Dimension | Web (`apps/web` + `@kaesava/ui/web`) | Mobile (`apps/mobile` + `@kaesava/ui/mobile`) |
 | :--- | :--- | :--- |
 | **Primary Primitives** | `Button`, `FormLabel`, `FormFieldError`, `FormErrorBanner`, `ModalDialog`, `SlideOverDrawer`, `ConfirmDialog`, `TypedConfirmDialog`, `AmountField`, `DatePickerField`, `GenericSelectField`, `PaginationBar`, `SkeletonTable`, `SearchInput`, `PlatformSettingsShell` | `MobileButton`, `MobileInput`, `FormLabel`, `FormFieldError`, `FormErrorBanner`, `AmountInput`, `ChipSelect`, `MobileModalDialog`, `MobileConfirmDialog`, `showMobileConfirm`, `MobilePaginationBar`, `BankProviderBadge`, `MobileEnvelopePicker`, `SkeletonCard` |
 | **Modals & Dirty State** | `ModalDialog` / `SlideOverDrawer` with LIFO `Escape` stack (`modalStack.ts`), `< sm` bottom-sheet layout (`max-h-[92dvh]`, safe-area footer), and `isDirty` discard confirmation via `ConfirmDialog`. Native `confirm()` is banned. | `MobileModalDialog` bottom-sheet with Android back-button interception and `isDirty` discard confirmation via `MobileConfirmDialog` (`showMobileConfirm`). Native `Alert.alert` is banned. |
 | **Forms & Inputs** | Standard `h-10` height; `text-base md:text-sm` to prevent iOS Safari focus zoom; first editable field has `autoFocus`; submit disabled while `!isDirty \|\| !isValid`; loading spinner on mutation. | `44dp` minimum touch target; first editable field focused; `AmountInput` uses `selectTextOnFocus`; submit disabled while `!isDirty \|\| !isValid`. |
 | **Tables, Cards & Pagination** | Left: text/names; Center: dates/badges/actions; Right: `font-mono tabular-nums` amounts. Render `PaginationBar` only when `totalItems >= 5`. | Structured cards with `SkeletonCard` loading state. Render `MobilePaginationBar` only when `totalItems >= 5`. |
-| **Formatting & i18n** | 100% strings from `@money-matters/i18n` (`en.ts`). Currency via `useCurrencyLocale()`; dates via `fmtDate` / `fmtDateMedium` in user presentation timezone. | 100% strings from `@money-matters/i18n` (`en.ts`). Currency via `formatMobileCurrency`; dates via `formatDate` in user presentation timezone. |
+| **Formatting & i18n** | 100% strings from `@kaesava/i18n` (`en.ts`). Currency via `useCurrencyLocale()`; dates via `fmtDate` / `fmtDateMedium` in user presentation timezone. | 100% strings from `@kaesava/i18n` (`en.ts`). Currency via `formatMobileCurrency`; dates via `formatDate` in user presentation timezone. |
 
 ---
 
@@ -111,7 +111,7 @@
 
 | Component / Dialog Name | File Path | Lines | Primitive Used | Notes / Status |
 | :--- | :--- | ---: | :--- | :--- |
-| `CommandPaletteModal` | `packages/ui/src/web/CommandPaletteModal.tsx` | 290 | `createPortal` modal | Shared in `@money-matters/ui/web` (`⌘K` / `/` search across Accounts, Envelopes, `PENDING` Events, Pages/Actions, Transactions + Smart Priority Ask Penny AI with `CommandPaletteResultsList.tsx` & `CommandPaletteActionRow.tsx`) |
+| `CommandPaletteModal` | `packages/ui/src/web/CommandPaletteModal.tsx` | 290 | `createPortal` modal | Shared in `@kaesava/ui/web` (`⌘K` / `/` search across Accounts, Envelopes, `PENDING` Events, Pages/Actions, Transactions + Smart Priority Ask Penny AI with `CommandPaletteResultsList.tsx` & `CommandPaletteActionRow.tsx`) |
 | `FileNotesDrawer` | `packages/capabilities/file-notes/src/web/FileNotesDrawer.tsx` | 316 | `SlideOverDrawer`, `ConfirmDialog` | Shared capability drawer for attaching/viewing PDF/image notes |
 | `QuickActionDrawer` (`QuickExpenseDrawer`) | `apps/web/src/components/web/QuickExpenseDrawer.tsx` | 371 | `SlideOverDrawer`, `ConfirmDialog` | Renders `CrossBankTransferModal` and `MarkPaidModal` |
 | `EnvelopeFormModal` | `apps/web/src/components/web/EnvelopeFormModal.tsx` | 383 | `ModalDialog`, `EnvelopeFormConfirmDialogs` (`ConfirmDialog` x3, `CrossBankTransferModal`) | Merged Create/Edit envelope & bill schedule modal (`isEdit`), same-privacy bank re-linking |
@@ -148,7 +148,7 @@
 
 | Component / Dialog Name | File Path | Lines | Primitive Used | Notes / Status |
 | :--- | :--- | ---: | :--- | :--- |
-| `MobileCommandPaletteSheet` | `packages/ui/src/mobile/MobileCommandPaletteSheet.tsx` | 253 | `MobileModalDialog` | Shared in `@money-matters/ui/mobile` (globally mounted via `CommandPaletteProvider` + `AppScreenWrapper` header trigger; Smart Priority search + Ask Penny AI with `MobileCommandPaletteSections.tsx`) |
+| `MobileCommandPaletteSheet` | `packages/ui/src/mobile/MobileCommandPaletteSheet.tsx` | 253 | `MobileModalDialog` | Shared in `@kaesava/ui/mobile` (globally mounted via `CommandPaletteProvider` + `AppScreenWrapper` header trigger; Smart Priority search + Ask Penny AI with `MobileCommandPaletteSections.tsx`) |
 | `MobileEnvelopeDetailSheet` | `packages/ui/src/mobile/MobileEnvelopeDetailSheet.tsx` | 325 | `MobileModalDialog` | Shared envelope detail bottom sheet |
 | `MobileFileNotesSheet` / `NotesFeedModal` | `packages/capabilities/file-notes/src/mobile/MobileFileNotesSheet.tsx` (369L) / `NotesFeedModal.tsx` (456L) | 369 / 456 | `MobileModalDialog`, `showMobileConfirm` | Shared capability bottom sheet for file notes |
 | `QuickExpenseModal` | `apps/mobile/src/components/QuickExpenseModal.tsx` | 229 | `MobileModalDialog`, `showMobileConfirm` | 3-tab quick action sheet (`QuickExpenseTab`, `QuickIncomeTab`, `QuickTransferTab`) |
@@ -197,17 +197,17 @@
 
 ---
 
-## 6. `@money-matters/ui` Shared Primitives & Entrypoints Inventory
+## 6. `@kaesava/ui` Shared Primitives & Entrypoints Inventory
 
 ### 6.1 Package Entrypoints (`packages/ui/package.json`)
-- `@money-matters/ui` (`.`) → `packages/ui/src/index.ts` (re-exports `DESIGN_TOKENS`, shared hooks/formatters/dates, and `./web/index`).
-- `@money-matters/ui/web` (`./web`) → `packages/ui/src/web/index.ts` (exported symbols across modals, drawers, form inputs, tables, `PlatformSettingsShell`, `AppThemeProvider`, charts, `HouseholdContributionSection`, and providers).
-- `@money-matters/ui/mobile` (`./mobile`) → `packages/ui/src/mobile/index.ts` (exported symbols across native bottom-sheet modals (Android-tuned via `PLATFORM_STYLE`), `MobileLinkButton`, `MobileDetailLinkRow`, `AppThemeProvider`, `useKeyboardInset`, native `DatePickerField`, bottom-sheet `InfoTooltip`, inputs, pickers, charts, `MobileHouseholdContributionSection`, and providers).
-- `@money-matters/ui/tokens` (`./tokens`) → `packages/ui/src/tokens.ts` (`DESIGN_TOKENS`).
+- `@kaesava/ui` (`.`) → `packages/ui/src/index.ts` (re-exports `DESIGN_TOKENS`, shared hooks/formatters/dates, and `./web/index`).
+- `@kaesava/ui/web` (`./web`) → `packages/ui/src/web/index.ts` (exported symbols across modals, drawers, form inputs, tables, `PlatformSettingsShell`, `AppThemeProvider`, charts, `HouseholdContributionSection`, and providers).
+- `@kaesava/ui/mobile` (`./mobile`) → `packages/ui/src/mobile/index.ts` (exported symbols across native bottom-sheet modals (Android-tuned via `PLATFORM_STYLE`), `MobileLinkButton`, `MobileDetailLinkRow`, `AppThemeProvider`, `useKeyboardInset`, native `DatePickerField`, bottom-sheet `InfoTooltip`, inputs, pickers, charts, `MobileHouseholdContributionSection`, and providers).
+- `@kaesava/ui/tokens` (`./tokens`) → `packages/ui/src/tokens.ts` (`DESIGN_TOKENS`).
 
 ---
 
-## 7. `@money-matters/i18n` Dictionary Files & Namespace Inventory (`2,047` Leaf Keys)
+## 7. `@kaesava/i18n` Dictionary Files & Namespace Inventory (`2,047` Leaf Keys)
 
 All user-facing copy lives in `packages/i18n/src/dictionaries/en/*.ts` (re-exported via `packages/i18n/src/dictionaries/en.ts`).
 

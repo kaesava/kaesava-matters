@@ -1,8 +1,8 @@
 import { useState, useEffect, useMemo, useCallback } from 'react';
-import { validateShortfallAllocations } from '@money-matters/types';
+import { validateShortfallAllocations } from '@kaesava/types';
 import { trpc } from '../../lib/trpc';
-import { useMobileToast } from '@money-matters/ui/mobile';
-import { t } from '@money-matters/i18n';
+import { useMobileToast } from '@kaesava/ui/mobile';
+import { t } from '@kaesava/i18n';
 import { triggerHaptic } from '../../lib/haptics';
 import { formatIsoDate } from '../../lib/format';
 import { MarkPaidEvent, FundingPoolItem } from './mark-paid-types';

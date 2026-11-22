@@ -1,4 +1,4 @@
-import { DEFAULT_TIMEZONE, DEFAULT_LOCALE } from "@money-matters/types";
+import { DEFAULT_TIMEZONE, DEFAULT_LOCALE } from "@kaesava/types";
 /**
  * Mobile Locale & Timezone Configuration
  *

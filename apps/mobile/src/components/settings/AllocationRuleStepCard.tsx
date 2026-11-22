@@ -1,9 +1,9 @@
 import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import { Feather } from '@expo/vector-icons';
-import { t, ALLOCATION_STEP_TYPE_KEYS, ALLOCATION_STEP_DESC_KEYS } from '@money-matters/i18n';
-import { DESIGN_TOKENS, FormLabel } from '@money-matters/ui/mobile';
-import { AllocationStepType } from '@money-matters/types';
+import { t, ALLOCATION_STEP_TYPE_KEYS, ALLOCATION_STEP_DESC_KEYS } from '@kaesava/i18n';
+import { DESIGN_TOKENS, FormLabel } from '@kaesava/ui/mobile';
+import { AllocationStepType } from '@kaesava/types';
 
 export interface EditableAllocationStep {
   id?: string;

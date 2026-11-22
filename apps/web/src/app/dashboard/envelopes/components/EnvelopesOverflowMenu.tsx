@@ -3,7 +3,7 @@
 import { useRef, useEffect } from "react";
 import Link from "next/link";
 import { MoreVertical, ArrowDownCircle, ArrowUpCircle, ArrowRightLeft, TrendingUp, SlidersHorizontal, Archive } from "lucide-react";
-import { t } from "@money-matters/i18n";
+import { t } from "@kaesava/i18n";
 
 interface EnvelopesOverflowMenuProps {
   overflowMenuOpen: boolean;

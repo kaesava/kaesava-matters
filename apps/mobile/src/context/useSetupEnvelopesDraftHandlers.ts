@@ -1,7 +1,7 @@
 import { useState } from 'react';
-import { t } from '@money-matters/i18n';
-import { useMobileToast, showMobileConfirm } from '@money-matters/ui/mobile';
-import type { EstimatedCategoryItem } from '@money-matters/types';
+import { t } from '@kaesava/i18n';
+import { useMobileToast, showMobileConfirm } from '@kaesava/ui/mobile';
+import type { EstimatedCategoryItem } from '@kaesava/types';
 import type { EnvelopeDraftPayload, EnvelopeItem } from '../components/EnvelopeFormModal';
 import { useSetupWizard } from './SetupWizardContext';
 

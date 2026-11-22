@@ -2,7 +2,7 @@
 
 import React, { useEffect } from 'react';
 import { createPortal } from 'react-dom';
-import { t } from '@money-matters/i18n';
+import { t } from '@kaesava/i18n';
 import { X, ArrowRight, ArrowLeft, Check, Sparkles } from 'lucide-react';
 import { Button } from './Button';
 

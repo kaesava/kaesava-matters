@@ -1,5 +1,5 @@
-import { t } from '@money-matters/i18n';
-import { fmtDate as uiFmtDate } from '@money-matters/ui/format';
+import { t } from '@kaesava/i18n';
+import { fmtDate as uiFmtDate } from '@kaesava/ui/format';
 import { getMobileLocaleConfig } from './locale-config';
 
 export interface ScheduleDetail {

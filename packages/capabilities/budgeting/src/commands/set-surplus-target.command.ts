@@ -4,7 +4,7 @@ import {
   allocationStrategies,
   allocationStrategySteps,
   type DbOrTx,
-} from "@money-matters/db";
+} from "@kaesava/db";
 import { and, eq, isNull, ne } from "drizzle-orm";
 
 async function syncHouseholdSweepStep(

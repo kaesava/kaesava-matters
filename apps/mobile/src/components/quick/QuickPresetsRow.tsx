@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, Text, TouchableOpacity, ScrollView, StyleSheet } from 'react-native';
 import { QuickPresetItem } from './useMobileQuickAction';
-import { t } from '@money-matters/i18n';
+import { t } from '@kaesava/i18n';
 import { triggerHaptic } from '../../lib/haptics';
 import { getMobileCurrencySymbol } from '../../lib/format';
 

@@ -9,16 +9,16 @@ import {
   tenants,
   DbOrTx,
   getEnvelopeBalancesMap,
-} from "@money-matters/db";
+} from "@kaesava/db";
 import { eq, and, sql, asc } from "drizzle-orm";
-import { todayInZone, calendarDaysBetween } from "@money-matters/core";
+import { todayInZone, calendarDaysBetween } from "@kaesava/core";
 import {
   HomeSummaryDto,
   HomeSummaryAttentionItem,
   HomeSummaryGoalItem,
   HomeSummaryNextPayday,
   HomeSummaryPaceStatus,
-} from "@money-matters/types";
+} from "@kaesava/types";
 
 export async function getHomeSummaryQuery(
   tenantId: string,

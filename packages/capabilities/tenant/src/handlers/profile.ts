@@ -1,5 +1,5 @@
-import { userPreferences, tenantUserPreferences, users, tenants, type AppPreferencesBlob, type DbOrTx } from "@money-matters/db/rings/capabilities";
-import { COUNTRY_DEFAULTS, DEFAULT_TIMEZONE, DEFAULT_LOCALE } from "@money-matters/types";
+import { userPreferences, tenantUserPreferences, users, tenants, type AppPreferencesBlob, type DbOrTx } from "@kaesava/db/rings/capabilities";
+import { COUNTRY_DEFAULTS, DEFAULT_TIMEZONE, DEFAULT_LOCALE } from "@kaesava/types";
 import { and, eq, sql } from "drizzle-orm";
 
 function getCountryDefaults(country?: string | null) {

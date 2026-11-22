@@ -23,7 +23,7 @@ vi.mock('@expo/vector-icons', () => ({
   AntDesign: () => null,
 }));
 
-vi.mock('@money-matters/ui/mobile', () => ({
+vi.mock('@kaesava/ui/mobile', () => ({
   useCurrencyLocale: () => ({ currency: 'AUD', locale: 'en-AU' }),
   FilterPill: (props: Record<string, unknown>) => React.createElement('FilterPill', props),
   PLATFORM_STYLE: { minTouch: 48, borderRadius: 12 },

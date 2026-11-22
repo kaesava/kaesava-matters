@@ -3,15 +3,15 @@ import React, { useState } from 'react';
 import { View, Text, TouchableOpacity, ScrollView, StyleSheet } from 'react-native';
 import { useRouter } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { t } from '@money-matters/i18n';
-import { DESIGN_TOKENS, AmountInput, MobileDatePickerField, showMobileConfirm, InfoTooltip, MobileInput } from "@money-matters/ui/mobile";
+import { t } from '@kaesava/i18n';
+import { DESIGN_TOKENS, AmountInput, MobileDatePickerField, showMobileConfirm, InfoTooltip, MobileInput } from "@kaesava/ui/mobile";
 import { MobileEnvelopeModeToggle } from "@money-matters/capability-budgeting/mobile";
 import { useSetupWizard } from '../../context/SetupWizardContext';
 import { SetupGoalCard } from '../../components/setup/SetupGoalCard';
 import { getMobileLocaleConfig } from '../../lib/format';
 import { SetupProgressBar } from '../../components/setup/SetupProgressBar';
 import { SetupGoalsPresetsGrid, MobileGoalPresetConfig } from '../../components/setup/SetupGoalsPresetsGrid';
-import { UserGoalItem } from '@money-matters/types';
+import { UserGoalItem } from '@kaesava/types';
 
 export default function SetupGoalsScreen() {
   const insets = useSafeAreaInsets();

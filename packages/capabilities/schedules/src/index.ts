@@ -1,11 +1,11 @@
-import { computeRecurringDates, planSeriesEditScope } from "@money-matters/core";
+import { computeRecurringDates, planSeriesEditScope } from "@kaesava/core";
 import type {
   BurstWindowInput,
   ScheduleSeriesDefinition,
   ScheduleOccurrenceRecord,
   ScheduleEditScope,
   SeriesEditPlan,
-} from "@money-matters/types";
+} from "@kaesava/types";
 
 export {
   computeRecurringDates,

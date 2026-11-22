@@ -1,5 +1,5 @@
 import { describe, it, expect, vi } from "vitest";
-import type { DbOrTx } from "@money-matters/db";
+import type { DbOrTx } from "@kaesava/db";
 import { setSurplusTargetCommand } from "./set-surplus-target.command.js";
 import { archiveEnvelopeCommand } from "./archive-envelope.command.js";
 

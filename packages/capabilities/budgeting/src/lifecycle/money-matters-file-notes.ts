@@ -1,5 +1,5 @@
-import { bankAccounts, envelopes, type DbOrTx } from "@money-matters/db";
-import type { EntityPrivacyResolverMap } from "@money-matters/types";
+import { bankAccounts, envelopes, type DbOrTx } from "@kaesava/db";
+import type { EntityPrivacyResolverMap } from "@kaesava/types";
 import { and, eq, isNull } from "drizzle-orm";
 
 export const moneyMattersFileNotePrivacyResolvers: EntityPrivacyResolverMap<DbOrTx> = {

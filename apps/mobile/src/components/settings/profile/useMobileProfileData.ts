@@ -1,10 +1,10 @@
-import { DEFAULT_TIMEZONE } from "@money-matters/types";
+import { DEFAULT_TIMEZONE } from "@kaesava/types";
 import { useState, useEffect, useRef, useCallback } from 'react';
 import * as SecureStore from 'expo-secure-store';
 import {
   showMobileConfirm,
-} from '@money-matters/ui/mobile';
-import { t } from '@money-matters/i18n';
+} from '@kaesava/ui/mobile';
+import { t } from '@kaesava/i18n';
 import { trpc } from '../../../lib/trpc';
 import { authClient } from '../../../lib/auth';
 import { useProfileBiometrics } from './useProfileBiometrics';

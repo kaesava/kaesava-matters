@@ -2,8 +2,8 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import { t } from "@money-matters/i18n";
-import { Logo } from "@money-matters/ui/web";
+import { t } from "@kaesava/i18n";
+import { Logo } from "@kaesava/ui/web";
 import { authClient } from "../../lib/auth";
 import { trpc } from "../../lib/trpc";
 

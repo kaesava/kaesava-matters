@@ -9,9 +9,9 @@ import {
   getEnvelopeBalancesMap,
   tenants,
   DbOrTx,
-} from "@money-matters/db";
+} from "@kaesava/db";
 import { eq, and, sql } from "drizzle-orm";
-import { getTenantDateString } from "@money-matters/core";
+import { getTenantDateString } from "@kaesava/core";
 import { computeMatrixProjection, MatrixIncomeEvent, ScheduledExpenseEvent } from "../engine/horizon-projection-engine.js";
 import { EngineBucket } from "../engine/allocation-engine.js";
 

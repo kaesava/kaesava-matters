@@ -4,9 +4,9 @@ import {
   allocationStrategies,
   allocationStrategySteps,
   fileNotes,
-} from "@money-matters/db";
+} from "@kaesava/db";
 import type { SeedDb } from "./neon-auth-setup.js";
-import { CANONICAL_ALLOCATION_PRESETS } from "@money-matters/types";
+import { CANONICAL_ALLOCATION_PRESETS } from "@kaesava/types";
 
 export async function seedStrategiesDraftsAndNotes(
   db: SeedDb,

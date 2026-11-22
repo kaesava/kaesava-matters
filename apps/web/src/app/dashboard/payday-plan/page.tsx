@@ -2,8 +2,8 @@
 
 import { Suspense, useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { Spinner } from "@money-matters/ui/web";
-import { t } from "@money-matters/i18n";
+import { Spinner } from "@kaesava/ui/web";
+import { t } from "@kaesava/i18n";
 import { PaydayPlanScreen } from "./components/PaydayPlanScreen";
 
 function IncomeSplitPageContent() {

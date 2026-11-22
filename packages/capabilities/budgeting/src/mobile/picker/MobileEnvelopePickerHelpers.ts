@@ -1,4 +1,4 @@
-import { t } from '@money-matters/i18n';
+import { t } from '@kaesava/i18n';
 import type { MobileEnvelopeOption } from './MobileEnvelopePickerItem';
 
 export function formatPoolBalance(

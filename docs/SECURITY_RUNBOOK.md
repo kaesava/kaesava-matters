@@ -60,7 +60,7 @@ To protect `api.moneymatters.kaesava.au`:
 Database migrations are executed via GitHub Actions prior to Worker deployment:
 ```yaml
 - name: Run Drizzle DB Migrations
-  run: pnpm --filter @money-matters/db db:migrate
+  run: pnpm --filter @kaesava/db db:migrate
   env:
     DATABASE_URL: ${{ secrets.DATABASE_URL }}
 ```

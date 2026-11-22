@@ -1,9 +1,9 @@
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
-import { t } from '@money-matters/i18n';
-import { DESIGN_TOKENS } from '@money-matters/ui/tokens';
-import { FormLabel } from '@money-matters/ui/mobile';
-import { MobileInput } from '@money-matters/ui/mobile';
-import { AmountInput } from '@money-matters/ui/mobile';
+import { t } from '@kaesava/i18n';
+import { DESIGN_TOKENS } from '@kaesava/ui/tokens';
+import { FormLabel } from '@kaesava/ui/mobile';
+import { MobileInput } from '@kaesava/ui/mobile';
+import { AmountInput } from '@kaesava/ui/mobile';
 import { ContributionMode } from '../shared/householdContribution';
 
 export interface MobileHouseholdContributionSectionProps {

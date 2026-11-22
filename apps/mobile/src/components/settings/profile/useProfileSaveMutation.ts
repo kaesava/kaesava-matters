@@ -1,6 +1,6 @@
 import { useState } from 'react';
-import { useMobileToast, validateMobileNumber, useIconVisibility } from '@money-matters/ui/mobile';
-import { t } from '@money-matters/i18n';
+import { useMobileToast, validateMobileNumber, useIconVisibility } from '@kaesava/ui/mobile';
+import { t } from '@kaesava/i18n';
 import { trpc } from '../../../lib/trpc';
 import { authClient } from '../../../lib/auth';
 

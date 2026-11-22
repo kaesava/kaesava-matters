@@ -1,8 +1,8 @@
 import React, { useState, useMemo } from 'react';
 import { View, Text, ScrollView, StyleSheet, ActivityIndicator } from 'react-native';
 import { useLocalSearchParams, useRouter, type Href } from 'expo-router';
-import { MobileScreenWrapper, DESIGN_TOKENS, showMobileConfirm, useMobileToast } from '@money-matters/ui/mobile';
-import { t } from '@money-matters/i18n';
+import { MobileScreenWrapper, DESIGN_TOKENS, showMobileConfirm, useMobileToast } from '@kaesava/ui/mobile';
+import { t } from '@kaesava/i18n';
 import { trpc } from '../../../lib/trpc';
 import { authClient } from '../../../lib/auth';
 import { EnvelopeFormModal } from '../../../components/EnvelopeFormModal';
@@ -12,7 +12,7 @@ import { EnvelopeSummaryCard } from '../../../components/envelopes/EnvelopeSumma
 import { EnvelopeUpcomingSection } from '../../../components/envelopes/EnvelopeUpcomingSection';
 import { EnvelopeHistorySection } from '../../../components/envelopes/EnvelopeHistorySection';
 import { useAppFeatures } from '../../../context/useAppFeatures';
-import { NotesFeedModal } from '@money-matters/capability-file-notes/mobile';
+import { NotesFeedModal } from '@kaesava/capability-file-notes/mobile';
 
 export default function PoolDetailScreen() {
   const { id, returnTo } = useLocalSearchParams<{ id: string; returnTo?: string }>();

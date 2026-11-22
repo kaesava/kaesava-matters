@@ -1,6 +1,6 @@
-import type { DbOrTx } from "@money-matters/db";
+import type { DbOrTx } from "@kaesava/db";
 import { describe, it, expect, vi } from "vitest";
-import { transactionLedger, incomeEvents, expenseEvents, envelopes } from "@money-matters/db";
+import { transactionLedger, incomeEvents, expenseEvents, envelopes } from "@kaesava/db";
 import { listBillCoverageQuery } from "./list-bill-coverage.query";
 
 function createMockDb(

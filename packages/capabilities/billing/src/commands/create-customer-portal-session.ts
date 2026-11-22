@@ -3,8 +3,8 @@
  */
 import Stripe from "stripe";
 import { eq } from "drizzle-orm";
-import { tenants, type DbOrTx } from "@money-matters/db/rings/capabilities";
-import { validateEnv, resolveAppConfigOrDefault } from "@money-matters/config";
+import { tenants, type DbOrTx } from "@kaesava/db/rings/capabilities";
+import { validateEnv, resolveAppConfigOrDefault } from "@kaesava/config";
 
 async function resolveOrCreateStripeCustomerId(
   db: DbOrTx,

@@ -1,6 +1,6 @@
 import { describe, it, expect, vi } from "vitest";
-import type { DbOrTx } from "@money-matters/db";
-import { CANONICAL_ALLOCATION_PRESETS } from "@money-matters/types";
+import type { DbOrTx } from "@kaesava/db";
+import { CANONICAL_ALLOCATION_PRESETS } from "@kaesava/types";
 import { updateAllocationStrategyStepsCommand } from "./update-allocation-strategy-steps.command.js";
 import { applyAllocationPresetCommand } from "./apply-allocation-preset.command.js";
 

@@ -1,11 +1,11 @@
 "use client";
-import { getTenantDateString, type QuickActionInitialData } from "@money-matters/types";
+import { getTenantDateString, type QuickActionInitialData } from "@kaesava/types";
 
 
 import React, { useState, useMemo } from "react";
 import Link from "next/link";
-import { ConfirmDialog } from "@money-matters/ui/web";
-import { t } from "@money-matters/i18n";
+import { ConfirmDialog } from "@kaesava/ui/web";
+import { t } from "@kaesava/i18n";
 import { MarkPaidModal } from "../plan/components/MarkPaidModal";
 import { TransferModal } from "../../../components/web/TransferModal";
 import { QuickActionDrawer } from "../../../components/web/QuickExpenseDrawer";

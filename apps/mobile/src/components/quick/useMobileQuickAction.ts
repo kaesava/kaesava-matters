@@ -8,7 +8,7 @@ import {
   QuickActionInitialData,
   computeRecentAndFrequentPresets,
   isPaydayOrAdjustment,
-} from '@money-matters/types';
+} from '@kaesava/types';
 
 export type QuickActionType = 'DEBIT' | 'CREDIT' | 'TRANSFER';
 export type { QuickPresetItem, QuickActionInitialData };

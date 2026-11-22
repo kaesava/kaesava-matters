@@ -1,6 +1,6 @@
-import { t } from "@money-matters/i18n";
-import { EnvelopeType, FundingMode, AllocationStepType } from "@money-matters/types";
-import { getTenantDateString } from "@money-matters/core";
+import { t } from "@kaesava/i18n";
+import { EnvelopeType, FundingMode, AllocationStepType } from "@kaesava/types";
+import { getTenantDateString } from "@kaesava/core";
 import { isBillsBucket, isGoalBucket, isEverydayBucket } from "./envelope-engine-mapper.js";
 import { toCents, toDollars, calculateCycleFactor } from "./allocation-engine-utils.js";
 import {

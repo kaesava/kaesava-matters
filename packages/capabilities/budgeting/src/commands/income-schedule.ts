@@ -1,6 +1,6 @@
-import { incomeEvents, incomeSources, DbOrTx } from "@money-matters/db";
-import { getTenantDateString } from "@money-matters/core";
-import { DEFAULT_TIMEZONE } from "@money-matters/types";
+import { incomeEvents, incomeSources, DbOrTx } from "@kaesava/db";
+import { getTenantDateString } from "@kaesava/core";
+import { DEFAULT_TIMEZONE } from "@kaesava/types";
 import { eq } from "drizzle-orm";
 import { generateBurstDates } from "../engine/burst-engine.js";
 

@@ -1,5 +1,5 @@
 import { privateTenantProcedure } from '../trpc/trpc.js';
-import { bugReportsProcedures } from "@money-matters/capability-bug-reports/router";
+import { bugReportsProcedures } from "@kaesava/capability-bug-reports/router";
 
 export const bugReportsRouter = {
   submitFeedback: privateTenantProcedure

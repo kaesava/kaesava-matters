@@ -3,8 +3,8 @@
 import { useState, Suspense } from "react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
-import { t } from "@money-matters/i18n";
-import { Logo, Spinner, FormErrorBanner } from "@money-matters/ui/web";
+import { t } from "@kaesava/i18n";
+import { Logo, Spinner, FormErrorBanner } from "@kaesava/ui/web";
 import { PublicHeader } from "../../components/public/PublicHeader";
 import { PublicFooter } from "../../components/public/PublicFooter";
 import { SignInForm } from "../../components/auth/SignInForm";

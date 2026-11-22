@@ -1,5 +1,5 @@
 {
-  "name": "@money-matters/capability-tenant",
+  "name": "@kaesava/capability-tenant",
   "version": "0.1.0",
   "private": true,
   "type": "module",
@@ -18,11 +18,11 @@
     }
   },
   "dependencies": {
-    "@money-matters/config": "workspace:*",
-    "@money-matters/core": "workspace:*",
-    "@money-matters/db": "workspace:*",
-    "@money-matters/types": "workspace:*",
-    "@money-matters/i18n": "workspace:*",
+    "@kaesava/config": "workspace:*",
+    "@kaesava/core": "workspace:*",
+    "@kaesava/db": "workspace:*",
+    "@kaesava/types": "workspace:*",
+    "@kaesava/i18n": "workspace:*",
     "drizzle-orm": "^0.39.0",
     "stripe": "^17.5.0",
     "zod": "^3.23.8"

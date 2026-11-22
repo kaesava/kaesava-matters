@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
-import type { DbOrTx } from "@money-matters/db";
+import type { DbOrTx } from "@kaesava/db";
 import { maintainRollingWindowCommand } from "./maintain-rolling-window.command.js";
 import * as incomeSchedule from "./income-schedule.js";
 import * as envelopeSchedule from "./envelope-schedule.js";

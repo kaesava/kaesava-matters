@@ -9,13 +9,13 @@ import {
 } from "react-native";
 import { useRouter } from "expo-router";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { t } from "@money-matters/i18n";
+import { t } from "@kaesava/i18n";
 import {
   DESIGN_TOKENS,
   MobileLogo,
   MobileButton,
   FormErrorBanner,  PLATFORM_STYLE,
-} from "@money-matters/ui/mobile";
+} from "@kaesava/ui/mobile";
 import { MobileSocialAuthButtons } from "../../components/auth/MobileSocialAuthButtons";
 import { MobileOtpVerificationView } from "../../components/auth/MobileOtpVerificationView";
 import { SignInEmailPasswordFields } from "../../components/auth/SignInEmailPasswordFields";

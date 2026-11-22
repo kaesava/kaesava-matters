@@ -1,9 +1,9 @@
 import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import { useRouter, type Href } from 'expo-router';
-import { DESIGN_TOKENS, CardDrawerIndicator } from "@money-matters/ui/mobile";
-import { BankProviderBadge } from "@money-matters/capability-bank-accounts/mobile";
-import { t } from '@money-matters/i18n';
+import { DESIGN_TOKENS, CardDrawerIndicator } from "@kaesava/ui/mobile";
+import { BankProviderBadge } from "@kaesava/capability-bank-accounts/mobile";
+import { t } from '@kaesava/i18n';
 import { formatMobileCurrency } from '../../../lib/format';
 
 interface ProjectionEnvelopeCardProps {

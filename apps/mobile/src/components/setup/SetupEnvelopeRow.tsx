@@ -1,8 +1,8 @@
 import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
-import { EstimatedCategoryItem, convertFromMonthly, convertToMonthly, SetupFrequency } from '@money-matters/types';
-import { DESIGN_TOKENS, AmountInput, InfoTooltip } from '@money-matters/ui/mobile';
-import { t } from '@money-matters/i18n';
+import { EstimatedCategoryItem, convertFromMonthly, convertToMonthly, SetupFrequency } from '@kaesava/types';
+import { DESIGN_TOKENS, AmountInput, InfoTooltip } from '@kaesava/ui/mobile';
+import { t } from '@kaesava/i18n';
 
 interface SetupEnvelopeRowProps {
   cat: EstimatedCategoryItem;

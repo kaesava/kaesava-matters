@@ -1,8 +1,8 @@
 import React, { useState, useMemo } from 'react';
 import { View, Text, StyleSheet, Share } from 'react-native';
-import { DESIGN_TOKENS, MobileModalDialog, MobileButton, useCurrencyLocale } from "@money-matters/ui/mobile";
+import { DESIGN_TOKENS, MobileModalDialog, MobileButton, useCurrencyLocale } from "@kaesava/ui/mobile";
 import { MobileCelebrationBanner } from "@money-matters/capability-budgeting/mobile";
-import { t } from '@money-matters/i18n';
+import { t } from '@kaesava/i18n';
 import { RollupRetainedCard } from './rollup/RollupRetainedCard';
 import { RollupTransferItem } from './rollup/RollupTransferItem';
 import { computeBankTransferRollup } from './rollup/computeRollup';
@@ -27,7 +27,7 @@ export interface MobileBankTransferAccount {
 export interface MobilePaydayTransferModalProps {
   isOpen: boolean;
   onClose: () => void;
-  celebrationTargetsHit?: import('@money-matters/types').TargetCelebrationItem[];
+  celebrationTargetsHit?: import('@kaesava/types').TargetCelebrationItem[];
   receivingAccountId?: string | null;
   pools: MobileBankTransferPool[];
   linesMap: Record<string, string>;

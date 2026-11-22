@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
-import type { DbOrTx } from "@money-matters/db";
+import type { DbOrTx } from "@kaesava/db";
 
 const mockPreviewAllocation = vi.fn();
 const mockGetActiveStrategy = vi.fn();

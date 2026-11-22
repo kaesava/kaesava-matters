@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { t } from "@money-matters/i18n";
+import { t } from "@kaesava/i18n";
 import {
   isValidEmail,
   mapOtpResetErrorKey,
@@ -9,7 +9,7 @@ import {
   OTP_RESEND_COOLDOWN_SECONDS,
   ResetPasswordInputSchema,
   type AuthErrorLike,
-} from "@money-matters/types";
+} from "@kaesava/types";
 import { authClient } from "../../lib/auth";
 
 export interface ForgotPasswordFieldErrors {

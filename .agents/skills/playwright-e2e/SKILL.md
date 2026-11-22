@@ -8,7 +8,7 @@ description: >-
 # Money Matters Playwright E2E Playbook
 
 1. **Inspect Live TSX & i18n Before Writing Selectors:**
-   * Read the target component (`<= 100` lines) and `@money-matters/i18n` dictionary keys rather than guessing labels or HTML elements.
+   * Read the target component (`<= 100` lines) and `@kaesava/i18n` dictionary keys rather than guessing labels or HTML elements.
    * Known control patterns:
      - `AmountField` renders `input[inputmode="decimal"]` (never assume `input[type="number"]`).
      - Interactive cards wired only with `onClick={() => router.push(...)}` (e.g., `/blog`) render `<article>` rather than `<a href>`.

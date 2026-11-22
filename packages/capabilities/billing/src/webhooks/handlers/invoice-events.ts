@@ -1,10 +1,10 @@
 import Stripe from "stripe";
 import { z } from "zod";
-import { type DbOrTx, billingInvoices, tenants } from "@money-matters/db/rings/capabilities";
-import { getCachedDateFormat, sendNotificationEmail, formatCurrency } from "@money-matters/core";
-import { resolveAppConfigOrDefault } from "@money-matters/config";
+import { type DbOrTx, billingInvoices, tenants } from "@kaesava/db/rings/capabilities";
+import { getCachedDateFormat, sendNotificationEmail, formatCurrency } from "@kaesava/core";
+import { resolveAppConfigOrDefault } from "@kaesava/config";
 import { eq } from "drizzle-orm";
-import { DEFAULT_LOCALE, DEFAULT_TIMEZONE } from "@money-matters/types";
+import { DEFAULT_LOCALE, DEFAULT_TIMEZONE } from "@kaesava/types";
 import { activateSubscriptionCommand } from "../../commands/activate-subscription.js";
 import { deactivateTenantCommand } from "../../commands/deactivate-tenant.js";
 import { resolveTenantId } from "./resolve-tenant.js";

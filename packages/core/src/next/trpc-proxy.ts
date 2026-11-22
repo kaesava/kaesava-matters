@@ -1,4 +1,4 @@
-import { resolveAppConfigOrDefault } from "@money-matters/config";
+import { resolveAppConfigOrDefault } from "@kaesava/config";
 
 export interface TrpcEdgeProxyConfig {
   appId?: string;

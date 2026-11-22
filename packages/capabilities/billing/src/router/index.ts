@@ -2,7 +2,7 @@ import {
   CreateCheckoutSessionCommand,
   CreateCustomerPortalCommand,
   VerifyCheckoutSessionCommand,
-} from "@money-matters/types";
+} from "@kaesava/types";
 import {
   createCheckoutSessionCommand,
   createCustomerPortalSessionCommand,

@@ -19,7 +19,7 @@ money-matters/
 │   │   ├── billing/         # Ring 2: Subscription state machine, Stripe checkout & portal, multi-app webhook processor
 │   │   ├── budgeting/       # Ring 3: 5-step waterfall allocation engine, Money Matters envelope ledger, transfer events & analytics
 │   │   ├── bug-reports/     # Ring 2: In-app Beta bug report persistence & diagnostic metadata capture
-│   │   ├── file-notes/      # Ring 2: Notes & attachments metadata & privacy resolvers (S3/R2 transport in `@money-matters/core`)
+│   │   ├── file-notes/      # Ring 2: Notes & attachments metadata & privacy resolvers (S3/R2 transport in `@kaesava/core`)
 │   │   ├── notifications/   # Ring 2: Expo push, timezone-aware Inngest cron factory & retention jobs
 │   │   ├── schedules/       # Ring 2: Generic RRULE recurrence burst & Outlook-style series edit planner (`ScheduleStoreAdapter`)
 │   │   ├── simulation/      # Ring 3: Stateless "Can I Afford It?" simulation query engine & goal delay impact calculator
@@ -106,17 +106,17 @@ cd apps/api && pnpm cf-deploy
 
 ## 🛡️ Production Security & Architecture Guidelines
 - **Multi-Tenancy**: All data isolated by `tenantId` with PostgreSQL Row Level Security (RLS).
-- **Zero Hardcoded Text**: 100% of user-facing UI labels are localized via `@money-matters/i18n` with English (`en.ts`) completeness and externalization enforced by `check-i18n` (Japanese `ja.ts` archived for Release 2).
+- **Zero Hardcoded Text**: 100% of user-facing UI labels are localized via `@kaesava/i18n` with English (`en.ts`) completeness and externalization enforced by `check-i18n` (Japanese `ja.ts` archived for Release 2).
 - **100% Test Coverage**: Comprehensive Vitest unit test suites covering all capabilities, infra modules, and UI components.
-- **Zero Hardcoded Styles**: UI components consume centralized Serene Finance design tokens (`#2563eb`, `#1B2B4B`, `#F7F8FA`, `#22c55e`, `#ba1a1a`) from `@money-matters/ui`.
-- **Zero PII Logging**: Sensitive fields (emails, passwords, tokens) are automatically redacted in `@money-matters/core` logger.
+- **Zero Hardcoded Styles**: UI components consume centralized Serene Finance design tokens (`#2563eb`, `#1B2B4B`, `#F7F8FA`, `#22c55e`, `#ba1a1a`) from `@kaesava/ui`.
+- **Zero PII Logging**: Sensitive fields (emails, passwords, tokens) are automatically redacted in `@kaesava/core` logger.
 - **Production Telemetry**: Integrated with PostHog (Self-driving) for product analytics, session replays, and custom funnel events, and Sentry for deep error symbolication. Both are strictly gated to execute only in production builds (`NODE_ENV === "production"` and `!__DEV__`).
 
 ---
 
 ## 📜 Canonical Documentation & Agent Inventories (MECE — Zero Redundancy)
 - [AGENTS.md](file:///home/kaesava/projects/money-matters/AGENTS.md) — Binding architectural invariants, priority order, coding standards, and post-build documentation sync rules.
-- [FUNCTIONAL_CAPABILITIES_INVENTORY.md](file:///home/kaesava/projects/money-matters/FUNCTIONAL_CAPABILITIES_INVENTORY.md) — **UI, Route, Modal, Parity & i18n Registry:** Complete inventory of all 36 Web routes, 37 Mobile routes, 56 Modals/Drawers/Confirm Dialogs, Screen-by-Screen Web/Mobile Parity Matrix, `@money-matters/ui` exports, and `@money-matters/i18n` dictionary namespaces.
+- [FUNCTIONAL_CAPABILITIES_INVENTORY.md](file:///home/kaesava/projects/money-matters/FUNCTIONAL_CAPABILITIES_INVENTORY.md) — **UI, Route, Modal, Parity & i18n Registry:** Complete inventory of all 36 Web routes, 37 Mobile routes, 56 Modals/Drawers/Confirm Dialogs, Screen-by-Screen Web/Mobile Parity Matrix, `@kaesava/ui` exports, and `@kaesava/i18n` dictionary namespaces.
 - [TECHNICAL_SPEC.md](file:///home/kaesava/projects/money-matters/TECHNICAL_SPEC.md) — **Architecture, API & Workflows Registry:** Stack, security/RLS architecture, complete 12-router / 101-procedure tRPC registry (`§9`), HTTP/webhook endpoints, Inngest workflows, and feature flags (`§10`).
 - [SCHEMA_DATA_DICTIONARY.md](file:///home/kaesava/projects/money-matters/SCHEMA_DATA_DICTIONARY.md) — **Database & RLS Registry:** Master 22-table RLS policy (`ENABLE`/`FORCE`), session variable, and code consumer registry + column-level data dictionary (`pnpm audit:schema`).
 - [FUNCTIONAL_SPEC.md](file:///home/kaesava/projects/money-matters/FUNCTIONAL_SPEC.md) — **Domain Math & Product Rules:** Two-Horizon Waterfall math, 12-Month Cumulative Projection rules, "Can I Afford It?" simulation verdicts, onboarding estimation formulas, and test matrix specifications.

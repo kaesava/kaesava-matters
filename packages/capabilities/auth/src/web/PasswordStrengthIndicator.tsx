@@ -1,7 +1,7 @@
 "use client";
 
-import { evaluatePasswordStrength } from "@money-matters/types";
-import { t } from "@money-matters/i18n";
+import { evaluatePasswordStrength } from "@kaesava/types";
+import { t } from "@kaesava/i18n";
 
 interface PasswordStrengthProps {
   password: string;

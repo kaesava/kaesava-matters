@@ -1,15 +1,15 @@
 "use client";
-import { DEFAULT_TIMEZONE } from "@money-matters/types";
+import { DEFAULT_TIMEZONE } from "@kaesava/types";
 
 
 import React, { useState } from "react";
 import Link from "next/link";
-import { t } from "@money-matters/i18n";
-import { Button, FormLabel, FormFieldError, FormErrorBanner } from "@money-matters/ui/web";
-import { SUPPORTED_COUNTRIES, SignUpInputSchema, isValidEmail, getCountryDefaults, detectBestGuessCountry } from "@money-matters/types";
+import { t } from "@kaesava/i18n";
+import { Button, FormLabel, FormFieldError, FormErrorBanner } from "@kaesava/ui/web";
+import { SUPPORTED_COUNTRIES, SignUpInputSchema, isValidEmail, getCountryDefaults, detectBestGuessCountry } from "@kaesava/types";
 import { authClient } from "../../lib/auth";
 import { trpc } from "../../lib/trpc";
-import { PasswordStrengthIndicator } from "@money-matters/capability-auth/web";
+import { PasswordStrengthIndicator } from "@kaesava/capability-auth/web";
 
 export interface PendingTenantData {
   name: string;

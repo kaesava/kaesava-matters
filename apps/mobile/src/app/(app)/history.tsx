@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
 import { View, StyleSheet } from 'react-native';
 import { useRouter, useLocalSearchParams, type Href } from 'expo-router';
-import { SegmentedTabs } from '@money-matters/ui/mobile';
+import { SegmentedTabs } from '@kaesava/ui/mobile';
 import { AppScreenWrapper } from '../../components/AppScreenWrapper';
 import { useMobileProductTour } from '../../context/ProductTourContext';
-import { t } from '@money-matters/i18n';
+import { t } from '@kaesava/i18n';
 import { trpc } from '../../lib/trpc';
 import { authClient } from '../../lib/auth';
 import { LedgerHistoryTab } from '../../components/history/LedgerHistoryTab';

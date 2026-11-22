@@ -1,8 +1,8 @@
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
-import { DESIGN_TOKENS, FormLabel, AmountInput, ChipSelect, DatePickerField, useCurrencyLocale, MobileInput } from "@money-matters/ui/mobile";
-import { RecurrenceFrequency } from "@money-matters/capability-schedules/mobile";
-import { t } from '@money-matters/i18n';
+import { DESIGN_TOKENS, FormLabel, AmountInput, ChipSelect, DatePickerField, useCurrencyLocale, MobileInput } from "@kaesava/ui/mobile";
+import { RecurrenceFrequency } from "@kaesava/capability-schedules/mobile";
+import { t } from '@kaesava/i18n';
 
 export interface EnvelopeRecurrenceFieldsProps {
   amountLabel: string;

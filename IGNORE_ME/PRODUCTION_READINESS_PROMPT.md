@@ -43,7 +43,7 @@ For EVERY screen, modal and control in the inventory, produce a matrix row cover
 - Actions, confirmations (`ConfirmDialog` / `MobileConfirmDialog`), discard-on-dirty behaviour, Escape dismissal (web), and pagination thresholds (>= 5).
 - tRPC procedures called, and whether the same procedure, query keys and cache invalidation are used on both sides.
 - Copy: same i18n keys on both platforms (list divergent keys that mean the same thing).
-- UI components: shared from `@money-matters/ui` or locally re-implemented. Any local wrapper, modal, confirm, amount input or button in `apps/*` is a violation (section 13).
+- UI components: shared from `@kaesava/ui` or locally re-implemented. Any local wrapper, modal, confirm, amount input or button in `apps/*` is a violation (section 13).
 - Business logic leaking into UI (components, pages, hooks) instead of capability handlers.
 - Product tour anchors (`data-tour` ids, `MOBILE_TOUR_STEPS`, routes in both `ProductTourContext.tsx` files, and the E2E tour test).
 - Settings: version footer and copy-diagnostics, "Take Product Tour", and the feedback / bug-report flow, on both platforms.
@@ -82,7 +82,7 @@ Audit with an attacker's mindset. For each issue, state the exploit scenario, no
 
 ### 5.4 Architecture, reuse and performance
 - MECE: duplicated logic, schemas, types, formatters, components, screens and modals across web, mobile and capabilities. Name the duplicates and the single canonical home. Business logic that should move from apps or UI into capability handlers, or into `packages/types` or `packages/ui`.
-- UI centralisation: every shared UI element is defined once in `@money-matters/ui/web` or `@money-matters/ui/mobile`. List components that should be promoted.
+- UI centralisation: every shared UI element is defined once in `@kaesava/ui/web` or `@kaesava/ui/mobile`. List components that should be promoted.
 - Vertical slices: cross-capability imports, missing dependency injection, and leaky boundaries.
 - DB and API efficiency: redundant queries, waterfalls, duplicate fetches, missing indexes or pagination, missing `Promise.all` batching, chatty onboarding flows, over-fetching, and unbounded lists. Also check cache safety (tenant-aware).
 - Mobile performance: JS-thread blocking work, list virtualisation, and SQLite transaction usage.
@@ -109,7 +109,7 @@ Every plan item MUST include:
 - **Evidence**: the file path and line number or range (or an exact grep and a count, for example "43 occurrences in 12 files, listing the top offenders"), plus a one-sentence description of what the code does.
 - **Rule violated**: AGENTS.md section number, or the security or best-practice principle.
 - **Impact/Risk**: the concrete failure or exploit scenario.
-- **Fix**: concrete, ordered implementation steps naming the files, packages and exports to change, create or delete. Keep AGENTS.md architecture rules in the fix (shared UI in `@money-matters/ui`, logic in capability handlers, and so on).
+- **Fix**: concrete, ordered implementation steps naming the files, packages and exports to change, create or delete. Keep AGENTS.md architecture rules in the fix (shared UI in `@kaesava/ui`, logic in capability handlers, and so on).
 - **Platforms**: web, mobile, api, db, or shared.
 - **Tests to add or update**: named test files and the cases to cover.
 - **Effort**: S (under half a day), M (up to 2 days), or L (more than 2 days).

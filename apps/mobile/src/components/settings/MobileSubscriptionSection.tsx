@@ -1,10 +1,10 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { View, Linking, StyleSheet, AppState, AppStateStatus, Text } from 'react-native';
 import * as WebBrowser from 'expo-web-browser';
-import { useMobileToast, DESIGN_TOKENS } from "@money-matters/ui/mobile";
-import { MobileAiUsageCard } from "@money-matters/capability-assistant/mobile";
+import { useMobileToast, DESIGN_TOKENS } from "@kaesava/ui/mobile";
+import { MobileAiUsageCard } from "@kaesava/capability-assistant/mobile";
 import { trpc } from '../../lib/trpc';
-import { t } from '@money-matters/i18n';
+import { t } from '@kaesava/i18n';
 import { MobileSubscriptionModal, PlanChoice } from './MobileSubscriptionModal';
 import { MobileInvoiceHistory } from './MobileInvoiceHistory';
 import { SubscriptionStatusCard } from './subscription/SubscriptionStatusCard';

@@ -2,8 +2,8 @@ import React, { useEffect } from "react";
 import { View, Text, ActivityIndicator, StyleSheet } from "react-native";
 import { useLocalSearchParams, useRouter, type Href } from "expo-router";
 import * as SecureStore from "expo-secure-store";
-import { t } from "@money-matters/i18n";
-import { DESIGN_TOKENS } from "@money-matters/ui/mobile";
+import { t } from "@kaesava/i18n";
+import { DESIGN_TOKENS } from "@kaesava/ui/mobile";
 import { authClient } from "../../lib/auth";
 import { trpc, setActiveSessionToken, setActiveTenantId, switchActiveTenant } from "../../lib/trpc";
 

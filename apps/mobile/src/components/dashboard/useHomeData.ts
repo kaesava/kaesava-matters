@@ -4,9 +4,9 @@ import { trpc, setActiveSessionToken, getActiveTenantId } from '../../lib/trpc';
 import { authClient } from '../../lib/auth';
 import { formatIsoDate } from '../../lib/format';
 import { triggerHaptic } from '../../lib/haptics';
-import { t } from '@money-matters/i18n';
+import { t } from '@kaesava/i18n';
 import { getCachedQueryData, setCachedQueryData } from '../../lib/sqlite-cache';
-import type { HomeSummaryDto, EnvelopeListItemDto } from '@money-matters/types';
+import type { HomeSummaryDto, EnvelopeListItemDto } from '@kaesava/types';
 import { MobileIncomeItem } from './MobileNextPaydayCard';
 import { AttentionItem } from '../AttentionItemsList';
 

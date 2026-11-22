@@ -1,8 +1,8 @@
 import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { Feather } from '@expo/vector-icons';
-import { DESIGN_TOKENS, InfoTooltip } from '@money-matters/ui/mobile';
-import { t } from '@money-matters/i18n';
+import { DESIGN_TOKENS, InfoTooltip } from '@kaesava/ui/mobile';
+import { t } from '@kaesava/i18n';
 
 interface MobilePaydayActionButtonsProps {
   isConfirmed: boolean;

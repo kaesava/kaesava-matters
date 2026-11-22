@@ -1,7 +1,7 @@
 import { useState, useRef, useEffect, useMemo } from 'react';
 import { useLocalSearchParams } from 'expo-router';
-import { t } from '@money-matters/i18n';
-import { SegmentTabItem, showMobileConfirm } from '@money-matters/ui/mobile';
+import { t } from '@kaesava/i18n';
+import { SegmentTabItem, showMobileConfirm } from '@kaesava/ui/mobile';
 import { trpc } from '../../../lib/trpc';
 
 export type SettingsTab = 'profile' | 'household' | 'archived' | 'account-data';

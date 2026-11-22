@@ -3,8 +3,8 @@ import { View, Text, StyleSheet, TouchableOpacity, AppState } from "react-native
 import { useRouter, type Href } from "expo-router";
 import * as WebBrowser from "expo-web-browser";
 import Svg, { Path } from "react-native-svg";
-import { t } from "@money-matters/i18n";
-import { DESIGN_TOKENS, MobileSpinner } from "@money-matters/ui/mobile";
+import { t } from "@kaesava/i18n";
+import { DESIGN_TOKENS, MobileSpinner } from "@kaesava/ui/mobile";
 import { authClient, DEFAULT_AUTH_ORIGIN } from "../../lib/auth";
 
 interface MobileSocialAuthButtonsProps {

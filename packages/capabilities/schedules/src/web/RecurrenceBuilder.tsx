@@ -1,6 +1,6 @@
-import { t } from "@money-matters/i18n";
+import { t } from "@kaesava/i18n";
 import { useRecurrenceBuilder } from "../shared/useRecurrenceBuilder";
-import { DatePickerField } from "@money-matters/ui/web";
+import { DatePickerField } from "@kaesava/ui/web";
 
 interface RecurrenceBuilderProps {
   builder: ReturnType<typeof useRecurrenceBuilder>;

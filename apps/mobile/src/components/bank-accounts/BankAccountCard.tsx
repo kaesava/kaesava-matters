@@ -1,6 +1,6 @@
 import React from 'react';
 import { TouchableOpacity, StyleSheet } from 'react-native';
-import { DESIGN_TOKENS } from '@money-matters/ui/mobile';
+import { DESIGN_TOKENS } from '@kaesava/ui/mobile';
 import { useAppFeatures } from '../../context/useAppFeatures';
 import { LinkedPoolItem } from './LinkedEnvelopesModalSheet';
 import { BankAccountCardHeader } from './BankAccountCardHeader';

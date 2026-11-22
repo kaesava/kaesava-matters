@@ -10,7 +10,7 @@ import {
 } from "./payday-plan-analytics-processors";
 import { getPaydayPlanAnalyticsQuery } from "./get-payday-plan-analytics.query";
 import { getAnalyticsCutoff } from "./payday-plan-analytics-envelopes";
-import { DbOrTx } from "@money-matters/db";
+import { DbOrTx } from "@kaesava/db";
 
 
 describe("Income Split Analytics Processors", () => {

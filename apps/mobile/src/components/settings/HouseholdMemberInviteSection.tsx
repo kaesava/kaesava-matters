@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { View, StyleSheet } from 'react-native';
-import { useMobileToast, TypedConfirmDialog, MobileConfirmDialog } from '@money-matters/ui/mobile';
-import { t } from '@money-matters/i18n';
+import { useMobileToast, TypedConfirmDialog, MobileConfirmDialog } from '@kaesava/ui/mobile';
+import { t } from '@kaesava/i18n';
 import { trpc } from '../../lib/trpc';
 import { HouseholdMemberList, MemberItem } from './household/HouseholdMemberList';
 import { HouseholdMemberInviteForm } from './household/HouseholdMemberInviteForm';

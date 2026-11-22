@@ -1,6 +1,6 @@
 import { describe, it, expect, vi } from "vitest";
 import { recordExpenseCommand } from "./record-expense.command.js";
-import type { DbOrTx } from "@money-matters/db";
+import type { DbOrTx } from "@kaesava/db";
 
 describe("recordExpenseCommand", () => {
   const tenantId = "00000000-0000-0000-0000-000000000001";

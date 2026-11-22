@@ -1,8 +1,8 @@
 "use client";
 
-import { t } from "@money-matters/i18n";
-import { Button } from "@money-matters/ui/web";
-import { SUPPORTED_CURRENCIES, SUPPORTED_COUNTRIES } from "@money-matters/types";
+import { t } from "@kaesava/i18n";
+import { Button } from "@kaesava/ui/web";
+import { SUPPORTED_CURRENCIES, SUPPORTED_COUNTRIES } from "@kaesava/types";
 
 interface HouseholdReadOnlyViewProps {
   householdName: string;

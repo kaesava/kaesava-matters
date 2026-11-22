@@ -1,5 +1,5 @@
 /**
- * Ring 1 Platform-Only Types Barrel (`@money-matters/types/platform`)
+ * Ring 1 Platform-Only Types Barrel (`@kaesava/types/platform`)
  * Zero app-specific (Money Matters) nouns or budgeting contracts.
  */
 export * from "./tenant.types.js";

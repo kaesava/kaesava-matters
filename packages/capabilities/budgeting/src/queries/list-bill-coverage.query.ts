@@ -1,7 +1,7 @@
-import { envelopes, bankAccounts, incomeEvents, expenseEvents, getEnvelopeBalancesMap, tenants, DbOrTx } from "@money-matters/db";
+import { envelopes, bankAccounts, incomeEvents, expenseEvents, getEnvelopeBalancesMap, tenants, DbOrTx } from "@kaesava/db";
 import { eq, and, sql, asc } from "drizzle-orm";
-import { BillCoverageResult, BillCoverageItem } from "@money-matters/types";
-import { getTenantDateString } from "@money-matters/core";
+import { BillCoverageResult, BillCoverageItem } from "@kaesava/types";
+import { getTenantDateString } from "@kaesava/core";
 
 export async function listBillCoverageQuery(
   tenantId: string,

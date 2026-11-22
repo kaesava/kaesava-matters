@@ -1,10 +1,10 @@
 "use client";
-import { getTenantDateString } from "@money-matters/types";
+import { getTenantDateString } from "@kaesava/types";
 
 
 import React, { useState } from "react";
-import { t } from "@money-matters/i18n";
-import { getTotalSetupSteps } from "@money-matters/types";
+import { t } from "@kaesava/i18n";
+import { getTotalSetupSteps } from "@kaesava/types";
 import { SetupIncomeStep } from "./components/SetupIncomeStep";
 import { SetupBankAccountsStep } from "./components/SetupBankAccountsStep";
 import { SetupGoalsStep } from "./components/SetupGoalsStep";

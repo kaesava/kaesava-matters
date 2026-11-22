@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
-import { t } from '@money-matters/i18n';
+import { t } from '@kaesava/i18n';
 import { formatMobileCurrency } from '../../lib/format';
 
 interface MobilePaydayMetricsGridProps {

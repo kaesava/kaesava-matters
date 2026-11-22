@@ -1,7 +1,7 @@
 import { Inngest } from 'inngest';
-import { db, processedWebhooks, aiUsage } from "@money-matters/db/rings/capabilities";
+import { db, processedWebhooks, aiUsage } from "@kaesava/db/rings/capabilities";
 import { lt, sql } from 'drizzle-orm';
-import { logger } from '@money-matters/core';
+import { logger } from '@kaesava/core';
 
 export function createRetentionWorkflows(inngest: Inngest) {
   if (!inngest) {

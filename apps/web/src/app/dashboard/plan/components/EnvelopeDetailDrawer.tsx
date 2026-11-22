@@ -3,13 +3,13 @@
 import { useState, useMemo } from "react";
 import Link from "next/link";
 import { ArrowDownCircle, Wallet, Receipt, Target, Pencil } from "lucide-react";
-import { t } from "@money-matters/i18n";
+import { t } from "@kaesava/i18n";
 import { trpc } from "../../../../lib/trpc";
-import { Tabs, SlideOverDrawer } from "@money-matters/ui/web";
-import { formatRecurrenceLabel } from "@money-matters/capability-schedules/web";
+import { Tabs, SlideOverDrawer } from "@kaesava/ui/web";
+import { formatRecurrenceLabel } from "@kaesava/capability-schedules/web";
 import { useLocale } from "../../../../providers/LocaleProvider";
 import { useAppFeatures } from "../../../../hooks/useAppFeatures";
-import { FileNotesPanel } from "@money-matters/capability-file-notes/web";
+import { FileNotesPanel } from "@kaesava/capability-file-notes/web";
 import { CategorySummaryItem } from "../../envelopes/types";
 import { DrawerUpcomingExpensesTable } from "./drawer/DrawerUpcomingExpensesTable";
 import { DrawerActivityHistoryTable } from "./drawer/DrawerActivityHistoryTable";

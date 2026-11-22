@@ -1,9 +1,9 @@
 "use client";
 
 import { useState } from "react";
-import { t } from "@money-matters/i18n";
-import { ConfirmDialog, FormErrorBanner } from "@money-matters/ui/web";
-import { computeAccountAvailability } from "@money-matters/types";
+import { t } from "@kaesava/i18n";
+import { ConfirmDialog, FormErrorBanner } from "@kaesava/ui/web";
+import { computeAccountAvailability } from "@kaesava/types";
 import { SetupBankAccountRow, BankAccountRowItem } from "./SetupBankAccountRow";
 
 interface SetupBankAccountsStepProps {

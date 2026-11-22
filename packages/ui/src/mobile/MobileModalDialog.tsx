@@ -12,7 +12,7 @@ import {
   ScrollView,
 } from 'react-native';
 import { Feather } from '@expo/vector-icons';
-import { t } from '@money-matters/i18n';
+import { t } from '@kaesava/i18n';
 import { DESIGN_TOKENS } from '../tokens';
 import { PLATFORM_STYLE } from './platform-style';
 import { useKeyboardInset } from './useKeyboardInset';

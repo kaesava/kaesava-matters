@@ -7,7 +7,7 @@ import {
   EstimatedCategoryItem,
   SetupFrequency,
   getTotalSetupSteps,
-} from '@money-matters/types';
+} from '@kaesava/types';
 import { SetupWizardContextValue } from './setup-wizard-types';
 import { formatIsoDate, getMobileLocaleConfig } from '../lib/format';
 import { useSetupWizardPrepopulation } from './useSetupWizardPrepopulation';

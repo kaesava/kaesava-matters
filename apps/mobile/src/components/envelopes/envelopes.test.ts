@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { t } from "@money-matters/i18n";
+import { t } from "@kaesava/i18n";
 
 describe("Mobile Envelope Badge & Parity Tests", () => {
   it("resolves correct badge copy for all envelope types", () => {

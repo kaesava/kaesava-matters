@@ -6,8 +6,8 @@ import {
   StyleSheet,
 } from 'react-native';
 import { Feather } from '@expo/vector-icons';
-import { DESIGN_TOKENS, MobileModalDialog } from '@money-matters/ui/mobile';
-import { t } from '@money-matters/i18n';
+import { DESIGN_TOKENS, MobileModalDialog } from '@kaesava/ui/mobile';
+import { t } from '@kaesava/i18n';
 import { formatDate } from '../../lib/format';
 import { trpc } from '../../lib/trpc';
 import { AllocationDetailHeader } from './allocation-detail/AllocationDetailHeader';

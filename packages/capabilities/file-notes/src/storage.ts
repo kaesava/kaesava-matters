@@ -1,1 +1,1 @@
-export * from "@money-matters/core";
+export * from "@kaesava/core";

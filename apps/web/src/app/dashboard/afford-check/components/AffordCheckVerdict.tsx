@@ -1,7 +1,7 @@
 'use client';
 
-import { t } from '@money-matters/i18n';
-import { CanAffordVerdictType } from '@money-matters/types';
+import { t } from '@kaesava/i18n';
+import { CanAffordVerdictType } from '@kaesava/types';
 import { useLocale } from '../../../../providers/LocaleProvider';
 
 interface AffordCheckVerdictProps {

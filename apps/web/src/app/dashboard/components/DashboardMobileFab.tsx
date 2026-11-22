@@ -2,7 +2,7 @@
 
 import React from "react";
 import { Plus } from "lucide-react";
-import { t } from "@money-matters/i18n";
+import { t } from "@kaesava/i18n";
 
 export interface DashboardMobileFabProps {
   onClick: () => void;

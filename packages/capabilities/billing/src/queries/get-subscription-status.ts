@@ -3,9 +3,9 @@
  * Calculates days remaining in trial and derives typed boolean flags.
  */
 import { eq } from "drizzle-orm";
-import { tenants, type DbOrTx } from "@money-matters/db/rings/capabilities";
-import { SubscriptionStatusDto } from "@money-matters/types";
-import type { SubscriptionStatusDto as TSubscriptionStatusDto } from "@money-matters/types";
+import { tenants, type DbOrTx } from "@kaesava/db/rings/capabilities";
+import { SubscriptionStatusDto } from "@kaesava/types";
+import type { SubscriptionStatusDto as TSubscriptionStatusDto } from "@kaesava/types";
 
 export async function getSubscriptionStatus(
   db: DbOrTx,

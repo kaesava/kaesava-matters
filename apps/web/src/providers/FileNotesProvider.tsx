@@ -5,7 +5,7 @@ import { trpc } from "../lib/trpc";
 import {
   FileNotesServiceProvider,
   type FileNotesService,
-} from "@money-matters/capability-file-notes";
+} from "@kaesava/capability-file-notes";
 
 export function WebFileNotesProvider({ children }: { children: React.ReactNode }) {
   const trpcUtils = trpc.useUtils();

@@ -60,7 +60,7 @@ export interface UsePaycheckStudioMutationsParams {
   submitting: boolean;
   setSubmitting: (v: boolean) => void;
   isDeficit: boolean;
-  onConfirmSuccess?: (targetsHit?: import('@money-matters/types').TargetCelebrationItem[]) => void;
+  onConfirmSuccess?: (targetsHit?: import('@kaesava/types').TargetCelebrationItem[]) => void;
   onApplyFreshData?: (data: PaycheckStudioPreviewData) => void;
   onSaveSuccess?: () => void;
 }

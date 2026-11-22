@@ -1,4 +1,4 @@
-import { allocationPlans, allocationPlanLines, DbOrTx } from "@money-matters/db";
+import { allocationPlans, allocationPlanLines, DbOrTx } from "@kaesava/db";
 import { and, eq } from "drizzle-orm";
 
 export async function resetAllocationPlanCommand(

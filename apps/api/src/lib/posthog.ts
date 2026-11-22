@@ -1,7 +1,7 @@
 import { PostHog } from "posthog-node";
-import type { DbOrTx } from "@money-matters/db";
-import { createConsentGatedTelemetry } from "@money-matters/core";
-import { isUserTelemetryGranted } from "@money-matters/capability-tenant";
+import type { DbOrTx } from "@kaesava/db";
+import { createConsentGatedTelemetry } from "@kaesava/core";
+import { isUserTelemetryGranted } from "@kaesava/capability-tenant";
 
 const isProduction = process.env.NODE_ENV === "production";
 const apiKey = process.env.POSTHOG_API_KEY;

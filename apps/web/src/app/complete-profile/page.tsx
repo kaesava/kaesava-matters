@@ -3,15 +3,15 @@
 import React, { useEffect, useMemo, useState, Suspense } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
-import { t } from "@money-matters/i18n";
-import { Button, FormErrorBanner, FormFieldError, FormLabel, Logo, Spinner } from "@money-matters/ui/web";
+import { t } from "@kaesava/i18n";
+import { Button, FormErrorBanner, FormFieldError, FormLabel, Logo, Spinner } from "@kaesava/ui/web";
 import {
   CompleteProfileInputSchema,
   DEFAULT_TIMEZONE,
   SUPPORTED_COUNTRIES,
   detectBestGuessCountry,
   getCountryDefaults,
-} from "@money-matters/types";
+} from "@kaesava/types";
 import { authClient } from "../../lib/auth";
 import { trpc } from "../../lib/trpc";
 import { PublicHeader } from "../../components/public/PublicHeader";

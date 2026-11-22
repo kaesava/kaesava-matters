@@ -5,10 +5,10 @@
  */
 import Stripe from "stripe";
 import { eq } from "drizzle-orm";
-import { tenants, billingInvoices, type DbOrTx } from "@money-matters/db/rings/capabilities";
-import { logger } from "@money-matters/core";
-import { validateEnv } from "@money-matters/config";
-import type { SubscriptionStatusDto } from "@money-matters/types";
+import { tenants, billingInvoices, type DbOrTx } from "@kaesava/db/rings/capabilities";
+import { logger } from "@kaesava/core";
+import { validateEnv } from "@kaesava/config";
+import type { SubscriptionStatusDto } from "@kaesava/types";
 import { getSubscriptionStatus } from "../queries/get-subscription-status.js";
 
 export async function syncSubscriptionCommand(

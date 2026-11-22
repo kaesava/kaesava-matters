@@ -1,6 +1,6 @@
-import { resolveAiConfig, DEFAULT_AI_MODEL_ID } from "@money-matters/config";
-import { logger } from "@money-matters/core";
-import { AssistantLlmResponseSchema } from "@money-matters/types";
+import { resolveAiConfig, DEFAULT_AI_MODEL_ID } from "@kaesava/config";
+import { logger } from "@kaesava/core";
+import { AssistantLlmResponseSchema } from "@kaesava/types";
 import type { LlmClassificationOutcome, LlmProviderPort, SafePennySnapshot } from "../ports/index.js";
 
 function redactPromptPii(text: string): string {

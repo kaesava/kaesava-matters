@@ -1,11 +1,11 @@
 import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
-import { t } from '@money-matters/i18n';
+import { t } from '@kaesava/i18n';
 import {
   DESIGN_TOKENS,
   CardDrawerIndicator,
   SwipeableCard,
-} from '@money-matters/ui/mobile';
+} from '@kaesava/ui/mobile';
 import { formatMobileCurrency, formatDate } from '../../../lib/format';
 import type { TimelineEventItem, PaycheckIncomeEvent, PaycheckExpenseEvent, PaycheckTransferEvent } from '../PaycheckEventSection';
 import { PaycheckEventActionButtons } from './PaycheckEventActionButtons';

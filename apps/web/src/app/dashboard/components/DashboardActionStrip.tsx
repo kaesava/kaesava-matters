@@ -2,8 +2,8 @@
 
 import React, { useRef, useState, useEffect } from 'react';
 import { Plus, ChevronDown, ArrowUpRight, ArrowDownLeft, ArrowLeftRight, Sparkles } from 'lucide-react';
-import { t } from '@money-matters/i18n';
-import { Logo } from '@money-matters/ui/web';
+import { t } from '@kaesava/i18n';
+import { Logo } from '@kaesava/ui/web';
 import { useAppFeatures } from '../../../hooks/useAppFeatures';
 
 export interface DashboardActionStripProps {

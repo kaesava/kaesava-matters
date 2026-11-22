@@ -1,4 +1,4 @@
-import { type DbOrTx, tenants } from "@money-matters/db/rings/capabilities";
+import { type DbOrTx, tenants } from "@kaesava/db/rings/capabilities";
 import { eq } from "drizzle-orm";
 
 export async function resolveTenantId(

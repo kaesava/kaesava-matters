@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { t } from "@money-matters/i18n";
+import { t } from "@kaesava/i18n";
 import {
   computeLandingAffordVerdict,
   type LandingAffordFrequency,

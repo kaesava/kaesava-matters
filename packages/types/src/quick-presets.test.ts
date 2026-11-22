@@ -5,7 +5,7 @@ import {
   QuickPresetItem,
 } from "./quick-presets";
 
-describe("quick-presets in @money-matters/types", () => {
+describe("quick-presets in @kaesava/types", () => {
   describe("isPaydayOrAdjustment", () => {
     it("detects payday, waterfall, and adjustment keywords", () => {
       expect(isPaydayOrAdjustment("Monthly Payday Allocation")).toBe(true);

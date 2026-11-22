@@ -3,8 +3,8 @@ import { View, Text, TouchableOpacity, StyleSheet, ScrollView } from 'react-nati
 import { useRouter, Href } from 'expo-router';
 import { Feather } from '@expo/vector-icons';
 import { usePostHog } from 'posthog-react-native';
-import { t } from '@money-matters/i18n';
-import { SegmentedTabs, DESIGN_TOKENS, showMobileConfirm, useMobileToast } from '@money-matters/ui/mobile';
+import { t } from '@kaesava/i18n';
+import { SegmentedTabs, DESIGN_TOKENS, showMobileConfirm, useMobileToast } from '@kaesava/ui/mobile';
 import { authClient } from '../../lib/auth';
 import { unregisterCachedPushToken } from '../../lib/push';
 import { setActiveSessionToken, setActiveTenantId, trpc } from '../../lib/trpc';

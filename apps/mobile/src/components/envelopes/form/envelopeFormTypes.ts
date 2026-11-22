@@ -1,4 +1,4 @@
-import type { RecurrenceFrequency } from "@money-matters/capability-schedules/mobile";
+import type { RecurrenceFrequency } from "@kaesava/capability-schedules/mobile";
 
 export interface EnvelopeItem {
   id: string;

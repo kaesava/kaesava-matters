@@ -1,5 +1,5 @@
 {
-  "name": "@money-matters/capability-bank-accounts",
+  "name": "@kaesava/capability-bank-accounts",
   "version": "0.1.0",
   "private": true,
   "type": "module",
@@ -23,11 +23,11 @@
     }
   },
   "dependencies": {
-    "@money-matters/core": "workspace:*",
-    "@money-matters/db": "workspace:*",
-    "@money-matters/i18n": "workspace:*",
-    "@money-matters/types": "workspace:*",
-    "@money-matters/ui": "workspace:*",
+    "@kaesava/core": "workspace:*",
+    "@kaesava/db": "workspace:*",
+    "@kaesava/i18n": "workspace:*",
+    "@kaesava/types": "workspace:*",
+    "@kaesava/ui": "workspace:*",
     "drizzle-orm": "^0.39.0",
     "zod": "^3.23.8"
   },

@@ -1,12 +1,12 @@
 import { describe, it, expect, vi } from "vitest";
-import type { DbOrTx } from "@money-matters/db";
-import * as dbModule from "@money-matters/db";
+import type { DbOrTx } from "@kaesava/db";
+import * as dbModule from "@kaesava/db";
 import { toMonthlyAmount, canAffordSimulationQuery } from "./can-afford-simulation.query.js";
 import { simulateOneOffPurchase } from "./simulation-steps/one-off-simulation.js";
 import { simulateRecurringCommitment } from "./simulation-steps/recurring-simulation.js";
-import type { ProjectionEngineFn } from "@money-matters/types";
+import type { ProjectionEngineFn } from "@kaesava/types";
 
-vi.mock("@money-matters/db", async (importOriginal) => {
+vi.mock("@kaesava/db", async (importOriginal) => {
   const actual = await importOriginal<typeof dbModule>();
   return {
     ...actual,

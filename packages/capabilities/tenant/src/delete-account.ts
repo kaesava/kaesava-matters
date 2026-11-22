@@ -1,4 +1,4 @@
-import { t } from "@money-matters/i18n";
+import { t } from "@kaesava/i18n";
 import {
   userPreferences,
   tenantUserPreferences,
@@ -10,10 +10,10 @@ import {
   tenants,
   users,
   type DbOrTx,
-} from "@money-matters/db/rings/capabilities";
-import type { TenantLifecycleHooks } from "@money-matters/types";
+} from "@kaesava/db/rings/capabilities";
+import type { TenantLifecycleHooks } from "@kaesava/types";
 import { eq, and, sql, inArray, ne } from "drizzle-orm";
-import { sendNotificationEmail, logger } from "@money-matters/core";
+import { sendNotificationEmail, logger } from "@kaesava/core";
 import Stripe from "stripe";
 
 async function cancelStripeResources(

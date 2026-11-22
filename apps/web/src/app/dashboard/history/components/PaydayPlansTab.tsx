@@ -2,7 +2,7 @@ import React from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { BarChart3 } from "lucide-react";
-import { t } from "@money-matters/i18n";
+import { t } from "@kaesava/i18n";
 import {
   SearchInput,
   GenericSelectField,
@@ -10,7 +10,7 @@ import {
   ResizableTh,
   SkeletonTable,
   RecordFilterBadge,
-} from "@money-matters/ui/web";
+} from "@kaesava/ui/web";
 import { SlideOverPaydayPlanDrawer } from "../../../../components/web/SlideOverPaydayPlanDrawer";
 import { useHistoryPaydayData } from "../hooks/useHistoryPaydayData";
 import { useAppFeatures } from "../../../../hooks/useAppFeatures";

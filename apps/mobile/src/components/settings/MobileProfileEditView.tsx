@@ -9,8 +9,8 @@ import {
   MobileButton,
   FormLabel,
   DESIGN_TOKENS,
-} from '@money-matters/ui/mobile';
-import { t } from '@money-matters/i18n';
+} from '@kaesava/ui/mobile';
+import { t } from '@kaesava/i18n';
 import { ProfileAvatarSection } from './profile/ProfileAvatarSection';
 import { ProfileContactFields } from './profile/ProfileContactFields';
 import { ProfilePreferencesFields } from './profile/ProfilePreferencesFields';

@@ -1,9 +1,9 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
-import type { DbOrTx } from "@money-matters/db";
-import * as dbModule from "@money-matters/db";
+import type { DbOrTx } from "@kaesava/db";
+import * as dbModule from "@kaesava/db";
 import { parseRruleFrequencyDays, runAllocationCommand } from "./run-allocation.command.js";
 
-vi.mock("@money-matters/db", async (importOriginal) => {
+vi.mock("@kaesava/db", async (importOriginal) => {
   const actual = await importOriginal<typeof dbModule>();
   return {
     ...actual,

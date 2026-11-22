@@ -8,7 +8,7 @@ import {
   EstimatedCategoryItem,
   calculateQuizEstimates,
   SetupFrequency,
-} from '@money-matters/types';
+} from '@kaesava/types';
 
 export interface MobileBankAccountItem {
   id: string;

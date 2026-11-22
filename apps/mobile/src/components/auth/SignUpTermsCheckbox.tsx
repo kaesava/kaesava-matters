@@ -1,12 +1,12 @@
 import React from "react";
 import { View, Text, StyleSheet } from "react-native";
 import * as WebBrowser from "expo-web-browser";
-import { t } from "@money-matters/i18n";
+import { t } from "@kaesava/i18n";
 import {
   DESIGN_TOKENS,
   Checkbox,
   FormFieldError,
-} from "@money-matters/ui/mobile";
+} from "@kaesava/ui/mobile";
 
 interface SignUpTermsCheckboxProps {
   agreeTerms: boolean;

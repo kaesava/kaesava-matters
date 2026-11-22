@@ -1,9 +1,9 @@
-import type { DbOrTx } from "@money-matters/db";
+import type { DbOrTx } from "@kaesava/db";
 import { describe, it, expect, vi } from "vitest";
 import { moveMoneyCommand } from "./move-money.command";
 
-vi.mock("@money-matters/db", async (importOriginal) => {
-  const actual = await importOriginal<typeof import("@money-matters/db")>();
+vi.mock("@kaesava/db", async (importOriginal) => {
+  const actual = await importOriginal<typeof import("@kaesava/db")>();
   return {
     ...actual,
     getEnvelopeBalancesMap: vi.fn().mockResolvedValue({

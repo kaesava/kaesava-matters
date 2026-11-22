@@ -13,8 +13,8 @@ import {
   MobileScreenWrapper,
   SearchInput,
   SkeletonCard,
-} from '@money-matters/ui/mobile';
-import { t } from '@money-matters/i18n';
+} from '@kaesava/ui/mobile';
+import { t } from '@kaesava/i18n';
 import { formatIsoDate } from '../../../lib/format';
 import { trpc } from '../../../lib/trpc';
 import { authClient } from '../../../lib/auth';

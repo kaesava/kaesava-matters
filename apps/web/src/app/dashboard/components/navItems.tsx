@@ -1,6 +1,6 @@
 "use client";
 
-import { t } from "@money-matters/i18n";
+import { t } from "@kaesava/i18n";
 import { NavItem } from "./SidebarContent";
 
 export const NAV_ITEMS: readonly NavItem[] = [

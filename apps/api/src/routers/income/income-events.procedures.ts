@@ -5,7 +5,7 @@ import {
   updateUpcomingIncomeCommand,
   deleteIncomeEventCommand,
 } from "@money-matters/capability-budgeting";
-import { CreateIncomeEventCommand } from "@money-matters/types";
+import { CreateIncomeEventCommand } from "@kaesava/types";
 import { z } from 'zod';
 
 export const incomeEventsProcedures = {

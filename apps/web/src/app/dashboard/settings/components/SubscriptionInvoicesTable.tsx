@@ -1,8 +1,8 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Spinner, PaginationBar, useCurrencyLocale, formatCurrency } from "@money-matters/ui/web";
-import { t } from "@money-matters/i18n";
+import { Spinner, PaginationBar, useCurrencyLocale, formatCurrency } from "@kaesava/ui/web";
+import { t } from "@kaesava/i18n";
 
 export interface InvoiceItem {
   id: string;

@@ -1,4 +1,4 @@
-import type { AssistantLlmResponse, AssistantResult } from "@money-matters/types";
+import type { AssistantLlmResponse, AssistantResult } from "@kaesava/types";
 
 export interface IntentContext {
   tenantId: string;

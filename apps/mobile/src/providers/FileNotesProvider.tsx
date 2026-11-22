@@ -3,7 +3,7 @@ import { trpc, API_BASE_URL, getStoredTokenAndCookie, getActiveTenantId } from '
 import {
   FileNotesServiceProvider,
   type FileNotesService,
-} from '@money-matters/capability-file-notes/mobile';
+} from '@kaesava/capability-file-notes/mobile';
 
 function resolveMobileFileUrl(rawUrl: string): string {
   if (rawUrl.startsWith('/')) {

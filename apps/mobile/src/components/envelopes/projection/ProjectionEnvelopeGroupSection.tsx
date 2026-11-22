@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
-import { DESIGN_TOKENS } from '@money-matters/ui/mobile';
+import { DESIGN_TOKENS } from '@kaesava/ui/mobile';
 import { ProjectionEnvelopeCard } from './ProjectionEnvelopeCard';
 
 interface ProjectionEnvelopeGroupSectionProps {

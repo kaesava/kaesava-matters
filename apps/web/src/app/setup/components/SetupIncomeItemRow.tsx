@@ -1,9 +1,9 @@
 "use client";
 
 import { useState } from "react";
-import { IncomeItem } from "@money-matters/types";
-import { AmountField, ConfirmDialog, FormLabel } from "@money-matters/ui/web";
-import { t } from "@money-matters/i18n";
+import { IncomeItem } from "@kaesava/types";
+import { AmountField, ConfirmDialog, FormLabel } from "@kaesava/ui/web";
+import { t } from "@kaesava/i18n";
 
 interface SetupIncomeItemRowProps {
   inc: IncomeItem;

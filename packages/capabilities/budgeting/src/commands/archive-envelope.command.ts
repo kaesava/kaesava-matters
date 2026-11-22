@@ -1,4 +1,4 @@
-import { envelopes, expenseEvents, bankAccounts, DbOrTx } from "@money-matters/db";
+import { envelopes, expenseEvents, bankAccounts, DbOrTx } from "@kaesava/db";
 import { eq, and, isNull } from "drizzle-orm";
 
 export async function archiveEnvelopeCommand(

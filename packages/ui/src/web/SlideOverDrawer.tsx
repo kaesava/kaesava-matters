@@ -2,7 +2,7 @@
 
 import React, { useId, useState, useCallback } from 'react';
 import { ArrowLeft, X } from 'lucide-react';
-import { t } from '@money-matters/i18n';
+import { t } from '@kaesava/i18n';
 import { useModalDismiss } from './modalStack';
 import { ConfirmDialog } from './ConfirmDialog';
 

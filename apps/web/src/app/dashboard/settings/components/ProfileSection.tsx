@@ -1,8 +1,8 @@
 "use client";
 
 import React from "react";
-import { t } from "@money-matters/i18n";
-import { ConfirmDialog } from "@money-matters/ui/web";
+import { t } from "@kaesava/i18n";
+import { ConfirmDialog } from "@kaesava/ui/web";
 import { AvatarCropModal } from "../../../../components/web/AvatarCropModal";
 import { ProfileReadOnlyView } from "./ProfileReadOnlyView";
 import { ProfileEditForm } from "./ProfileEditForm";

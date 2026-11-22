@@ -1,8 +1,8 @@
 "use client";
 
-import { IncomeItem } from "@money-matters/types";
-import { InfoTooltip } from "@money-matters/ui/web";
-import { t } from "@money-matters/i18n";
+import { IncomeItem } from "@kaesava/types";
+import { InfoTooltip } from "@kaesava/ui/web";
+import { t } from "@kaesava/i18n";
 import { SetupIncomeItemRow } from "./SetupIncomeItemRow";
 
 interface SetupIncomeStepProps {

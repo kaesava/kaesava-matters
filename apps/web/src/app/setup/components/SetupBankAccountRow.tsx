@@ -1,14 +1,14 @@
 "use client";
 
-import { t } from "@money-matters/i18n";
-import { InfoTooltip, AmountField } from "@money-matters/ui/web";
+import { t } from "@kaesava/i18n";
+import { InfoTooltip, AmountField } from "@kaesava/ui/web";
 import { useLocale } from "../../../providers/LocaleProvider";
 import {
   ACCOUNT_TYPES,
   ACCOUNT_TYPE_LABELS,
   AccountType,
   computeAccountAvailability,
-} from "@money-matters/types";
+} from "@kaesava/types";
 
 export interface BankAccountRowItem {
   id: string;

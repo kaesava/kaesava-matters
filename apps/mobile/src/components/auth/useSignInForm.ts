@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useRouter, useLocalSearchParams } from "expo-router";
-import { t } from "@money-matters/i18n";
-import { SignInInputSchema } from "@money-matters/types";
+import { t } from "@kaesava/i18n";
+import { SignInInputSchema } from "@kaesava/types";
 import { authClient } from "../../lib/auth";
 import { trpc, setActiveSessionToken, setActiveTenantId, switchActiveTenant } from "../../lib/trpc";
 import * as SecureStore from "expo-secure-store";

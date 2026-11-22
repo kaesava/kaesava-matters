@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, StyleSheet } from 'react-native';
-import { MobileCheckbox, MobileAlertBanner } from '@money-matters/ui/mobile';
-import { t } from '@money-matters/i18n';
+import { MobileCheckbox, MobileAlertBanner } from '@kaesava/ui/mobile';
+import { t } from '@kaesava/i18n';
 
 export interface EnvelopeEventsToggleSectionProps {
   generateEvents: boolean;

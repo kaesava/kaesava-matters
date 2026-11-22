@@ -3,10 +3,10 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { t } from "@money-matters/i18n";
+import { t } from "@kaesava/i18n";
 import { trpc } from "../../../../lib/trpc";
 import { authClient } from "../../../../lib/auth";
-import { useToast, TypedConfirmDialog } from "@money-matters/ui/web";
+import { useToast, TypedConfirmDialog } from "@kaesava/ui/web";
 
 export function HouseholdDangerZoneSection() {
   const router = useRouter();

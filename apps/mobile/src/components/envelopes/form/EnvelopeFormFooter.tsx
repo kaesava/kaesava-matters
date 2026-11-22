@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
-import { DESIGN_TOKENS, MobileButton } from '@money-matters/ui/mobile';
-import { t } from '@money-matters/i18n';
+import { DESIGN_TOKENS, MobileButton } from '@kaesava/ui/mobile';
+import { t } from '@kaesava/i18n';
 
 export interface EnvelopeFormFooterProps {
   isEdit: boolean;

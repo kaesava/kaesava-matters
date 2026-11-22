@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
 import { StyleSheet, ScrollView, RefreshControl, View } from 'react-native';
 import { useRouter, useLocalSearchParams, type Href } from 'expo-router';
-import { DESIGN_TOKENS } from '@money-matters/ui/mobile';
+import { DESIGN_TOKENS } from '@kaesava/ui/mobile';
 import { AppScreenWrapper } from '../../../components/AppScreenWrapper';
 import { useMobileProductTour } from '../../../context/ProductTourContext';
-import { t } from '@money-matters/i18n';
+import { t } from '@kaesava/i18n';
 import { SourceToEdit } from '../../../components/IncomeExpenseFormModal';
 import { RecurringSchedulesTab } from '../../../components/plan/RecurringSchedulesTab';
 import { usePaychecksData } from '../../../components/plan/usePaychecksData';

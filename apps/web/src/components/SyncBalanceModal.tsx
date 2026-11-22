@@ -1,8 +1,8 @@
 "use client";
 
 import React, { useState, useEffect, useMemo } from "react";
-import { t } from "@money-matters/i18n";
-import { Button, AmountField, ModalDialog } from "@money-matters/ui/web";
+import { t } from "@kaesava/i18n";
+import { Button, AmountField, ModalDialog } from "@kaesava/ui/web";
 import posthog from "../lib/posthog-client";
 import { useLocale } from "../providers/LocaleProvider";
 import { SyncBalanceAdvancedTable } from "./SyncBalanceAdvancedTable";

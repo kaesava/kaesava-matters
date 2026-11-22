@@ -1,13 +1,13 @@
 import { z } from "zod";
-import { bankAccounts, type DbOrTx } from "@money-matters/db/rings/capabilities";
+import { bankAccounts, type DbOrTx } from "@kaesava/db/rings/capabilities";
 import {
   CreateBankAccountCommand,
   UpdateBankAccountCommand,
   type BankAccountLifecycleHooks,
   type BankBalanceSyncSplit,
-} from "@money-matters/types";
+} from "@kaesava/types";
 import { eq, and, sql, or, isNull } from "drizzle-orm";
-import { ensurePremiumAccess } from "@money-matters/core";
+import { ensurePremiumAccess } from "@kaesava/core";
 
 export function getBankAccountsWithMappingsHandler(
   db: DbOrTx,

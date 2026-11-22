@@ -1,7 +1,7 @@
-import { envelopes, expenseEvents, bankAccounts, tenants, DbOrTx } from "@money-matters/db";
+import { envelopes, expenseEvents, bankAccounts, tenants, DbOrTx } from "@kaesava/db";
 import { eq, and, sql } from "drizzle-orm";
 import { z } from "zod";
-import { UpdateEnvelopeCommand, DEFAULT_TIMEZONE } from "@money-matters/types";
+import { UpdateEnvelopeCommand, DEFAULT_TIMEZONE } from "@kaesava/types";
 import {
   deriveRruleFromFrequency,
   computeDefaultStartDate,

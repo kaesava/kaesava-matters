@@ -1,6 +1,6 @@
 import { describe, it, expect, vi } from "vitest";
 import { restoreItemCommand } from "./restore-item.command";
-import type { DbOrTx } from "@money-matters/db";
+import type { DbOrTx } from "@kaesava/db";
 
 describe("restoreItemCommand", () => {
   const tenantId = "00000000-0000-0000-0000-000000000001";

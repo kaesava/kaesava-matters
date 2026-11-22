@@ -1,8 +1,8 @@
 import React from 'react';
 import { StyleSheet, View } from 'react-native';
 import { useRouter } from 'expo-router';
-import { MobileScreenWrapper } from '@money-matters/ui/mobile';
-import { t } from '@money-matters/i18n';
+import { MobileScreenWrapper } from '@kaesava/ui/mobile';
+import { t } from '@kaesava/i18n';
 import { authClient } from '../../../lib/auth';
 import { MobileArchivedSection } from '../../../components/settings/MobileArchivedSection';
 

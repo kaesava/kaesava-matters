@@ -1,8 +1,8 @@
 "use client";
 
 import React from "react";
-import { ConfirmDialog } from "@money-matters/ui/web";
-import { t } from "@money-matters/i18n";
+import { ConfirmDialog } from "@kaesava/ui/web";
+import { t } from "@kaesava/i18n";
 import { PaydayTransferModal } from "./PaydayTransferModal";
 import { EnvelopeDetailDrawer } from "../../plan/components/EnvelopeDetailDrawer";
 import { EnvelopeFormModal } from "../../../../components/web/EnvelopeFormModal";
@@ -11,7 +11,7 @@ import { UnsavedPaydayPlanExitDialog } from "./UnsavedPaydayPlanExitDialog";
 export interface PaydayPlanModalsProps {
   showTransferModal: boolean;
   onCloseTransferModal: () => void;
-  celebrationTargets?: import("@money-matters/types").TargetCelebrationItem[];
+  celebrationTargets?: import("@kaesava/types").TargetCelebrationItem[];
   receivingAccountId?: string | null;
   pools: Array<{
     id: string;

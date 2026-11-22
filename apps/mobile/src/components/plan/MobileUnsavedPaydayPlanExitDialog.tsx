@@ -1,6 +1,6 @@
 import React from 'react';
-import { MobileConfirmDialog } from '@money-matters/ui/mobile';
-import { t } from '@money-matters/i18n';
+import { MobileConfirmDialog } from '@kaesava/ui/mobile';
+import { t } from '@kaesava/i18n';
 
 export interface MobileUnsavedPaydayPlanExitDialogProps {
   visible: boolean;

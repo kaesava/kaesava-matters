@@ -1,7 +1,7 @@
-import { incomeEvents, expenseEvents, incomeSources, envelopes, DbOrTx } from "@money-matters/db";
+import { incomeEvents, expenseEvents, incomeSources, envelopes, DbOrTx } from "@kaesava/db";
 import { eq, and, gte, sql } from "drizzle-orm";
 import { z } from "zod";
-import { OverrideEventCommand } from "@money-matters/types";
+import { OverrideEventCommand } from "@kaesava/types";
 import { resolveValidatedIncomeContribution } from "./income-contribution.helper.js";
 import { archivePendingPlansForIncomeEvent } from "./archive-pending-plans.helper.js";
 

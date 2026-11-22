@@ -1,12 +1,12 @@
 import { useState } from 'react';
 import { View, Text, StyleSheet } from 'react-native';
-import { SpendingAnalyticsDTO, SpendingTimeframe } from '@money-matters/types';
-import { MobileDonutChart } from '@money-matters/ui/mobile';
-import { MobileBarTrendChart } from '@money-matters/ui/mobile';
-import { MobileHorizontalRankedBarChart } from '@money-matters/ui/mobile';
-import { DESIGN_TOKENS } from '@money-matters/ui/tokens';
-import { SkeletonCard } from '@money-matters/ui/mobile';
-import { t } from '@money-matters/i18n';
+import { SpendingAnalyticsDTO, SpendingTimeframe } from '@kaesava/types';
+import { MobileDonutChart } from '@kaesava/ui/mobile';
+import { MobileBarTrendChart } from '@kaesava/ui/mobile';
+import { MobileHorizontalRankedBarChart } from '@kaesava/ui/mobile';
+import { DESIGN_TOKENS } from '@kaesava/ui/tokens';
+import { SkeletonCard } from '@kaesava/ui/mobile';
+import { t } from '@kaesava/i18n';
 import {
   ChartTab,
   MobileSpendingOverviewLabels,

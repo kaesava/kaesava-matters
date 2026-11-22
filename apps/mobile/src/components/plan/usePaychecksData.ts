@@ -1,8 +1,8 @@
 import { useState } from 'react';
 import { trpc } from '../../lib/trpc';
 import { authClient } from '../../lib/auth';
-import { showMobileConfirm } from '@money-matters/ui/mobile';
-import { t } from '@money-matters/i18n';
+import { showMobileConfirm } from '@kaesava/ui/mobile';
+import { t } from '@kaesava/i18n';
 import { PaycheckTransferEvent } from './PaycheckEventSection';
 
 export function usePaychecksData() {

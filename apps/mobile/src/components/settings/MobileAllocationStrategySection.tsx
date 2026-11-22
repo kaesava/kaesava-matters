@@ -2,8 +2,8 @@ import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { useRouter, Href } from 'expo-router';
 import { Feather } from '@expo/vector-icons';
-import { t } from '@money-matters/i18n';
-import { DESIGN_TOKENS, InfoTooltip, showMobileConfirm, useMobileToast } from '@money-matters/ui/mobile';
+import { t } from '@kaesava/i18n';
+import { DESIGN_TOKENS, InfoTooltip, showMobileConfirm, useMobileToast } from '@kaesava/ui/mobile';
 import { trpc } from '../../lib/trpc';
 import { useAppFeatures } from '../../context/useAppFeatures';
 

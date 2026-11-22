@@ -1,15 +1,15 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { enforceAuthProxyRateLimit } from "./rateLimitAuth";
 
-vi.mock("@money-matters/core", async () => {
-  const actual = await vi.importActual<typeof import("@money-matters/core")>("@money-matters/core");
+vi.mock("@kaesava/core", async () => {
+  const actual = await vi.importActual<typeof import("@kaesava/core")>("@kaesava/core");
   return {
     ...actual,
     checkRateLimit: vi.fn(),
   };
 });
 
-import { checkRateLimit } from "@money-matters/core";
+import { checkRateLimit } from "@kaesava/core";
 
 describe("enforceAuthProxyRateLimit", () => {
   beforeEach(() => {

@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { fmtDateIso } from "@money-matters/ui";
+import { fmtDateIso } from "@kaesava/ui";
 import { parseRecurrenceRule, buildRecurrenceRule, RecurrenceFrequency } from "./recurrence";
 
 export type RecurrenceState = {

@@ -1,4 +1,4 @@
-import { t } from "@money-matters/i18n";
+import { t } from "@kaesava/i18n";
 
 export type LandingPresetKey = "BALANCED" | "BILLS_FORTRESS" | "PAY_YOURSELF_FIRST";
 export type LandingCadence = "weekly" | "fortnightly" | "monthly";

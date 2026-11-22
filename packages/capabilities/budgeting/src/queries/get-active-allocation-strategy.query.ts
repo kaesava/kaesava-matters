@@ -1,4 +1,4 @@
-import { DbOrTx, allocationStrategies, allocationStrategySteps, envelopes } from "@money-matters/db";
+import { DbOrTx, allocationStrategies, allocationStrategySteps, envelopes } from "@kaesava/db";
 import { eq, and, sql, asc } from "drizzle-orm";
 import { seedDefaultAllocationStrategy } from "../commands/seed-allocation-strategy.command.js";
 

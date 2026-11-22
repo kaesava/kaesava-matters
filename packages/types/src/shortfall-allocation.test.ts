@@ -3,7 +3,7 @@ import {
   validateShortfallAllocations,
 } from './shortfall-allocation';
 
-describe('shortfall-allocation in @money-matters/types', () => {
+describe('shortfall-allocation in @kaesava/types', () => {
   describe('validateShortfallAllocations', () => {
     it('is valid when there is no shortfall', () => {
       const res = validateShortfallAllocations(0, {});

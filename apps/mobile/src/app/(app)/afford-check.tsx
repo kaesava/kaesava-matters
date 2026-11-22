@@ -7,8 +7,8 @@ import {
   ActivityIndicator,
 } from 'react-native';
 import { useRouter, useLocalSearchParams, type Href } from 'expo-router';
-import { DESIGN_TOKENS, MobileScreenWrapper, FormErrorBanner } from '@money-matters/ui/mobile';
-import { t } from '@money-matters/i18n';
+import { DESIGN_TOKENS, MobileScreenWrapper, FormErrorBanner } from '@kaesava/ui/mobile';
+import { t } from '@kaesava/i18n';
 import { trpc } from '../../lib/trpc';
 import { getMobileLocaleConfig } from '../../lib/format';
 import { useAppFeatures } from '../../context/useAppFeatures';

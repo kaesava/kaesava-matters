@@ -1,4 +1,4 @@
-import { db, users, type DbOrTx } from "@money-matters/db/rings/platform";
+import { db, users, type DbOrTx } from "@kaesava/db/rings/platform";
 
 /**
  * Upserts a user in the local mirror table when verified JWT claims are processed.

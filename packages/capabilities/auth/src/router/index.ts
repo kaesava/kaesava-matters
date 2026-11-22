@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { DbOrTx } from "@money-matters/db/rings/capabilities";
+import { DbOrTx } from "@kaesava/db/rings/capabilities";
 import {
   checkEmailAuthProviderHandler,
   getAuthMethodsHandler,

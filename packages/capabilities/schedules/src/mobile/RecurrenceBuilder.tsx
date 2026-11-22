@@ -1,8 +1,8 @@
 import { View as RNView, Text as RNText, TouchableOpacity as RNTouchableOpacity, TextInput as RNTextInput, StyleSheet as RNStyleSheet } from 'react-native';
-import { t } from '@money-matters/i18n';
-import { DESIGN_TOKENS } from '@money-matters/ui/tokens';
+import { t } from '@kaesava/i18n';
+import { DESIGN_TOKENS } from '@kaesava/ui/tokens';
 import { useRecurrenceBuilder } from '../shared/useRecurrenceBuilder';
-import { DatePickerField } from '@money-matters/ui/mobile';
+import { DatePickerField } from '@kaesava/ui/mobile';
 
 interface RecurrenceBuilderProps {
   builder: ReturnType<typeof useRecurrenceBuilder>;

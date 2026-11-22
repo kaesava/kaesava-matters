@@ -1,12 +1,12 @@
 "use client";
-import { getTenantDateString } from "@money-matters/types";
+import { getTenantDateString } from "@kaesava/types";
 
 
 import { useState } from "react";
-import { t } from "@money-matters/i18n";
-import { InfoTooltip, AmountField, ConfirmDialog } from "@money-matters/ui/web";
+import { t } from "@kaesava/i18n";
+import { InfoTooltip, AmountField, ConfirmDialog } from "@kaesava/ui/web";
 import { EnvelopeModeToggle } from "@money-matters/capability-budgeting/web";
-import type { UserGoalItem } from "@money-matters/types";
+import type { UserGoalItem } from "@kaesava/types";
 import { SetupGoalsPresetsGrid, GoalPresetConfig } from "./SetupGoalsPresetsGrid";
 import { SetupGoalItemRow } from "./SetupGoalItemRow";
 

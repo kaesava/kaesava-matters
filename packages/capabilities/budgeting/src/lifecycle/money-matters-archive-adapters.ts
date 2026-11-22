@@ -1,6 +1,6 @@
-import type { DbOrTx } from "@money-matters/db";
-import type { ArchivableEntityAdapter } from "@money-matters/types";
-import { createArchiveRegistry } from "@money-matters/core";
+import type { DbOrTx } from "@kaesava/db";
+import type { ArchivableEntityAdapter } from "@kaesava/types";
+import { createArchiveRegistry } from "@kaesava/core";
 import { listArchivedItemsQuery } from "../queries/list-archived-items.query.js";
 import { restoreItemCommand } from "../commands/restore-item.command.js";
 

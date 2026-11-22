@@ -2,7 +2,7 @@
 
 import { authClient } from "../lib/auth";
 import { trpc } from "../lib/trpc";
-import { DEFAULT_APP_FEATURE_FLAGS } from "@money-matters/types";
+import { DEFAULT_APP_FEATURE_FLAGS } from "@kaesava/types";
 
 export function useAppFeatures() {
   const { data: session } = authClient.useSession();

@@ -5,7 +5,7 @@ import {
   HousingType,
   VehicleConfig,
   ChildConfig,
-} from "@money-matters/types";
+} from "@kaesava/types";
 
 export function useSetupLifestyleState(initialCountry: "AU" | "NZ" | "OTHER" = "AU") {
   const [country, setCountry] = useState<"AU" | "NZ" | "OTHER">(initialCountry);

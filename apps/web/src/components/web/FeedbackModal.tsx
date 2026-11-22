@@ -10,8 +10,8 @@ import {
   FormErrorBanner,
   GenericSelectField,
   useToast,
-} from '@money-matters/ui/web';
-import { t } from '@money-matters/i18n';
+} from '@kaesava/ui/web';
+import { t } from '@kaesava/i18n';
 
 import { trpc } from '@/lib/trpc';
 import { getWebVersionInfo } from '@/lib/version';

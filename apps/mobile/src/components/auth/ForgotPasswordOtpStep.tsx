@@ -1,7 +1,7 @@
 import React from "react";
 import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
 import { useRouter } from "expo-router";
-import { t } from "@money-matters/i18n";
+import { t } from "@kaesava/i18n";
 import {
   DESIGN_TOKENS,
   MobileButton,
@@ -9,8 +9,8 @@ import {
   MobileOtpInput,
   FormLabel,
   FormErrorBanner,
-} from "@money-matters/ui/mobile";
-import { MobilePasswordStrength } from "@money-matters/capability-auth/mobile";
+} from "@kaesava/ui/mobile";
+import { MobilePasswordStrength } from "@kaesava/capability-auth/mobile";
 
 interface ForgotPasswordOtpStepProps {
   email: string;

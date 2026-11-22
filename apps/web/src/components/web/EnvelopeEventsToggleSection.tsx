@@ -1,5 +1,5 @@
-import { InfoTooltip, AlertBanner } from '@money-matters/ui/web';
-import { t } from '@money-matters/i18n';
+import { InfoTooltip, AlertBanner } from '@kaesava/ui/web';
+import { t } from '@kaesava/i18n';
 
 export interface EnvelopeEventsToggleSectionProps {
   generateEvents: boolean;

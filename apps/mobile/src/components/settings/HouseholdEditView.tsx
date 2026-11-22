@@ -13,11 +13,11 @@ import {
   InfoTooltip,
   DESIGN_TOKENS,
   MobileInput,
-} from '@money-matters/ui/mobile';
-import { t } from '@money-matters/i18n';
+} from '@kaesava/ui/mobile';
+import { t } from '@kaesava/i18n';
 import {
   COMMON_TIMEZONES,
-} from '@money-matters/types';
+} from '@kaesava/types';
 import { HouseholdLocationFields } from './household/HouseholdLocationFields';
 
 interface HouseholdEditViewProps {

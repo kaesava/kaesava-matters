@@ -1,12 +1,12 @@
 import React, { useState } from "react";
 import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
-import { t } from "@money-matters/i18n";
+import { t } from "@kaesava/i18n";
 import {
   DESIGN_TOKENS,
   MobileButton,
   MobileOtpInput,
   FormErrorBanner,
-} from "@money-matters/ui/mobile";
+} from "@kaesava/ui/mobile";
 import { authClient } from "../../lib/auth";
 import * as SecureStore from "expo-secure-store";
 import { setActiveSessionToken } from "../../lib/trpc";

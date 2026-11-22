@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { t } from "@money-matters/i18n";
+import { t } from "@kaesava/i18n";
 import { PublicHeader } from "../../components/public/PublicHeader";
 import { PublicFooter } from "../../components/public/PublicFooter";
 

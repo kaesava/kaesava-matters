@@ -1,4 +1,4 @@
-import { incomeSources, incomeEvents, bankAccounts, type DbOrTx } from "@money-matters/db";
+import { incomeSources, incomeEvents, bankAccounts, type DbOrTx } from "@kaesava/db";
 import { and, eq, sql, asc } from "drizzle-orm";
 import {
   verifyReceivingAccountAccess,

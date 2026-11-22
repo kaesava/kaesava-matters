@@ -2,9 +2,9 @@
 
 import React, { useMemo } from "react";
 import Link from "next/link";
-import { ResizableTh, useResizableColumns } from "@money-matters/ui/web";
-import { formatScheduleSummary } from "@money-matters/capability-schedules/web";
-import { t } from "@money-matters/i18n";
+import { ResizableTh, useResizableColumns } from "@kaesava/ui/web";
+import { formatScheduleSummary } from "@kaesava/capability-schedules/web";
+import { t } from "@kaesava/i18n";
 import { useLocale } from "../../../../providers/LocaleProvider";
 import { IncomeSourceToEdit } from "../../../../components/web/IncomeFormModal";
 import { ScheduleBurstModal, type ScheduleBurstSource } from "./ScheduleBurstModal";

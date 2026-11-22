@@ -2,7 +2,7 @@
 
 import React, { useState } from "react";
 import { trpc } from "../lib/trpc";
-import { t } from "@money-matters/i18n";
+import { t } from "@kaesava/i18n";
 
 export const HouseholdSwitcher: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);

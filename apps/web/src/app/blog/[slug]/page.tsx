@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { t } from "@money-matters/i18n";
-import { Logo } from "@money-matters/ui/web";
+import { t } from "@kaesava/i18n";
+import { Logo } from "@kaesava/ui/web";
 import { BLOG_POSTS } from "../../../lib/blog-data";
 import { BlogReadTracker } from "../../../components/web/BlogReadTracker";
 

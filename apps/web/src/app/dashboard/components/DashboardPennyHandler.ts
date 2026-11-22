@@ -1,5 +1,5 @@
 import type { AppRouterInstance } from "next/dist/shared/lib/app-router-context.shared-runtime";
-import type { AssistantResult, QuickActionInitialData } from "@money-matters/types";
+import type { AssistantResult, QuickActionInitialData } from "@kaesava/types";
 
 const WEB_SCREEN_ROUTES: Record<string, string> = {
   home: "/dashboard",

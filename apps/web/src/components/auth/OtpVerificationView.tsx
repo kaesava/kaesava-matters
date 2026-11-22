@@ -1,8 +1,8 @@
 "use client";
 
 import React, { useState } from "react";
-import { t } from "@money-matters/i18n";
-import { Button, Spinner, OtpInput, FormErrorBanner } from "@money-matters/ui/web";
+import { t } from "@kaesava/i18n";
+import { Button, Spinner, OtpInput, FormErrorBanner } from "@kaesava/ui/web";
 import { authClient } from "../../lib/auth";
 
 interface OtpVerificationViewProps {

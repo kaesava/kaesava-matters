@@ -3,8 +3,8 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { trpc } from "../../lib/trpc";
-import { t } from "@money-matters/i18n";
-import { useToast } from "@money-matters/ui/web";
+import { t } from "@kaesava/i18n";
+import { useToast } from "@kaesava/ui/web";
 import { BentoEnvelopesSection } from "./components/BentoEnvelopesSection";
 import { GoalsProgressStrip } from "./components/GoalsProgressStrip";
 import { NextPaydayCard } from "./components/NextPaydayCard";

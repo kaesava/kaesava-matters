@@ -1,4 +1,4 @@
-import { envelopes, bankAccounts, incomeSources, incomeEvents, DbOrTx } from "@money-matters/db";
+import { envelopes, bankAccounts, incomeSources, incomeEvents, DbOrTx } from "@kaesava/db";
 import { eq, and, sql, or, inArray } from "drizzle-orm";
 
 export async function resetContributionsIfNoPrivateEnvelopes(

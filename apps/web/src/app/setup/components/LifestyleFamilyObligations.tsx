@@ -1,8 +1,8 @@
 "use client";
 
-import { SchoolType, SchoolStage, ChildConfig } from "@money-matters/types";
-import { AmountField } from "@money-matters/ui/web";
-import { t } from "@money-matters/i18n";
+import { SchoolType, SchoolStage, ChildConfig } from "@kaesava/types";
+import { AmountField } from "@kaesava/ui/web";
+import { t } from "@kaesava/i18n";
 
 interface LifestyleFamilyObligationsProps {
   hasKids: boolean;

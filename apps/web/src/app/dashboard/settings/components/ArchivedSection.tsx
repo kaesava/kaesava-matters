@@ -2,8 +2,8 @@
 
 import { useState } from "react";
 import { trpc } from "../../../../lib/trpc";
-import { t, ARCHIVED_ITEM_TYPE_KEYS } from "@money-matters/i18n";
-import { PaginationBar, Spinner, SearchInput, SkeletonTable, ConfirmDialog, useToast } from "@money-matters/ui/web";
+import { t, ARCHIVED_ITEM_TYPE_KEYS } from "@kaesava/i18n";
+import { PaginationBar, Spinner, SearchInput, SkeletonTable, ConfirmDialog, useToast } from "@kaesava/ui/web";
 import { useLocale } from "../../../../providers/LocaleProvider";
 
 type ArchivedItemType = "POOL" | "ENVELOPE" | "INCOME_SOURCE" | "BANK_ACCOUNT";
