@@ -3,7 +3,8 @@ import { View, Text, TouchableOpacity, ScrollView, StyleSheet } from 'react-nati
 import { useRouter } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { t } from '@money-matters/i18n';
-import { DESIGN_TOKENS, InfoTooltip, AmountInput, MobileDiscretionarySliders, MobileInput } from '@money-matters/ui/mobile';
+import { DESIGN_TOKENS, InfoTooltip, AmountInput, MobileInput } from '@money-matters/ui/mobile';
+import { MobileDiscretionarySliders } from '../../components/setup/MobileDiscretionarySliders';
 import { useSetupWizard } from '../../context/SetupWizardContext';
 import { HousingType } from '@money-matters/types';
 import { LifestyleVehicleSubCard } from '../../components/setup/LifestyleVehicleSubCard';

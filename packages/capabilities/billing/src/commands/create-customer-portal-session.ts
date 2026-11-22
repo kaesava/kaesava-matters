@@ -4,12 +4,12 @@
 import Stripe from "stripe";
 import { eq } from "drizzle-orm";
 import { tenants, type DbOrTx } from "@money-matters/db";
-import { validateEnv } from "@money-matters/config";
+import { validateEnv, resolveAppConfigOrDefault } from "@money-matters/config";
 
 async function resolveOrCreateStripeCustomerId(
   db: DbOrTx,
   stripe: Stripe,
-  tenant: { id: string; name: string; stripeCustomerId: string | null },
+  tenant: { id: string; appId?: string | null; name: string; stripeCustomerId: string | null },
   userEmail?: string
 ): Promise<string> {
   if (tenant.stripeCustomerId) {
@@ -23,8 +23,9 @@ async function resolveOrCreateStripeCustomerId(
   }
 
   if (!customerId) {
+    const appConfig = resolveAppConfigOrDefault(tenant.appId);
     const customer = await stripe.customers.create({
-      email: userEmail || "info@moneymatters.kaesava.au",
+      email: userEmail || appConfig.branding.supportEmail,
       name: tenant.name,
       metadata: { tenantId: tenant.id },
     });
@@ -58,6 +59,7 @@ export async function createCustomerPortalSessionCommand(
   const [tenant] = await db
     .select({
       id: tenants.id,
+      appId: tenants.appId,
       name: tenants.name,
       stripeCustomerId: tenants.stripeCustomerId,
     })

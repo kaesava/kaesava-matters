@@ -22,9 +22,6 @@ export function readNotificationPrefs(
   if (appId && raw[appId] && typeof raw[appId] === "object") {
     return raw[appId] as Record<string, unknown>;
   }
-  if (raw["money-matters"] && typeof raw["money-matters"] === "object") {
-    return raw["money-matters"] as Record<string, unknown>;
-  }
   return raw;
 }
 

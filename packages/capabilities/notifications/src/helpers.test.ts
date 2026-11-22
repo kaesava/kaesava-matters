@@ -16,15 +16,11 @@ describe("notification helpers", () => {
     expect(resolveNotificationRecipient(null, null)).toBeNull();
   });
 
-  it("reads preferences from appId first, then legacy money-matters key, then top-level", () => {
+  it("reads preferences from canonical appId key first, then top-level fallback", () => {
     const appId = "01908bde-34bb-7b19-a178-574211bc93aa";
     expect(
-      readNotificationPrefs({ [appId]: { weekly_digest_email: false }, "money-matters": { weekly_digest_email: true } }, appId)
+      readNotificationPrefs({ [appId]: { weekly_digest_email: false }, other: { weekly_digest_email: true } }, appId)
     ).toEqual({ weekly_digest_email: false });
-
-    expect(
-      readNotificationPrefs({ "money-matters": { payday_alerts_push: false } }, appId)
-    ).toEqual({ payday_alerts_push: false });
 
     expect(
       readNotificationPrefs({ balance_nudge_email: false }, appId)

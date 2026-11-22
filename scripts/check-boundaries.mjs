@@ -2,9 +2,9 @@
 /**
  * Vertical Slice Architecture Boundary Guardrail (`pnpm check:boundaries`)
  *
- * Ensures Ring 1 (Platform Core) and Ring 2 (App-Agnostic Capabilities) NEVER import
- * Ring 3 (Money Matters domain packages or tables), guaranteeing zero blast radius
- * when adding or modifying app-specific capabilities.
+ * Ensures Ring 1 (Platform Core & UI) and Ring 2 (App-Agnostic Capabilities) NEVER import
+ * Ring 3 (Money Matters domain packages or tables) or hardcode Money Matters identifiers,
+ * guaranteeing zero blast radius when adding or modifying app-specific capabilities.
  */
 import fs from "node:fs";
 import path from "node:path";
@@ -14,10 +14,12 @@ const ROOT = process.cwd();
 const PROTECTED_PACKAGES = [
   "packages/config/src",
   "packages/core/src",
+  "packages/ui/src",
   "packages/capabilities/tenant/src",
   "packages/capabilities/bank-accounts/src",
   "packages/capabilities/billing/src",
   "packages/capabilities/bug-reports/src",
+  "packages/capabilities/categories/src",
   "packages/capabilities/file-notes/src",
   "packages/capabilities/notifications/src",
 ];
@@ -31,6 +33,18 @@ const FORBIDDEN_PATTERNS = [
   },
 ];
 
+// Hardcoded Money Matters identifiers are only allowed inside the AppManifest registry itself.
+const HARDCODED_BRAND_PATTERNS = [
+  { label: "hardcoded MONEY_MATTERS_APP_ID env key", regex: /\bMONEY_MATTERS_APP_ID\b/ },
+  { label: "hardcoded moneymatters.kaesava.au domain", regex: /moneymatters\.kaesava\.au/ },
+];
+
+const BRAND_CHECK_ALLOWLIST = new Set([
+  "packages/config/src/app-registry.ts",
+  "packages/config/src/env.ts",
+  "packages/core/src/security-headers.ts",
+]);
+
 function walkTsFiles(dir) {
   const results = [];
   if (!fs.existsSync(dir)) return results;
@@ -41,7 +55,7 @@ function walkTsFiles(dir) {
         continue;
       }
       results.push(...walkTsFiles(full));
-    } else if (entry.isFile() && /\.(ts|tsx)$/.test(entry.name) && !entry.name.endsWith(".test.ts")) {
+    } else if (entry.isFile() && /\.(ts|tsx)$/.test(entry.name) && !entry.name.endsWith(".test.ts") && !entry.name.endsWith(".test.tsx")) {
       results.push(full);
     }
   }
@@ -53,13 +67,18 @@ const violations = [];
 for (const relPkg of PROTECTED_PACKAGES) {
   const absDir = path.join(ROOT, relPkg);
   for (const file of walkTsFiles(absDir)) {
+    const relPath = path.relative(ROOT, file);
     const content = fs.readFileSync(file, "utf8");
     for (const rule of FORBIDDEN_PATTERNS) {
       if (rule.regex.test(content)) {
-        violations.push({
-          file: path.relative(ROOT, file),
-          rule: rule.label,
-        });
+        violations.push({ file: relPath, rule: rule.label });
+      }
+    }
+    if (!BRAND_CHECK_ALLOWLIST.has(relPath)) {
+      for (const rule of HARDCODED_BRAND_PATTERNS) {
+        if (rule.regex.test(content)) {
+          violations.push({ file: relPath, rule: rule.label });
+        }
       }
     }
   }
@@ -68,9 +87,9 @@ for (const relPkg of PROTECTED_PACKAGES) {
 if (violations.length > 0) {
   console.error("\n[check:boundaries] Vertical Slice Architecture boundary violations detected:\n");
   for (const v of violations) {
-    console.error(`  - ${v.file} -> forbidden import: ${v.rule}`);
+    console.error(`  - ${v.file} -> forbidden: ${v.rule}`);
   }
-  console.error("\nCentral platform packages (Ring 1 & Ring 2) must NEVER import app-specific domain packages or tables.\n");
+  console.error("\nCentral platform packages (Ring 1 & Ring 2) must NEVER import app-specific domain packages/tables or hardcode Money Matters identifiers.\n");
   process.exit(1);
 }
 

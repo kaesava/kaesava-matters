@@ -43,6 +43,7 @@ export const tenantCoreProcedures = {
           data: {
             userId: ctx.userId!,
             tenantId: result.tenantId,
+            appId,
             email: ctx.email,
             displayName: ctx.session?.displayName || (derivedName && derivedName !== "My Household" ? derivedName : undefined),
           },

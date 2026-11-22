@@ -51,7 +51,6 @@ export * from '../hooks/useRecurrenceBuilder';
 export * from '../dates/recurrence';
 export * from '../hooks/DateLocaleContext';
 export * from './EnvelopeModeToggle';
-export * from './BillCoverageBadge';
 export * from './ProductTourPopover';
 export * from './ProductTourSpotlight';
 
@@ -63,4 +62,5 @@ export * from './AiUsageCard';
 export * from './CommandPaletteModal';
 export * from './CelebrationBanner';
 export * from './HouseholdContributionSection';
+export * from './LegalDocumentPage';
 export * from '../lib/householdContribution';

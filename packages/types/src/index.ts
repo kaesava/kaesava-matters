@@ -41,4 +41,5 @@ export * from "./logger.js";
 export * from "./platform-contracts.types.js";
 export * from "./schedules.types.js";
 export * from "./feature-flags.types.js";
+export * from "./categories.types.js";
 

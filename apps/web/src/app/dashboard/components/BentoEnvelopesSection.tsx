@@ -2,7 +2,8 @@
 
 import React from 'react';
 import { t } from '@money-matters/i18n';
-import { BillCoverageBadge, InfoTooltip } from '@money-matters/ui/web';
+import { InfoTooltip } from '@money-matters/ui/web';
+import { BillCoverageBadge } from './BillCoverageBadge';
 import { useLocale } from '../../../providers/LocaleProvider';
 
 export interface BentoEnvelopesSectionProps {

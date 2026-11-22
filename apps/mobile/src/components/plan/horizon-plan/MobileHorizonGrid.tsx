@@ -1,6 +1,7 @@
 import React, { useState, useMemo } from 'react';
 import { View, ScrollView, StyleSheet } from 'react-native';
-import { DESIGN_TOKENS, MobileHorizonFilterBar } from '@money-matters/ui/mobile';
+import { DESIGN_TOKENS } from '@money-matters/ui/mobile';
+import { MobileHorizonFilterBar } from './MobileHorizonFilterBar';
 import { useAppFeatures } from '../../../context/useAppFeatures';
 import { MobileHorizonFrozenColumn, MobileMatrixCategoryItem, MobileMatrixGroupData } from './MobileHorizonFrozenColumn';
 import { MobileHorizonScrollableGrid } from './MobileHorizonScrollableGrid';

@@ -5,6 +5,7 @@ import {
   getNotificationChannelStatusHandler,
 } from "@money-matters/capability-notifications";
 import { sendNotificationEmail } from "@money-matters/core";
+import { resolveAppConfigOrDefault } from "@money-matters/config";
 import { inngest } from "../inngest/client.js";
 import { z } from 'zod';
 
@@ -58,10 +59,12 @@ export const notificationsRouter = {
       let pushDispatched = false;
 
       if ((input.channel === 'email' || input.channel === 'all') && status.emailRecipient) {
+        const appConfig = resolveAppConfigOrDefault(ctx.appId);
         await sendNotificationEmail(
           status.emailRecipient,
-          '🔔 Test Notification — Money Matters',
-          'This is a test notification confirming your email delivery channel is operational and connected.'
+          `🔔 Test Notification — ${appConfig.name}`,
+          'This is a test notification confirming your email delivery channel is operational and connected.',
+          ctx.appId
         );
         dispatchedChannels.push('email');
         emailDispatched = true;

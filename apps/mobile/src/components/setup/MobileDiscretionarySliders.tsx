@@ -2,10 +2,8 @@ import { useRef } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, PanResponder, LayoutChangeEvent } from 'react-native';
 import { Feather } from '@expo/vector-icons';
 import { t } from '@money-matters/i18n';
-import { DESIGN_TOKENS } from '../tokens';
-import { InfoTooltip } from './InfoTooltip';
-import { useCurrencyLocale } from '../hooks/CurrencyLocaleContext';
-import { formatAmountNumber } from '../lib/format';
+import { DESIGN_TOKENS, InfoTooltip, useCurrencyLocale } from '@money-matters/ui/mobile';
+import { formatAmountNumber } from '@money-matters/ui/format';
 
 export interface MobileDiscretionarySlidersProps {
   weeklyGroceries: number;

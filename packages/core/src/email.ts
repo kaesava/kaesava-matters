@@ -7,6 +7,7 @@ export interface SendEmailPayload {
   html: string;
   text?: string;
   from?: string;
+  appId?: string;
 }
 
 export function escapeHtml(str: string): string {
@@ -44,7 +45,7 @@ async function executeResendFetch(
       html: payload.html,
       text: payload.text,
       headers: {
-        "List-Unsubscribe": "<https://moneymatters.kaesava.au/dashboard/settings/notifications>",
+        "List-Unsubscribe": `<${resolveAppConfigOrDefault(payload.appId).branding.appUrl}/dashboard/settings/notifications>`,
       },
     }),
     signal: AbortSignal.timeout(5000),
@@ -109,7 +110,10 @@ async function sendWithRetry(
  */
 export async function sendEmail(payload: SendEmailPayload): Promise<{ success: boolean; id?: string }> {
   const apiKey = process.env["RESEND_API_KEY"];
-  const fromAddress = payload.from || process.env["RESEND_FROM_EMAIL"] || "Money Matters <info@moneymatters.kaesava.au>";
+  const fromAddress =
+    payload.from ||
+    process.env["RESEND_FROM_EMAIL"] ||
+    resolveAppConfigOrDefault(payload.appId).branding.fromEmail;
   const isProd = process.env["ENVIRONMENT"] === "production" || process.env["NODE_ENV"] === "production";
 
   if (!apiKey) {
@@ -166,5 +170,5 @@ export async function sendNotificationEmail(
   `;
   const safeBody = escapeHtml(bodyText).replace(/\n/g, "<br />");
   const html = `<div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; padding: 20px; line-height: 1.6; color: #1B2B4B;">${headerHtml}${safeBody}${footerHtml}</div>`;
-  return sendEmail({ to, subject, html, text: bodyText, from: app.branding.fromEmail });
+  return sendEmail({ to, subject, html, text: bodyText, from: app.branding.fromEmail, appId: app.id });
 }

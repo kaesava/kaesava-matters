@@ -13,4 +13,6 @@ export * from "./formatters.js";
 export * from "./security-headers.js";
 export * from "./rate-limit-middleware.js";
 export * from "./posthog.js";
+export * from "./worker-factory.js";
 export * from "./next/auth-proxy.js";
+export * from "./next/trpc-proxy.js";

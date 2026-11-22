@@ -107,9 +107,6 @@ export type { SwitchRowProps } from './SwitchRow';
 export { TypedConfirmDialog, TypedConfirmDialog as MobileTypedConfirmDialog } from './TypedConfirmDialog';
 export type { TypedConfirmDialogProps, TypedConfirmDialogProps as MobileTypedConfirmDialogProps } from './TypedConfirmDialog';
 
-export { GoalDelayCard } from './GoalDelayCard';
-export type { GoalDelayCardProps } from './GoalDelayCard';
-
 export {
   MobileEnvelopeDetailSheet,
   MobileEnvelopeDetailSheet as MobileCategoryDetailSheet,
@@ -122,9 +119,6 @@ export type {
   MobileActivityItem,
 } from './MobileEnvelopeDetailSheet';
 
-export { MobileHorizonFilterBar } from './MobileHorizonFilterBar';
-export type { MobileHorizonFilterBarProps } from './MobileHorizonFilterBar';
-
 export { MobileEnvelopeModeToggle } from './EnvelopeModeToggle';
 export type { MobileEnvelopeModeToggleProps } from './EnvelopeModeToggle';
 
@@ -133,8 +127,8 @@ export type { MobileProductTourSheetProps, MobileTourStepConfig } from './Mobile
 export { MobileProductTourSpotlight } from './MobileProductTourSpotlight';
 export type { MobileProductTourSpotlightProps, TargetLayoutRect } from './MobileProductTourSpotlight';
 
-export { MobileDiscretionarySliders } from './MobileDiscretionarySliders';
-export type { MobileDiscretionarySlidersProps } from './MobileDiscretionarySliders';
+export { MobileLocationFields } from './MobileLocationFields';
+export type { MobileLocationFieldsProps } from './MobileLocationFields';
 
 export { MobileDonutChart } from './charts/MobileDonutChart';
 export { MobileBarTrendChart } from './charts/MobileBarTrendChart';

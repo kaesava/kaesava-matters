@@ -39,14 +39,14 @@ export const householdProcedures = {
 
       inngest.send({
         name: 'partner/invited',
-        data: { email: input.email, inviteToken: result.inviteToken, tenantId: ctx.tenantId!, senderUserId: ctx.userId! },
+        data: { email: input.email, inviteToken: result.inviteToken, tenantId: ctx.tenantId!, appId: ctx.appId!, senderUserId: ctx.userId! },
       }).catch(() => {});
 
       const appConfig = resolveAppConfigOrDefault(ctx.appId);
       const inviteUrl = `${appConfig.branding.appUrl}/invite/${result.inviteToken}`;
       const inviteHtml = `
         <div style="font-family: sans-serif; background-color: #0b132b; color: #ffffff; padding: 40px; border-radius: 16px;">
-          ${buildBrandEmailHeader('dark')}
+          ${buildBrandEmailHeader('dark', ctx.appId)}
           <h2 style="color: #ffffff;">${t('notifications.inngest.inviteSubject')}</h2>
           <p style="font-size: 16px; line-height: 1.6;">${t('notifications.inngest.inviteBody')}</p>
           <div style="margin-top: 30px;">
@@ -55,7 +55,7 @@ export const householdProcedures = {
         </div>
       `;
 
-      sendEmail({ to: input.email, subject: t('notifications.inngest.inviteSubject'), html: inviteHtml }).catch((err) => {
+      sendEmail({ to: input.email, subject: t('notifications.inngest.inviteSubject'), html: inviteHtml, from: appConfig.branding.fromEmail }).catch((err) => {
         logger.error('Direct partner invite email send failed:', { err });
       });
 

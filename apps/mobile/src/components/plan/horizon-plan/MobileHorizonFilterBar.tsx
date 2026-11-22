@@ -1,5 +1,5 @@
 import { View, Text, TouchableOpacity, ScrollView, StyleSheet } from 'react-native';
-import { DESIGN_TOKENS } from '../tokens';
+import { DESIGN_TOKENS } from '@money-matters/ui/tokens';
 import { t } from '@money-matters/i18n';
 
 export interface MobileHorizonFilterBarProps {
