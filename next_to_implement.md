@@ -30,12 +30,11 @@ pnpm app:set-flag --flag=customAllocationRules --value=true --env=prod
 
 # Current State
 
-Do another deep and broad pass across the codebase to ensure no cross-pollution between or within ring boundaries, no redundant/un-used code left behind, and all agent instructions. Are there opportunities to re-use code across or
-  within the web or mobilr app? Are there other re-usable components hiding within Money Matters app that we can extract? Are there sub-components that ought to be promoted or components that ought to be broken down? Do all components
-  reflect a consistent structure enforced so agents in the future don't pollute them? Are there other signficant blockers to start to build a new app that would make re-use difficult (this could be code in our codebase or even external
-  tooling - for example, if you need me to go and create relevant projects in upstash, etc. if needed). Is the architecture cleanly and consistenly implemented (injection, hooks, extension, routers, db table structures, etc) across all
-  components, and will future agentic codng honour this? Optimise this ask by limiting the number of codebase sweeps and collating audit. Output: /plan-feature with detailed implementation plan to address gaps/opportunities. /grill-me
+Do another deep and broad pass across the codebase to ensure no cross-pollution between or within ring boundaries, no redundant/un-used code left behind, and all agent instructions. Are there opportunities to re-use code across or within the web or mobile app? Are there other re-usable components hiding within Money Matters app (some to test but you do a thorough check: setup, dashboard, global search, QUick action, + FAB, app tagline, switch tenant, User profile, navigation, reports, scheduling with ability to parametrise burst, start/end, frequency, every, override individual event dates/archival, re-burst, etc., page filters, pagination, sort, hyperlinks, mobile ui features like swipe, refresh, tap, hold, vibration, etc. view AI usage and apply liimits, stripe subscription, invoice, sync, refresh, etc., download full backup, telemetry and acceptance, currency handling, date format handling, privacy, terms of use, home screen hero cards, etc.) that we can extract? Are there sub-components that ought to be promoted or components that ought to be broken down? Do all components reflect a consistent structure enforced so agents in the future don't pollute them? Are there other signficant blockers to start to build a new app that would make re-use difficult (this could be code in our codebase or even external tooling - for example, if you need me to go and create relevant projects in upstash, etc. if needed). Is the architecture cleanly and consistenly implemented (injection, hooks, extension, routers, db table structures, inclusion of appId, etc) across all components, and will future agentic codng honour this? Optimise this ask by limiting the number of codebase sweeps and collating audit. Output: /plan-feature with detailed implementation plan to address gaps/opportunities. /grill-me
 
+
+/home/kaesava/projects/CoPilot/tradie/apps
+/home/kaesava/projects/Google/template
 
 
 

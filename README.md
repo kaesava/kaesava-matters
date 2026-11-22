@@ -13,22 +13,24 @@ money-matters/
 │   ├── mobile/        # Expo React Native app (Android target)
 │   └── web/           # Next.js App Router on Cloudflare Workers (`moneymatters.kaesava.au`)
 ├── packages/
-│   ├── capabilities/  # Decoupled vertical slice business logic
-│   │   ├── assistant/       # Ask Penny AI Assistant (Cloudflare Workers AI Gateway, deterministic matcher, usage quota)
-│   │   ├── billing/         # Subscription state machine, Stripe checkout & portal, webhook processor
-│   │   ├── budgeting/       # 5-step waterfall cascade calculation & allocation engine
-│   │   ├── bug-reports/     # In-app Beta bug report persistence & diagnostic metadata capture
-│   │   ├── file-notes/      # Notes & attachments via Cloudflare R2
-│   │   ├── notifications/   # Expo push & scheduled Inngest background jobs
-│   │   ├── simulation/      # Stateless "Can I Afford It?" simulation query engine & goal delay impact calculator
-│   │   ├── tenant/          # Household creation, partner invite, member removal, 12-table Zipped CSV data backup
-│   │   └── transactions/    # Ledger, manual expense recording, transaction history
-│   ├── config/        # Validated Zod environment configurations & AI tier limits
-│   ├── core/          # Server infra (universal logger, rate limiter, auth context)
-│   ├── db/            # Drizzle PostgreSQL schemas, migrations, seeds, RLS
-│   ├── i18n/          # Centralized localization dictionary & t() helper
-│   ├── types/         # Pure domain contracts & Zod DTOs
-│   └── ui/            # Serene Finance UI primitives, Ask Penny palette & sheets, CountrySelect & design tokens
+│   ├── capabilities/  # Decoupled vertical slice business logic (9 Ring 2 reusable + 2 Ring 3 app-specific)
+│   │   ├── assistant/       # Ring 2: AI Assistant engine (Cloudflare Workers AI Gateway, deterministic matcher, usage quota)
+│   │   ├── bank-accounts/   # Ring 2: Bank account CRUD, expected balance & balance sync via BankAccountLifecycleHooks
+│   │   ├── billing/         # Ring 2: Subscription state machine, Stripe checkout & portal, multi-app webhook processor
+│   │   ├── budgeting/       # Ring 3: 5-step waterfall allocation engine, Money Matters envelope ledger, transfer events & analytics
+│   │   ├── bug-reports/     # Ring 2: In-app Beta bug report persistence & diagnostic metadata capture
+│   │   ├── file-notes/      # Ring 2: Notes & attachments metadata & privacy resolvers (S3/R2 transport in `@money-matters/core`)
+│   │   ├── notifications/   # Ring 2: Expo push, timezone-aware Inngest cron factory & retention jobs
+│   │   ├── schedules/       # Ring 2: Generic RRULE recurrence burst & Outlook-style series edit planner (`ScheduleStoreAdapter`)
+│   │   ├── simulation/      # Ring 3: Stateless "Can I Afford It?" simulation query engine & goal delay impact calculator
+│   │   ├── tenant/          # Ring 2: Tenant creation, partner invite, member removal, composable `DataExportContributor[]` CSV backup
+│   │   └── transactions/    # Ring 2: Generic domain-agnostic immutable ledger (`GenericLedgerStoreAdapter`)
+│   ├── config/        # Validated Zod environment configurations, fail-closed `AppManifest` registry & feature flags
+│   ├── core/          # Server infra (universal logger, rate limiter, auth context, S3/R2 storage transport, Next.js edge proxy helpers)
+│   ├── db/            # Drizzle PostgreSQL schemas (22 audited tables, ring-scoped subpaths `./rings/platform`, `./rings/capabilities`, `./rings/money-matters`), migrations, seeds, RLS
+│   ├── i18n/          # Centralized localization dictionary & t() / createAppI18n() helpers
+│   ├── types/         # Pure domain contracts & Zod DTOs (plus `./platform` ring-pure subpath)
+│   └── ui/            # Serene Finance UI primitives, `PlatformSettingsShell`, `AppThemeProvider`, Ask Penny palette & sheets, CountrySelect & design tokens
 ```
 
 ---
@@ -116,6 +118,6 @@ cd apps/api && pnpm cf-deploy
 - [AGENTS.md](file:///home/kaesava/projects/money-matters/AGENTS.md) — Binding architectural invariants, priority order, coding standards, and post-build documentation sync rules.
 - [FUNCTIONAL_CAPABILITIES_INVENTORY.md](file:///home/kaesava/projects/money-matters/FUNCTIONAL_CAPABILITIES_INVENTORY.md) — **UI, Route, Modal, Parity & i18n Registry:** Complete inventory of all 36 Web routes, 37 Mobile routes, 56 Modals/Drawers/Confirm Dialogs, Screen-by-Screen Web/Mobile Parity Matrix, `@money-matters/ui` exports, and `@money-matters/i18n` dictionary namespaces.
 - [TECHNICAL_SPEC.md](file:///home/kaesava/projects/money-matters/TECHNICAL_SPEC.md) — **Architecture, API & Workflows Registry:** Stack, security/RLS architecture, complete 12-router / 101-procedure tRPC registry (`§9`), HTTP/webhook endpoints, Inngest workflows, and feature flags (`§10`).
-- [SCHEMA_DATA_DICTIONARY.md](file:///home/kaesava/projects/money-matters/SCHEMA_DATA_DICTIONARY.md) — **Database & RLS Registry:** Master 24-table RLS policy (`ENABLE`/`FORCE`), session variable, and code consumer registry + column-level data dictionary (`pnpm audit:schema`).
+- [SCHEMA_DATA_DICTIONARY.md](file:///home/kaesava/projects/money-matters/SCHEMA_DATA_DICTIONARY.md) — **Database & RLS Registry:** Master 22-table RLS policy (`ENABLE`/`FORCE`), session variable, and code consumer registry + column-level data dictionary (`pnpm audit:schema`).
 - [FUNCTIONAL_SPEC.md](file:///home/kaesava/projects/money-matters/FUNCTIONAL_SPEC.md) — **Domain Math & Product Rules:** Two-Horizon Waterfall math, 12-Month Cumulative Projection rules, "Can I Afford It?" simulation verdicts, onboarding estimation formulas, and test matrix specifications.
 - [V2_SCOPE.md](file:///home/kaesava/projects/money-matters/V2_SCOPE.md) — Deferred Release 2 feature scope.
