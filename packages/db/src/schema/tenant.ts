@@ -17,9 +17,9 @@ export const tenants = pgTable("tenants", {
   // Every tenant belongs to exactly one app. FK enforces referential integrity.
   appId: uuid("app_id").notNull().references(() => apps.id),
   name: varchar("name", { length: 255 }).notNull(),
-  country: varchar("country", { length: 2 }).notNull().default("AU"),
-  currency: varchar("currency", { length: 3 }).notNull().default("AUD"),
-  timezone: varchar("timezone", { length: 100 }).notNull().default("Australia/Sydney"),
+  country: varchar("country", { length: 2 }).notNull(),
+  currency: varchar("currency", { length: 3 }).notNull(),
+  timezone: varchar("timezone", { length: 100 }).notNull().default("UTC"),
   state: varchar("state", { length: 50 }),
   postcode: varchar("postcode", { length: 20 }),
   premiumEnabled: boolean("premium_enabled").notNull().default(false),

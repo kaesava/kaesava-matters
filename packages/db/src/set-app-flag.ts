@@ -10,11 +10,11 @@ const __dirname = path.dirname(__filename);
 const args = process.argv.slice(2);
 const flagArg = args.find((a) => a.startsWith("--flag="))?.split("=")[1];
 const valueArg = args.find((a) => a.startsWith("--value="))?.split("=")[1];
-const appSlug = args.find((a) => a.startsWith("--app="))?.split("=")[1] || "money-matters";
+const appSlug = args.find((a) => a.startsWith("--app="))?.split("=")[1];
 const envTarget = (args.find((a) => a.startsWith("--env="))?.split("=")[1] || "dev").toLowerCase();
 
-if (!flagArg || valueArg === undefined) {
-  console.log("Usage: pnpm app:set-flag --flag=<flagName> --value=<true|false|number> [--env=dev|prod|all] [--app=<slug>]");
+if (!flagArg || valueArg === undefined || !appSlug) {
+  console.log("Usage: pnpm app:set-flag --app=<slug> --flag=<flagName> --value=<true|false|number> [--env=dev|prod|all]");
   process.exit(1);
 }
 

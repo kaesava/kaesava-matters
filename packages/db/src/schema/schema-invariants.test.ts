@@ -1,7 +1,7 @@
 import { describe, it, expect } from "vitest";
 import * as schema from "./index.js";
 
-const GLOBAL_TABLES = new Set(["apps", "users", "userPreferences", "earlyAccessSubscribers", "processedWebhooks"]);
+const GLOBAL_TABLES = new Set(["apps", "users", "userAppTrials", "userPreferences", "earlyAccessSubscribers", "processedWebhooks"]);
 
 describe("Database Schema Audit & Multi-Tenancy Invariants", () => {
   it("enforces standard audit columns across all domain tables", () => {

@@ -25,6 +25,11 @@
       "types": "./src/rings/money-matters.ts",
       "import": "./src/rings/money-matters.ts",
       "require": "./src/rings/money-matters.ts"
+    },
+    "./testing": {
+      "types": "./src/testing/mock-db.ts",
+      "import": "./src/testing/mock-db.ts",
+      "require": "./src/testing/mock-db.ts"
     }
   },
   "dependencies": {

@@ -235,6 +235,7 @@ export async function seedDatabase(connectionString: string, envLabel: string) {
   // Seed sample billing invoice for subscribed household
   await db.insert(billingInvoices).values({
     tenantId: household.id,
+    appId,
     stripeInvoiceId: "in_seed_fy27_001",
     stripeCustomerId: "cus_seed_kaesava_001",
     stripeSubscriptionId: "sub_seed_kaesava_001",

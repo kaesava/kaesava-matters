@@ -2,6 +2,7 @@ export * from "../schema/base.js";
 export { timestamps, tenantAndTimestamps } from "../schema/base.js";
 export * from "../schema/app.js";
 export * from "../schema/user.js";
+export * from "../schema/user_app_trial.js";
 export * from "../schema/user_preference.js";
 export * from "../schema/tenant.js";
 export * from "../schema/tenant_user.js";

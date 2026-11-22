@@ -444,10 +444,24 @@
 | `email` | text | No | Domain column |
 | `displayName` | text | Yes | Domain column |
 | `avatarUrl` | text | Yes | Domain column |
-| `hasUsedTrial` | boolean | No | Domain column |
 | `termsAcceptedAt` | timestamp | Yes | Timestamp when user accepted Terms & Privacy Policy |
 | `termsVersion` | text | Yes | Accepted Terms of Service snapshot version (e.g. `2026-11`) |
 | `privacyVersion` | text | Yes | Accepted Privacy Policy snapshot version (e.g. `2026-11`) |
+| `createdAt` | timestamp | No | Creation timestamp |
+| `createdBy` | uuid | Yes | Creator User ID |
+| `updatedAt` | timestamp | No | Last update timestamp |
+| `updatedBy` | uuid | Yes | Modifier User ID |
+| `archivedAt` | timestamp | Yes | Soft delete timestamp |
+| `archivedBy` | uuid | Yes | Archiver User ID |
+
+## Table: `user_app_trials` (`user_app_trial.ts`)
+
+| Column | Type | Nullable | Description |
+| :--- | :--- | :--- | :--- |
+| `id` | uuid | No | Primary Key |
+| `userId` | uuid | No | FK to `users.id` |
+| `appId` | uuid | No | FK to `apps.id` |
+| `firstTrialStartedAt` | timestamp | No | First trial start timestamp for `(userId, appId)` |
 | `createdAt` | timestamp | No | Creation timestamp |
 | `createdBy` | uuid | Yes | Creator User ID |
 | `updatedAt` | timestamp | No | Last update timestamp |

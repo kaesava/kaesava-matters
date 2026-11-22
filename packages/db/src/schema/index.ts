@@ -1,5 +1,6 @@
 export * from "./base.js";
 export * from "./user.js";
+export * from "./user_app_trial.js";
 export * from "./tenant.js";
 export * from "./tenant_user.js";
 export * from "./bank_account.js";

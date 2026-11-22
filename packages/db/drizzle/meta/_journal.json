@@ -456,6 +456,13 @@
       "when": 1784358900000,
       "tag": "0065_add_tenant_user_app_role",
       "breakpoints": true
+    },
+    {
+      "idx": 65,
+      "version": "7",
+      "when": 1784359000000,
+      "tag": "0066_multi_app_platform_isolation",
+      "breakpoints": true
     }
   ]
 }

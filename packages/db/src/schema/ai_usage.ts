@@ -11,7 +11,7 @@ export const aiUsage = pgTable(
     tenantId: uuid("tenant_id")
       .notNull()
       .references(() => tenants.id, { onDelete: "cascade" }),
-    appId: uuid("app_id").notNull().default("01908bde-34bb-7b19-a178-574211bc93aa"),
+    appId: uuid("app_id").notNull(),
     periodMonth: date("period_month").notNull(), // First day of billing month: YYYY-MM-01
     llmCalls: integer("llm_calls").notNull().default(0),
     createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
@@ -22,7 +22,7 @@ export const aiUsage = pgTable(
     archivedBy: uuid("archived_by"),
   },
   (table) => [
-    uniqueIndex("ai_usage_tenant_period_idx").on(table.tenantId, table.periodMonth),
+    uniqueIndex("ai_usage_tenant_app_period_idx").on(table.tenantId, table.appId, table.periodMonth),
     index("ai_usage_tenant_id_idx").on(table.tenantId),
   ]
 );

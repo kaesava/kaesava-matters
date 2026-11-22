@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { tenants, tenantUsers, apps, users, userPreferences, type DbOrTx } from "@money-matters/db";
+import { tenants, tenantUsers, apps, users, userAppTrials, userPreferences, type DbOrTx } from "@money-matters/db";
 import { resolveAppConfigOrDefault } from "@money-matters/config";
 import {
   CreateTenantCommand,
@@ -93,19 +93,13 @@ export function createTenantHandler(db: DbOrTx, hooks?: TenantLifecycleHooks<DbO
       }
     }
 
-    const normalizedEmail = userEmail?.trim().toLowerCase();
-    const matchedUsers = normalizedEmail
-      ? await db
-          .select({ hasUsedTrial: users.hasUsedTrial })
-          .from(users)
-          .where(or(eq(users.id, userId), sql`lower(${users.email}) = ${normalizedEmail}`))
-      : await db
-          .select({ hasUsedTrial: users.hasUsedTrial })
-          .from(users)
-          .where(eq(users.id, userId))
-          .limit(1);
+    const existingTrials = await db
+      .select({ id: userAppTrials.id, firstTrialStartedAt: userAppTrials.firstTrialStartedAt })
+      .from(userAppTrials)
+      .where(and(eq(userAppTrials.userId, userId), eq(userAppTrials.appId, appId)))
+      .limit(1);
 
-    const hasUsedTrial = matchedUsers.some((u: { hasUsedTrial?: boolean }) => Boolean(u.hasUsedTrial));
+    const hasUsedTrial = existingTrials.length > 0;
     const subscriptionStatus = hasUsedTrial ? "TRIAL_EXPIRED" : "TRIAL_ACTIVE";
 
     const country = input.country || "AU";
@@ -130,14 +124,18 @@ export function createTenantHandler(db: DbOrTx, hooks?: TenantLifecycleHooks<DbO
       updatedBy: userId,
     });
 
-    await db
-      .update(users)
-      .set({ hasUsedTrial: true, updatedAt: now })
-      .where(
-        normalizedEmail
-          ? or(eq(users.id, userId), sql`lower(${users.email}) = ${normalizedEmail}`)
-          : eq(users.id, userId)
-      );
+    if (!hasUsedTrial) {
+      await db
+        .insert(userAppTrials)
+        .values({
+          userId,
+          appId,
+          firstTrialStartedAt: trialStartedAt,
+          createdBy: userId,
+          updatedBy: userId,
+        })
+        .onConflictDoNothing();
+    }
 
     await db.insert(tenantUsers).values({
       tenantId,

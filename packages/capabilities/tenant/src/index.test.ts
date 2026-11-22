@@ -53,7 +53,7 @@ describe('Capability Tenant Handlers', () => {
 
     expect(result.success).toBe(true);
     expect(typeof result.tenantId).toBe('string');
-    expect(insertMock).toHaveBeenCalledTimes(5);
+    expect(insertMock).toHaveBeenCalledTimes(6);
     expect(onTenantCreated).toHaveBeenCalledTimes(1);
   });
 

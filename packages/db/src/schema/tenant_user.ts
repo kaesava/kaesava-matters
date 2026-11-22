@@ -3,7 +3,7 @@ import { tenants } from "./tenant.js";
 import { users } from "./user.js";
 import { timestamps } from "./base.js";
 
-export const memberRoleEnum = pgEnum("member_role_enum", ["OWNER", "MEMBER"]);
+export const memberRoleEnum = pgEnum("member_role_enum", ["OWNER", "MEMBER", "VIEWER"]);
 export const inviteStatusEnum = pgEnum("invite_status_enum", ["PENDING", "ACCEPTED", "REVOKED"]);
 
 /**
