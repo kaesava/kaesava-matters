@@ -11,6 +11,21 @@ export interface TenantLifecycleContext<TDb = unknown> {
   userEmail?: string;
 }
 
+/**
+ * Composable contributor interface for full tenant data export (ZIP).
+ * Each enabled Ring 2 capability and Ring 3 app implements this contract
+ * to append its own CSV files without coupling to capability-tenant.
+ */
+export interface DataExportContributor<TDb = unknown> {
+  id: string;
+  exportCsvFiles: (params: {
+    db: TDb;
+    tenantId: string;
+    userId: string;
+    appId: string;
+  }) => Promise<Record<string, string>>;
+}
+
 export interface TenantLifecycleHooks<TDb = unknown> {
   onTenantCreated?: (ctx: TenantLifecycleContext<TDb>) => Promise<void>;
   onSetupCancelled?: (ctx: TenantLifecycleContext<TDb>) => Promise<void>;

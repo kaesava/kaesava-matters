@@ -3,7 +3,7 @@ import type { DbOrTx } from "@money-matters/db";
 import {
   registerDeviceTokenHandler,
   removeDeviceTokenHandler,
-  createScheduledNotificationFunctions,
+  createTimezoneAwareNotificationCron,
 } from "./index.js";
 
 vi.mock("@money-matters/db", () => {
@@ -43,7 +43,7 @@ describe("notifications capability handlers", () => {
   it("exports handlers correctly", () => {
     expect(registerDeviceTokenHandler).toBeDefined();
     expect(removeDeviceTokenHandler).toBeDefined();
-    expect(createScheduledNotificationFunctions).toBeDefined();
+    expect(createTimezoneAwareNotificationCron).toBeDefined();
   });
 
   it("can register device token", async () => {
