@@ -26,16 +26,15 @@ const PROTECTED_PACKAGES = [
   "packages/capabilities/schedules/src",
   "packages/capabilities/assistant/src",
   "packages/capabilities/auth/src",
-  "packages/capabilities/transactions/src",
 ];
 
 const FORBIDDEN_PATTERNS = [
   { label: "@money-matters/capability-budgeting", regex: /@money-matters\/capability-budgeting/ },
   { label: "@money-matters/capability-simulation", regex: /@money-matters\/capability-simulation/ },
-  { label: "@kaesava/db/rings/money-matters", regex: /@money-matters\/db\/rings\/money-matters/ },
+  { label: "@kaesava/db/rings/money-matters", regex: /@(kaesava|money-matters)\/db\/rings\/money-matters/ },
   {
     label: "cross-Ring-2 capability import",
-    regex: /from\s+["']@money-matters\/capability-(tenant|bank-accounts|billing|bug-reports|file-notes|notifications|schedules|assistant|auth|transactions)(\/[^"']*)?["']/,
+    regex: /from\s+["']@(kaesava|money-matters)\/capability-(tenant|bank-accounts|billing|bug-reports|file-notes|notifications|schedules|assistant|auth)(\/[^"']*)?["']/,
   },
   {
     label: "@trpc/server inside Ring 1/Ring 2 domain logic",
@@ -43,11 +42,11 @@ const FORBIDDEN_PATTERNS = [
   },
   {
     label: "monolithic root @kaesava/db import (use @kaesava/db/rings/platform or /rings/capabilities)",
-    regex: /from\s+["']@money-matters\/db["']/,
+    regex: /from\s+["']@(kaesava|money-matters)\/db["']/,
   },
   {
     label: "Money Matters budgeting DB tables",
-    regex: /import\s*\{[^}]*\b(envelopes|incomeEvents|expenseEvents|allocationPlans|allocationPlanLines|paydayStrategySteps|transactionLedger|getEnvelopeBalancesMap)\b[^}]*\}\s*from\s*["']@money-matters\/db["']/,
+    regex: /import\s*\{[^}]*\b(envelopes|incomeEvents|expenseEvents|allocationPlans|allocationPlanLines|paydayStrategySteps|transactionLedger|getEnvelopeBalancesMap)\b[^}]*\}\s*from\s*["']@(kaesava|money-matters)\/db["']/,
   },
 ];
 
@@ -91,6 +90,13 @@ for (const relPkg of PROTECTED_PACKAGES) {
     for (const rule of FORBIDDEN_PATTERNS) {
       if (relPath === "packages/core/src/db-client.ts" && rule.label.startsWith("monolithic root")) {
         continue;
+      }
+      if (rule.label === "cross-Ring-2 capability import" && relPkg.startsWith("packages/capabilities/")) {
+        const selfCap = relPkg.split("/")[2];
+        const match = content.match(rule.regex);
+        if (match && match[2] === selfCap) {
+          continue;
+        }
       }
       if (rule.regex.test(content)) {
         violations.push({ file: relPath, rule: rule.label });

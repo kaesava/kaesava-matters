@@ -28,9 +28,29 @@ pnpm app:set-flag --flag=customAllocationRules --value=true --env=prod
 * As you build code, you decide whether you want to run pnpm typecheck/lint/test/test coverage/i8ln-check/install/ and any other scripts/checks as you complete changes. However, at the end, ensure pnpm validate:prod runs successfully. Once successful, commit code, but ask me before pushing the code.
 
 
+
+
 # Current State
 
-Do another deep and broad pass across the codebase to ensure no cross-pollution between or within ring boundaries, no redundant/un-used code left behind, and all agent instructions. Are there opportunities to re-use code across or within the web or mobile app? Are there other re-usable components hiding within Money Matters app (some to test but you do a thorough check: setup, dashboard, global search, QUick action, + FAB, app tagline, switch tenant, User profile, navigation, reports, scheduling with ability to parametrise burst, start/end, frequency, every, override individual event dates/archival, re-burst, etc., page filters, pagination, sort, hyperlinks, mobile ui features like swipe, refresh, tap, hold, vibration, etc. view AI usage and apply liimits, stripe subscription, invoice, sync, refresh, etc., download full backup, telemetry and acceptance, currency handling, date format handling, privacy, terms of use, home screen hero cards, etc.) that we can extract? Are there sub-components that ought to be promoted or components that ought to be broken down? Do all components reflect a consistent structure enforced so agents in the future don't pollute them? Are there other signficant blockers to start to build a new app that would make re-use difficult (this could be code in our codebase or even external tooling - for example, if you need me to go and create relevant projects in upstash, etc. if needed). Is the architecture cleanly and consistenly implemented (injection, hooks, extension, routers, db table structures, inclusion of appId, etc) across all components, and will future agentic codng honour this? Optimise this ask by limiting the number of codebase sweeps and collating audit. Output: /plan-feature with detailed implementation plan to address gaps/opportunities. /grill-me
+Architecture audit. Optimise credit usage by strictly limiting main-context token bloat:
+      1. First, read AGENTS.md, FUNCTIONAL_CAPABILITIES_INVENTORY.md, TECHNICAL_SPEC.md (§9-§12), and SCHEMA_DATA_DICTIONARY.md, and run existing deterministic checks (`pnpm check:boundaries`, `pnpm audit:schema`, `pnpm check-i18n`,
+      `pnpm check:mobile-interaction`) in a single batched command.
+      2. Next, launch at most 3 parallel `research` subagents with `Model: "flash"` (one for `packages/*` + `apps/api` + external infra/env config; one for `apps/web` + Ring 3 capabilities; one for `apps/mobile`) so raw file reads stay
+      out of the main conversation context.
+  
+      Audit scope:
+      - Cross-pollution between or within ring boundaries, redundant/unused code, and alignment of all agent instructions/skills.
+      - Opportunities to re-use code across or within Web and Mobile (headless hooks, shared utilities, UI primitives) and sub-components that should be promoted or broken down to enforce a consistent structure (<=400 line files, <=100
+      line components, <=30 line functions, 4-subpath Ring 2 standard) that future agents won't pollute.
+      - Thorough check for reusable components still hiding in Money Matters (`apps/web`, `apps/mobile`, or Ring 3) that should move to Ring 1/Ring 2, including: setup, dashboard, home screen hero cards, global search / command palette,
+      Quick Action, + FAB, app tagline, switch tenant, user profile, navigation, reports, scheduling (parameterised burst, start/end, frequency, every, overriding individual event dates/archival, re-burst), page filters, pagination,
+      sort, hyperlinks, mobile UI features (swipe, pull-to-refresh, tap, hold, vibration/haptics), view AI usage & apply limits, Stripe subscription/invoice/sync/refresh, download full backup, telemetry & consent acceptance, currency
+      handling, date format handling, privacy, and terms of use.
+      - Architecture consistency across all components: dependency injection (`DbOrTx`), hooks, extension slots (`PlatformSettingsShell`), routers, DB table structures, and `appId` inclusion/scoping.
+      - Significant blockers to spinning up a 2nd app right now—both in code and in external tooling/provisioning (Upstash Redis prefixing/projects, Neon Auth/DB, Cloudflare Workers/R2 buckets, Stripe products/webhooks, Inngest app IDs,
+      Resend, PostHog/Sentry).
+  
+      Collate the findings, run /grill-me with your highest-leverage architectural questions first, and then output /plan-feature with a detailed implementation plan to address the gaps and opportunities./grill-me
 
 
 /home/kaesava/projects/CoPilot/tradie/apps

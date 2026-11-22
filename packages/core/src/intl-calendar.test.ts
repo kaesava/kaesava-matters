@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { todayInZone, calendarDaysBetween } from "./australian-calendar.js";
+import { todayInZone, calendarDaysBetween } from "./intl-calendar.js";
 
 describe("Calendar & Timezone Utilities", () => {
   it("calculates todayInZone across different Australian timezones", () => {

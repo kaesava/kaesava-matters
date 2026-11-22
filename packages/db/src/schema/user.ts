@@ -8,7 +8,7 @@ import { pgTable, text, timestamp, uuid } from "drizzle-orm/pg-core";
  * enforced at the database level via a migration (see drizzle/migrations).
  *
  * This table is platform-level (no tenantId/appId) — users exist independently
- * of tenant membership. The link to a tenant is through household_members.
+ * of tenant membership. The link to a tenant is through tenant_users.
  */
 export const users = pgTable("users", {
   id: uuid("id").primaryKey(), // == neon_auth.user.id — set by caller, never random

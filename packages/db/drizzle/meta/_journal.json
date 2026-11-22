@@ -463,6 +463,13 @@
       "when": 1784359000000,
       "tag": "0066_multi_app_platform_isolation",
       "breakpoints": true
+    },
+    {
+      "idx": 66,
+      "version": "7",
+      "when": 1784359100000,
+      "tag": "0067_billing_invoices_rls_fix",
+      "breakpoints": true
     }
   ]
 }

@@ -121,7 +121,7 @@ describe('Config Package Utilities', () => {
   describe('ai.config', () => {
     it('resolves default AI config values correctly', () => {
       const cfg = resolveAiConfig({});
-      expect(cfg.CF_ACCOUNT_ID).toBe('b0a640370b2b7ba2b84abfd03a9fda56');
+      expect(cfg.CF_ACCOUNT_ID).toBeUndefined();
       expect(cfg.AI_MODEL_ID).toBe(DEFAULT_AI_MODEL_ID);
       expect(AI_TIER_LIMITS.free.monthlyLlmCalls).toBe(150);
       expect(AI_TIER_LIMITS.free.burstPerMinute).toBe(10);

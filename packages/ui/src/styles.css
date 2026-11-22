@@ -1,0 +1,19 @@
+/* Serene Finance Design System Tokens & Base Utilities (@kaesava/ui/styles.css) */
+:root {
+  --color-brand-primary: #2563eb;
+  --color-brand-navy: #1b2b4b;
+  --color-surface-canvas: #f7f8fa;
+  --color-status-success: #22c55e;
+  --color-status-danger: #ba1a1a;
+}
+
+.ui-card {
+  border-radius: 1rem;
+  border: 1px solid rgb(226 232 240);
+  background-color: rgb(255 255 255);
+}
+
+.dark .ui-card {
+  border-color: rgb(30 41 59);
+  background-color: rgb(15 23 42);
+}

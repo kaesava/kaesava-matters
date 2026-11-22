@@ -6,11 +6,12 @@ export interface MobileLogoProps {
   style?: StyleProp<ViewStyle>;
 }
 
-export function MobileLogo({ 
-  size = 64, 
-  source = require("../../assets/money-matters-icon-512.png"),
-  style 
+export function MobileLogo({
+  size = 64,
+  source,
+  style,
 }: MobileLogoProps) {
+  if (!source) return null;
   return (
     <View style={[styles.container, { width: size, height: size }, style]}>
       <Image

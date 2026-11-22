@@ -19,8 +19,8 @@ function getNextResetDate(now: Date): string {
 export class DbUsageStore implements UsageStorePort {
   constructor(
     private db: DbOrTx,
-    private now: () => Date = () => new Date(),
-    private appId: string = process.env["DEFAULT_APP_ID"] || "01908bde-34bb-7b19-a178-574211bc93aa"
+    private appId: string,
+    private now: () => Date = () => new Date()
   ) {}
 
   async getUsage(tenantId: string): Promise<{ used: number; limit: number; remaining: number; resetsOn: string }> {

@@ -11,8 +11,8 @@ export const DEFAULT_AI_MODEL_ID = "@cf/meta/llama-3.1-8b-instruct";
  */
 const aiEnvSchema = z
   .object({
-    CF_ACCOUNT_ID: z.string().min(1).default("b0a640370b2b7ba2b84abfd03a9fda56"),
-    CF_AI_GATEWAY_ID: z.string().min(1).default("money-matters-ai-dev"),
+    CF_ACCOUNT_ID: z.string().min(1).optional(),
+    CF_AI_GATEWAY_ID: z.string().min(1).optional(),
     CF_AI_API_TOKEN: z.string().min(1).optional(),
     AI_MODEL_ID: z.string().min(1).default(DEFAULT_AI_MODEL_ID),
   })

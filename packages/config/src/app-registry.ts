@@ -24,6 +24,14 @@ export interface AppTerminologyConfig {
   tenantSingular: string;
   tenantPlural: string;
   memberSingular: string;
+  assistantName?: string;
+}
+
+export interface AppLegalConfig {
+  entityName: string;
+  jurisdiction: string;
+  privacyPath: string;
+  termsPath: string;
 }
 
 export interface AppRoleOption {
@@ -34,6 +42,11 @@ export interface AppRoleOption {
 }
 
 export interface AppBillingConfig {
+  displayPrices?: {
+    monthly?: string;
+    annual?: string;
+    foundingAnnual?: string;
+  };
   priceIds?: {
     monthly?: string;
     annual?: string;
@@ -46,14 +59,18 @@ export interface AppConfig {
   id: string;
   name: string;
   slug: string;
+  tagline?: string;
   trialDays: number;
   maxOwnedTenantsPerUser?: number;
   storageKeyPrefix?: string;
   authStoragePrefix?: string;
+  sqliteDbName?: string;
   easProjectId?: string;
+  inngestAppId?: string;
   roles?: readonly AppRoleOption[];
   branding: AppBrandingConfig;
   terminology: AppTerminologyConfig;
+  legal?: AppLegalConfig;
   billing?: AppBillingConfig;
   allowedRedirectHosts: readonly string[];
   features: {

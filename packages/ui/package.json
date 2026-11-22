@@ -29,7 +29,8 @@
       "types": "./src/format.ts",
       "import": "./src/format.ts",
       "require": "./src/format.ts"
-    }
+    },
+    "./styles.css": "./src/styles.css"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.3.4",

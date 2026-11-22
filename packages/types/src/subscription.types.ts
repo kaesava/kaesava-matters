@@ -8,7 +8,7 @@ export const SubscriptionStatusSchema = z.enum([
   "DEACTIVATED",
 ]);
 
-export const SubscriptionTierSchema = z.enum(["standard", "household"]);
+export const SubscriptionTierSchema = z.enum(["standard", "household", "team"]);
 
 export const BillingCycleSchema = z.enum(["monthly", "annual", "founding"]);
 

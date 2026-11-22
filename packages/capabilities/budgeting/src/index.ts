@@ -38,7 +38,6 @@ export * from "./queries/allocation-plans.query.js";
 export * from "./lifecycle/money-matters-tenant-hooks.js";
 export * from "./lifecycle/money-matters-export-hook.js";
 export * from "./lifecycle/money-matters-bank-account-hooks.js";
-export * from "./lifecycle/money-matters-archive-adapters.js";
 export * from "./lifecycle/money-matters-file-notes.js";
 export * from "./manifest/money-matters.manifest.js";
 export * from "./ledger/commands/record-expense.command.js";

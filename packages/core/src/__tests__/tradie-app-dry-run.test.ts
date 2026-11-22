@@ -9,9 +9,6 @@ import {
   type TenantLifecycleHooks,
 } from "@kaesava/types";
 import {
-  createArchiveRegistry,
-  computeRecurringDates,
-  planSeriesEditScope,
   canRolePerform,
   defineAppRolePolicy,
   buildCorsHeaders,
@@ -129,57 +126,6 @@ describe("Dry Run: TradieMatters Multi-Tenant App Assembly", () => {
     expect(tradieRoles.can("MEMBER", "TRADIE", "jobs:view_all")).toBe(false);
     expect(tradieRoles.can("MEMBER", "TRADIE", "jobs:complete")).toBe(true);
     expect(tradieRoles.can("OWNER", null, "jobs:view_all")).toBe(true);
-
-    // 5. Recurring Maintenance Job Bursting & Outlook-style Reschedule
-    const maintenanceDates = computeRecurringDates({
-      rrule: "FREQ=MONTHLY;INTERVAL=3",
-      startDate: "2026-03-01",
-      fromDate: "2026-03-01",
-      horizonMonths: 12,
-      timezone: "Australia/Melbourne",
-    });
-    expect(maintenanceDates).toEqual(["2026-03-01", "2026-06-01", "2026-09-01", "2026-12-01", "2027-03-01"]);
-
-    const reschedulePlan = planSeriesEditScope({
-      scope: "THIS_AND_FOLLOWING",
-      fromDate: "2026-09-01",
-      existingSeries: {
-        id: "maint-1",
-        tenantId: "company-1",
-        appId: TRADIE_APP_ID,
-        name: "Quarterly HVAC Service",
-        rrule: "FREQ=MONTHLY;INTERVAL=3",
-        startDate: "2026-03-01",
-        endDate: null,
-        lastBurstDate: "2027-03-01",
-      },
-      occurrences: [
-        { id: "o1", seriesId: "maint-1", expectedDate: "2026-03-01", status: "CONFIRMED" },
-        { id: "o2", seriesId: "maint-1", expectedDate: "2026-06-01", status: "CONFIRMED" },
-        { id: "o3", seriesId: "maint-1", expectedDate: "2026-09-01", status: "PENDING" },
-      ],
-      updatedRrule: "FREQ=MONTHLY;INTERVAL=6",
-      timezone: "Australia/Melbourne",
-      horizonMonths: 12,
-    });
-    expect(reschedulePlan.truncateSeriesEndDate).toBe("2026-08-31");
-    expect(reschedulePlan.newOccurrenceDates).toEqual(["2026-09-01", "2027-03-01", "2027-09-01"]);
-
-    // 7. Pluggable Archive Registry for Jobs
-    const restoreJob = vi.fn().mockResolvedValue({ id: "job-42", archivedAt: null });
-    const archiveRegistry = createArchiveRegistry([
-      {
-        itemType: "JOB",
-        listArchived: async () => [
-          { id: "job-42", name: "Rewire Kitchen", itemType: "JOB", subtitle: "Smith Residence", archivedAt: new Date("2026-04-01T00:00:00Z") },
-        ],
-        restoreItem: restoreJob,
-      },
-    ]);
-    const archived = await archiveRegistry.listArchivedItems({ db: {}, tenantId: "company-1", appId: TRADIE_APP_ID });
-    expect(archived).toHaveLength(1);
-    await archiveRegistry.restoreArchivedItem({ db: {}, tenantId: "company-1", appId: TRADIE_APP_ID, userId: "tradie-1" }, "JOB", "job-42");
-    expect(restoreJob).toHaveBeenCalledTimes(1);
 
     // 8. Tenant Lifecycle Hooks for TradiePro (Export Jobs CSV, Zero Budgeting Tables)
     const tradieHooks: TenantLifecycleHooks<unknown> = {

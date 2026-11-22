@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach, afterEach } from 'vitest';
-import { enforceApiRateLimit } from './rate-limit.js';
+import { enforceApiRateLimit } from '@kaesava/core';
 
 describe('enforceApiRateLimit', () => {
   const originalEnv = process.env;

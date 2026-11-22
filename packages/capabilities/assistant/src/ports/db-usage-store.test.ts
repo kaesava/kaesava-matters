@@ -15,7 +15,7 @@ describe("DbUsageStore", () => {
       insert: vi.fn(),
     };
 
-    const store = new DbUsageStore(mockDb as unknown as DbOrTx);
+    const store = new DbUsageStore(mockDb as unknown as DbOrTx, "test-app-id");
     const usage = await store.getUsage("tenant-123");
 
     expect(usage.used).toBe(35);
@@ -35,7 +35,7 @@ describe("DbUsageStore", () => {
       insert: vi.fn(),
     };
 
-    const store = new DbUsageStore(mockDb as unknown as DbOrTx);
+    const store = new DbUsageStore(mockDb as unknown as DbOrTx, "test-app-id");
     const usage = await store.getUsage("tenant-456");
 
     expect(usage.used).toBe(0);
@@ -56,7 +56,7 @@ describe("DbUsageStore", () => {
       })),
     };
 
-    const store = new DbUsageStore(mockDb as unknown as DbOrTx, () => currentTime);
+    const store = new DbUsageStore(mockDb as unknown as DbOrTx, "test-app-id", () => currentTime);
     const novUsage = await store.getUsage("tenant-123");
     expect(novUsage).toEqual({
       used: 42,
@@ -81,7 +81,7 @@ describe("DbUsageStore", () => {
     const valuesMock = vi.fn().mockReturnValue({ onConflictDoUpdate: onConflictDoUpdateMock });
     const insertMock = vi.fn().mockReturnValue({ values: valuesMock });
 
-    const store = new DbUsageStore({ insert: insertMock } as unknown as DbOrTx, () => new Date("2026-11-20T12:00:00Z"));
+    const store = new DbUsageStore({ insert: insertMock } as unknown as DbOrTx, "test-app-id", () => new Date("2026-11-20T12:00:00Z"));
 
     expect(await store.incrementLlmCalls("tenant-123", 150)).toBe(true);
     expect(valuesMock).toHaveBeenCalledWith({
@@ -99,7 +99,7 @@ describe("DbUsageStore", () => {
     const setMock = vi.fn().mockReturnValue({ where: whereMock });
     const updateMock = vi.fn().mockReturnValue({ set: setMock });
 
-    const store = new DbUsageStore({ update: updateMock } as unknown as DbOrTx);
+    const store = new DbUsageStore({ update: updateMock } as unknown as DbOrTx, "test-app-id");
     await store.decrementLlmCalls("tenant-123");
 
     expect(updateMock).toHaveBeenCalledTimes(1);

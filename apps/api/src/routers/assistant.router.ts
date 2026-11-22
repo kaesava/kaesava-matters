@@ -50,7 +50,7 @@ export const assistantRouter = router({
       }
 
       const fmt = await loadTenantFormatting(ctx.db, ctx.tenantId, ctx.userId);
-      const usageStore = new DbUsageStore(ctx.db);
+      const usageStore = new DbUsageStore(ctx.db, ctx.appId);
       const handler = createAssistantIntentHandler(ctx.db, ctx.appId);
 
       return askAssistant({
@@ -74,7 +74,7 @@ export const assistantRouter = router({
   usage: privateTenantProcedure
     .output(AssistantUsageSchema)
     .query(async ({ ctx }) => {
-      const usageStore = new DbUsageStore(ctx.db);
+      const usageStore = new DbUsageStore(ctx.db, ctx.appId);
       const [usage, featureEnabled] = await Promise.all([
         usageStore.getUsage(ctx.tenantId),
         isAiFeatureEnabled(ctx.db, ctx.appId),

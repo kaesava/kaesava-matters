@@ -74,25 +74,25 @@ const FEATURE_FLAGS = {
     tenantScopable: true,
     killSwitchEnabled: false,
   },
-  simulation: {
-    key: "simulation",
+  billing: {
+    key: "billing",
     owner: "product",
     expiresAt: "never",
     tenantScopable: true,
     killSwitchEnabled: false,
   },
-  customAllocationRules: {
-    key: "customAllocationRules",
+  pushNotifications: {
+    key: "pushNotifications",
     owner: "product",
     expiresAt: "never",
     tenantScopable: true,
     killSwitchEnabled: false,
   },
-  reports: {
-    key: "reports",
+  posthogAnalytics: {
+    key: "posthogAnalytics",
     owner: "product",
     expiresAt: "never",
-    tenantScopable: true,
+    tenantScopable: false,
     killSwitchEnabled: false,
   },
 } as const;

@@ -47,39 +47,10 @@ export default function AppLayout() {
   });
 
   const utils = trpc.useUtils();
-  const burstUpcomingEvents = trpc.burstUpcomingEvents.useMutation();
-  const lastBurstTenantId = React.useRef<string | null>(null);
   const router = useRouter();
   const subQuery = trpc.getSubscriptionStatus.useQuery(undefined, {
     enabled: !!session?.user,
   });
-
-  // Auto-burst rolling window of scheduled bills and income on authenticated tenant entry
-  React.useEffect(() => {
-    const activeTenantId = getActiveTenantId() || tenantStatusQuery.data?.tenantId;
-    const subStatus = subQuery.data;
-    const hasWriteAccess =
-      !!subStatus &&
-      !subStatus.isTrialExpired &&
-      !subStatus.isGracePeriod &&
-      !subStatus.isPastDue &&
-      !subStatus.isDeactivated;
-    if (session?.user && activeTenantId && !subQuery.isLoading && hasWriteAccess && lastBurstTenantId.current !== activeTenantId) {
-      lastBurstTenantId.current = activeTenantId;
-      burstUpcomingEvents.mutate(undefined, {
-        onSuccess: (res) => {
-          if (res?.newEventsCount && res.newEventsCount > 0) {
-            utils.listIncomeEvents.invalidate();
-            utils.listExpenseEvents.invalidate();
-            utils.listEnvelopes.invalidate();
-          }
-        },
-        onError: (err) => {
-          console.warn('[AppLayout] burstUpcomingEvents failed:', err);
-        },
-      });
-    }
-  }, [session?.user, tenantStatusQuery.data?.tenantId, subQuery.data, subQuery.isLoading, burstUpcomingEvents, utils]);
 
   React.useEffect(() => {
     if (userTenantsQuery.data && userTenantsQuery.data.length > 0) {

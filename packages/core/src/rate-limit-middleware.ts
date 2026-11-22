@@ -9,6 +9,7 @@ async function hashKey(token: string): Promise<string> {
 }
 
 export interface ApiRateLimitOptions {
+  appId?: string;
   exemptPaths?: readonly string[];
   exemptPrefixes?: readonly string[];
   defaultLimitPerMinute?: number;
@@ -40,13 +41,14 @@ export async function enforceApiRateLimit(
     request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ||
     "unknown-ip";
 
+  const appScope = options?.appId || request.headers.get("x-app-id") || "global";
   const isResetPassword = url.pathname === "/reset-password";
   const authHeader = request.headers.get("authorization");
-  let rateLimitKey = isResetPassword ? `reset-password:${clientIp}` : `ip:${clientIp}`;
+  let rateLimitKey = isResetPassword ? `reset-password:${appScope}:${clientIp}` : `${appScope}:ip:${clientIp}`;
 
   if (authHeader && !isResetPassword) {
     const hashed = await hashKey(authHeader);
-    rateLimitKey = `api:${hashed}`;
+    rateLimitKey = `${appScope}:api:${hashed}`;
   }
 
   const limit = isResetPassword

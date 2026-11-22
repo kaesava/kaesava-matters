@@ -9,7 +9,7 @@ description: Critical architecture interrogation and unambiguous implementation 
    * Ground all architectural choices in `AGENTS.md` and read the MECE registries **before** scanning the codebase:
      - `FUNCTIONAL_CAPABILITIES_INVENTORY.md`: Web/Mobile routes, Modals/Drawers/Confirm Dialogs, Screen-by-Screen Parity Matrix, `@kaesava/ui` primitives, and `@kaesava/i18n` dictionary namespaces.
      - `TECHNICAL_SPEC.md` (`§9–§10`): All 12 tRPC routers / 103 procedures, HTTP/webhook endpoints, Inngest workflows, and feature flags.
-     - `SCHEMA_DATA_DICTIONARY.md`: All 23 Drizzle tables, columns, RLS policies (`ENABLE`/`FORCE`), session variables, and table consumers.
+     - `SCHEMA_DATA_DICTIONARY.md`: All 24 Drizzle tables, columns, RLS policies (`ENABLE`/`FORCE`), session variables, and table consumers.
      - `FUNCTIONAL_SPEC.md`: Two-Horizon Waterfall math, 12-Month projection rules, and simulation formulas.
 2. **Interrogate First (`/grill-me`):** Do not make assumptions. Run `/grill-me` to critically challenge edge cases, RLS tenant/stealth-privacy isolation, Mobile vs. Web parity, i18n key reuse, and dead-code removal before writing the plan.
 3. **Cross-Platform & i18n Scope:**
