@@ -86,6 +86,7 @@ describe("DbUsageStore", () => {
     expect(await store.incrementLlmCalls("tenant-123", 150)).toBe(true);
     expect(valuesMock).toHaveBeenCalledWith({
       tenantId: "tenant-123",
+      appId: expect.any(String),
       periodMonth: "2026-11-01",
       llmCalls: 1,
     });

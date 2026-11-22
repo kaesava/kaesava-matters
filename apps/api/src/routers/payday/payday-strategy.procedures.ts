@@ -8,8 +8,8 @@ import {
   ApplyAllocationPresetCommand,
   UpdateAllocationStrategyStepsCommand,
   CANONICAL_ALLOCATION_PRESETS,
-  DEFAULT_APP_FEATURE_FLAGS,
 } from "@money-matters/types";
+import { resolveEffectiveAppFlags } from "@money-matters/config";
 import { allocationStrategies, apps } from "@money-matters/db";
 import { eq, and, sql } from "drizzle-orm";
 import { TRPCError } from "@trpc/server";
@@ -61,10 +61,7 @@ export const paydayStrategyProcedures = {
         .where(eq(apps.id, ctx.appId!))
         .limit(1);
 
-      const flags = {
-        ...DEFAULT_APP_FEATURE_FLAGS,
-        ...(appRecord?.featureFlags ?? {}),
-      };
+      const flags = resolveEffectiveAppFlags(ctx.appId!, appRecord?.featureFlags);
       if (!flags.customAllocationRules) {
         throw new TRPCError({
           code: "FORBIDDEN",

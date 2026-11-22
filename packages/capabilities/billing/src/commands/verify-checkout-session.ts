@@ -82,6 +82,7 @@ export async function verifyCheckoutSessionCommand(
       .insert(billingInvoices)
       .values({
         tenantId,
+        appId: session.metadata?.appId || process.env["DEFAULT_APP_ID"] || "01908bde-34bb-7b19-a178-574211bc93aa",
         stripeInvoiceId: invoiceObj.id,
         stripeCustomerId: customerId,
         stripeSubscriptionId: subscriptionId || null,

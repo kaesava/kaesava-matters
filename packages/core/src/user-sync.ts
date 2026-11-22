@@ -1,4 +1,4 @@
-import { db, users } from "@money-matters/db";
+import { db, users, type DbOrTx } from "@money-matters/db";
 
 /**
  * Upserts a user in the local mirror table when verified JWT claims are processed.
@@ -8,7 +8,7 @@ export async function upsertUserFromJwt(
   userId: string,
   email: string,
   displayName?: string,
-  dbInstance: typeof db = db
+  dbInstance: DbOrTx = db
 ) {
   await dbInstance
     .insert(users)

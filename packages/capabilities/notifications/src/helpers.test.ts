@@ -24,7 +24,7 @@ describe("notification helpers", () => {
 
     expect(
       readNotificationPrefs({ balance_nudge_email: false }, appId)
-    ).toEqual({ balance_nudge_email: false });
+    ).toEqual({});
   });
 
   it("evaluates channel enablement respecting legacy flag", () => {

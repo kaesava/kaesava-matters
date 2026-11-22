@@ -119,6 +119,7 @@ export async function syncSubscriptionCommand(
           .insert(billingInvoices)
           .values({
             tenantId,
+            appId: (tenant as { appId?: string }).appId || process.env["DEFAULT_APP_ID"] || "01908bde-34bb-7b19-a178-574211bc93aa",
             stripeInvoiceId: inv.id,
             stripeCustomerId: tenant.stripeCustomerId,
             stripeSubscriptionId: typeof inv.subscription === "string" ? inv.subscription : inv.subscription?.id || null,

@@ -13,8 +13,8 @@ import {
   SearchTransactionsQuery,
   ListEnvelopeTransactionsQuery,
   GetSpendingAnalyticsQuery,
-  DEFAULT_APP_FEATURE_FLAGS,
 } from "@money-matters/types";
+import { resolveEffectiveAppFlags } from "@money-matters/config";
 import { apps } from "@money-matters/db";
 import { eq } from "drizzle-orm";
 import { TRPCError } from "@trpc/server";
@@ -87,7 +87,7 @@ export const transactionsRouter = {
         .where(eq(apps.id, ctx.appId!))
         .limit(1);
 
-      const flags = appRecord?.featureFlags || DEFAULT_APP_FEATURE_FLAGS;
+      const flags = resolveEffectiveAppFlags(ctx.appId!, appRecord?.featureFlags);
       if (!flags.reports) {
         throw new TRPCError({
           code: 'FORBIDDEN',

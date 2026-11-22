@@ -13,15 +13,17 @@ export function useAppFeatures() {
   });
 
   const features = query.data?.features ?? DEFAULT_APP_FEATURE_FLAGS;
+  const rawFeatures = features as unknown as Record<string, unknown>;
+  const appFlags = (rawFeatures.appFlags as Record<string, unknown> | undefined) ?? rawFeatures;
 
   return {
     hasAiAssistant: Boolean(features.aiAssistant),
     hasPrivateMode: Boolean(features.privateMode),
     hasPartnerInvites: Boolean(features.privateMode),
     hasFileNotes: Boolean(features.fileNotes),
-    hasSimulation: Boolean(features.simulation),
-    hasCustomAllocationRules: Boolean(features.customAllocationRules),
-    hasReports: Boolean(features.reports),
+    hasSimulation: Boolean(appFlags.simulation ?? rawFeatures.simulation ?? true),
+    hasCustomAllocationRules: Boolean(appFlags.customAllocationRules ?? rawFeatures.customAllocationRules ?? true),
+    hasReports: Boolean(appFlags.reports ?? rawFeatures.reports ?? true),
     features,
     isLoading: query.isLoading,
   };

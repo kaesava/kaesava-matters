@@ -12,8 +12,8 @@ import {
 import {
   ConfirmPaydayCommand,
   GetPaydayPlanAnalyticsQuerySchema,
-  DEFAULT_APP_FEATURE_FLAGS,
 } from "@money-matters/types";
+import { resolveEffectiveAppFlags } from "@money-matters/config";
 import { TRPCError } from '@trpc/server';
 import { z } from 'zod';
 
@@ -74,7 +74,7 @@ export const paydayExecutionProcedures = {
     .input(GetPaydayPlanAnalyticsQuerySchema)
     .query(async ({ input, ctx }) => {
       const [appRecord] = await ctx.db.select({ featureFlags: apps.featureFlags }).from(apps).where(eq(apps.id, ctx.appId!)).limit(1);
-      const flags = appRecord?.featureFlags || DEFAULT_APP_FEATURE_FLAGS;
+      const flags = resolveEffectiveAppFlags(ctx.appId!, appRecord?.featureFlags);
       if (!flags.reports) {
         throw new TRPCError({ code: 'FORBIDDEN', message: 'Reports feature is disabled for this application.' });
       }

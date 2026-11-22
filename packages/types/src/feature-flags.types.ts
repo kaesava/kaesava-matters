@@ -20,7 +20,6 @@ export interface PlatformCapabilityFlags {
 
 export interface AppFeatureFlagsRecord extends PlatformCapabilityFlags {
   appFlags?: Record<string, boolean | number | string>;
-  [key: string]: unknown;
 }
 
 export type AppFeatureFlags = AppFeatureFlagsRecord;

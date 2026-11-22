@@ -8,7 +8,7 @@ import {
   CURRENT_PRIVACY_VERSION,
   type TenantLifecycleHooks,
 } from "@money-matters/types";
-import { eq, and, isNull, or, sql } from "drizzle-orm";
+import { eq, and, isNull } from "drizzle-orm";
 
 /**
  * Creates a new tenant scope and assigns the creator user as OWNER.

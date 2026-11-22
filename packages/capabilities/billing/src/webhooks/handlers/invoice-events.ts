@@ -36,11 +36,15 @@ export async function handleInvoicePaymentSucceeded(
     planType,
   });
 
+  const [tenantRow] = await db.select({ appId: tenants.appId }).from(tenants).where(eq(tenants.id, tenantId)).limit(1);
+  const resolvedAppId = tenantRow?.appId || sub.metadata?.appId || process.env["DEFAULT_APP_ID"] || "01908bde-34bb-7b19-a178-574211bc93aa";
+
   if (invoice.id) {
     await db
       .insert(billingInvoices)
       .values({
         tenantId,
+        appId: resolvedAppId,
         stripeInvoiceId: invoice.id,
         stripeCustomerId: customerId,
         stripeSubscriptionId: subscriptionId,
@@ -65,8 +69,7 @@ export async function handleInvoicePaymentSucceeded(
       : null);
 
   if (customerEmail) {
-    const [tenantRow] = await db.select({ appId: tenants.appId }).from(tenants).where(eq(tenants.id, tenantId)).limit(1);
-    const app = resolveAppConfigOrDefault(tenantRow?.appId);
+    const app = resolveAppConfigOrDefault(resolvedAppId);
     const currencyCode = (invoice.currency || "aud").toUpperCase();
     const formattedAmount = formatCurrency((invoice.amount_paid || 0) / 100, { currency: currencyCode });
     const formattedEndDate = getCachedDateFormat(DEFAULT_LOCALE, { dateStyle: "medium", timeZone: DEFAULT_TIMEZONE }).format(currentPeriodEnd);
@@ -92,11 +95,15 @@ export async function handleInvoicePaymentFailed(
   const tenantId = await resolveTenantId(db, sub.metadata?.tenantId, customerId, subscriptionId);
   if (!tenantId) return;
 
+  const [tenantRow] = await db.select({ appId: tenants.appId }).from(tenants).where(eq(tenants.id, tenantId)).limit(1);
+  const resolvedAppId = tenantRow?.appId || sub.metadata?.appId || process.env["DEFAULT_APP_ID"] || "01908bde-34bb-7b19-a178-574211bc93aa";
+
   if (invoice.id) {
     await db
       .insert(billingInvoices)
       .values({
         tenantId,
+        appId: resolvedAppId,
         stripeInvoiceId: invoice.id,
         stripeCustomerId: customerId,
         stripeSubscriptionId: subscriptionId,
@@ -121,8 +128,7 @@ export async function handleInvoicePaymentFailed(
       : null);
 
   if (customerEmail) {
-    const [tenantRow] = await db.select({ appId: tenants.appId }).from(tenants).where(eq(tenants.id, tenantId)).limit(1);
-    const app = resolveAppConfigOrDefault(tenantRow?.appId);
+    const app = resolveAppConfigOrDefault(resolvedAppId);
     await sendNotificationEmail(
       customerEmail,
       `⚠️ Payment Action Required — ${app.name} ${app.terminology.tenantSingular}`,

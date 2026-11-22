@@ -4,7 +4,6 @@ import {
   AssistantAskInputSchema,
   AssistantResultSchema,
   AssistantUsageSchema,
-  DEFAULT_APP_FEATURE_FLAGS,
 } from "@money-matters/types";
 import {
   askAssistant,
