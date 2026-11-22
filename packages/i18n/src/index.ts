@@ -16,6 +16,21 @@ export const translations = {
 
 export type SupportedLanguage = keyof typeof translations;
 let currentLanguage: SupportedLanguage = "en";
+const appDictionaries: Record<string, Record<string, unknown>> = {};
+
+/**
+ * Registers app-specific domain translation namespaces (e.g. Ring 3 Money Matters
+ * dictionaries) into the active runtime dictionary without creating Ring 1 -> Ring 3 imports.
+ */
+export function registerAppDictionary(
+  dictionary: Record<string, unknown>,
+  lang: SupportedLanguage = "en"
+): void {
+  appDictionaries[lang] = {
+    ...(appDictionaries[lang] ?? {}),
+    ...dictionary,
+  };
+}
 
 export function setLanguage(lang: SupportedLanguage) {
   if (lang in translations) {
@@ -78,15 +93,30 @@ export function t(
   optionsOrLocale?: SupportedLanguage | { defaultValue?: string; [key: string]: unknown }
 ): string {
   const parts = key.split(".");
-  const dict = translations[currentLanguage] || translations.en;
-  let current: unknown = dict;
+  const appDict = appDictionaries[currentLanguage] || appDictionaries.en;
+  let current: unknown = appDict;
 
-  for (const part of parts) {
-    if (current && typeof current === "object" && part in current) {
-      current = (current as Record<string, unknown>)[part];
-    } else {
-      current = undefined;
-      break;
+  if (current) {
+    for (const part of parts) {
+      if (current && typeof current === "object" && part in current) {
+        current = (current as Record<string, unknown>)[part];
+      } else {
+        current = undefined;
+        break;
+      }
+    }
+  }
+
+  if (current === undefined) {
+    const dict = translations[currentLanguage] || translations.en;
+    current = dict;
+    for (const part of parts) {
+      if (current && typeof current === "object" && part in current) {
+        current = (current as Record<string, unknown>)[part];
+      } else {
+        current = undefined;
+        break;
+      }
     }
   }
 

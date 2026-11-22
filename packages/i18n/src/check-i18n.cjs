@@ -11,8 +11,16 @@ require.extensions['.ts'] = function(module, filename) {
   module._compile(compiled, filename);
 };
 
-// 1. Read and parse en dictionary
-const { en } = require('./dictionaries/en.ts');
+// 1. Read and parse platform en dictionary + Money Matters Ring 3 dictionary
+const { en: platformEn } = require('./dictionaries/en.ts');
+const mmDictPath = path.resolve(__dirname, '../../capabilities/budgeting/src/i18n');
+const mmFiles = ['dashboard', 'envelopes', 'payday', 'plan', 'history', 'setup', 'landing', 'reports'];
+const moneyMattersEn = {};
+for (const name of mmFiles) {
+  const mod = require(path.join(mmDictPath, `${name}.ts`));
+  Object.assign(moneyMattersEn, mod[name] || {});
+}
+const en = { ...platformEn, ...moneyMattersEn };
 
 function getKeys(obj, prefix = '') {
   let keys = [];

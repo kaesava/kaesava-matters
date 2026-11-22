@@ -1,3 +1,4 @@
+import "@money-matters/capability-budgeting/i18n";
 import type { Metadata, Viewport } from "next";
 import { Inter, JetBrains_Mono } from "next/font/google";
 import { DESIGN_TOKENS } from "@money-matters/ui/tokens";

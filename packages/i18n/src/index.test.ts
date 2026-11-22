@@ -12,9 +12,6 @@ describe('i18n Localization Engine', () => {
   });
 
   it('interpolates template parameters correctly', () => {
-    const result = t('setup.stepOf', { step: 2, total: 4 });
-    expect(result).toBe('Step 2 of 4');
-
     const range = t('common.showingRange', { start: 1, end: 10, total: 25 });
     expect(range).toBe('Showing 1–10 of 25');
   });

@@ -100,7 +100,6 @@ export const setup = {
       "accountNamePlaceholder": "e.g. Everyday Bank Account"
     },
     "income": {
-      "title": "Income & pay",
       "addIncomeSchedule": "Add Income Schedule",
       "nameLabel": "Income name",
       "namePlaceholder": "e.g. Salary – Jane",

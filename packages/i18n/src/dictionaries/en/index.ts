@@ -1,39 +1,26 @@
 import { common } from './common';
 import { auth } from './auth';
-import { dashboard } from './dashboard';
-import { envelopes } from './envelopes';
-import { payday } from './payday';
-import { plan } from './plan';
-import { history } from './history';
 import { settings } from './settings';
 import { settingsSections } from './settings-sections';
 import { privacy } from './privacy';
 import { feedback } from './feedback';
-import { setup } from './setup';
-import { landing } from './landing';
 import { tour } from './tour';
 import { commandPalette } from './commandPalette';
 import { fileNotes } from './fileNotes';
-import { reports } from './reports';
 
-export const en = {
+export const platformEn = {
   ...common,
   ...auth,
-  ...dashboard,
-  ...envelopes,
-  ...payday,
-  ...plan,
-  ...history,
   ...settings,
   ...settingsSections,
   ...privacy,
   ...feedback,
-  ...setup,
-  ...landing,
   ...tour,
   ...commandPalette,
   ...fileNotes,
-  ...reports,
 } as const;
 
+export const en = platformEn;
+
+export type PlatformTranslationDictionary = typeof platformEn;
 export type TranslationDictionary = typeof en;

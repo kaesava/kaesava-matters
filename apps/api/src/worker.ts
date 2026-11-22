@@ -1,3 +1,4 @@
+import '@money-matters/capability-budgeting/i18n';
 import { fetchRequestHandler } from '@trpc/server/adapters/fetch';
 import { logger, createPlatformWorker, type PlatformWorkerEnvBase } from '@money-matters/core';
 import { validateEnv, createAppEnvSchema } from '@money-matters/config';

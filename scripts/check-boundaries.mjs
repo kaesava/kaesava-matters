@@ -61,7 +61,6 @@ const BRAND_CHECK_ALLOWLIST = new Set([
   "packages/config/src/env.ts",
   "packages/core/src/security-headers.ts",
   "packages/i18n/src/dictionaries/en/privacy.ts",
-  "packages/i18n/src/dictionaries/en/landing.ts",
 ]);
 
 function walkTsFiles(dir) {

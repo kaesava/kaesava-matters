@@ -1,3 +1,4 @@
+import '@money-matters/capability-budgeting/i18n';
 import React, { useEffect, useRef, useState } from 'react';
 import { AppState, AppStateStatus, Platform } from 'react-native';
 import { Stack, usePathname, useGlobalSearchParams, router, type Href } from 'expo-router';

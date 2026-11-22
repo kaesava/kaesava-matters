@@ -1,4 +1,5 @@
 "use client";
+import "@money-matters/capability-budgeting/i18n";
 import React, { createContext, useContext, useEffect, useRef, useState } from "react";
 import { MutationCache, QueryCache, QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { trpc, buildTrpcClient } from "../lib/trpc";
