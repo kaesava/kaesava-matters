@@ -19,8 +19,11 @@ export function readNotificationPrefs(
 ): Record<string, unknown> {
   if (!appPreferences || typeof appPreferences !== "object") return {};
   const raw = appPreferences as Record<string, unknown>;
-  if (appId && raw[appId] && typeof raw[appId] === "object") {
-    return raw[appId] as Record<string, unknown>;
+  if (appId) {
+    if (raw[appId] && typeof raw[appId] === "object") {
+      return raw[appId] as Record<string, unknown>;
+    }
+    return {};
   }
   return raw;
 }

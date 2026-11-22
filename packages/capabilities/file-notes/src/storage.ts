@@ -1,6 +1,5 @@
 import { S3Client, PutObjectCommand, DeleteObjectCommand, GetObjectCommand } from '@aws-sdk/client-s3';
-import { TRPCError } from '@trpc/server';
-import { logger } from '@money-matters/core';
+import { CapabilityError, logger } from '@money-matters/core';
 
 function isProductionStorage(): boolean {
   return process.env.NODE_ENV === 'production' || process.env.ENVIRONMENT === 'production';
@@ -45,7 +44,7 @@ export const s3Client = new Proxy({} as S3Client, {
  */
 export async function getPresignedUploadUrl(fileKey: string, _contentType: string): Promise<string> {
   if (!hasR2Credentials() && isProductionStorage()) {
-    throw new TRPCError({ code: 'INTERNAL_SERVER_ERROR', message: 'storage_not_configured' });
+    throw new CapabilityError('INTERNAL_SERVER_ERROR', 'storage_not_configured');
   }
   return `/api/file-notes/upload?key=${encodeURIComponent(fileKey)}`;
 }
@@ -55,7 +54,7 @@ export async function getPresignedUploadUrl(fileKey: string, _contentType: strin
  */
 export async function getPresignedDownloadUrl(noteIdOrKey: string): Promise<string> {
   if (!hasR2Credentials() && isProductionStorage()) {
-    throw new TRPCError({ code: 'INTERNAL_SERVER_ERROR', message: 'storage_not_configured' });
+    throw new CapabilityError('INTERNAL_SERVER_ERROR', 'storage_not_configured');
   }
   return `/api/file-notes/download/${encodeURIComponent(noteIdOrKey)}`;
 }
@@ -70,7 +69,7 @@ export async function uploadObjectToStorage(
 ): Promise<void> {
   if (!hasR2Credentials()) {
     if (isProductionStorage()) {
-      throw new TRPCError({ code: 'INTERNAL_SERVER_ERROR', message: 'storage_not_configured' });
+      throw new CapabilityError('INTERNAL_SERVER_ERROR', 'storage_not_configured');
     }
     devMemoryStore.set(fileKey, { body, contentType });
     logger.info(`[Storage Dev] Stored file in memory: ${fileKey} (${body.byteLength} bytes)`);
@@ -94,7 +93,7 @@ export async function downloadObjectFromStorage(
 ): Promise<{ body: Uint8Array; contentType: string } | null> {
   if (!hasR2Credentials()) {
     if (isProductionStorage()) {
-      throw new TRPCError({ code: 'INTERNAL_SERVER_ERROR', message: 'storage_not_configured' });
+      throw new CapabilityError('INTERNAL_SERVER_ERROR', 'storage_not_configured');
     }
     return devMemoryStore.get(fileKey) ?? null;
   }

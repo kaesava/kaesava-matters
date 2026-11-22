@@ -18,6 +18,7 @@ export function registerDeviceTokenHandler(db: DbOrTx) {
         and(
           eq(deviceTokens.userId, userId),
           eq(deviceTokens.tenantId, tenantId),
+          eq(deviceTokens.appId, appId),
           eq(deviceTokens.token, input.token)
         )
       )
@@ -97,8 +98,6 @@ export function removeDeviceTokenHandler(db: DbOrTx) {
 }
 
 export * from "./inngest.js";
-export * from "./helpers.js";
-export * from "./timezone-cron-runner.js";
 export * from "./helpers.js";
 export * from "./retention-workflows.js";
 export * from "./timezone-cron-runner.js";

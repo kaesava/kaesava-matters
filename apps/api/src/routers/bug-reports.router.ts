@@ -9,6 +9,7 @@ export const bugReportsRouter = {
       return await submitFeedbackCommand(input, {
         userId: ctx.userId,
         tenantId: ctx.tenantId,
+        appId: ctx.appId,
         userEmail: ctx.email,
       });
     }),

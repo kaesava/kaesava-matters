@@ -61,7 +61,15 @@ async function purgePlatformTenantRecords(
   hooks?: TenantLifecycleHooks<DbOrTx>
 ): Promise<string[]> {
   if (allUserIdsToPurgeTokens.length > 0) {
-    await tx.delete(deviceTokens).where(inArray(deviceTokens.userId, allUserIdsToPurgeTokens));
+    await tx
+      .delete(deviceTokens)
+      .where(
+        and(
+          inArray(deviceTokens.userId, allUserIdsToPurgeTokens),
+          eq(deviceTokens.tenantId, tenantId),
+          eq(deviceTokens.appId, appId)
+        )
+      );
   }
 
   const hookResult = await hooks?.onTenantDeleting?.({
@@ -73,23 +81,42 @@ async function purgePlatformTenantRecords(
   });
   const fileKeysToDelete = hookResult?.fileKeysToDelete ?? [];
 
-  await tx.delete(userPreferences).where(eq(userPreferences.userId, userId));
-  await tx.delete(tenantUserPreferences).where(eq(tenantUserPreferences.userId, userId));
+  await tx
+    .delete(tenantUserPreferences)
+    .where(
+      and(
+        eq(tenantUserPreferences.userId, userId),
+        eq(tenantUserPreferences.tenantId, tenantId),
+        eq(tenantUserPreferences.appId, appId)
+      )
+    );
   const legalHoldUntil = new Date(Date.now() + 5 * 365 * 24 * 60 * 60 * 1000);
   await tx
     .update(billingInvoices)
     .set({ tenantId: null, legalHoldUntil, archivedAt: new Date(), updatedAt: new Date() })
-    .where(eq(billingInvoices.tenantId, tenantId));
-  await tx.delete(aiUsage).where(eq(aiUsage.tenantId, tenantId));
+    .where(and(eq(billingInvoices.tenantId, tenantId), eq(billingInvoices.appId, appId)));
+  await tx.delete(aiUsage).where(and(eq(aiUsage.tenantId, tenantId), eq(aiUsage.appId, appId)));
   if (email) {
-    await tx.delete(earlyAccessSubscribers).where(eq(earlyAccessSubscribers.email, email));
+    await tx
+      .delete(earlyAccessSubscribers)
+      .where(and(eq(earlyAccessSubscribers.email, email), eq(earlyAccessSubscribers.appId, appId)));
   }
 
   await tx.delete(tenantUsers).where(eq(tenantUsers.tenantId, tenantId));
-  await tx.delete(tenants).where(eq(tenants.id, tenantId));
-  await tx.delete(users).where(eq(users.id, userId));
+  await tx.delete(tenants).where(and(eq(tenants.id, tenantId), eq(tenants.appId, appId)));
 
-  await purgeNeonAuthRecords(tx, userId);
+  // Only purge global identity records when 0 active tenants remain across all apps
+  const remainingMemberships = await tx
+    .select({ id: tenantUsers.id })
+    .from(tenantUsers)
+    .where(eq(tenantUsers.userId, userId))
+    .limit(1);
+
+  if (remainingMemberships.length === 0) {
+    await tx.delete(userPreferences).where(eq(userPreferences.userId, userId));
+    await tx.delete(users).where(eq(users.id, userId));
+    await purgeNeonAuthRecords(tx, userId);
+  }
   return fileKeysToDelete;
 }
 

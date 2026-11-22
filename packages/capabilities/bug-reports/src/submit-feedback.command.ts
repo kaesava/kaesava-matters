@@ -44,6 +44,7 @@ function formatDiagnostics(input: SubmitFeedbackInput, ctx: SubmitFeedbackContex
     `Severity: ${input.severity}`,
     `User ID: ${ctx.userId || "N/A"}`,
     `Tenant ID: ${ctx.tenantId || "N/A"}`,
+    `App ID: ${ctx.appId || "N/A"}`,
     `Email: ${input.email || ctx.userEmail || "N/A"}`,
     `App Version: ${input.appVersion || "N/A"}`,
     `Route: ${input.route || "N/A"}`,
@@ -94,7 +95,7 @@ export async function submitFeedbackCommand(
   ctx: SubmitFeedbackContext
 ): Promise<{ success: boolean; messageId?: string }> {
   const input = SubmitFeedbackInputSchema.parse(rawInput);
-  const rateLimitKey = `feedback:${ctx.userId || ctx.tenantId || "anonymous"}`;
+  const rateLimitKey = `feedback:${ctx.appId || "default"}:${ctx.userId || ctx.tenantId || "anonymous"}`;
   const rateLimit = await checkRateLimit(rateLimitKey, 5, 3600, ctx.env);
 
   if (!rateLimit.allowed) {

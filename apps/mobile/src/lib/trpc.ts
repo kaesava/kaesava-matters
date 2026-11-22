@@ -222,7 +222,9 @@ export function buildTrpcClient() {
             if (tenantId) setActiveTenantId(tenantId);
           }
 
-          const headersObj: Record<string, string> = {};
+          const headersObj: Record<string, string> = {
+            "x-app-id": process.env["EXPO_PUBLIC_APP_ID"] || "01908bde-34bb-7b19-a178-574211bc93aa",
+          };
           if (token) {
             headersObj["Authorization"] = `Bearer ${token}`;
           }

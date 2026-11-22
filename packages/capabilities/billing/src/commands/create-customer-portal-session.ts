@@ -16,21 +16,16 @@ async function resolveOrCreateStripeCustomerId(
     return tenant.stripeCustomerId;
   }
 
-  let customerId: string | null = null;
-  if (userEmail) {
-    const existing = await stripe.customers.list({ email: userEmail, limit: 1 });
-    customerId = existing.data[0]?.id ?? null;
-  }
-
-  if (!customerId) {
-    const appConfig = resolveAppConfigOrDefault(tenant.appId);
-    const customer = await stripe.customers.create({
-      email: userEmail || appConfig.branding.supportEmail,
-      name: tenant.name,
-      metadata: { tenantId: tenant.id },
-    });
-    customerId = customer.id;
-  }
+  const appConfig = resolveAppConfigOrDefault(tenant.appId);
+  const customer = await stripe.customers.create({
+    email: userEmail || appConfig.branding.supportEmail,
+    name: tenant.name,
+    metadata: {
+      tenantId: tenant.id,
+      ...(tenant.appId ? { appId: tenant.appId } : {}),
+    },
+  });
+  const customerId = customer.id;
 
   await db
     .update(tenants)

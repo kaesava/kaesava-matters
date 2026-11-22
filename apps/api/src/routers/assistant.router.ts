@@ -12,7 +12,7 @@ import {
   CloudflareGatewayLlmProvider,
 } from "@money-matters/capability-assistant";
 import { checkAiTenantRateLimit } from "@money-matters/core";
-import { AI_TIER_LIMITS } from "@money-matters/config";
+import { AI_TIER_LIMITS, resolveEffectiveAppFlags } from "@money-matters/config";
 import { apps } from "@money-matters/db";
 import { createAssistantIntentHandler } from "./assistant-adapters.js";
 import { loadTenantFormatting } from "./assistant-context.js";
@@ -25,7 +25,7 @@ async function isAiFeatureEnabled(db: Parameters<typeof loadTenantFormatting>[0]
     .from(apps)
     .where(eq(apps.id, appId))
     .limit(1);
-  const flags = appRecord?.featureFlags || DEFAULT_APP_FEATURE_FLAGS;
+  const flags = resolveEffectiveAppFlags(appId, appRecord?.featureFlags);
   return Boolean(flags.aiAssistant);
 }
 

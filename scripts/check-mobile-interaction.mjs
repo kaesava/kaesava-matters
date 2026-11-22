@@ -32,10 +32,10 @@ for (const root of ROOTS) {
       if (/textDecorationLine:\s*['"]underline['"]/.test(line)) {
         violations.push(`${at} underlined text; use MobileLinkButton / MobileDetailLinkRow`);
       }
-      if (file.startsWith('apps/mobile/src') && /<Switch\b/.test(line)) {
+      if ((file.startsWith('apps/mobile/src') || file.startsWith('packages/capabilities')) && /<Switch\b/.test(line)) {
         violations.push(`${at} raw <Switch>; use centralized SwitchRow from @money-matters/ui/mobile`);
       }
-      if (file.startsWith('apps/mobile/src') && /<TextInput\b/.test(line)) {
+      if ((file.startsWith('apps/mobile/src') || file.startsWith('packages/capabilities')) && /<TextInput\b/.test(line)) {
         violations.push(`${at} raw <TextInput>; use centralized MobileInput or AmountInput from @money-matters/ui/mobile`);
       }
       const size = line.match(/fontSize:\s*(\d+(?:\.\d+)?)/);

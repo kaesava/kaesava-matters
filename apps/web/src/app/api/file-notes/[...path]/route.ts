@@ -21,10 +21,12 @@ function buildForwardHeaders(req: NextRequest, apiBase: string): Headers {
   const authHeader = req.headers.get("authorization");
   const contentType = req.headers.get("content-type");
   const tenantId = req.headers.get("x-tenant-id");
+  const appId = req.headers.get("x-app-id") || process.env.NEXT_PUBLIC_APP_ID;
   const correlationId = req.headers.get("x-correlation-id");
 
   if (contentType) headers.set("content-type", contentType);
   if (tenantId) headers.set("x-tenant-id", tenantId);
+  if (appId) headers.set("x-app-id", appId);
   if (correlationId) headers.set("x-correlation-id", correlationId);
   if (cookieHeader) headers.set("cookie", cookieHeader);
 

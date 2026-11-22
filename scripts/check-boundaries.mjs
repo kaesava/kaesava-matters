@@ -19,18 +19,19 @@ const PROTECTED_PACKAGES = [
   "packages/capabilities/bank-accounts/src",
   "packages/capabilities/billing/src",
   "packages/capabilities/bug-reports/src",
-  "packages/capabilities/categories/src",
   "packages/capabilities/file-notes/src",
   "packages/capabilities/notifications/src",
   "packages/capabilities/schedules/src",
+  "packages/capabilities/assistant/src",
 ];
 
 const FORBIDDEN_PATTERNS = [
   { label: "@money-matters/capability-budgeting", regex: /@money-matters\/capability-budgeting/ },
+  { label: "@money-matters/capability-simulation", regex: /@money-matters\/capability-simulation/ },
   { label: "@money-matters/db/rings/money-matters", regex: /@money-matters\/db\/rings\/money-matters/ },
   {
     label: "cross-Ring-2 capability import",
-    regex: /from\s+["']@money-matters\/capability-(tenant|bank-accounts|billing|bug-reports|categories|file-notes|notifications|schedules|assistant|transactions)["']/,
+    regex: /from\s+["']@money-matters\/capability-(tenant|bank-accounts|billing|bug-reports|file-notes|notifications|schedules|assistant|transactions)(\/[^"']*)?["']/,
   },
   {
     label: "Money Matters budgeting DB tables",

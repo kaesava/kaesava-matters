@@ -220,7 +220,7 @@ export function NotesFeedModal({
 
         {/* Input area */}
         <View style={styles.formContainer}>
-          <TextInput
+          <TextInput // mm-allow-interaction: multiline note composer
             value={noteComment}
             onChangeText={setNoteComment}
             placeholder={t('fileNotes.inputPlaceholder')}
@@ -312,7 +312,7 @@ export function NotesFeedModal({
 
                   {editingNoteId === note.id ? (
                     <View style={{ gap: 8, marginTop: 6 }}>
-                      <TextInput
+                      <TextInput // mm-allow-interaction: multiline note edit composer // mm-allow-interaction: multiline note composer
                         value={editingComment}
                         onChangeText={setEditingComment}
                         style={styles.textInput}

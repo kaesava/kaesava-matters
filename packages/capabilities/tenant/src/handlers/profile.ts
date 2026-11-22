@@ -111,7 +111,6 @@ export async function updateUserPreferencesHandler(
     };
     const updatedAppPrefs: Record<string, AppPreferencesBlob> = {
       ...existingAppPrefs,
-      ...input.appPreferences,
       [appId]: incomingBlob,
     };
 
