@@ -27,6 +27,7 @@ export const tenantUsers = pgTable("tenant_users", {
   userId: uuid("user_id").references(() => users.id),
   inviteEmail: varchar("invite_email", { length: 255 }),
   role: memberRoleEnum("role").notNull().default("MEMBER"),
+  appRole: varchar("app_role", { length: 50 }),
   inviteToken: uuid("invite_token"),
   inviteStatus: inviteStatusEnum("invite_status").notNull().default("ACCEPTED"),
   expiresAt: timestamp("expires_at", { withTimezone: true }),

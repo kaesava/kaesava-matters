@@ -109,7 +109,7 @@ interface CachedSessionClaims {
 }
 
 interface CachedTenantMembership {
-  membership: { tenantId: string | null; role: string | null; appId: string };
+  membership: { tenantId: string | null; role: string | null; appRole: string | null; appId: string };
   cachedAt: number;
 }
 
@@ -270,7 +270,7 @@ export async function resolveTenantMembership(
   requestedTenantId: string | null,
   _correlationId: string,
   targetAppId: string = MONEY_MATTERS_APP_ID
-): Promise<{ tenantId: string | null; role: string | null; appId: string }> {
+): Promise<{ tenantId: string | null; role: string | null; appRole: string | null; appId: string }> {
   const cacheKey = `${claims.userId}:${targetAppId}:${requestedTenantId ?? ''}`;
   const now = Date.now();
   const cached = tenantMembershipMemoryCache.get(cacheKey);
@@ -284,6 +284,7 @@ export async function resolveTenantMembership(
     .select({
       tenantId: tenantUsers.tenantId,
       role: tenantUsers.role,
+      appRole: tenantUsers.appRole,
       appId: tenants.appId,
     })
     .from(tenantUsers)
@@ -306,12 +307,13 @@ export async function resolveTenantMembership(
     : undefined;
 
   const membership = matchedMembership ?? userMemberships[0];
-  let resolved: { tenantId: string | null; role: string | null; appId: string };
+  let resolved: { tenantId: string | null; role: string | null; appRole: string | null; appId: string };
 
   if (membership?.tenantId) {
     resolved = {
       tenantId: membership.tenantId,
       role: membership.role ?? null,
+      appRole: membership.appRole ?? null,
       appId: membership.appId ?? targetAppId,
     };
     if (tenantMembershipMemoryCache.size > 500) {
@@ -326,6 +328,7 @@ export async function resolveTenantMembership(
   return {
     tenantId: null,
     role: null,
+    appRole: null,
     appId: targetAppId,
   };
 }
@@ -373,7 +376,7 @@ export async function createEdgeContext(
   const requestedTenantId = rawTenantHeader || null;
   const resolvedAppId = resolveRequestAppId(req, env);
 
-  const { tenantId, role, appId } = await resolveTenantMembership(
+  const { tenantId, role, appRole, appId } = await resolveTenantMembership(
     requestDb,
     claims,
     requestedTenantId,
@@ -392,6 +395,15 @@ export async function createEdgeContext(
       tenantId,
       appId,
       role,
+      appRole: appRole as string | null | undefined,
+    } as {
+      userId: string;
+      email: string;
+      displayName: string | undefined;
+      tenantId: string | null;
+      appId: string;
+      role: string | null;
+      appRole?: string | null;
     },
     userId: claims.userId,
     tenantId,
