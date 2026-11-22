@@ -1,6 +1,7 @@
 import { PostHog } from "posthog-node";
 import type { DbOrTx } from "@kaesava/db";
 import { createConsentGatedTelemetry } from "@kaesava/core";
+import { resolveAppConfigOrDefault } from "@kaesava/config";
 import { isUserTelemetryGranted } from "@kaesava/capability-tenant";
 
 const isProduction = process.env.NODE_ENV === "production";
@@ -23,9 +24,13 @@ export const posthog: PostHog | null =
       })
     : null;
 
+const appManifest = resolveAppConfigOrDefault();
+
 const telemetry = createConsentGatedTelemetry<DbOrTx>({
   client: posthog,
   isUserTelemetryGranted,
+  appId: appManifest.id,
+  appSlug: appManifest.slug,
 });
 
 export const captureIfConsented = telemetry.captureIfConsented;

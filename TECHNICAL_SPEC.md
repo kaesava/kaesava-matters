@@ -42,12 +42,12 @@ money-matters/
 │   └── web/           # Next.js web app on Cloudflare Workers via OpenNext (`wrangler.jsonc`)
 ├── packages/
 │   ├── capabilities/
-│   │   ├── assistant/       # Ask Penny AI Assistant + generic runQuotaGuardedAssistant engine (Cloudflare Workers AI Gateway, usage quota)
-│   │   ├── bank-accounts/   # Standalone Bank Account CRUD, expected balance & balance sync via BankAccountLifecycleHooks
-│   │   ├── billing/         # Subscription state machine, Stripe checkout & customer portal, multi-app raw-body webhook processor
-│   │   ├── tenant/          # App-agnostic tenant creation, partner/member invites, profile, preferences, data export & deletion via TenantLifecycleHooks
+│   │   ├── assistant/       # Ring 2: Ask Penny AI Assistant + generic runQuotaGuardedAssistant engine (Cloudflare Workers AI Gateway, usage quota)
+│   │   ├── auth/            # Ring 2: Generic Neon Auth / OTP / password / biometric capability
+│   │   ├── bank-accounts/   # Ring 2: Standalone Bank Account CRUD, expected balance & balance sync via BankAccountLifecycleHooks
+│   │   ├── billing/         # Ring 2: Subscription state machine, Stripe checkout & customer portal, multi-app raw-body webhook processor
+│   │   ├── tenant/          # Ring 2: App-agnostic tenant creation, partner/member invites, profile, preferences, data export & deletion via TenantLifecycleHooks
 │   │   ├── budgeting/       # Ring 3: Envelope-centric architecture (`Bank Account → Envelope → Category`), 5-step waterfall allocation engine, Money Matters envelope ledger/transfers/spending analytics, rolling window maintainer
-│   │   ├── transactions/    # Ring 2: Generic domain-agnostic immutable ledger (`GenericLedgerStoreAdapter`)
 │   │   ├── schedules/       # Ring 2: Generic RRULE recurrence burst & Outlook-style series edit planner (`ScheduleStoreAdapter`)
 │   │   ├── file-notes/      # Ring 2: Polymorphic file notes & attachments metadata + privacy resolvers
 │   │   ├── simulation/      # Ring 3: Stateless "Can I Afford It?" engine with 6-verdict model & goal timeline impact analysis
@@ -668,7 +668,7 @@ Money Matters is engineered to comply with the 13 Australian Privacy Principles 
 | **Ring 2** | `@kaesava/capability-bug-reports` | *(Stateless email/webhook dispatch)* | Feedback/bug submission command (`submitFeedbackCommand`), rate-limited dispatch | `AppManifest.branding.supportEmail` |
 | **Ring 2** | `@kaesava/capability-bank-accounts` | `bankAccounts` | Bank account CRUD, provider metadata, expected balance & sync balance hooks | `BankAccountLifecycleHooks` (`validateBeforeArchive`, `onBankAccountArchived`, `onComputeExpectedBalances`, `onBankBalanceSynced`) |
 | **Ring 2** | `@kaesava/capability-assistant` | `aiUsage` | Cloudflare AI Gateway client (`cf-aig-skip-cache`), `(tenantId, appId, periodMonth)` monthly quota metering + `service_error` refund, deterministic & LLM intent orchestration | `IntentHandlerPort`, `LlmProviderPort`, `UsageStorePort` |
-| **Ring 2** | `@kaesava/capability-transactions` | App-injected via `GenericLedgerStoreAdapter` | Polymorphic `entityType`/`entityId` ledger (`DEBIT`/`CREDIT`, `amountCents`, `currency`, `occurredAt`, `transferGroupId`, `metadata`), net balance, CSV export | `GenericLedgerStoreAdapter` |
+| **Ring 2** | `@kaesava/capability-auth` | *(Neon Auth + `users`)* | Email + Google OAuth, password set/change/reset, 6-digit OTP, biometric lock | `AppManifest` (`authStoragePrefix`, `deepLinkScheme`) |
 | **Ring 2** | `@kaesava/capability-schedules` | App-injected via `ScheduleStoreAdapter` | `computeRecurringDates`, `planSeriesEditScope` (`SINGLE_OCCURRENCE`/`THIS_AND_FOLLOWING`/`ENTIRE_SERIES`), idempotent `burstSeries` | `ScheduleStoreAdapter` |
 | **Ring 3** | `@money-matters/capability-budgeting` | `envelopes`, `incomeSources`, `incomeEvents`, `expenseEvents`, `transferEvents`, `transactionLedger`, `allocationStrategies`, `allocationStrategySteps`, `allocationPlans`, `allocationPlanLines` | Money Matters domain math: Two-Horizon Payday Waterfall, 12-Month Cumulative Projection, Surplus/Shortfall sweeps, Envelope Ledger (`recordExpenseCommand`, `markExpensePaidCommand`, `transferEvents`, `getSpendingAnalytics`), Money Matters `AppManifest` (`registerMoneyMattersApp`) & lifecycle hooks | N/A (App-specific Ring 3 slice) |
 | **Ring 3** | `@money-matters/capability-simulation` | *(Reads Ring 3 budgeting tables)* | Money Matters "Can I Afford It?" goal delay & cashflow stress-test simulation | N/A (App-specific Ring 3 slice) |

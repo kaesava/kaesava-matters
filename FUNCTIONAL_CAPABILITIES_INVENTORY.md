@@ -204,6 +204,7 @@
 - `@kaesava/ui/web` (`./web`) → `packages/ui/src/web/index.ts` (exported symbols across modals, drawers, form inputs, tables, `PlatformSettingsShell`, `AppThemeProvider`, charts, `HouseholdContributionSection`, and providers).
 - `@kaesava/ui/mobile` (`./mobile`) → `packages/ui/src/mobile/index.ts` (exported symbols across native bottom-sheet modals (Android-tuned via `PLATFORM_STYLE`), `MobileLinkButton`, `MobileDetailLinkRow`, `AppThemeProvider`, `useKeyboardInset`, native `DatePickerField`, bottom-sheet `InfoTooltip`, inputs, pickers, charts, `MobileHouseholdContributionSection`, and providers).
 - `@kaesava/ui/tokens` (`./tokens`) → `packages/ui/src/tokens.ts` (`DESIGN_TOKENS`).
+- `@kaesava/ui/styles.css` (`./styles.css`) → `packages/ui/src/styles.css` (Serene Finance CSS tokens & base utilities).
 
 ---
 

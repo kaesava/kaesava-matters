@@ -11,6 +11,11 @@
       "import": "./src/index.ts",
       "require": "./src/index.ts"
     },
+    "./router": {
+      "types": "./src/router/index.ts",
+      "import": "./src/router/index.ts",
+      "require": "./src/router/index.ts"
+    },
     "./web": {
       "types": "./src/web/index.ts",
       "import": "./src/web/index.ts",

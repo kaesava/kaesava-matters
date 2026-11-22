@@ -94,6 +94,7 @@ export async function createCheckoutSessionCommand(
       name: tenant.name,
       metadata: {
         tenantId: tenant.id,
+        appId: tenant.appId,
       },
     });
 
@@ -124,11 +125,13 @@ export async function createCheckoutSessionCommand(
     subscription_data: {
       metadata: {
         tenantId,
+        appId: tenant.appId,
         planType: input.planType || "annual",
       },
     },
     metadata: {
       tenantId,
+      appId: tenant.appId,
       planType: input.planType || "annual",
     },
   });

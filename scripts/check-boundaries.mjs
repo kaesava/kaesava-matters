@@ -121,4 +121,28 @@ if (violations.length > 0) {
   process.exit(1);
 }
 
-console.log(`[check:boundaries] Passed (${PROTECTED_PACKAGES.length} platform packages verified, 0 domain leaks).`);
+// Ring 2 4-Subpath Contract Check (., ./router, ./web, ./mobile with "types" first)
+const RING2_CAPS = [
+  "assistant",
+  "auth",
+  "bank-accounts",
+  "billing",
+  "bug-reports",
+  "file-notes",
+  "notifications",
+  "schedules",
+  "tenant",
+];
+for (const cap of RING2_CAPS) {
+  const pkgPath = path.join(ROOT, "packages/capabilities", cap, "package.json");
+  const pkg = JSON.parse(fs.readFileSync(pkgPath, "utf8"));
+  for (const sub of [".", "./router", "./web", "./mobile"]) {
+    const exp = pkg.exports?.[sub];
+    if (!exp || Object.keys(exp)[0] !== "types") {
+      console.error(`[check:boundaries] Ring 2 capability "${cap}" missing "${sub}" export with "types" first.`);
+      process.exit(1);
+    }
+  }
+}
+
+console.log(`[check:boundaries] Passed (${PROTECTED_PACKAGES.length} platform packages + ${RING2_CAPS.length} Ring 2 4-subpath contracts verified, 0 domain leaks).`);

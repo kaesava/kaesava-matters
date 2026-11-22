@@ -1,6 +1,11 @@
 import { Inngest } from "inngest";
+import { resolveAppConfigOrDefault } from "@kaesava/config";
 
-export const inngest = new Inngest({ id: "money-matters-api-service" });
+const appManifest = resolveAppConfigOrDefault();
+
+export const inngest = new Inngest({
+  id: appManifest.inngestAppId || `${appManifest.slug}-api-service`,
+});
 
 /**
  * Syncs Cloudflare Worker runtime INNGEST_EVENT_KEY onto the module-scoped Inngest client

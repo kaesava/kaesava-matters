@@ -1,4 +1,4 @@
-import { computeRecurringDates, planSeriesEditScope } from "@kaesava/core";
+import { computeRecurringDates, planSeriesEditScope } from "./burst-engine.js";
 import type {
   BurstWindowInput,
   ScheduleSeriesDefinition,
