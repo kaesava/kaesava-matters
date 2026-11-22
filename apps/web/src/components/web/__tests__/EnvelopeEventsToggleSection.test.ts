@@ -1,3 +1,4 @@
+import "@money-matters/capability-budgeting/i18n";
 import { describe, it, expect } from 'vitest';
 import {
   EnvelopeEventsToggleSection,

@@ -1,3 +1,17 @@
+import { registerAppDictionary } from "@kaesava/i18n";
+registerAppDictionary({
+  canIAfford: {
+    rationale: {
+      everydayBalance: "Everyday balance: {balance}",
+      upcomingBillsProtected: "Upcoming bills protected: {bills}",
+      afterPurchaseRemaining: "Remaining after purchase: {remaining}",
+      aboveSafeCushion: "Above safe cushion ({cushion})",
+      hardNoRecurringBills: "Recurring bills shortfall: {amount}",
+      hardNoRecurringForecastShortfall: "Forecast shortfall: {amount}",
+      hardNoRecurringBillsNonNegotiable: "Bills are non-negotiable",
+    },
+  },
+});
 import { describe, it, expect, vi } from "vitest";
 import type { DbOrTx } from "@kaesava/db";
 import * as dbModule from "@kaesava/db";

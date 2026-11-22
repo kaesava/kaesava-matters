@@ -1,3 +1,22 @@
+import { registerAppDictionary } from "@kaesava/i18n";
+registerAppDictionary({
+  canIAfford: {
+    freqAnnually: "Annually",
+  },
+  categories: {
+    drawdownAsNeeded: "Drawdown as needed",
+    everyMonths: "Every {interval} months",
+    everyWeeks: "Every {interval} weeks",
+    everyFortnights: "Every {interval} fortnights",
+    everyYears: "Every {interval} years",
+    frequencyQuarterly: "Quarterly",
+    quarterly: "Quarterly",
+    monthly: "Monthly",
+    weekly: "Weekly",
+    fortnightly: "Fortnightly",
+    annually: "Annually",
+  },
+});
 import { describe, it, expect } from "vitest";
 import {
   parseRecurrenceRule,

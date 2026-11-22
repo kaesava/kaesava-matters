@@ -1,3 +1,4 @@
+import '@money-matters/capability-budgeting/i18n';
 import { describe, it, expect, vi } from 'vitest';
 import { t } from '@kaesava/i18n';
 
