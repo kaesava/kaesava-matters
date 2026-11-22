@@ -1,18 +1,22 @@
 /**
  * Queries billing invoice history for a tenant scope.
  */
-import { desc, eq } from "drizzle-orm";
+import { and, desc, eq } from "drizzle-orm";
 import { billingInvoices, type DbOrTx } from "@money-matters/db/rings/capabilities";
 import type { BillingInvoiceDto } from "@money-matters/types";
 
 export async function listInvoicesQuery(
   db: DbOrTx,
-  tenantId: string
+  tenantId: string,
+  appId?: string
 ): Promise<BillingInvoiceDto[]> {
+  const whereClause = appId
+    ? and(eq(billingInvoices.tenantId, tenantId), eq(billingInvoices.appId, appId))
+    : eq(billingInvoices.tenantId, tenantId);
   const records = await db
     .select()
     .from(billingInvoices)
-    .where(eq(billingInvoices.tenantId, tenantId))
+    .where(whereClause)
     .orderBy(desc(billingInvoices.createdAt));
 
   return records.map((inv) => ({

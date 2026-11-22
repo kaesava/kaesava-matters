@@ -12,7 +12,7 @@ import { z } from 'zod';
 export const notificationsRouter = {
   getNotificationChannelStatus: tenantProcedure.query(async ({ ctx }) => {
     const handler = getNotificationChannelStatusHandler(ctx.db);
-    return await handler(ctx.tenantId!, ctx.userId!, ctx.email!);
+    return await handler(ctx.tenantId!, ctx.userId!, ctx.email!, ctx.appId);
   }),
 
   registerToken: tenantProcedure
@@ -38,7 +38,7 @@ export const notificationsRouter = {
     .mutation(async ({ ctx, input }) => {
       requiresWriteAccess(ctx);
       const handler = removeDeviceTokenHandler(ctx.db);
-      return await handler(input, ctx.tenantId!, ctx.userId!);
+      return await handler(input, ctx.tenantId!, ctx.userId!, ctx.appId);
     }),
 
   sendTestNotification: tenantProcedure
@@ -52,7 +52,8 @@ export const notificationsRouter = {
       const status = await getNotificationChannelStatusHandler(ctx.db)(
         ctx.tenantId!,
         ctx.userId!,
-        ctx.email!
+        ctx.email!,
+        ctx.appId
       );
       const dispatchedChannels: string[] = [];
       let emailDispatched = false;

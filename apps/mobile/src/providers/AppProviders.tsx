@@ -13,7 +13,11 @@ import {
   DateLocaleProvider,
   CurrencyLocaleProvider,
   NotificationServiceProvider,
+  AppThemeProvider,
+  createDesignTokens,
 } from '@money-matters/ui/mobile';
+
+const moneyMattersMobileTheme = createDesignTokens();
 import { setLanguage, SupportedLanguage } from '@money-matters/i18n';
 import { setMobileLocaleConfig } from '../lib/format';
 import { posthog } from '../config/posthog';
@@ -154,28 +158,30 @@ export function AppProviders({ children }: AppProvidersProps) {
   };
 
   return (
-    <SafeAreaProvider>
-      <PostHogProvider
-        client={posthog}
-        autocapture={false}
-      >
-        <trpc.Provider client={trpcClient} queryClient={queryClient}>
-          <QueryClientProvider client={queryClient}>
-            <NotificationServiceProvider value={notificationServiceValue}>
-              <MobilePreferencesSync>
-                <MobileToastProvider>
-                  <MobileFileNotesProvider>
-                    {children}
-                  </MobileFileNotesProvider>
-                  <MobileToastContainer />
-                  <MobileConfirmContainer />
-                  <MobileAnalyticsConsentPrompt />
-                </MobileToastProvider>
-              </MobilePreferencesSync>
-            </NotificationServiceProvider>
-          </QueryClientProvider>
-        </trpc.Provider>
-      </PostHogProvider>
-    </SafeAreaProvider>
+    <AppThemeProvider theme={moneyMattersMobileTheme}>
+      <SafeAreaProvider>
+        <PostHogProvider
+          client={posthog}
+          autocapture={false}
+        >
+          <trpc.Provider client={trpcClient} queryClient={queryClient}>
+            <QueryClientProvider client={queryClient}>
+              <NotificationServiceProvider value={notificationServiceValue}>
+                <MobilePreferencesSync>
+                  <MobileToastProvider>
+                    <MobileFileNotesProvider>
+                      {children}
+                    </MobileFileNotesProvider>
+                    <MobileToastContainer />
+                    <MobileConfirmContainer />
+                    <MobileAnalyticsConsentPrompt />
+                  </MobileToastProvider>
+                </MobilePreferencesSync>
+              </NotificationServiceProvider>
+            </QueryClientProvider>
+          </trpc.Provider>
+        </PostHogProvider>
+      </SafeAreaProvider>
+    </AppThemeProvider>
   );
 }

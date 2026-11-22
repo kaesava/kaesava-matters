@@ -14,7 +14,20 @@ import {
   type DbOrTx,
 } from "@money-matters/db";
 import { eq, and } from "drizzle-orm";
-import { serializeCsvObjects, type TenantLifecycleContext } from "@money-matters/types";
+import {
+  serializeCsvObjects,
+  type TenantLifecycleContext,
+  type DataExportContributor,
+} from "@money-matters/types";
+
+export function createMoneyMattersExportContributor(
+  getPresignedDownloadUrl?: (fileKey: string, expiresIn?: number) => Promise<string>
+): DataExportContributor<DbOrTx> {
+  return {
+    id: "money-matters-budgeting",
+    exportCsvFiles: (params) => exportMoneyMattersTenantCsvs(params, getPresignedDownloadUrl),
+  };
+}
 
 export async function exportMoneyMattersTenantCsvs(
   ctx: TenantLifecycleContext<DbOrTx>,

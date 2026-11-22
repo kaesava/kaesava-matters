@@ -53,7 +53,8 @@ export function getNotificationChannelStatusHandler(db: DbOrTx) {
   return async (
     tenantId: string,
     userId: string,
-    loginEmail: string
+    loginEmail: string,
+    appId?: string
   ): Promise<NotificationChannelStatus> => {
     const [pref] = await db
       .select({ notificationEmail: userPreferences.notificationEmail })
@@ -61,17 +62,20 @@ export function getNotificationChannelStatusHandler(db: DbOrTx) {
       .where(eq(userPreferences.userId, userId))
       .limit(1);
 
+    const conditions = [
+      eq(deviceTokens.tenantId, tenantId),
+      eq(deviceTokens.userId, userId),
+      inArray(deviceTokens.platform, ["ios", "android"]),
+      isNull(deviceTokens.archivedAt),
+    ];
+    if (appId) {
+      conditions.push(eq(deviceTokens.appId, appId));
+    }
+
     const activeMobileTokens = await db
       .select({ id: deviceTokens.id })
       .from(deviceTokens)
-      .where(
-        and(
-          eq(deviceTokens.tenantId, tenantId),
-          eq(deviceTokens.userId, userId),
-          inArray(deviceTokens.platform, ["ios", "android"]),
-          isNull(deviceTokens.archivedAt)
-        )
-      );
+      .where(and(...conditions));
 
     const customEmail = pref?.notificationEmail?.trim() || null;
     return {

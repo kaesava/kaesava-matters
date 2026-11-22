@@ -2,12 +2,6 @@ import { DbOrTx, tenants } from "@money-matters/db/rings/platform";
 import { resolveAppConfigOrDefault } from "@money-matters/config";
 import { eq } from "drizzle-orm";
 
-export interface SubscriptionStatusInfo {
-  status: "TRIAL_ACTIVE" | "TRIAL_EXPIRED" | "SUBSCRIBED" | "PAST_DUE" | "DEACTIVATED";
-  isTrialExpired: boolean;
-  isDeactivated: boolean;
-}
-
 /**
  * Shared core guard asserting that a tenant has active trial or subscription access.
  */

@@ -1,4 +1,6 @@
 import { NextRequest } from "next/server";
+import { buildTrpcProxyHeaders } from "@money-matters/core";
+import { DEFAULT_APP_ID } from "@money-matters/config";
 
 export async function GET(req: NextRequest) {
   return handleProxy(req);
@@ -140,7 +142,10 @@ async function handleProxy(req: NextRequest) {
       if (process.env.NODE_ENV === "development") console.log(`[DEBUG tRPC Proxy] Forwarding ${req.method} to ${targetUrl} (Cookie present: ${req.headers.has("cookie")})`);
     }
 
-    const headers = new Headers();
+    const headers = buildTrpcProxyHeaders(req.headers, {
+      appId: process.env.NEXT_PUBLIC_APP_ID || DEFAULT_APP_ID,
+      apiBaseUrl: apiBase,
+    });
     // Copy incoming headers, filtering out forwarding headers that mess up origin matching
     req.headers.forEach((value, key) => {
       const lowerKey = key.toLowerCase();
@@ -152,6 +157,9 @@ async function handleProxy(req: NextRequest) {
         headers.set(key, value);
       }
     });
+    if (!headers.get("x-app-id")) {
+      headers.set("x-app-id", process.env.NEXT_PUBLIC_APP_ID || DEFAULT_APP_ID);
+    }
 
     // Ensure authorization header and normalized session cookies are forwarded if available
     const authHeader = req.headers.get("authorization");

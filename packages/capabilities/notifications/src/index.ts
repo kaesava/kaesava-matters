@@ -60,7 +60,8 @@ export function removeDeviceTokenHandler(db: DbOrTx) {
   return async (
     input: { platform: "ios" | "android" | "web"; token?: string },
     tenantId: string,
-    userId: string
+    userId: string,
+    appId?: string
   ) => {
     const conditions = [
       eq(deviceTokens.userId, userId),
@@ -68,6 +69,10 @@ export function removeDeviceTokenHandler(db: DbOrTx) {
       eq(deviceTokens.platform, input.platform),
       isNull(deviceTokens.archivedAt),
     ];
+
+    if (appId) {
+      conditions.push(eq(deviceTokens.appId, appId));
+    }
 
     if (input.token) {
       conditions.push(eq(deviceTokens.token, input.token));

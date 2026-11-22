@@ -4,9 +4,11 @@ import { MutationCache, QueryCache, QueryClient, QueryClientProvider } from "@ta
 import { trpc, buildTrpcClient } from "../lib/trpc";
 import { authClient } from "../lib/auth";
 import posthog from "../lib/posthog-client";
-import { ToastProvider, ToastContainer, NetworkErrorBanner } from "@money-matters/ui/web";
+import { ToastProvider, ToastContainer, NetworkErrorBanner, AppThemeProvider, createDesignTokens } from "@money-matters/ui/web";
 import { LocaleProvider } from "./LocaleProvider";
 import { AnalyticsConsentBanner } from "../components/web/AnalyticsConsentBanner";
+
+const moneyMattersTheme = createDesignTokens();
 
 interface NetworkStatusContextType {
   isGlobalError: boolean;
@@ -137,31 +139,33 @@ export function AppProviders({ children }: AppProvidersProps) {
   };
 
   return (
-    <NetworkStatusContext.Provider value={{ isGlobalError, clearGlobalError, lastErrorMessage }}>
-      <trpc.Provider client={trpcClient} queryClient={queryClient}>
-        <QueryClientProvider client={queryClient}>
-          <ToastProvider>
-            <SessionSyncTracker>
-              <LocaleProvider>
-                <NetworkErrorBanner
-                  isVisible={isGlobalError}
-                  onRetry={() => {
-                    clearGlobalError();
-                    queryClient.refetchQueries();
-                  }}
-                  onDismiss={clearGlobalError}
-                  message={lastErrorMessage}
-                />
-                <WebFileNotesProvider>
-                  {children}
-                </WebFileNotesProvider>
-                <ToastContainer />
-                <AnalyticsConsentBanner />
-              </LocaleProvider>
-            </SessionSyncTracker>
-          </ToastProvider>
-        </QueryClientProvider>
-      </trpc.Provider>
-    </NetworkStatusContext.Provider>
+    <AppThemeProvider theme={moneyMattersTheme}>
+      <NetworkStatusContext.Provider value={{ isGlobalError, clearGlobalError, lastErrorMessage }}>
+        <trpc.Provider client={trpcClient} queryClient={queryClient}>
+          <QueryClientProvider client={queryClient}>
+            <ToastProvider>
+              <SessionSyncTracker>
+                <LocaleProvider>
+                  <NetworkErrorBanner
+                    isVisible={isGlobalError}
+                    onRetry={() => {
+                      clearGlobalError();
+                      queryClient.refetchQueries();
+                    }}
+                    onDismiss={clearGlobalError}
+                    message={lastErrorMessage}
+                  />
+                  <WebFileNotesProvider>
+                    {children}
+                  </WebFileNotesProvider>
+                  <ToastContainer />
+                  <AnalyticsConsentBanner />
+                </LocaleProvider>
+              </SessionSyncTracker>
+            </ToastProvider>
+          </QueryClientProvider>
+        </trpc.Provider>
+      </NetworkStatusContext.Provider>
+    </AppThemeProvider>
   );
 }

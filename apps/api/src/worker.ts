@@ -1,6 +1,8 @@
 import { fetchRequestHandler } from '@trpc/server/adapters/fetch';
 import { logger, createPlatformWorker, type PlatformWorkerEnvBase } from '@money-matters/core';
-import { validateEnv } from '@money-matters/config';
+import { validateEnv, createAppEnvSchema } from '@money-matters/config';
+import { registerMoneyMattersApp } from '@money-matters/capability-budgeting';
+import { z } from 'zod';
 import { appRouter } from './routers/_app.js';
 import { createEdgeContext } from './trpc/edge-context.js';
 import { inngest, syncInngestEventKey } from './inngest/client.js';
@@ -65,11 +67,19 @@ export async function handleTrpcRequest(
   });
 }
 
+const moneyMattersWorkerEnvSchema = createAppEnvSchema({
+  MONEY_MATTERS_APP_ID: z.string().uuid().optional(),
+});
+
+registerMoneyMattersApp();
+
 export default createPlatformWorker<WorkerEnv>({
   resolveDefaultAppId: (env) => env.MONEY_MATTERS_APP_ID,
   onInitEnv: (env) => {
+    registerMoneyMattersApp();
     syncInngestEventKey(env.INNGEST_EVENT_KEY);
     validateEnv(env as unknown as Record<string, unknown>);
+    moneyMattersWorkerEnvSchema.safeParse(env);
   },
   routes: [
     async ({ request, url, env, ctx, correlationId, isDev }) => {

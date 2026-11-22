@@ -54,7 +54,7 @@ export const billingRouter = {
     }),
 
   listInvoices: tenantProcedure.query(async ({ ctx }) => {
-    return await listInvoicesQuery(ctx.db, ctx.tenantId!);
+    return await listInvoicesQuery(ctx.db, ctx.tenantId!, ctx.appId);
   }),
 
   syncSubscription: ownerProcedure.mutation(async ({ ctx }) => {

@@ -13,7 +13,10 @@ import {
   getAuthMethodsHandler,
   setAccountPasswordHandler,
 } from "@money-matters/capability-tenant";
-import { createMoneyMattersTenantLifecycleHooks } from "@money-matters/capability-budgeting";
+import {
+  createMoneyMattersTenantLifecycleHooks,
+  createMoneyMattersExportContributor,
+} from "@money-matters/capability-budgeting";
 import {
   CreateTenantCommand,
   CheckEmailAuthProviderInputSchema,
@@ -123,7 +126,8 @@ export const tenantCoreProcedures = {
       const handler = exportDataHandler(
         ctx.db,
         getPresignedDownloadUrl,
-        createMoneyMattersTenantLifecycleHooks({ getPresignedDownloadUrl })
+        undefined,
+        [createMoneyMattersExportContributor(getPresignedDownloadUrl)]
       );
       return await handler(ctx.tenantId!, ctx.userId!, ctx.appId!);
     }),

@@ -60,5 +60,4 @@ export * from './AiUsageCard';
 export * from './CommandPaletteModal';
 export * from './CelebrationBanner';
 export * from './HouseholdContributionSection';
-export * from './LegalDocumentPage';
 export * from '../lib/householdContribution';

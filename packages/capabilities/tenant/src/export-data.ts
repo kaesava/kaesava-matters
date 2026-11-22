@@ -1,11 +1,17 @@
 import { tenants, users, type DbOrTx } from "@money-matters/db/rings/capabilities";
 import { eq } from "drizzle-orm";
-import { serializeCsvObjects, DEFAULT_TIMEZONE, type TenantLifecycleHooks } from "@money-matters/types";
+import {
+  serializeCsvObjects,
+  DEFAULT_TIMEZONE,
+  type TenantLifecycleHooks,
+  type DataExportContributor,
+} from "@money-matters/types";
 
 export function exportDataHandler(
   db: DbOrTx,
   _getPresignedDownloadUrl?: (fileKey: string, expiresIn?: number) => Promise<string>,
-  hooks?: TenantLifecycleHooks<DbOrTx>
+  hooks?: TenantLifecycleHooks<DbOrTx>,
+  contributors: readonly DataExportContributor<DbOrTx>[] = []
 ) {
   return async (tenantId: string, userId: string, appId: string) => {
     const [userRecord] = await db
@@ -22,6 +28,11 @@ export function exportDataHandler(
 
     const domainCsvs =
       (await hooks?.onExportTenantData?.({ db, tenantId, userId, appId })) ?? {};
+
+    const contributorEntries = await Promise.all(
+      contributors.map((c) => c.exportCsvFiles({ db, tenantId, userId, appId }))
+    );
+    const mergedContributorCsvs = Object.assign({}, ...contributorEntries);
 
     const csvFiles: Record<string, string> = {
       "User_Profile.csv": serializeCsvObjects(
@@ -44,6 +55,7 @@ export function exportDataHandler(
         ["id", "name", "subscriptionStatus", "setupStatus", "subscriptionEndsAt", "cancelAtPeriodEnd"]
       ),
       ...domainCsvs,
+      ...mergedContributorCsvs,
     };
 
     return {
