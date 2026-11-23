@@ -25,6 +25,9 @@ RESEND_FROM_EMAIL = "Tradie Matters <info@tradiematters.kaesava.au>"
 STORAGE_BUCKET_NAME = "tradie-matters-production"
 STORAGE_ENDPOINT = "https://b0a640370b2b7ba2b84abfd03a9fda56.r2.cloudflarestorage.com"
 STORAGE_REGION = "auto"
+STRIPE_PRICE_ANNUAL = "price_1UeoqODg3ZcKhYrYFln4iYzp"
+STRIPE_PRICE_FOUNDING_ANNUAL = "price_1UeoqODg3ZcKhYrY489xAh5l"
+STRIPE_PRICE_MONTHLY = "price_1UeoqODg3ZcKhYrYJPdQ6JQE"
 TRADIE_MATTERS_APP_ID = "5cb11fa2-7faf-49d3-9e3a-01f14d2a7b99"
 
 [observability]

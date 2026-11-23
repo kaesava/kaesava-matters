@@ -54,7 +54,7 @@ node -e 'console.log(crypto.randomUUID())'
 | **Inngest Cloud** | **SHARE** account/keys, **DEDICATED** Inngest App ID | Instantiate `new Inngest({ id: "<slug>-api-service" })` and sync `https://api.<subd>.kaesava.au/api/inngest`. |
 | **Stripe Billing** | **DEDICATED** Stripe sub-account under Kaesava AU | Gives isolated Checkout branding, invoices, statement descriptor, Prices, and Webhook secret. |
 | **Sentry** | **SHARE** org, **DEDICATED** projects | Create `<slug>-web`, `<slug>-api`, and `<slug>-mobile`. |
-| **PostHog** | **SHARE** org, **DEDICATED** project | Create `<App Name>` project (`https://us.i.posthog.com`). |
+| **PostHog** | **SHARE** single project (free tier limit = 1 project) | Reuse existing `phc_...` token (`https://us.i.posthog.com`); filter insights by `app_id` / `$host`. |
 | **GA4 & Search Console** | **DEDICATED** property & web stream | Create GA4 Web Stream + Search Console property for `https://<subd>.kaesava.au`. |
 | **Expo / EAS / FCM / Play** | **DEDICATED** EAS project, Firebase Android app & Play Console app | Run `eas init`, register `au.kaesava.<subd>` in Firebase + Play Console; reuse `EXPO_ACCESS_TOKEN`. |
 | **GitHub Actions Secrets** | **SHARE** existing repo secrets | Reuse `CLOUDFLARE_API_TOKEN`, `CLOUDFLARE_ACCOUNT_ID`, `DATABASE_URL`, `TEST_DATABASE_URL`. |

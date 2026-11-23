@@ -37,8 +37,8 @@ const nextConfig: NextConfig = {
               "font-src 'self' https://fonts.gstatic.com data:",
               "img-src 'self' data: blob:",
               process.env.NODE_ENV === "development"
-                ? "connect-src 'self' https://api.tradiematters.kaesava.au https://*.neonauth.ap-southeast-2.aws.neon.tech http://localhost:* ws://localhost:*"
-                : "connect-src 'self' https://api.tradiematters.kaesava.au https://*.neonauth.ap-southeast-2.aws.neon.tech",
+                ? "connect-src 'self' https://api.tradiematters.kaesava.au https://us.i.posthog.com https://*.ingest.us.sentry.io https://*.neonauth.ap-southeast-2.aws.neon.tech http://localhost:* ws://localhost:*"
+                : "connect-src 'self' https://api.tradiematters.kaesava.au https://us.i.posthog.com https://*.ingest.us.sentry.io https://*.neonauth.ap-southeast-2.aws.neon.tech",
               "frame-ancestors 'none'",
               "base-uri 'self'",
               "form-action 'self'",

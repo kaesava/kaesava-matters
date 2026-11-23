@@ -20,7 +20,8 @@
     "NEXT_PUBLIC_API_URL": "https://api.moneymatters.kaesava.au",
     "NEXT_PUBLIC_ENABLE_AUTH": "true",
     "NEXT_PUBLIC_POSTHOG_PROJECT_TOKEN": "phc_tUCUwzeZTkRaNB6RiqsaPf3rbTCAKY2Y9YMApkySf735",
-    "NEXT_PUBLIC_SENTRY_DSN": "https://d72687a1414b1e142f6e5c8d815300da@o4511408239738880.ingest.us.sentry.io/4511834184679424"
+    "NEXT_PUBLIC_SENTRY_DSN": "https://d72687a1414b1e142f6e5c8d815300da@o4511408239738880.ingest.us.sentry.io/4511834184679424",
+    "NEXT_PUBLIC_GA_MEASUREMENT_ID": "G-MSRXBDWVFS"
   },
   "observability": {
     "enabled": false,
