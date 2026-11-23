@@ -14,6 +14,7 @@ const ROOT = process.cwd();
 const PROTECTED_PACKAGES = [
   "packages/config/src",
   "packages/core/src",
+  "packages/mobile-core/src",
   "packages/ui/src",
   "packages/types/src",
   "packages/i18n/src",
@@ -53,12 +54,12 @@ const FORBIDDEN_PATTERNS = [
 // Hardcoded Money Matters identifiers are only allowed inside the AppManifest registry itself.
 const HARDCODED_BRAND_PATTERNS = [
   { label: "hardcoded MONEY_MATTERS_APP_ID env key", regex: /\bMONEY_MATTERS_APP_ID\b/ },
+  { label: "hardcoded Money Matters UUID", regex: /01908bde-34bb-7b19-a178-574211bc93aa/ },
   { label: "hardcoded moneymatters.kaesava.au domain", regex: /moneymatters\.kaesava\.au/ },
 ];
 
 const BRAND_CHECK_ALLOWLIST = new Set([
   "packages/config/src/app-registry.ts",
-  "packages/config/src/env.ts",
   "packages/core/src/security-headers.ts",
   "packages/i18n/src/dictionaries/en/privacy.ts",
 ]);
@@ -89,6 +90,12 @@ for (const relPkg of PROTECTED_PACKAGES) {
     const content = fs.readFileSync(file, "utf8");
     for (const rule of FORBIDDEN_PATTERNS) {
       if (relPath === "packages/core/src/db-client.ts" && rule.label.startsWith("monolithic root")) {
+        continue;
+      }
+      if (
+        rule.label.startsWith("@trpc/server") &&
+        (relPath.startsWith("packages/core/src/trpc/") || relPath.includes("/src/router/"))
+      ) {
         continue;
       }
       if (rule.label === "cross-Ring-2 capability import" && relPkg.startsWith("packages/capabilities/")) {

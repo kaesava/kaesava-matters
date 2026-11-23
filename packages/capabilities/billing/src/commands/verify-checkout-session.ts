@@ -4,7 +4,7 @@
  */
 import Stripe from "stripe";
 import { billingInvoices, type DbOrTx } from "@kaesava/db/rings/capabilities";
-import { validateEnv } from "@kaesava/config";
+import { validateEnv, resolveAppConfigOrDefault } from "@kaesava/config";
 import { z } from "zod";
 import { activateSubscriptionCommand } from "./activate-subscription.js";
 
@@ -82,7 +82,7 @@ export async function verifyCheckoutSessionCommand(
       .insert(billingInvoices)
       .values({
         tenantId,
-        appId: session.metadata?.appId || process.env["DEFAULT_APP_ID"] || "01908bde-34bb-7b19-a178-574211bc93aa",
+        appId: resolveAppConfigOrDefault(session.metadata?.appId).id,
         stripeInvoiceId: invoiceObj.id,
         stripeCustomerId: customerId,
         stripeSubscriptionId: subscriptionId || null,

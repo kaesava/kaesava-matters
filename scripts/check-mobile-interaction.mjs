@@ -1,10 +1,24 @@
 #!/usr/bin/env node
 // Enforces the Mobile Interaction invariant (AGENTS.md §5): no underlined navigation text, no tiny text,
 // no sub-44dp button-like style definitions. Escape hatch: append `// mm-allow-interaction: <reason>` to the line.
-import { readdirSync, readFileSync, statSync } from 'node:fs';
+import { existsSync, readdirSync, readFileSync, statSync } from 'node:fs';
 import { join } from 'node:path';
 
-const ROOTS = ['apps/mobile/src', 'packages/ui/src/mobile', 'packages/capabilities'];
+function discoverMobileRoots() {
+  const roots = [];
+  if (existsSync('apps')) {
+    for (const product of readdirSync('apps')) {
+      const candidate = join('apps', product, 'mobile', 'src');
+      if (existsSync(candidate) && statSync(candidate).isDirectory()) {
+        roots.push(candidate);
+      }
+    }
+  }
+  return [...roots, 'packages/ui/src/mobile', 'packages/capabilities'];
+}
+
+const ROOTS = discoverMobileRoots();
+const MOBILE_APP_SRC_RE = /^apps\/[^/]+\/mobile\/src\//;
 const DECORATIVE_KEY = /badge|chip|pill|tag|footnote|caption|axis|tick/i;
 const CHART_KEY = /label|legend|pct|month|subtitle|text/i;
 const BUTTONISH_KEY = /btn|button|close|action|toggle|overflow|trigger/i;
@@ -32,10 +46,10 @@ for (const root of ROOTS) {
       if (/textDecorationLine:\s*['"]underline['"]/.test(line)) {
         violations.push(`${at} underlined text; use MobileLinkButton / MobileDetailLinkRow`);
       }
-      if ((file.startsWith('apps/mobile/src') || file.startsWith('packages/capabilities')) && /<Switch\b/.test(line)) {
+      if ((MOBILE_APP_SRC_RE.test(file) || file.startsWith('packages/capabilities')) && /<Switch\b/.test(line)) {
         violations.push(`${at} raw <Switch>; use centralized SwitchRow from @kaesava/ui/mobile`);
       }
-      if ((file.startsWith('apps/mobile/src') || file.startsWith('packages/capabilities')) && /<TextInput\b/.test(line)) {
+      if ((MOBILE_APP_SRC_RE.test(file) || file.startsWith('packages/capabilities')) && /<TextInput\b/.test(line)) {
         violations.push(`${at} raw <TextInput>; use centralized MobileInput or AmountInput from @kaesava/ui/mobile`);
       }
       const size = line.match(/fontSize:\s*(\d+(?:\.\d+)?)/);

@@ -37,7 +37,7 @@ export async function handleInvoicePaymentSucceeded(
   });
 
   const [tenantRow] = await db.select({ appId: tenants.appId }).from(tenants).where(eq(tenants.id, tenantId)).limit(1);
-  const resolvedAppId = tenantRow?.appId || sub.metadata?.appId || process.env["DEFAULT_APP_ID"] || "01908bde-34bb-7b19-a178-574211bc93aa";
+  const resolvedAppId = resolveAppConfigOrDefault(tenantRow?.appId || sub.metadata?.appId).id;
 
   if (invoice.id) {
     await db
@@ -96,7 +96,7 @@ export async function handleInvoicePaymentFailed(
   if (!tenantId) return;
 
   const [tenantRow] = await db.select({ appId: tenants.appId }).from(tenants).where(eq(tenants.id, tenantId)).limit(1);
-  const resolvedAppId = tenantRow?.appId || sub.metadata?.appId || process.env["DEFAULT_APP_ID"] || "01908bde-34bb-7b19-a178-574211bc93aa";
+  const resolvedAppId = resolveAppConfigOrDefault(tenantRow?.appId || sub.metadata?.appId).id;
 
   if (invoice.id) {
     await db

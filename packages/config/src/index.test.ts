@@ -22,7 +22,7 @@ describe('Config Package Utilities', () => {
       });
       expect(config.DATABASE_URL).toBe('postgres://user:pass@localhost:5432/testdb');
       expect(config.PORT).toBe(3001);
-      expect(config.MONEY_MATTERS_APP_ID).toBe('01908bde-34bb-7b19-a178-574211bc93aa');
+      expect(config.NODE_ENV).toBe('development');
     });
 
     it('fails in production if DATABASE_URL is missing', () => {

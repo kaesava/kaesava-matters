@@ -37,9 +37,10 @@
 ```
 money-matters/
 ├── apps/
-│   ├── api/           # Cloudflare Worker API (`wrangler.toml`, `src/worker.ts`)
-│   ├── mobile/        # Expo React Native app (Android target)
-│   └── web/           # Next.js web app on Cloudflare Workers via OpenNext (`wrangler.jsonc`)
+│   └── money-matters/
+│       ├── api/       # Cloudflare Worker API (`wrangler.toml`, `src/worker.ts`)
+│       ├── mobile/    # Expo React Native app (Android target)
+│       └── web/       # Next.js web app on Cloudflare Workers via OpenNext (`wrangler.jsonc`)
 ├── packages/
 │   ├── capabilities/
 │   │   ├── assistant/       # Ring 2: Ask Penny AI Assistant + generic runQuotaGuardedAssistant engine (Cloudflare Workers AI Gateway, usage quota)

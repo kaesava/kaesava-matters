@@ -18,12 +18,11 @@ const standardColumns = new Set([
 
 // Directories to scan for references
 const scanDirs = [
-  path.join(rootDir, "apps/api"),
-  path.join(rootDir, "apps/web"),
-  path.join(rootDir, "apps/mobile"),
+  path.join(rootDir, "apps"),
   path.join(rootDir, "packages/capabilities"),
   path.join(rootDir, "packages/types"),
   path.join(rootDir, "packages/core"),
+  path.join(rootDir, "packages/mobile-core"),
   path.join(rootDir, "packages/db/src/seed.ts"),
 ];
 

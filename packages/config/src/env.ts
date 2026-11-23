@@ -15,7 +15,6 @@ const baseEnvSchema = z
     INNGEST_SIGNING_KEY: z.string().min(1).default("mock-inngest-key"),
     INNGEST_EVENT_KEY: z.string().min(1).default("mock-inngest-event-key"),
     DEFAULT_APP_ID: z.string().uuid().optional(),
-    MONEY_MATTERS_APP_ID: z.string().uuid().default("01908bde-34bb-7b19-a178-574211bc93aa"),
     // Email and Storage capabilities
     RESEND_API_KEY: z.string().min(1).optional(),
     RESEND_FROM_EMAIL: z

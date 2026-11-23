@@ -7,7 +7,7 @@ import Stripe from "stripe";
 import { eq } from "drizzle-orm";
 import { tenants, billingInvoices, type DbOrTx } from "@kaesava/db/rings/capabilities";
 import { logger } from "@kaesava/core";
-import { validateEnv } from "@kaesava/config";
+import { validateEnv, resolveAppConfigOrDefault } from "@kaesava/config";
 import type { SubscriptionStatusDto } from "@kaesava/types";
 import { getSubscriptionStatus } from "../queries/get-subscription-status.js";
 
@@ -119,7 +119,7 @@ export async function syncSubscriptionCommand(
           .insert(billingInvoices)
           .values({
             tenantId,
-            appId: (tenant as { appId?: string }).appId || process.env["DEFAULT_APP_ID"] || "01908bde-34bb-7b19-a178-574211bc93aa",
+            appId: resolveAppConfigOrDefault((tenant as { appId?: string }).appId).id,
             stripeInvoiceId: inv.id,
             stripeCustomerId: tenant.stripeCustomerId,
             stripeSubscriptionId: typeof inv.subscription === "string" ? inv.subscription : inv.subscription?.id || null,

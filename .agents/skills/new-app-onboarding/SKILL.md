@@ -16,7 +16,7 @@ Before touching any dashboard or file, lock in the app's canonical identifiers a
 | App | Prefix (`apps/<prefix>-*`) | Slug (`apps.slug`) | Web Domain | API Domain | Deep Link / Package ID | Dev Web | Dev API | App UUID (`apps.id`) |
 | :--- | :--- | :--- | :--- | :--- | :--- | ---: | ---: | :--- |
 | **Money Matters** | *(root)* `web` / `api` / `mobile` | `money-matters` | `moneymatters.kaesava.au` | `api.moneymatters.kaesava.au` | `moneymatters://` / `au.kaesava.moneymatters` | `3000` | `3001` | `01908bde-34bb-7b19-a178-574211bc93aa` |
-| **Tradie Matters** | `tradie` (`tradie-web`, `tradie-api`, `tradie-mobile`) | `tradie-matters` | `tradiematters.kaesava.au` | `api.tradiematters.kaesava.au` | `tradiematters://` / `au.kaesava.tradiematters` | `3010` | `3011` | *(generate UUIDv7 once and record here)* |
+| **Tradie Matters** | `tradie` (`tradie-web`, `tradie-api`, `tradie-mobile`) | `tradie-matters` | `tradiematters.kaesava.au` | `api.tradiematters.kaesava.au` | `tradiematters://` / `au.kaesava.tradiematters` | `3010` | `3011` | `5cb11fa2-7faf-49d3-9e3a-01f14d2a7b99` |
 | **App #3** | `<prefix>` | `<slug>` | `<subd>.kaesava.au` | `api.<subd>.kaesava.au` | `<subd>://` / `au.kaesava.<subd>` | `3020` | `3021` | *(generate UUIDv7)* |
 
 Generate the permanent UUIDv7 once:
@@ -63,28 +63,26 @@ node -e 'console.log(crypto.randomUUID())'
 
 ## 3. Step-by-Step External Setup Runbook (Execute in Order)
 
-### Step 1: Neon Auth & Google OAuth (Do First — Unblocks Local Sign-In)
-1. **Neon Console → Dev Branch (`ep-icy-resonance-a7s94hg4...`) → Auth → Trusted Origins:**
-   - Add `http://localhost:<DEV_WEB_PORT>` (e.g., `http://localhost:3010`)
-   - Add `http://127.0.0.1:<DEV_WEB_PORT>`
-   - Add `http://localhost:<DEV_API_PORT>` (e.g., `http://localhost:3011`)
-2. **Neon Console → Prod Branch (`ep-spring-snow-a70f61xz...`) → Auth → Trusted Origins:**
-   - Add `https://<subd>.kaesava.au`
-   - Add `https://api.<subd>.kaesava.au`
-3. **Google Cloud Console → APIs & Services → Credentials → Existing OAuth 2.0 Web Client:**
-   - Under **Authorized JavaScript origins**, add `https://<subd>.kaesava.au`.
-   - Leave **Authorized redirect URIs** untouched (`https://ep-spring-snow-a70f61xz.neonauth.ap-southeast-2.aws.neon.tech/neondb/auth/callback/google`).
+### Step 1: Neon Auth & Google OAuth (Unblocks Local & Prod Sign-In)
+1. **Neon Console (`kaesava-matters` project):**
+   - **Dev Branch (`ep-icy-resonance-a7s94hg4...`):** Already has **Allow Localhost** enabled and Tailscale Funnel origin configured — **no changes needed** for new apps.
+   - **Prod Branch (`ep-spring-snow-a70f61xz...`):** Already has `https://*.kaesava.au` in Trusted Origins — **no changes needed** for new top-level `*.kaesava.au` subdomains (only add `https://api.<subd>.kaesava.au` if an API route ever sends a browser `Origin` directly to Neon Auth).
+2. **Google Cloud Console (`kaesava-matters` / `money-matters-504311`) → APIs & Services → Credentials:**
+   - Open OAuth 2.0 Web Client **`kaesava-matters-prod`**:
+     - Under **Authorized JavaScript origins**, add `https://<subd>.kaesava.au`.
+     - Leave **Authorized redirect URIs** untouched (`https://ep-spring-snow-a70f61xz.neonauth.ap-southeast-2.aws.neon.tech/neondb/auth/callback/google`).
+   - **`kaesava-matters-dev`** already has `http://localhost` and Tailscale configured (only add `http://localhost:<DEV_WEB_PORT>` if client-side Google JS SDK ever rejects bare `http://localhost`).
 
 ### Step 2: Inbound & Outbound Email (`info@<subd>.kaesava.au`)
 1. **Resend Dashboard → Domains → Add Domain:**
-   - Enter `<subd>.kaesava.au` (e.g., `tradiematters.kaesava.au`).
-   - In **Cloudflare Dashboard → `kaesava.au` → DNS**, add the exact `TXT` (DKIM, SPF) and `MX` (send subdomain) records Resend displays. Keep them **DNS Only** (grey cloud).
-   - Add a DMARC `TXT` record at `_dmarc.<subd>.kaesava.au` → `v=DMARC1; p=quarantine; rua=mailto:info@<subd>.kaesava.au`.
-   - Click **Verify DNS Records** in Resend.
+   - Enter `<subd>.kaesava.au` (e.g., `tradiematters.kaesava.au`) and allow Resend's automated Cloudflare DNS setup (Forge infrastructure: `resend._domainkey.<subd>` TXT, `rsend.<subd>` CNAME, `send.<subd>` CNAME — all DNS-only).
+   - **Note:** Resend Forge also adds an inbound receiving MX record (`MX <subd>.kaesava.au → receive-apne1.forge.rmta.net`). **Remove that MX record** so Cloudflare Email Routing can own inbound email (Resend *Sending* stays Verified via `send.*`, `rsend.*`, and `resend._domainkey.*`).
+   - **DMARC:** Already covered automatically by root `_dmarc.kaesava.au` (Cloudflare DMARC Management inherits to all `*.kaesava.au` subdomains) — no per-subdomain `_dmarc` record needed.
    - In **Resend → API Keys → Create API Key**: name it `<slug>-prod`, Permission: **Sending access**, Domain: `<subd>.kaesava.au` → save as `RESEND_API_KEY`.
 2. **Cloudflare Dashboard → `kaesava.au` → Email → Email Routing:**
-   - Enable Email Routing on the subdomain `<subd>.kaesava.au` (Cloudflare adds the subdomain MX records for inbound mail) and add a custom address `info@<subd>.kaesava.au` → forward to your primary inbox.
-   - Verify by sending a test email from an external address to `info@<subd>.kaesava.au`.
+   - Add Cloudflare Email Routing MX records (`route1/route2/route3.mx.cloudflare.net`, DNS-only) and SPF TXT (`"v=spf1 include:_spf.mx.cloudflare.net include:resend.com ~all"`, DNS-only) for `<subd>.kaesava.au`.
+   - **Do NOT add placeholder `AAAA 100::` records** for `<subd>.kaesava.au` or `api.<subd>.kaesava.au` — Wrangler `custom_domain = true` creates and manages its own DNS records + TLS certs and will conflict with pre-existing `AAAA` records.
+   - Create Custom Address `info@<subd>.kaesava.au` → forward to your primary inbox, and verify by sending a test email from an external address.
 
 ### Step 3: Cloudflare R2 & AI Gateway
 1. **Cloudflare Dashboard → R2 Object Storage:**
@@ -99,6 +97,7 @@ node -e 'console.log(crypto.randomUUID())'
 1. **Stripe Dashboard → Account Switcher (top-left) → Create New Account:**
    - Name: `<App Name>` under your existing Kaesava AU business details.
    - Configure **Settings → Branding** (logo, brand color, support email `info@<subd>.kaesava.au`, statement descriptor e.g. `TRADIEMATTERS`).
+   - If enabling **Stripe Custom Email Domain** (`<subd>.kaesava.au`) for Stripe receipts/invoices, add the `stripe-verification` TXT and all `_domainkey` / `bounce` CNAMEs in Cloudflare DNS with Proxy set to **DNS only (grey cloud)** — proxying DKIM/bounce CNAMEs breaks verification and deliverability.
 2. **Test Mode (Dev) & Live Mode (Prod):**
    - Create Products & Prices: Monthly, Annual (and Founding Annual if enabled). Record `STRIPE_PRICE_MONTHLY`, `STRIPE_PRICE_ANNUAL`, `STRIPE_PRICE_FOUNDING_ANNUAL`.
    - Copy `STRIPE_SECRET_KEY` (`sk_test_...` for dev, `sk_live_...` for prod).

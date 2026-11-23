@@ -15,6 +15,8 @@ const args = process.argv.slice(2).reduce((acc, arg) => {
 
 const bumpType = args.type || "patch"; // 'major' | 'minor' | 'patch' | 'beta'
 const targetApp = args.app || "all";   // 'web' | 'mobile' | 'all'
+const product = args.product || "money-matters";
+const appRoot = path.join(rootDir, "apps", product);
 
 function bumpSemVer(version, type) {
   const clean = version.trim().replace(/^v/, "");
@@ -47,30 +49,30 @@ console.log(`🚀 Automated App Version Bump: [Type: ${bumpType}] [App Target: $
 
 // 1. Bump Web App Version
 if (targetApp === "web" || targetApp === "all") {
-  const webPkgPath = path.join(rootDir, "apps/web/package.json");
+  const webPkgPath = path.join(appRoot, "web/package.json");
   if (fs.existsSync(webPkgPath)) {
     const webPkg = JSON.parse(fs.readFileSync(webPkgPath, "utf-8"));
     const oldVer = webPkg.version || "1.0.0";
     const newVer = bumpSemVer(oldVer, bumpType);
     webPkg.version = newVer;
     fs.writeFileSync(webPkgPath, JSON.stringify(webPkg, null, 2) + "\n");
-    console.log(`  ✓ Updated @money-matters/web version: ${oldVer} → ${newVer}`);
+    console.log(`  ✓ Updated @${product}/web version: ${oldVer} → ${newVer}`);
   }
 }
 
 // 2. Bump Mobile App Version & Expo config
 if (targetApp === "mobile" || targetApp === "all") {
-  const mobilePkgPath = path.join(rootDir, "apps/mobile/package.json");
+  const mobilePkgPath = path.join(appRoot, "mobile/package.json");
   if (fs.existsSync(mobilePkgPath)) {
     const mobilePkg = JSON.parse(fs.readFileSync(mobilePkgPath, "utf-8"));
     const oldVer = mobilePkg.version || "1.0.0";
     const newVer = bumpSemVer(oldVer, bumpType);
     mobilePkg.version = newVer;
     fs.writeFileSync(mobilePkgPath, JSON.stringify(mobilePkg, null, 2) + "\n");
-    console.log(`  ✓ Updated @money-matters/mobile package.json version: ${oldVer} → ${newVer}`);
+    console.log(`  ✓ Updated @${product}/mobile package.json version: ${oldVer} → ${newVer}`);
   }
 
-  const appJsonPath = path.join(rootDir, "apps/mobile/app.json");
+  const appJsonPath = path.join(appRoot, "mobile/app.json");
   if (fs.existsSync(appJsonPath)) {
     const appJson = JSON.parse(fs.readFileSync(appJsonPath, "utf-8"));
     if (appJson.expo) {
@@ -94,7 +96,7 @@ if (targetApp === "mobile" || targetApp === "all") {
 try {
   const gitStatus = execSync("git status --porcelain", { encoding: "utf-8" });
   if (gitStatus.includes("package.json") || gitStatus.includes("app.json")) {
-    execSync('git add apps/web/package.json apps/mobile/package.json apps/mobile/app.json 2>/dev/null || true');
+    execSync(`git add apps/${product}/web/package.json apps/${product}/mobile/package.json apps/${product}/mobile/app.json 2>/dev/null || true`);
     console.log("  ✓ Version metadata staged for git commit.");
   }
 } catch (e) {

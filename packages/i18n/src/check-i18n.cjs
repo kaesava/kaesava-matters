@@ -11,16 +11,23 @@ require.extensions['.ts'] = function(module, filename) {
   module._compile(compiled, filename);
 };
 
-// 1. Read and parse platform en dictionary + Money Matters Ring 3 dictionary
+// 1. Read and parse platform en dictionary + all Ring 3 capability i18n dictionaries dynamically
 const { en: platformEn } = require('./dictionaries/en.ts');
-const mmDictPath = path.resolve(__dirname, '../../capabilities/budgeting/src/i18n');
-const mmFiles = ['dashboard', 'envelopes', 'payday', 'plan', 'history', 'setup', 'landing', 'reports'];
-const moneyMattersEn = {};
-for (const name of mmFiles) {
-  const mod = require(path.join(mmDictPath, `${name}.ts`));
-  Object.assign(moneyMattersEn, mod[name] || {});
+const capabilitiesRoot = path.resolve(__dirname, '../../capabilities');
+const ring3En = {};
+if (fs.existsSync(capabilitiesRoot)) {
+  for (const capDir of fs.readdirSync(capabilitiesRoot)) {
+    const i18nDir = path.join(capabilitiesRoot, capDir, 'src', 'i18n');
+    if (!fs.existsSync(i18nDir) || !fs.statSync(i18nDir).isDirectory()) continue;
+    for (const file of fs.readdirSync(i18nDir)) {
+      if (!file.endsWith('.ts') || file === 'index.ts' || file.endsWith('.test.ts')) continue;
+      const base = file.slice(0, -3);
+      const mod = require(path.join(i18nDir, file));
+      Object.assign(ring3En, mod[base] || {});
+    }
+  }
 }
-const en = { ...platformEn, ...moneyMattersEn };
+const en = { ...platformEn, ...ring3En };
 
 function getKeys(obj, prefix = '') {
   let keys = [];
@@ -208,7 +215,7 @@ for (const file of files) {
         if (
           /^\s*(\*|\/\*|\/\/|interface|type|export interface|export type)\b/.test(lineContent) ||
           /(:\s*|=>\s*|<)(Record|Promise|Array|React|KeyboardEvent|StyleProp)\b|;\s*|\bprev\s*-\s*1\b|\bonKeyDown\b/.test(lineContent) ||
-          /^(Money Matters|Neon DB|Cloudflare R2|Cloudflare Workers \/ OpenNext|Inngest Cloud|PostHog|Sentry|Stripe|Resend API)$/.test(text.trim()) ||
+          /^(Money Matters|Tradie Matters|Neon DB|Cloudflare R2|Cloudflare Workers \/ OpenNext|Inngest Cloud|PostHog|Sentry|Stripe|Resend API)$/.test(text.trim()) ||
           /Record|Array|Promise|KeyboardEvent|onKeyDown|prev - 1|&amp;|&apos;|\.length\b|&&|\|\|/.test(text) ||
           /^\d+\s*(&&|\|\|)/.test(text)
         ) {
