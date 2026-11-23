@@ -19,7 +19,7 @@ export function registerTradieMattersApp(): void {
       deepLinkScheme: "tradiematters://",
       supportEmail: "info@tradiematters.kaesava.au",
       fromEmail: "Tradie Matters <info@tradiematters.kaesava.au>",
-      logoUrl: "https://tradiematters.kaesava.au/logo.png",
+      logoUrl: "https://tradiematters.kaesava.au/icon-192x192.png",
       legalAddress: "VIC 3030, Australia",
       signInPath: "/sign-in",
     },

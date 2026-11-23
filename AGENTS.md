@@ -13,8 +13,9 @@ When rules conflict, apply this strict priority order:
 Refuse or redesign any request that violates tenant isolation, data security, or strict type safety.
 
 ## 2. Monorepo Topology & Vertical Slice Boundaries
-- **Stack:** pnpm workspaces, Turborepo, Next.js App Router on Cloudflare Workers (`@opennextjs/cloudflare`), Expo React Native (Android target, Expo SDK 54 / RN 0.81.5), Cloudflare Worker API (`apps/api`), tRPC, Drizzle ORM, Neon PostgreSQL (with RLS), Expo SQLite, Neon Auth, Upstash Redis, Zod `.strict()`, Resend, Inngest, Vitest.
-- **`apps/*` (`web`, `mobile`, `api`):** Thin composition and routing layers only. NEVER place domain business logic in apps or pages.
+- **Stack:** pnpm workspaces, Turborepo, Next.js App Router on Cloudflare Workers (`@opennextjs/cloudflare`), Expo React Native (Android target, Expo SDK 54 / RN 0.81.5), Cloudflare Worker API (`apps/*/api`), tRPC, Drizzle ORM, Neon PostgreSQL (with RLS), Expo SQLite, Neon Auth, Upstash Redis, Zod `.strict()`, Resend, Inngest, Vitest.
+- **`apps/<product>/{web,mobile,api}` (`money-matters`, `tradie-matters`):** Thin composition and routing layers only. NEVER place domain business logic in apps or pages, and never import `@<product-A>/*` inside `apps/<product-B>/*`. Web edge routes/middleware MUST import from `@kaesava/core/next` (never root `@kaesava/core`).
+- **`assets/brand/<product>-brand-suite/`:** Canonical master brand assets per product, synced into `apps/<product>/web/public/` and `apps/<product>/mobile/assets/`.
 - **`packages/capabilities/*` (Ring 2 Reusable: `assistant`, `auth`, `bank-accounts`, `billing`, `bug-reports`, `file-notes`, `notifications`, `schedules`, `tenant`; Ring 3 Money Matters: `budgeting`, `simulation`):** Decoupled vertical slices. Capabilities MUST NEVER import other capabilities directly; use dependency injection (`DbOrTx`) and adapters/hooks.
 - **Platform vs. App-Specific Governance ("Rule of Two", 4-Subpath Standard & Hybrid Settings — see `TECHNICAL_SPEC.md §12`):**
   - **4-Subpath Standard (Ring 2):** Every reusable Ring 2 capability owns its generic domain logic (`.`), composable API (`./router`), and branded Kaesava UI (`./web`, `./mobile`) accepting app-injected config/terminology/hooks. App-specific extensions live strictly in Ring 3 / `apps/*`.

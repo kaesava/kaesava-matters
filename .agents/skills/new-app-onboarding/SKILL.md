@@ -13,11 +13,11 @@ Use this runbook whenever launching a new product app inside this monorepo (for 
 
 Before touching any dashboard or file, lock in the app's canonical identifiers and reserve the next `+10` local port block:
 
-| App | Prefix (`apps/<prefix>-*`) | Slug (`apps.slug`) | Web Domain | API Domain | Deep Link / Package ID | Dev Web | Dev API | App UUID (`apps.id`) |
-| :--- | :--- | :--- | :--- | :--- | :--- | ---: | ---: | :--- |
-| **Money Matters** | *(root)* `web` / `api` / `mobile` | `money-matters` | `moneymatters.kaesava.au` | `api.moneymatters.kaesava.au` | `moneymatters://` / `au.kaesava.moneymatters` | `3000` | `3001` | `01908bde-34bb-7b19-a178-574211bc93aa` |
-| **Tradie Matters** | `tradie` (`tradie-web`, `tradie-api`, `tradie-mobile`) | `tradie-matters` | `tradiematters.kaesava.au` | `api.tradiematters.kaesava.au` | `tradiematters://` / `au.kaesava.tradiematters` | `3010` | `3011` | `5cb11fa2-7faf-49d3-9e3a-01f14d2a7b99` |
-| **App #3** | `<prefix>` | `<slug>` | `<subd>.kaesava.au` | `api.<subd>.kaesava.au` | `<subd>://` / `au.kaesava.<subd>` | `3020` | `3021` | *(generate UUIDv7)* |
+| App | Workspace Folder (`apps/<slug>/*`) | Slug (`apps.slug`) | Web Domain | API Domain | Deep Link / Package ID | Dev Web | Dev API (Inspector) | Dev Mobile | App UUID (`apps.id`) |
+| :--- | :--- | :--- | :--- | :--- | :--- | ---: | ---: | ---: | :--- |
+| **Money Matters** | `apps/money-matters/{web,api,mobile}` | `money-matters` | `moneymatters.kaesava.au` | `api.moneymatters.kaesava.au` | `moneymatters://` / `au.kaesava.moneymatters` | `3000` | `3001` (`9229`) | `8081` | `01908bde-34bb-7b19-a178-574211bc93aa` |
+| **Tradie Matters** | `apps/tradie-matters/{web,api,mobile}` | `tradie-matters` | `tradiematters.kaesava.au` | `api.tradiematters.kaesava.au` | `tradiematters://` / `au.kaesava.tradiematters` | `3010` | `3011` (`9230`) | `8082` | `5cb11fa2-7faf-49d3-9e3a-01f14d2a7b99` |
+| **App #3** | `apps/<slug>/{web,api,mobile}` | `<slug>` | `<subd>.kaesava.au` | `api.<subd>.kaesava.au` | `<subd>://` / `au.kaesava.<subd>` | `3020` | `3021` (`9231`) | `8083` | *(generate UUIDv7)* |
 
 Generate the permanent UUIDv7 once:
 ```bash
@@ -223,39 +223,44 @@ node -e 'console.log(crypto.randomUUID())'
 ## 5. Exact Monorepo Files to Create & Update
 
 ### 5.1 New Files to Scaffold
-1. **Ring 3 Domain Capability (`packages/capabilities/<prefix>-<domain>/`):**
-   - Register the app manifest via `registerAppManifest(...)` from `@kaesava/config` (reference: `packages/core/src/__tests__/tradie-app-dry-run.test.ts`).
-2. **`apps/<prefix>-api/`:**
-   - `wrangler.toml` — `name = "<slug>-api"`, `routes = [{ pattern = "api.<subd>.kaesava.au", custom_domain = true }]`, `[dev] port = <DEV_API_PORT>`, `[vars]`.
-   - `src/worker.ts` — Use `createPlatformWorker` with `resolveDefaultAppId: (env) => env.<PREFIX>_APP_ID` and `createAppEnvSchema({ <PREFIX>_APP_ID: z.string().uuid().optional() })` (never edit `packages/config/src/env.ts` for app-specific env vars).
+1. **Master Brand Asset Suite (`assets/brand/<slug>-brand-suite/`):**
+   - Place the 18 canonical brand assets in `assets/brand/<slug>-brand-suite/` (`<slug>-icon.svg`, `icon-mono-white.svg`, `icon-mono-slate.svg`, `lockup-light.svg`, `lockup-dark.svg`, `master-highres-icon.png`, `favicon.ico`, `favicon-16x16.png`, `favicon-32x32.png`, `apple-touch-icon.png`, `icon-192x192.png`, `icon-512x512.png`, `og-image.png`, `icon.png`, `adaptive-icon.png`, `splash.png`, `play-store-icon.png`, `feature-graphic.png`, `android-notification-small.png`).
+   - Sync web assets into `apps/<slug>/web/public/` (with `site.webmanifest`) and mobile assets into `apps/<slug>/mobile/assets/`.
+2. **Ring 3 Domain Capability (`packages/capabilities/<slug>-<domain>/`):**
+   - Register the app manifest via `registerAppManifest(...)` from `@kaesava/config`.
+3. **`apps/<slug>/api/` (`@<slug>/api`):**
+   - `wrangler.toml` — `name = "<slug>-api"`, `routes = [{ pattern = "api.<subd>.kaesava.au", custom_domain = true }]`, `[dev] port = <DEV_API_PORT>`, `inspector_port = <DEV_INSPECTOR_PORT>`, `[vars]`.
+   - `package.json` — `dev` script MUST pass `--port <DEV_API_PORT> --inspector-port <DEV_INSPECTOR_PORT>` so concurrent `wrangler dev` workers never collide on `127.0.0.1:9229`.
+   - `src/worker.ts` — Use `createPlatformWorker` with `resolveDefaultAppId: (env) => env.<PREFIX>_APP_ID`. In dev mode (`isDev`), set `inngestEnv.INNGEST_DEV = "http://127.0.0.1:8288"` (full URL, never `"1"`, so `InngestCommHandler.register()` targets the local Inngest Dev Server instead of falling through to Inngest Cloud) and `delete inngestEnv.INNGEST_SIGNING_KEY` (never assign `undefined` on `process.env`, which coerces to `"undefined"`).
    - `src/inngest/client.ts` — `new Inngest({ id: "<slug>-api-service" })` + `syncInngestEventKey()`.
-   - `.env.example`, `.env.development` (gitignored), `.dev.vars` (gitignored).
-3. **`apps/<prefix>-web/`:**
+   - `.env.example`, `.env.development` (gitignored), `.dev.vars` (gitignored; omit `INNGEST_SIGNING_KEY` in `.dev.vars`).
+4. **`apps/<slug>/web/` (`@<slug>/web`):**
    - `wrangler.jsonc` — `"name": "<slug>-web"`, `"routes": [{ "pattern": "<subd>.kaesava.au", "custom_domain": true }]`, `"vars"`.
    - `next.config.ts` — Update `Content-Security-Policy` `connect-src` to `https://api.<subd>.kaesava.au`, and ensure `transpilePackages` includes all consumed `@kaesava/*` and `@<slug>/*` packages.
-   - `src/app/api/auth/[...auth]/route.ts` & `src/app/api/trpc/[trpc]/route.ts` — Update `allowedOrigins` to `https://<subd>.kaesava.au`, `https://api.<subd>.kaesava.au`, `http://localhost:<DEV_WEB_PORT>`, `http://localhost:<DEV_API_PORT>`, and forward `x-app-id: process.env.NEXT_PUBLIC_APP_ID`.
-   - `src/app/globals.css` — Include `@source` directives for `packages/ui` and `packages/capabilities/*`.
+   - `src/proxy.ts` & `src/app/api/auth/[...auth]/route.ts` — **CRITICAL:** Import `evaluateAuthEdgeProxy` and `createAuthProxyHandlers` from `@kaesava/core/next` (never root `@kaesava/core`, which pulls `@aws-sdk/client-s3` into edge middleware and fails OpenNext builds).
+   - `src/app/globals.css` — Include `@source` directives (`../../../../packages/ui/src` and `../../../../packages/capabilities`).
+   - `src/i18n/` — Register app-scoped web copy via `registerAppDictionary(...)` from `@kaesava/i18n` (automatically audited by `packages/i18n/src/check-i18n.cjs`).
    - `.env.example`, `.env.development`, `.env.production`, `.env.sentry-build-plugin`.
-4. **`apps/<prefix>-mobile/`:**
-   - `app.json` — `name`, `slug: "<slug>"`, `scheme: "<subd>"`, `android.package: "au.kaesava.<subd>"`, `ios.bundleIdentifier: "au.kaesava.<subd>"`, `extra.eas.projectId`.
+5. **`apps/<slug>/mobile/` (`@<slug>/mobile`):**
+   - `app.json` — `name`, `slug: "<slug>"`, `scheme: "<subd>"`, `icon: "./assets/icon.png"`, `splash.image: "./assets/splash.png"`, `android.package: "au.kaesava.<subd>"`, `android.adaptiveIcon.foregroundImage: "./assets/adaptive-icon.png"`, `ios.bundleIdentifier: "au.kaesava.<subd>"`, `plugins: ["@kaesava/mobile-core/plugins/withAndroidNoBackup", ...]`.
+   - `metro.config.js` — `path.resolve(projectRoot, "../../..")` for monorepo root.
    - `eas.json`, `google-services.json`, `.env.example`, `.env.development`, `.env.production`.
-   - `package.json` — `dev` script must run `adb reverse tcp:<DEV_API_PORT> tcp:<DEV_API_PORT>`.
 
 ### 5.2 Existing Monorepo Files to Update
-1. **`packages/db/src/rings/<slug>.ts` & `packages/db/package.json`:**
+1. **Non-Destructive DB Migration for `apps` Row (NEVER run `pnpm seed:prod` on production!):**
+   - Create `packages/db/drizzle/00XX_seed_<slug>_app.sql` with `INSERT INTO "apps" ("id", "name", "slug", "feature_flags") VALUES (...) ON CONFLICT ("id") DO UPDATE ...;` and add a matching entry in `packages/db/drizzle/meta/_journal.json` (`idx = fileNumber - 1`).
+   - Run `pnpm db:migrate && pnpm db:migrate:prod`.
+   - Also add the upsert to `packages/db/src/seed.ts` for local dev resets.
+2. **`packages/db/src/rings/<slug>.ts` & `packages/db/package.json`:**
    - Export Ring 3 tables under `"./rings/<slug>"` (`"types"` first in `exports`).
-2. **`packages/db/src/seed.ts`:**
-   - Idempotently upsert the new app row in `apps` (`id`, `name`, `slug`, `featureFlags`). Run `pnpm seed` (dev) and `pnpm seed:prod` (prod).
-3. **Root `package.json`:**
-   - Update `dev:inngest` to pass `-u http://127.0.0.1:<DEV_API_PORT>/api/inngest`.
-   - Add `"dev:<prefix>"` script running only `@<slug>/web`, `@<slug>/api`, and Inngest so you don't have to boot every app simultaneously.
-   - Add `<prefix>:mobile:build:preview`, `<prefix>:mobile:build:prod`, `<prefix>:mobile:build:submit`.
+3. **`scripts/start-dev.mjs` & Root `package.json`:**
+   - Add `<slug>` to `PRODUCT_SERVICES` (with `extraPorts: [<DEV_INSPECTOR_PORT>]`) and add `<slug>` services + `waitForHealthUrls` + `-u http://127.0.0.1:<DEV_API_PORT>/api/inngest` (`--no-discovery --poll-interval 60`) to `all` (`pnpm start:all`).
+   - Add `<prefix>:version:bump` and `<prefix>:mobile:build:{preview,prod,submit}` scripts in root `package.json`.
 4. **`.github/workflows/deploy.yml`:**
-   - Add `deploy-<prefix>-api` (`workingDirectory: apps/<prefix>-api`) and `deploy-<prefix>-web` (`pnpm --filter @<slug>/web cf-build` + `workingDirectory: apps/<prefix>-web`).
+   - Add `workingDirectory: apps/<slug>/api` in `deploy-api` and `pnpm --filter @<slug>/web cf-build` + `workingDirectory: apps/<slug>/web` in `deploy-web`.
 5. **Repo Guardrail & Tooling Scripts:**
-   - `scripts/check-boundaries.mjs` — Add `@<slug>/capability-*` and `@kaesava/db/rings/<slug>` to `FORBIDDEN_PATTERNS`, and `<PREFIX>_APP_ID` / `<subd>.kaesava.au` to `HARDCODED_BRAND_PATTERNS`.
-   - `scripts/check-mobile-interaction.mjs` — Add `'apps/<prefix>-mobile/src'` to `ROOTS`.
-   - `scripts/version-bump.mjs` — Add `--target=<slug>` (or support bumping `apps/<prefix>-web` and `apps/<prefix>-mobile`).
+   - `scripts/check-boundaries.mjs` — Add `@<slug>/*` and `@kaesava/db/rings/<slug>` to `FORBIDDEN_PATTERNS`, `<PREFIX>_APP_ID` / `<subd>.kaesava.au` / UUID to `HARDCODED_BRAND_PATTERNS`, and cross-product isolation rules in `PRODUCT_ISOLATION_RULES`.
+   - `scripts/version-bump.mjs` — Add `<slug>` to allowed `--product=<slug>` values.
 6. **Canonical Docs:**
    - Record the new UUID in Section 1 of this skill (`new-app-onboarding/SKILL.md`), and update `SCHEMA_DATA_DICTIONARY.md` for any new Ring 3 tables (`pnpm audit:schema`).
 

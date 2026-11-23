@@ -11,22 +11,32 @@ require.extensions['.ts'] = function(module, filename) {
   module._compile(compiled, filename);
 };
 
-// 1. Read and parse platform en dictionary + all Ring 3 capability i18n dictionaries dynamically
+// 1. Read and parse platform en dictionary + all Ring 3 capability & app i18n dictionaries dynamically
 const { en: platformEn } = require('./dictionaries/en.ts');
 const capabilitiesRoot = path.resolve(__dirname, '../../capabilities');
+const appsRoot = path.resolve(__dirname, '../../../apps');
 const ring3En = {};
-if (fs.existsSync(capabilitiesRoot)) {
-  for (const capDir of fs.readdirSync(capabilitiesRoot)) {
-    const i18nDir = path.join(capabilitiesRoot, capDir, 'src', 'i18n');
-    if (!fs.existsSync(i18nDir) || !fs.statSync(i18nDir).isDirectory()) continue;
-    for (const file of fs.readdirSync(i18nDir)) {
-      if (!file.endsWith('.ts') || file === 'index.ts' || file.endsWith('.test.ts')) continue;
-      const base = file.slice(0, -3);
-      const mod = require(path.join(i18nDir, file));
-      Object.assign(ring3En, mod[base] || {});
+function loadI18nFolders(rootDir) {
+  if (!fs.existsSync(rootDir)) return;
+  for (const dirName of fs.readdirSync(rootDir)) {
+    const candidates = [
+      path.join(rootDir, dirName, 'src', 'i18n'),
+      path.join(rootDir, dirName, 'web', 'src', 'i18n'),
+      path.join(rootDir, dirName, 'mobile', 'src', 'i18n'),
+    ];
+    for (const i18nDir of candidates) {
+      if (!fs.existsSync(i18nDir) || !fs.statSync(i18nDir).isDirectory()) continue;
+      for (const file of fs.readdirSync(i18nDir)) {
+        if (!file.endsWith('.ts') || file === 'index.ts' || file.endsWith('.test.ts')) continue;
+        const base = file.slice(0, -3);
+        const mod = require(path.join(i18nDir, file));
+        Object.assign(ring3En, mod[base] || {});
+      }
     }
   }
 }
+loadI18nFolders(capabilitiesRoot);
+loadI18nFolders(appsRoot);
 const en = { ...platformEn, ...ring3En };
 
 function getKeys(obj, prefix = '') {

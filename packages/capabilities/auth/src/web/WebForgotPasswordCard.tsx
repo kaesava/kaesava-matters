@@ -2,7 +2,7 @@
 
 import React, { useState } from "react";
 import { t } from "@kaesava/i18n";
-import { Button, FormLabel, FormErrorBanner, OtpInput } from "@kaesava/ui/web";
+import { Button, FormLabel, FormErrorBanner, OtpInput, Logo } from "@kaesava/ui/web";
 import { PasswordStrengthIndicator } from "./PasswordStrengthIndicator.js";
 
 export interface WebForgotPasswordCardProps {
@@ -67,6 +67,7 @@ export function WebForgotPasswordCard({ appName, signInHref = "/sign-in" }: WebF
   return (
     <div className="w-full max-w-md bg-white rounded-3xl shadow-xl border border-slate-200/80 p-8 flex flex-col gap-5">
       <div className="text-center flex flex-col items-center gap-1.5">
+        <Logo size="lg" brandName={appName} />
         <span className="text-xs font-extrabold uppercase tracking-wider text-[#2563eb]">{appName}</span>
         <h1 className="text-2xl font-extrabold text-[#1B2B4B]">
           {step === "reset" ? t("auth.setNewPasswordTitle") : t("auth.forgotPasswordTitle")}

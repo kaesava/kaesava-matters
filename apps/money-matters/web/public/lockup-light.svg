@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 160" width="760" height="160" fill="none">
+  <g transform="translate(82, 80) scale(0.42) translate(-256, -260)">
+    <path d="M 124 195 C 124 162 148 142 178 146 C 206 150 230 166 256 182 C 282 166 306 150 334 146 C 364 142 388 162 388 195 L 388 310 C 388 354 352 382 310 382 L 202 382 C 160 382 124 354 124 310 Z" fill="#1B2B4B"/>
+    <g transform="translate(256, 196)">
+      <circle cx="0" cy="0" r="46" fill="#f59e0b" opacity="0.3"/>
+      <circle cx="0" cy="0" r="33" fill="#eab308"/>
+      <circle cx="0" cy="0" r="24" stroke="#fef08a" stroke-width="2" fill="none"/>
+      <path d="M 0 -12 C 0 -4 4 0 12 0 C 4 0 0 4 0 12 C 0 4 -4 0 -12 0 C -4 0 0 -4 0 -12 Z" fill="#FFFFFF"/>
+    </g>
+    <path d="M 128 190 C 128 164 150 148 174 156 L 256 218 L 256 372 C 236 372 192 366 156 328 C 134 304 128 266 128 234 Z" fill="#2563EB"/>
+    <path d="M 384 190 C 384 164 362 148 338 156 L 256 218 L 256 372 C 276 372 320 366 356 328 C 378 304 384 266 384 234 Z" fill="#3B82F6"/>
+    <path d="M 158 272 C 188 304 220 316 256 316 C 292 316 324 304 354 272 C 344 338 302 376 256 376 C 210 376 168 338 158 272 Z" fill="#1B2B4B"/>
+  </g>
+  <text x="175" y="85" font-family="'Plus Jakarta Sans', Inter, sans-serif" font-size="52" font-weight="800" letter-spacing="-1.2" fill="#1B2B4B">Money <tspan fill="#2563EB">Matters</tspan></text>
+  <text x="178" y="118" font-family="'Plus Jakarta Sans', Inter, sans-serif" font-size="16" font-weight="600" letter-spacing="1.8" text-transform="uppercase" fill="#64748B">Serene Household Finance</text>
+</svg>

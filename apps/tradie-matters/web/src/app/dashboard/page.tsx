@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import { t } from "@kaesava/i18n";
 import { Button, Spinner } from "@kaesava/ui/web";
 
@@ -10,6 +11,7 @@ interface SessionUser {
 }
 
 export default function DashboardPage() {
+  const router = useRouter();
   const [user, setUser] = useState<SessionUser | null>(null);
   const [apiStatus, setApiStatus] = useState<string>("...");
   const [loading, setLoading] = useState(true);
@@ -35,7 +37,7 @@ export default function DashboardPage() {
 
   async function handleSignOut() {
     await fetch("/api/auth/sign-out", { method: "POST", credentials: "include" });
-    window.location.href = "/sign-in";
+    router.push("/sign-in");
   }
 
   if (loading) {
@@ -56,7 +58,7 @@ export default function DashboardPage() {
           <h1 className="text-2xl font-extrabold text-[#1B2B4B]">{t("nav.home")}</h1>
         </div>
         <Button type="button" variant="secondary" onClick={handleSignOut}>
-          {t("auth.signOut")}
+          {t("settings.signOut")}
         </Button>
       </header>
       <section className="bg-white rounded-2xl border border-slate-200 p-6 flex flex-col gap-2">

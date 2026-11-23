@@ -1,0 +1,85 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 160" width="760" height="160" fill="none">
+  <g transform="translate(80, 80) scale(0.42) translate(-256, -270)">
+    
+  <defs>
+    <linearGradient id="tmDenimOuter" x1="120" y1="130" x2="392" y2="420" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#1e293b"/>
+      <stop offset="40%" stop-color="#0f172a"/>
+      <stop offset="100%" stop-color="#090d16"/>
+    </linearGradient>
+    <linearGradient id="tmCrossbarDenim" x1="120" y1="138" x2="392" y2="218" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#3b82f6"/>
+      <stop offset="35%" stop-color="#2563eb"/>
+      <stop offset="70%" stop-color="#1d4ed8"/>
+      <stop offset="100%" stop-color="#1e40af"/>
+    </linearGradient>
+    <linearGradient id="tmStemDenim" x1="200" y1="210" x2="312" y2="400" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#2563eb"/>
+      <stop offset="45%" stop-color="#1d4ed8"/>
+      <stop offset="100%" stop-color="#0f172a"/>
+    </linearGradient>
+    <linearGradient id="tmInnerPocket" x1="200" y1="240" x2="312" y2="350" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#1e3a8a"/>
+      <stop offset="100%" stop-color="#090d16"/>
+    </linearGradient>
+    <linearGradient id="tmSteelHardware" x1="248" y1="298" x2="264" y2="314" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#ffffff"/>
+      <stop offset="35%" stop-color="#e2e8f0"/>
+      <stop offset="70%" stop-color="#94a3b8"/>
+      <stop offset="100%" stop-color="#475569"/>
+    </linearGradient>
+    <radialGradient id="tmGoldAura" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#fbbf24" stop-opacity="0.55"/>
+      <stop offset="55%" stop-color="#f59e0b" stop-opacity="0.25"/>
+      <stop offset="100%" stop-color="#d97706" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="tmGoldCore" x1="-30" y1="-30" x2="30" y2="30" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#fef08a"/>
+      <stop offset="30%" stop-color="#fde047"/>
+      <stop offset="70%" stop-color="#f59e0b"/>
+      <stop offset="100%" stop-color="#d97706"/>
+    </linearGradient>
+    <linearGradient id="tmGoldRim" x1="-34" y1="-34" x2="34" y2="34" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#ffffff"/>
+      <stop offset="45%" stop-color="#fef08a"/>
+      <stop offset="100%" stop-color="#b45309"/>
+    </linearGradient>
+    <linearGradient id="tmGoldSpec" x1="-18" y1="-22" x2="10" y2="4" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.95"/>
+      <stop offset="60%" stop-color="#fef9c3" stop-opacity="0.65"/>
+      <stop offset="100%" stop-color="#fef08a" stop-opacity="0"/>
+    </linearGradient>
+  </defs>
+
+  <g transform="translate(0, 0)">
+    <path d="M 120 178 C 120 148 144 130 176 130 L 336 130 C 368 130 392 148 392 178 C 392 208 372 222 344 224 L 312 226 L 312 360 C 312 396 288 412 256 412 C 224 412 200 396 200 360 L 200 226 L 168 224 C 140 222 120 208 120 178 Z" fill="url(#tmDenimOuter)"/>
+    <rect x="126" y="138" width="260" height="76" rx="38" fill="url(#tmCrossbarDenim)"/>
+    <path d="M 204 214 L 308 214 L 308 358 C 308 388 286 404 256 404 C 226 404 204 388 204 358 Z" fill="url(#tmStemDenim)"/>
+    <path d="M 212 248 C 228 274 242 284 256 284 C 270 284 284 274 300 248 C 298 316 280 348 256 348 C 232 348 214 316 212 248 Z" fill="url(#tmInnerPocket)" opacity="0.95"/>
+    <rect x="135" y="147" width="242" height="58" rx="29" stroke="#cbd5e1" stroke-width="2" stroke-dasharray="4.5 3.5" opacity="0.8" fill="none"/>
+    <path d="M 214 230 L 214 354 C 214 376 230 392 256 392 C 282 392 298 376 298 354 L 298 230" stroke="#60a5fa" stroke-width="2" stroke-dasharray="4 3.5" stroke-linecap="round" opacity="0.75"/>
+    <path d="M 220 270 Q 238 296 256 296 Q 274 296 292 270" stroke="#93c5fd" stroke-width="2" stroke-dasharray="3.5 3" stroke-linecap="round" fill="none" opacity="0.85"/>
+    <g transform="translate(256, 310)">
+      <circle cx="0" cy="0" r="9.5" fill="#090d16"/>
+      <circle cx="0" cy="0" r="7.5" fill="url(#tmSteelHardware)"/>
+      <circle cx="0" cy="0" r="4.5" fill="#475569"/>
+      <circle cx="-1.5" cy="-1.5" r="1.5" fill="#ffffff" opacity="0.9"/>
+    </g>
+    <g transform="translate(256, 176)">
+      <circle cx="0" cy="0" r="52" fill="url(#tmGoldAura)"/>
+      <circle cx="0" cy="0" r="34" fill="url(#tmGoldRim)"/>
+      <circle cx="0" cy="0" r="30" fill="url(#tmGoldCore)"/>
+      <ellipse cx="-7" cy="-8" rx="14" ry="8" fill="url(#tmGoldSpec)" transform="rotate(-24 -7 -8)"/>
+      <circle cx="0" cy="0" r="23" stroke="#fef08a" stroke-width="1.6" stroke-dasharray="3.5 2.5" opacity="0.85" fill="none"/>
+      <path d="M -10 -1 L -3 6 L 11 -8" stroke="#FFFFFF" stroke-width="4.2" stroke-linecap="round" stroke-linejoin="round"/>
+    </g>
+  </g>
+
+  </g>
+  <text x="170" y="85" font-family="Plus Jakarta Sans, sans-serif" font-size="52" font-weight="800" letter-spacing="-1.2" fill="#FFFFFF">Tradie <tspan fill="#60a5fa">Matters</tspan></text>
+  <g transform="translate(566, 50)">
+    <rect x="0" y="0" width="168" height="38" rx="7" fill="#1e293b" stroke="#334155" stroke-width="1.2"/>
+    <text x="84" y="24" font-family="Plus Jakarta Sans, sans-serif" font-size="12" font-weight="700" letter-spacing="1.4" text-anchor="middle" fill="#94a3b8">BY MONEY MATTERS</text>
+  </g>
+  <text x="173" y="118" font-family="Plus Jakarta Sans, sans-serif" font-size="16" font-weight="700" letter-spacing="1.5" fill="#94a3b8">Quotes • Jobs • Payments</text>
+</svg>
