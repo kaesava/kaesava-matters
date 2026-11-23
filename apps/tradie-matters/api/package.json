@@ -16,6 +16,7 @@
   "dependencies": {
     "@kaesava/config": "workspace:*",
     "@kaesava/core": "workspace:*",
+    "inngest": "^3.19.14",
     "zod": "^3.23.8"
   },
   "devDependencies": {

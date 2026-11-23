@@ -1,0 +1,28 @@
+{
+  "expo": {
+    "name": "Tradie Matters",
+    "slug": "tradie-matters",
+    "scheme": "tradiematters",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "userInterfaceStyle": "light",
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "au.kaesava.tradiematters"
+    },
+    "android": {
+      "package": "au.kaesava.tradiematters",
+      "versionCode": 1,
+      "permissions": [
+        "android.permission.RECEIVE_BOOT_COMPLETED",
+        "android.permission.VIBRATE",
+        "android.permission.POST_NOTIFICATIONS"
+      ]
+    },
+    "plugins": [
+      "expo-router",
+      "expo-secure-store",
+      "@kaesava/mobile-core/plugins/withAndroidNoBackup"
+    ]
+  }
+}

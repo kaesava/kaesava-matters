@@ -112,6 +112,23 @@ export async function seedDatabase(connectionString: string, envLabel: string) {
       },
     });
 
+  await db
+    .insert(apps)
+    .values({
+      id: "5cb11fa2-7faf-49d3-9e3a-01f14d2a7b99",
+      name: "Tradie Matters",
+      slug: "tradie-matters",
+      featureFlags: {},
+    })
+    .onConflictDoUpdate({
+      target: apps.id,
+      set: {
+        name: "Tradie Matters",
+        slug: "tradie-matters",
+        updatedAt: now,
+      },
+    });
+
   // Ensure Early Access Subscriber
   await db
     .insert(earlyAccessSubscribers)
