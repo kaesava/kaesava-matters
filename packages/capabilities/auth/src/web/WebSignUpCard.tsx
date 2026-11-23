@@ -59,12 +59,12 @@ export function WebSignUpCard({
       });
       if (!res.ok) {
         const data = (await res.json().catch(() => ({}))) as { message?: string };
-        setError(data.message || t("auth.signUpFailed"));
+        setError(data.message || t("auth.signUpErrorGeneric"));
         return;
       }
       window.location.href = redirectUrl;
     } catch {
-      setError(t("auth.signUpFailed"));
+      setError(t("auth.signUpErrorGeneric"));
     } finally {
       setIsSubmitting(false);
     }
@@ -74,16 +74,16 @@ export function WebSignUpCard({
     <div className="w-full max-w-md bg-white rounded-3xl shadow-xl border border-slate-200/80 p-8 flex flex-col gap-5">
       <div className="text-center flex flex-col items-center gap-1.5">
         <span className="text-xs font-extrabold uppercase tracking-wider text-[#2563eb]">{appName}</span>
-        <h1 className="text-2xl font-extrabold tracking-tight text-[#1B2B4B]">{t("landing.createAccount")}</h1>
+        <h1 className="text-2xl font-extrabold tracking-tight text-[#1B2B4B]">{t("auth.signUp")}</h1>
       </div>
       {error && <FormErrorBanner message={error} />}
       <Button type="button" variant="secondary" disabled={isSubmitting} onClick={handleGoogle} className="w-full h-10">
-        {t("auth.continueWithGoogle")}
+        {t("auth.signUpWithGoogle")}
       </Button>
       <div className="relative flex items-center justify-center">
         <div className="border-t border-slate-200 w-full" />
         <span className="bg-white px-3 text-[11px] font-semibold text-slate-400 uppercase tracking-wider absolute">
-          {t("landing.authModalOrContinue")}
+          {t("auth.or")}
         </span>
       </div>
       <form onSubmit={handleSubmit} className="flex flex-col gap-4">
@@ -101,7 +101,7 @@ export function WebSignUpCard({
           <PasswordStrengthIndicator password={password} />
         </div>
         <Button type="submit" disabled={isSubmitting || !name || !email || password.length < 8} className="w-full h-10">
-          {t("landing.createAccount")}
+          {t("auth.signUp")}
         </Button>
       </form>
       <p className="text-center text-xs text-slate-500">

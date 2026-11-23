@@ -78,12 +78,12 @@ export function WebSignInCard({
       </div>
       {error && <FormErrorBanner message={error} />}
       <Button type="button" variant="secondary" disabled={isSubmitting} onClick={handleGoogle} className="w-full h-10">
-        {t("auth.continueWithGoogle")}
+        {t("auth.signInWithGoogle")}
       </Button>
       <div className="relative flex items-center justify-center">
         <div className="border-t border-slate-200 w-full" />
         <span className="bg-white px-3 text-[11px] font-semibold text-slate-400 uppercase tracking-wider absolute">
-          {t("landing.authModalOrContinue")}
+          {t("auth.or")}
         </span>
       </div>
       <form onSubmit={handleSubmit} className="flex flex-col gap-4">
@@ -94,7 +94,7 @@ export function WebSignInCard({
         <div>
           <div className="flex items-center justify-between">
             <FormLabel htmlFor="signin-password" required>{t("auth.passwordLabel")}</FormLabel>
-            <a href={forgotPasswordHref} className="text-xs font-semibold text-[#2563eb] hover:underline">{t("auth.forgotPasswordLink")}</a>
+            <a href={forgotPasswordHref} className="text-xs font-semibold text-[#2563eb] hover:underline">{t("auth.forgotPassword")}</a>
           </div>
           <input id="signin-password" type="password" required value={password} onChange={(e) => setPassword(e.target.value)} className="w-full h-10 px-3 rounded-xl border border-slate-200 text-sm text-[#1B2B4B]" />
         </div>
@@ -103,8 +103,7 @@ export function WebSignInCard({
         </Button>
       </form>
       <p className="text-center text-xs text-slate-500">
-        {t("auth.signUpPrompt")}{" "}
-        <a href={signUpHref} className="font-bold text-[#2563eb] hover:underline">{t("landing.createAccount")}</a>
+        <a href={signUpHref} className="font-bold text-[#2563eb] hover:underline">{t("auth.signUp")}</a>
       </p>
     </div>
   );

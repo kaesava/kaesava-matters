@@ -21,7 +21,7 @@ export default function HomePage() {
           href="/sign-up"
           className="px-5 py-2.5 rounded-xl bg-white border border-slate-200 text-[#1B2B4B] text-sm font-bold hover:bg-slate-50 transition-colors"
         >
-          {t("landing.createAccount")}
+          {t("auth.signUp")}
         </Link>
       </div>
     </main>
