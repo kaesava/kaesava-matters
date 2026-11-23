@@ -27,6 +27,7 @@ const PRODUCT_SERVICES = {
   "tradie-matters": [
     { name: "api", color: "\x1b[36m", port: 3011, filter: "@tradie-matters/api" },
     { name: "web", color: "\x1b[32m", port: 3010, filter: "@tradie-matters/web" },
+    { name: "mobile", color: "\x1b[35m", port: 8082, filter: "@tradie-matters/mobile" },
   ],
 };
 

@@ -30,6 +30,9 @@ jobs:
       - name: Security Scan
         run: pnpm audit --audit-level=high
 
+      - name: Ring Boundary & Architecture Checks
+        run: pnpm check:boundaries && pnpm audit:schema && pnpm check:mobile-interaction
+
       - name: i18n Parity Check
         run: pnpm check-i18n
 

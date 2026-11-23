@@ -1,10 +1,10 @@
 {
-  "name": "money-matters-monorepo",
+  "name": "kaesava-matters-monorepo",
   "version": "0.0.0",
   "private": true,
   "packageManager": "pnpm@9.0.0",
   "workspaces": [
-    "apps/*",
+    "apps/*/*",
     "packages/*",
     "packages/capabilities/*"
   ],
@@ -14,7 +14,9 @@
     "dev": "npx concurrently -k -p \"[{name}]\" -n \"app,inngest,dbstudio\" -c \"cyan,magenta,black\" \"turbo run dev\" \"pnpm run dev:inngest\" \"pnpm run db:studio\"",
     "start": "node scripts/start-dev.mjs",
     "stop": "node scripts/start-dev.mjs --stop",
-    "dev:inngest": "npx inngest-cli@latest dev -u http://127.0.0.1:3001/api/inngest",
+    "start:tradie": "node scripts/start-dev.mjs --product=tradie-matters",
+    "stop:tradie": "node scripts/start-dev.mjs --product=tradie-matters --stop",
+    "dev:inngest": "npx inngest-cli@latest dev -u http://127.0.0.1:3001/api/inngest -u http://127.0.0.1:3011/api/inngest",
     "db:studio": "pnpm --filter=@kaesava/db studio",
     "lint": "turbo run lint",
     "typecheck": "turbo run typecheck",
@@ -39,7 +41,10 @@
     "app:set-flag:all": "pnpm --filter @kaesava/db app:set-flag:all",
     "mobile:build:preview": "pnpm --filter @money-matters/mobile build:preview",
     "mobile:build:prod": "pnpm --filter @money-matters/mobile build:prod",
-    "mobile:build:submit": "pnpm --filter @money-matters/mobile build:submit"
+    "mobile:build:submit": "pnpm --filter @money-matters/mobile build:submit",
+    "tradie:mobile:build:preview": "pnpm --filter @tradie-matters/mobile build:preview",
+    "tradie:mobile:build:prod": "pnpm --filter @tradie-matters/mobile build:prod",
+    "tradie:mobile:build:submit": "pnpm --filter @tradie-matters/mobile build:submit"
   },
   "devDependencies": {
     "@eslint/compat": "^2.1.0",

@@ -30,9 +30,9 @@ const PROTECTED_PACKAGES = [
 ];
 
 const FORBIDDEN_PATTERNS = [
-  { label: "@money-matters/capability-budgeting", regex: /@money-matters\/capability-budgeting/ },
-  { label: "@money-matters/capability-simulation", regex: /@money-matters\/capability-simulation/ },
-  { label: "@kaesava/db/rings/money-matters", regex: /@(kaesava|money-matters)\/db\/rings\/money-matters/ },
+  { label: "@money-matters/* Ring 3 package", regex: /@money-matters\/capability-(budgeting|simulation)/ },
+  { label: "@tradie-matters/* Ring 3 package", regex: /@tradie-matters\// },
+  { label: "@kaesava/db/rings/<app> Ring 3 schema", regex: /@(kaesava|money-matters|tradie-matters)\/db\/rings\/(money-matters|tradie-matters)/ },
   {
     label: "cross-Ring-2 capability import",
     regex: /from\s+["']@(kaesava|money-matters)\/capability-(tenant|bank-accounts|billing|bug-reports|file-notes|notifications|schedules|assistant|auth)(\/[^"']*)?["']/,
@@ -51,11 +51,14 @@ const FORBIDDEN_PATTERNS = [
   },
 ];
 
-// Hardcoded Money Matters identifiers are only allowed inside the AppManifest registry itself.
+// Hardcoded product identifiers are only allowed inside the AppManifest registry itself.
 const HARDCODED_BRAND_PATTERNS = [
   { label: "hardcoded MONEY_MATTERS_APP_ID env key", regex: /\bMONEY_MATTERS_APP_ID\b/ },
+  { label: "hardcoded TRADIE_MATTERS_APP_ID env key", regex: /\bTRADIE_MATTERS_APP_ID\b/ },
   { label: "hardcoded Money Matters UUID", regex: /01908bde-34bb-7b19-a178-574211bc93aa/ },
+  { label: "hardcoded Tradie Matters UUID", regex: /5cb11fa2-7faf-49d3-9e3a-01f14d2a7b99/ },
   { label: "hardcoded moneymatters.kaesava.au domain", regex: /moneymatters\.kaesava\.au/ },
+  { label: "hardcoded tradiematters.kaesava.au domain", regex: /tradiematters\.kaesava\.au/ },
 ];
 
 const BRAND_CHECK_ALLOWLIST = new Set([
@@ -152,4 +155,19 @@ for (const cap of RING2_CAPS) {
   }
 }
 
-console.log(`[check:boundaries] Passed (${PROTECTED_PACKAGES.length} platform packages + ${RING2_CAPS.length} Ring 2 4-subpath contracts verified, 0 domain leaks).`);
+// Cross-Product App Isolation Check (apps/<product-A> must never import @<product-B>/*)
+const PRODUCT_ISOLATION_RULES = [
+  { dir: "apps/money-matters", forbidden: /@tradie-matters\//, label: "@tradie-matters/* inside apps/money-matters" },
+  { dir: "apps/tradie-matters", forbidden: /@money-matters\//, label: "@money-matters/* inside apps/tradie-matters" },
+];
+for (const rule of PRODUCT_ISOLATION_RULES) {
+  for (const file of walkTsFiles(path.join(ROOT, rule.dir))) {
+    const content = fs.readFileSync(file, "utf8");
+    if (rule.forbidden.test(content)) {
+      console.error(`[check:boundaries] Cross-product violation in ${path.relative(ROOT, file)}: ${rule.label}`);
+      process.exit(1);
+    }
+  }
+}
+
+console.log(`[check:boundaries] Passed (${PROTECTED_PACKAGES.length} platform packages + ${RING2_CAPS.length} Ring 2 4-subpath contracts + cross-product isolation verified, 0 domain leaks).`);
