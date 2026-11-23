@@ -1,0 +1,29 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "tradie-matters-web",
+  "main": ".open-next/worker.js",
+  "compatibility_date": "2026-07-27",
+  "compatibility_flags": ["nodejs_compat"],
+  "assets": {
+    "directory": ".open-next/assets",
+    "binding": "ASSETS"
+  },
+  "routes": [
+    {
+      "pattern": "tradiematters.kaesava.au",
+      "custom_domain": true
+    }
+  ],
+  "vars": {
+    "NEXT_PUBLIC_APP_ID": "5cb11fa2-7faf-49d3-9e3a-01f14d2a7b99",
+    "NEXT_PUBLIC_NEON_AUTH_URL": "https://ep-spring-snow-a70f61xz.neonauth.ap-southeast-2.aws.neon.tech/neondb/auth",
+    "NEXT_PUBLIC_API_URL": "https://api.tradiematters.kaesava.au",
+    "NEXT_PUBLIC_ENABLE_AUTH": "true"
+  },
+  "observability": {
+    "enabled": false,
+    "head_sampling_rate": 1,
+    "logs": { "enabled": true, "head_sampling_rate": 1, "persist": true, "invocation_logs": true },
+    "traces": { "enabled": true, "persist": true, "head_sampling_rate": 1 }
+  }
+}

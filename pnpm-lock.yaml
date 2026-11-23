@@ -435,6 +435,95 @@ importers:
         specifier: ^4.114.0
         version: 4.120.0
 
+  apps/tradie-matters/api:
+    dependencies:
+      '@kaesava/config':
+        specifier: workspace:*
+        version: link:../../../packages/config
+      '@kaesava/core':
+        specifier: workspace:*
+        version: link:../../../packages/core
+      zod:
+        specifier: ^3.23.8
+        version: 3.25.76
+    devDependencies:
+      '@types/node':
+        specifier: ^20.19.43
+        version: 20.19.43
+      typescript:
+        specifier: ^6.0.3
+        version: 6.0.3
+      vitest:
+        specifier: ^4.1.10
+        version: 4.1.10(@opentelemetry/api@1.9.1)(@types/node@20.19.43)(@vitest/coverage-v8@4.1.10)(vite@6.4.3(@types/node@20.19.43)(jiti@2.7.0)(lightningcss@1.33.0)(terser@5.49.2)(tsx@4.7.1)(yaml@2.9.1))
+      wrangler:
+        specifier: ^4.114.0
+        version: 4.120.0
+
+  apps/tradie-matters/web:
+    dependencies:
+      '@kaesava/capability-auth':
+        specifier: workspace:*
+        version: link:../../../packages/capabilities/auth
+      '@kaesava/config':
+        specifier: workspace:*
+        version: link:../../../packages/config
+      '@kaesava/core':
+        specifier: workspace:*
+        version: link:../../../packages/core
+      '@kaesava/i18n':
+        specifier: workspace:*
+        version: link:../../../packages/i18n
+      '@kaesava/types':
+        specifier: workspace:*
+        version: link:../../../packages/types
+      '@kaesava/ui':
+        specifier: workspace:*
+        version: link:../../../packages/ui
+      next:
+        specifier: 16.4.6
+        version: 16.4.6(@babel/core@7.29.7)(@opentelemetry/api@1.9.1)(@playwright/test@1.62.1)(@types/node@20.19.43)(babel-plugin-react-compiler@1.0.0)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
+      react:
+        specifier: 19.1.0
+        version: 19.1.0
+      react-dom:
+        specifier: 19.1.0
+        version: 19.1.0(react@19.1.0)
+    devDependencies:
+      '@opennextjs/cloudflare':
+        specifier: ^1.20.16
+        version: 1.20.16(next@16.4.6(@babel/core@7.29.7)(@opentelemetry/api@1.9.1)(@playwright/test@1.62.1)(@types/node@20.19.43)(babel-plugin-react-compiler@1.0.0)(react-dom@19.1.0(react@19.1.0))(react@19.1.0))(wrangler@4.120.0)
+      '@tailwindcss/postcss':
+        specifier: ^4.0.0
+        version: 4.3.3
+      '@types/node':
+        specifier: ^20.14.9
+        version: 20.19.43
+      '@types/react':
+        specifier: ~19.1.10
+        version: 19.1.17
+      '@types/react-dom':
+        specifier: ^19.0.0
+        version: 19.2.4(@types/react@19.1.17)
+      eslint:
+        specifier: ^9
+        version: 9.39.5(jiti@2.7.0)
+      eslint-config-next:
+        specifier: 16.4.6
+        version: 16.4.6(@typescript-eslint/parser@8.72.1(eslint@9.39.5(jiti@2.7.0))(typescript@6.0.3))(eslint@9.39.5(jiti@2.7.0))(typescript@6.0.3)
+      tailwindcss:
+        specifier: ^4.0.0
+        version: 4.3.3
+      typescript:
+        specifier: ^6.0.3
+        version: 6.0.3
+      vitest:
+        specifier: ^4.1.10
+        version: 4.1.10(@opentelemetry/api@1.9.1)(@types/node@20.19.43)(@vitest/coverage-v8@4.1.10)(vite@6.4.3(@types/node@20.19.43)(jiti@2.7.0)(lightningcss@1.33.0)(terser@5.49.2)(tsx@4.7.1)(yaml@2.9.1))
+      wrangler:
+        specifier: ^4.114.0
+        version: 4.120.0
+
   packages/capabilities/assistant:
     dependencies:
       '@kaesava/config':

@@ -24,6 +24,10 @@ const PRODUCT_SERVICES = {
     { name: "web", color: "\x1b[32m", port: 3000, filter: "@money-matters/web" },
     { name: "mobile", color: "\x1b[35m", port: 8081, filter: "@money-matters/mobile" },
   ],
+  "tradie-matters": [
+    { name: "api", color: "\x1b[36m", port: 3011, filter: "@tradie-matters/api" },
+    { name: "web", color: "\x1b[32m", port: 3010, filter: "@tradie-matters/web" },
+  ],
 };
 
 const SERVICES = PRODUCT_SERVICES[product];

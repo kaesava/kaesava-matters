@@ -1,0 +1,27 @@
+{
+  "name": "@tradie-matters/api",
+  "version": "0.1.0",
+  "private": true,
+  "main": "src/worker.ts",
+  "type": "module",
+  "scripts": {
+    "dev": "wrangler dev --port 3011 --var ENVIRONMENT:development",
+    "build": "wrangler build",
+    "cf-deploy": "wrangler build && wrangler deploy",
+    "lint": "eslint \"**/*.ts\" --cache",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run --passWithNoTests",
+    "test:coverage": "vitest run --passWithNoTests --coverage"
+  },
+  "dependencies": {
+    "@kaesava/config": "workspace:*",
+    "@kaesava/core": "workspace:*",
+    "zod": "^3.23.8"
+  },
+  "devDependencies": {
+    "@types/node": "^20.19.43",
+    "typescript": "^6.0.3",
+    "vitest": "^4.1.10",
+    "wrangler": "^4.114.0"
+  }
+}
