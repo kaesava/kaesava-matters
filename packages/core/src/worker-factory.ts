@@ -54,12 +54,20 @@ export function createPlatformWorker<TEnv extends PlatformWorkerEnvBase>(
         process.env.NODE_ENV === "development" ||
         isLocalHost;
 
+      if (isDev) {
+        process.env.ENVIRONMENT = "development";
+        process.env.INNGEST_DEV = "http://127.0.0.1:8288";
+        delete process.env.INNGEST_SIGNING_KEY;
+      }
+
       if (!isInitialized && env && typeof env === "object") {
-        Object.assign(process.env, env);
+        const sanitizedEnv: Record<string, unknown> = { ...(env as Record<string, unknown>) };
         if (isDev) {
-          process.env.ENVIRONMENT = "development";
-          process.env.INNGEST_DEV = "1";
+          delete sanitizedEnv.INNGEST_SIGNING_KEY;
+          sanitizedEnv.INNGEST_DEV = "http://127.0.0.1:8288";
+          sanitizedEnv.ENVIRONMENT = "development";
         }
+        Object.assign(process.env, sanitizedEnv);
         try {
           options.onInitEnv?.(env, isDev);
           isInitialized = true;

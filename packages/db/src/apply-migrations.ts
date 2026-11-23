@@ -106,11 +106,13 @@ async function applyFiles(client: Client): Promise<void> {
 async function run(): Promise<void> {
   const isProd = process.argv.includes("--prod");
   const envFile = isProd ? "../../.env" : "../../.env.development";
-  dotenv.config({ path: envFile });
+  if (fs.existsSync(path.resolve(process.cwd(), envFile))) {
+    dotenv.config({ path: envFile });
+  }
 
   const dbUrl = process.env.DATABASE_URL;
   if (!dbUrl) {
-    throw new Error(`DATABASE_URL missing in ${envFile}`);
+    throw new Error(`DATABASE_URL missing (checked process.env and ${envFile})`);
   }
 
   const targetEnv = isProd ? "PRODUCTION" : "DEVELOPMENT";

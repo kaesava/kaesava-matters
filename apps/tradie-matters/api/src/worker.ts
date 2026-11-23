@@ -24,6 +24,14 @@ export default createPlatformWorker<TradieWorkerEnv>({
   routes: [
     async ({ request, url, env, ctx, correlationId, isDev }) => {
       if (!url.pathname.startsWith("/api/inngest")) return null;
+      const inngestEnv: Record<string, string | undefined> = {
+        ...(env as unknown as Record<string, string | undefined>),
+      };
+      if (isDev) {
+        inngestEnv.INNGEST_DEV = "http://127.0.0.1:8288";
+        inngestEnv.ENVIRONMENT = "development";
+        delete inngestEnv.INNGEST_SIGNING_KEY;
+      }
       const inngestHandler = serve({
         client: inngest,
         functions,
@@ -36,7 +44,7 @@ export default createPlatformWorker<TradieWorkerEnv>({
       ) => Promise<Response>;
       const res = await inngestHandler(
         request,
-        env as unknown as Record<string, string | undefined>,
+        inngestEnv,
         ctx
       );
       const headers = new Headers(res.headers);

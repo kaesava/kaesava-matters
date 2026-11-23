@@ -4,17 +4,17 @@ E2E_AUTHENTICATED=1 E2E_EMAIL="kaesava@gmail.com" E2E_PASSWORD='asdASD123!@#' pn
 
 
 #### FLAGS
-pnpm app:set-flag --flag=aiAssistant --value=true --env=dev
-pnpm app:set-flag --flag=privateMode --value=true --env=dev
-pnpm app:set-flag --flag=fileNotes --value=true --env=dev
-pnpm app:set-flag --flag=simulation --value=true --env=dev
-pnpm app:set-flag --flag=customAllocationRules --value=true --env=dev
+pnpm app:set-flag --flag=aiAssistant --value=true --env=dev --app=money-matters
+pnpm app:set-flag --flag=privateMode --value=true --env=dev --app=money-matters
+pnpm app:set-flag --flag=fileNotes --value=true --env=dev --app=money-matters
+pnpm app:set-flag --flag=simulation --value=true --env=dev --app=money-matters
+pnpm app:set-flag --flag=customAllocationRules --value=true --env=dev --app=money-matters
 
-pnpm app:set-flag --flag=aiAssistant --value=true --env=prod
-pnpm app:set-flag --flag=privateMode --value=true --env=prod
-pnpm app:set-flag --flag=fileNotes --value=true --env=prod
-pnpm app:set-flag --flag=simulation --value=true --env=prod
-pnpm app:set-flag --flag=customAllocationRules --value=true --env=prod
+pnpm app:set-flag --flag=aiAssistant --value=true --env=prod --app=money-matters
+pnpm app:set-flag --flag=privateMode --value=true --env=prod --app=money-matters
+pnpm app:set-flag --flag=fileNotes --value=true --env=prod --app=money-matters
+pnpm app:set-flag --flag=simulation --value=true --env=prod --app=money-matters
+pnpm app:set-flag --flag=customAllocationRules --value=true --env=prod --app=money-matters
 
 #####################################
 

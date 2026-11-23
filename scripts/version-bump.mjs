@@ -15,7 +15,11 @@ const args = process.argv.slice(2).reduce((acc, arg) => {
 
 const bumpType = args.type || "patch"; // 'major' | 'minor' | 'patch' | 'beta'
 const targetApp = args.app || "all";   // 'web' | 'mobile' | 'all'
-const product = args.product || "money-matters";
+const product = args.product;
+if (!product || !["money-matters", "tradie-matters"].includes(product)) {
+  console.log("Usage: pnpm version:bump -- --product=<money-matters|tradie-matters> [--type=patch|minor|major|beta] [--app=web|mobile|all]");
+  process.exit(1);
+}
 const appRoot = path.join(rootDir, "apps", product);
 
 function bumpSemVer(version, type) {

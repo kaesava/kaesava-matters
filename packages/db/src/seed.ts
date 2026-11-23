@@ -118,13 +118,14 @@ export async function seedDatabase(connectionString: string, envLabel: string) {
       id: "5cb11fa2-7faf-49d3-9e3a-01f14d2a7b99",
       name: "Tradie Matters",
       slug: "tradie-matters",
-      featureFlags: {},
+      featureFlags: DEFAULT_APP_FEATURE_FLAGS,
     })
     .onConflictDoUpdate({
       target: apps.id,
       set: {
         name: "Tradie Matters",
         slug: "tradie-matters",
+        featureFlags: DEFAULT_APP_FEATURE_FLAGS,
         updatedAt: now,
       },
     });

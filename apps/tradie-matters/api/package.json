@@ -5,7 +5,7 @@
   "main": "src/worker.ts",
   "type": "module",
   "scripts": {
-    "dev": "wrangler dev --port 3011 --var ENVIRONMENT:development",
+    "dev": "wrangler dev --port 3011 --inspector-port 9230 --var ENVIRONMENT:development",
     "build": "wrangler build",
     "cf-deploy": "wrangler build && wrangler deploy",
     "lint": "eslint \"**/*.ts\" --cache",

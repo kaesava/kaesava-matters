@@ -27,13 +27,14 @@ node -e 'console.log(crypto.randomUUID())'
 
 ### How Local Dev Resolves `/`
 - Each product is a **separate workspace** (`apps/<prefix>-web`, `apps/<prefix>-api`, `apps/<prefix>-mobile`), never multiplexed inside `apps/web`.
-- Dev routing is **by port**:
-  - `http://localhost:3000/` → Money Matters Web → `http://localhost:3001` (API)
-  - `http://localhost:3010/` → Tradie Matters Web → `http://localhost:3011` (API)
-- `apps/<prefix>-api/src/worker.ts` passes `resolveDefaultAppId: (env) => env.<PREFIX>_APP_ID` into `createPlatformWorker()`, and `apps/<prefix>-web` forwards `x-app-id: <APP_ID>` from `NEXT_PUBLIC_APP_ID` in its `/api/trpc/[trpc]` proxy.
-- Inngest Dev serves all local APIs simultaneously:
+- Dev routing is **by port** (including dedicated `workerd` DevTools inspector ports so multiple `wrangler dev` workers can run concurrently without `127.0.0.1:9229` collisions):
+  - `http://localhost:3000/` → Money Matters Web → `http://localhost:3001` (API, Inspector `:9229`)
+  - `http://localhost:3010/` → Tradie Matters Web → `http://localhost:3011` (API, Inspector `:9230`)
+  - App #3: Web `:3020` → API `:3021` (Inspector `:9231`)
+- `apps/<slug>/api/src/worker.ts` passes `resolveDefaultAppId: (env) => env.<PREFIX>_APP_ID` into `createPlatformWorker()`, and `apps/<slug>/web` forwards `x-app-id: <APP_ID>` from `NEXT_PUBLIC_APP_ID` in its `/api/trpc/[trpc]` proxy.
+- Start all 5 local dev servers (`mm:web`, `mm:api`, `tm:web`, `tm:api`, and `inngest`) with one command:
   ```bash
-  npx inngest-cli@latest dev -u http://127.0.0.1:3001/api/inngest -u http://127.0.0.1:3011/api/inngest
+  pnpm start:all
   ```
 
 ---
