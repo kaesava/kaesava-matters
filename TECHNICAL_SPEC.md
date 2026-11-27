@@ -28,7 +28,7 @@
 | Crash & APM | Sentry | Sentry SaaS | Production exception reporting & symbolicated stack traces |
 | Mobile Framework | React Native / Expo | Expo SDK 54 / RN 0.81.5 | Android native app |
 | Styling & UI | Serene Finance Tokens & Toast/Alert System | `packages/ui` & `apps/web` | Standardized tokens (`#2563eb`, `#1B2B4B`, `#F7F8FA`, `#22c55e`, `#ba1a1a`), JetBrains Mono via `next/font/google`, non-blocking Toast feedback system (`ToastProvider`/`useToast`/`MobileToastProvider`/`useMobileToast`), inline `AlertBanner` primitives, and responsive viewport (`width=device-width`) |
-| CI/CD Pipeline | GitHub Actions | GitHub & Cloudflare | Lint, typecheck, test, and `wrangler deploy` on push to `main` |
+| CI/CD Pipeline | GitHub Actions & `.githooks/` | GitHub & Cloudflare | Lint, typecheck, test, and `wrangler deploy` on push to `main`; local `.githooks/pre-commit` blocks `.env*`/`.dev.vars*` secrets and lockfile drift, and `.githooks/pre-push` requires `ALLOW_PROD_PUSH=true` for `main` pushes |
 
 ---
 
@@ -80,7 +80,7 @@ money-matters/
   - HTTP Security Headers enforced across API worker and web app (`Strict-Transport-Security`, `X-Frame-Options: DENY`, `X-Content-Type-Options: nosniff`, `Referrer-Policy: strict-origin-when-cross-origin`, `Permissions-Policy`).
   - Upstash Redis sliding-window rate limiting on endpoints.
   - Zero PII logging automatically enforced in `@kaesava/core` logger.
-  - Credential security: All secrets managed via environment variables (Cloudflare Secrets & GitHub Secrets); `.env` ignored.
+  - Credential security: All secrets managed via environment variables (Cloudflare Secrets & GitHub Secrets); `.env*` and `.dev.vars*` ignored and blocked at commit time by `.githooks/pre-commit`.
 - **Partner Invitation Security**: Owner creates invite token with 48-hour lifetime (`expiresAt`) -> unauthenticated partner views `/invite/[token]` (`getInviteDetails` returns read-only `inviteEmail`, `householdName`, and `accountStatus` without leaking email if a different user is signed in) -> partner authenticates inline via Google or password -> `acceptInvite` verifies recipient email identity matching `inviteEmail` (idempotent if already a member), links to `tenantId`, and switches active household. Expired or mismatched invites are rejected; wrong-account sessions show a privacy-preserving Sign Out flow that returns to the signed-out invite view.
 - **6-Digit Email OTP Password Reset**: Password resets use direct 6-digit numeric OTPs (`/email-otp/request-password-reset` and `/email-otp/reset-password`), eliminating fragile redirect origins, deep link interception, and open redirect vulnerabilities across web and mobile.
 - **Async Inngest Workflows & Resend Email Integration**:

@@ -2,6 +2,7 @@ const fs = require('fs');
 const path = require('path');
 
 const ts = require('typescript');
+const { scanHardcodedClientStrings } = require('./check-i18n-ast.cjs');
 
 require.extensions['.ts'] = function(module, filename) {
   const content = fs.readFileSync(filename, 'utf8');
@@ -116,6 +117,7 @@ if (terminologyErrors.length > 0) {
 const monorepoRoot = path.resolve(__dirname, '../../../');
 const errors = [];
 const jsxWarnings = [];
+const astClientStringErrors = [];
 
 function findJsTsFiles(dir, files = []) {
   const list = fs.readdirSync(dir);
@@ -174,6 +176,7 @@ for (const file of files) {
     file.includes('dictionaries/') || 
     file.includes('check-i18n.js') ||
     file.includes('check-i18n.cjs') ||
+    file.includes('check-i18n-ast.cjs') ||
     /\.(test|spec)\.(ts|tsx|js|jsx)$/.test(file)
   ) {
     continue;
@@ -181,6 +184,14 @@ for (const file of files) {
 
   const content = fs.readFileSync(file, 'utf8');
   nonTestContents.push(content);
+
+  for (const issue of scanHardcodedClientStrings(file, content)) {
+    astClientStringErrors.push({
+      file: path.relative(monorepoRoot, file),
+      line: issue.line,
+      text: issue.text,
+    });
+  }
 
   let dynMatch;
   while ((dynMatch = dynamicTRegex.exec(content)) !== null) {
@@ -268,6 +279,14 @@ if (errors.length > 0) {
   console.error(`\x1b[31mFound ${errors.length} missing translation keys:\x1b[0m\n`);
   for (const err of errors) {
     console.error(`  \x1b[33m${err.file}:${err.line}\x1b[0m - Key \x1b[36m"${err.key}"\x1b[0m is missing in en.ts`);
+  }
+  process.exit(1);
+}
+
+if (astClientStringErrors.length > 0) {
+  console.error(`\x1b[31mFound ${astClientStringErrors.length} hardcoded client toast/dialog violation(s):\x1b[0m\n`);
+  for (const err of astClientStringErrors) {
+    console.error(`  \x1b[33m[i18n AST Audit Failure] ${err.file}:${err.line}\x1b[0m - \x1b[36m${err.text}\x1b[0m`);
   }
   process.exit(1);
 }

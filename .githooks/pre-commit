@@ -1,7 +1,21 @@
 #!/usr/bin/env bash
-set -e
+set -euo pipefail
 
-# Detect if any package.json is staged
+# 1. Block committing .env* or .dev.vars* secret files (except *.example templates)
+STAGED_SECRETS=$(
+  git diff --cached --name-only --diff-filter=ACM |
+    grep -E '(^|/)(\.env(\..+)?|\.dev\.vars(\..+)?)$' |
+    grep -Ev '\.example$' || true
+)
+
+if [ -n "$STAGED_SECRETS" ]; then
+  echo "Commit blocked: secret environment file(s) staged:"
+  echo "$STAGED_SECRETS"
+  echo "Unstage them with: git reset HEAD <file>"
+  exit 1
+fi
+
+# 2. Detect if any package.json is staged and verify lockfile sync
 STAGED_PKG_JSON=$(git diff --cached --name-only | grep -E '(^|/)package\.json$' || true)
 
 if [ -n "$STAGED_PKG_JSON" ]; then

@@ -64,3 +64,16 @@ Database migrations are executed via GitHub Actions prior to Worker deployment:
   env:
     DATABASE_URL: ${{ secrets.DATABASE_URL }}
 ```
+
+---
+
+## 4. Local Git Guardrails (`.githooks/`)
+
+Configured automatically via `pnpm install` (`"prepare": "git config core.hooksPath .githooks || true"`):
+
+1. **`.githooks/pre-commit`**:
+   - Blocks committing any staged `.env*` or `.dev.vars*` secret files (allows `*.example` templates only).
+   - Runs `node scripts/check-lockfile-sync.mjs` whenever any `package.json` is staged.
+2. **`.githooks/pre-push`**:
+   - Blocks accidental pushes directly to `refs/heads/main` (which trigger Cloudflare production deploys) unless explicitly confirmed with `ALLOW_PROD_PUSH=true git push`.
+   - Allows pushes to non-`main` feature branches normally.
