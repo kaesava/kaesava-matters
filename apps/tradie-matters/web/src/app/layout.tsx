@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import React from "react";
 import { DESIGN_TOKENS } from "@kaesava/ui/tokens";
+import { AnalyticsConsentBanner, GoogleAnalytics } from "../components/GoogleAnalytics";
 import "../i18n";
 import "./globals.css";
 
@@ -66,7 +67,11 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
-      <body className="bg-[#F7F8FA] text-[#1B2B4B] antialiased font-sans">{children}</body>
+      <body className="bg-[#F7F8FA] text-[#1B2B4B] antialiased font-sans">
+        <GoogleAnalytics />
+        {children}
+        <AnalyticsConsentBanner />
+      </body>
     </html>
   );
 }

@@ -120,6 +120,8 @@ jobs:
 
       - name: Build Money Matters Web OpenNext Bundle
         run: pnpm --filter @money-matters/web cf-build
+        env:
+          NEXT_PUBLIC_GA_MEASUREMENT_ID: G-09JB3KHGT9,GTM-M42L5HLB
 
       - name: Deploy Money Matters Web to Cloudflare Workers
         uses: cloudflare/wrangler-action@v3
@@ -131,6 +133,8 @@ jobs:
 
       - name: Build Tradie Matters Web OpenNext Bundle
         run: pnpm --filter @tradie-matters/web cf-build
+        env:
+          NEXT_PUBLIC_GA_MEASUREMENT_ID: G-7FRF4E8Z4M,GTM-K2TX2GCF
 
       - name: Deploy Tradie Matters Web to Cloudflare Workers
         uses: cloudflare/wrangler-action@v3

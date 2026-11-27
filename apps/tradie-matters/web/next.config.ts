@@ -32,13 +32,15 @@ const nextConfig: NextConfig = {
             key: "Content-Security-Policy",
             value: [
               "default-src 'self'",
-              "script-src 'self' 'unsafe-inline' 'unsafe-eval'",
+              process.env.NODE_ENV === "development"
+                ? `script-src 'self' 'unsafe-inline' 'unsafe-eval'${process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID ? " https://www.googletagmanager.com" : ""}`
+                : `script-src 'self' 'unsafe-inline'${process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID ? " https://www.googletagmanager.com" : ""}`,
               "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
               "font-src 'self' https://fonts.gstatic.com data:",
               "img-src 'self' data: blob:",
               process.env.NODE_ENV === "development"
-                ? "connect-src 'self' https://api.tradiematters.kaesava.au https://us.i.posthog.com https://*.ingest.us.sentry.io https://*.neonauth.ap-southeast-2.aws.neon.tech http://localhost:* ws://localhost:*"
-                : "connect-src 'self' https://api.tradiematters.kaesava.au https://us.i.posthog.com https://*.ingest.us.sentry.io https://*.neonauth.ap-southeast-2.aws.neon.tech",
+                ? `connect-src 'self' https://api.tradiematters.kaesava.au https://us.i.posthog.com https://*.ingest.us.sentry.io https://*.neonauth.ap-southeast-2.aws.neon.tech${process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID ? " https://*.google-analytics.com https://*.analytics.google.com https://*.googletagmanager.com" : ""} http://localhost:* ws://localhost:*`
+                : `connect-src 'self' https://api.tradiematters.kaesava.au https://us.i.posthog.com https://*.ingest.us.sentry.io https://*.neonauth.ap-southeast-2.aws.neon.tech${process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID ? " https://*.google-analytics.com https://*.analytics.google.com https://*.googletagmanager.com" : ""}`,
               "frame-ancestors 'none'",
               "base-uri 'self'",
               "form-action 'self'",
