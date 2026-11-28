@@ -48,7 +48,10 @@
     "mm:mobile:build:submit": "pnpm --filter @money-matters/mobile build:submit",
     "tm:mobile:build:preview": "pnpm --filter @tradie-matters/mobile build:preview",
     "tm:mobile:build:prod": "pnpm --filter @tradie-matters/mobile build:prod",
-    "tm:mobile:build:submit": "pnpm --filter @tradie-matters/mobile build:submit"
+    "tm:mobile:build:submit": "pnpm --filter @tradie-matters/mobile build:submit",
+    "tm:mobile:ios:build:preview": "pnpm --filter @tradie-matters/mobile build:ios:preview",
+    "tm:mobile:ios:build:prod": "pnpm --filter @tradie-matters/mobile build:ios:prod",
+    "tm:mobile:ios:build:submit": "pnpm --filter @tradie-matters/mobile build:ios:submit"
   },
   "devDependencies": {
     "@eslint/compat": "^2.1.0",

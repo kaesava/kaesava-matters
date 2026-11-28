@@ -128,8 +128,14 @@ export async function handleSmsPackOneTimeCheckout(
   const meta = session.metadata ?? {};
   const tenantId = meta.tenantId;
   const userId = meta.userId;
-  const packKey = meta.smsPackKey as SmsCreditPackKey | undefined;
-  if (!tenantId || !userId || (packKey !== "PACK_100" && packKey !== "PACK_500")) return;
+  const rawPack = meta.smsPackKey ?? meta.packKey;
+  const packKey: SmsCreditPackKey | undefined =
+    rawPack === "PACK_100" || rawPack === "sms_pack_100"
+      ? "PACK_100"
+      : rawPack === "PACK_500" || rawPack === "sms_pack_500"
+        ? "PACK_500"
+        : undefined;
+  if (!tenantId || !userId || !packKey) return;
   await grantSmsCreditPackCommand(
     db,
     { tenantId, appId: meta.appId || defaultAppId, userId },

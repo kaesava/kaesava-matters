@@ -33,7 +33,8 @@
       "permissions": [
         "android.permission.RECEIVE_BOOT_COMPLETED",
         "android.permission.VIBRATE",
-        "android.permission.POST_NOTIFICATIONS"
+        "android.permission.POST_NOTIFICATIONS",
+        "android.permission.RECORD_AUDIO"
       ]
     },
     "plugins": [
@@ -46,7 +47,21 @@
           "color": "#2563eb"
         }
       ],
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "Tradie Matters accesses your photo library to attach worksite photos, compliance certificates, and supplier receipts.",
+          "cameraPermission": "Tradie Matters uses your camera to capture worksite photos and scan supplier receipts."
+        }
+      ],
       "@kaesava/mobile-core/plugins/withAndroidNoBackup"
-    ]
+    ],
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "6a112897-a327-4ed6-9b37-3cc4990a762b"
+      }
+    },
+    "owner": "kaesava"
   }
 }

@@ -21,9 +21,15 @@ export function resolveTierSeatLimits(planType?: string | null): {
   maxActiveSeats: number;
   freeViewerSeats: number;
 } {
-  const key = (planType ?? "TRIAL").toUpperCase() as TradieTierKey;
-  if (key in TRADIE_TIER_SEAT_LIMITS) {
-    return TRADIE_TIER_SEAT_LIMITS[key];
+  const key = (planType ?? "TRIAL").toUpperCase();
+  if (key === "TRIAL") {
+    return TRADIE_TIER_SEAT_LIMITS.TRIAL;
+  }
+  if (key.startsWith("FOUNDING")) {
+    return TRADIE_TIER_SEAT_LIMITS.FOUNDING_CREW;
+  }
+  if (key.startsWith("SMALL_CREW") || key === "ANNUAL") {
+    return TRADIE_TIER_SEAT_LIMITS.SMALL_CREW;
   }
   return TRADIE_TIER_SEAT_LIMITS.SOLO;
 }

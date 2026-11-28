@@ -3,12 +3,13 @@
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { t } from "@kaesava/i18n";
-import { Badge, Button, FormErrorBanner, Spinner } from "@kaesava/ui/web";
+import { Button, FormErrorBanner, Spinner } from "@kaesava/ui/web";
 import type { PlanKey } from "@kaesava/types";
 import { authClient } from "../../../lib/auth";
 import { trpc } from "../../../lib/trpc";
 import { TradiePublicHeader } from "../../../components/TradiePublicHeader";
 import { TradiePublicFooter } from "../../../components/TradiePublicFooter";
+import { TradiePricingSection } from "../../../components/TradiePricingSection";
 import "../../../i18n";
 
 export default function UpgradePage() {
@@ -50,12 +51,6 @@ export default function UpgradePage() {
     return <div className="min-h-screen bg-[#F7F8FA] flex items-center justify-center"><Spinner size="lg" /></div>;
   }
 
-  const tiers: { badge: string; title: string; price: string; annual: string; seat: string; plan: PlanKey }[] = [
-    { badge: t("tradieWeb.pricingSoloBadge"), title: t("tradieWeb.pricingSoloTitle"), price: t("tradieWeb.pricingSoloPrice"), annual: t("tradieWeb.pricingSoloAnnual"), seat: t("tradieWeb.pricingSoloSeat"), plan: "monthly" },
-    { badge: t("tradieWeb.pricingFoundingBadge"), title: t("tradieWeb.pricingFoundingTitle"), price: t("tradieWeb.pricingFoundingPrice"), annual: t("tradieWeb.pricingFoundingAnnual"), seat: t("tradieWeb.pricingFoundingSeat"), plan: "founding" },
-    { badge: t("tradieWeb.pricingSmallCrewBadge"), title: t("tradieWeb.pricingSmallCrewTitle"), price: t("tradieWeb.pricingSmallCrewPrice"), annual: t("tradieWeb.pricingSmallCrewAnnual"), seat: t("tradieWeb.pricingSmallCrewSeat"), plan: "annual" },
-  ];
-
   return (
     <div className="min-h-screen bg-[#F7F8FA] flex flex-col justify-between">
       <TradiePublicHeader />
@@ -71,28 +66,7 @@ export default function UpgradePage() {
             </div>
           </div>
         ) : (
-          <>
-            <div className="text-center space-y-2">
-              <Badge variant="primary">{t("tradieWeb.pricingTrialPill")}</Badge>
-              <h1 className="text-3xl font-extrabold text-[#1B2B4B]">{t("tradieWeb.pricingTitle")}</h1>
-              <p className="text-sm text-slate-600">{t("tradieWeb.pricingSubtitle")}</p>
-            </div>
-            <div className="grid md:grid-cols-3 gap-6">
-              {tiers.map((tier) => (
-                <div key={tier.title} className="bg-white rounded-3xl border border-slate-200 p-6 flex flex-col justify-between gap-4 shadow-sm">
-                  <div className="space-y-2">
-                    <span className="text-[10px] font-black uppercase tracking-widest text-[#2563eb]">{tier.badge}</span>
-                    <h2 className="text-xl font-black text-[#1B2B4B]">{tier.title}</h2>
-                    <p className="text-2xl font-black font-mono text-[#1B2B4B]">{tier.price} <span className="text-xs font-sans font-normal text-slate-500">{tier.annual}</span></p>
-                    <p className="text-xs font-semibold text-slate-600">{tier.seat}</p>
-                  </div>
-                  <Button type="button" loading={createCheckout.isPending} onClick={() => handleSelectPlan(tier.plan)} className="w-full">
-                    {t("tradieWeb.subscriptionSelectTier", { tier: tier.title })}
-                  </Button>
-                </div>
-              ))}
-            </div>
-          </>
+          <TradiePricingSection mode="upgrade" onSelectPlan={handleSelectPlan} loading={createCheckout.isPending} />
         )}
       </main>
       <TradiePublicFooter />

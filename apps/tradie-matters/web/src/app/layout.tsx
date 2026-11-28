@@ -19,10 +19,31 @@ export const viewport: Viewport = {
 export const metadata: Metadata = {
   metadataBase: new URL(baseUrl),
   title: {
-    default: "Tradie Matters — Quotes, Jobs & Payments (AU)",
+    default: "Tradie Matters — Job Management, Quoting & Invoicing for Australian Tradies",
     template: "%s | Tradie Matters",
   },
-  description: "Simple quote, job, customer, and payment management for Australian tradies.",
+  description:
+    "Unlimited quotes, live job costing, offline field app, two-way Xero/MYOB/QuickBooks sync, and no-surcharge PayID/PayTo invoicing for Australian trade crews — from $9.95/mo flat.",
+  keywords: [
+    "tradie job management software Australia",
+    "tradie quoting app",
+    "tradie invoicing software GST",
+    "job costing for tradies",
+    "Payday Super cashflow tradies",
+    "offline field service app Australia",
+    "Xero sync tradie software",
+    "small crew trade software",
+  ],
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+    },
+  },
   alternates: {
     canonical: baseUrl,
     languages: {
@@ -42,8 +63,9 @@ export const metadata: Metadata = {
   },
   manifest: "/site.webmanifest",
   openGraph: {
-    title: "Tradie Matters — Quotes • Jobs • Payments",
-    description: "Simple quote, job, customer, and payment management for Australian tradies.",
+    title: "Tradie Matters — Unlimited Quotes, Live Job Costing & Fast Payments (AU)",
+    description:
+      "Flat-rate job management for Australian sole traders and 1–5 person crews. Unlimited quotes, offline field tools, live margins, Xero/MYOB/QBO sync, and PayID/PayTo invoicing.",
     url: baseUrl,
     siteName: "Tradie Matters",
     locale: "en_AU",
@@ -53,14 +75,15 @@ export const metadata: Metadata = {
         url: "/og-image.png",
         width: 1200,
         height: 630,
-        alt: "Tradie Matters — Quotes • Jobs • Payments",
+        alt: "Tradie Matters — Job Management, Quoting & Invoicing for Australian Tradies",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "Tradie Matters — Quotes • Jobs • Payments",
-    description: "Simple quote, job, customer, and payment management for Australian tradies.",
+    title: "Tradie Matters — Flat-Rate Job Management for Australian Tradies",
+    description:
+      "Unlimited quotes, live job costing, offline field app, and no-surcharge PayID/PayTo invoicing for 1–5 person Australian trade crews.",
     images: ["/og-image.png"],
   },
 };

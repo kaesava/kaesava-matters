@@ -14,7 +14,9 @@ export const billingRouter = {
         ctx.db,
         ctx.tenantId,
         userEmail,
-        input
+        input,
+        ctx.appId,
+        ctx.userId
       );
     }),
 

@@ -77,7 +77,13 @@ describe("tradie-operations seat entitlements", () => {
   it("resolves tier seat limits and founding crew cap", () => {
     expect(resolveTierSeatLimits("TRIAL")).toEqual({ maxActiveSeats: 5, freeViewerSeats: 1 });
     expect(resolveTierSeatLimits("solo")).toEqual({ maxActiveSeats: 1, freeViewerSeats: 1 });
+    expect(resolveTierSeatLimits("solo_monthly").maxActiveSeats).toBe(1);
+    expect(resolveTierSeatLimits("solo_annual").maxActiveSeats).toBe(1);
     expect(resolveTierSeatLimits("FOUNDING_CREW").maxActiveSeats).toBe(5);
+    expect(resolveTierSeatLimits("founding_crew_monthly").maxActiveSeats).toBe(5);
+    expect(resolveTierSeatLimits("founding_crew_annual").maxActiveSeats).toBe(5);
+    expect(resolveTierSeatLimits("small_crew_monthly").maxActiveSeats).toBe(5);
+    expect(resolveTierSeatLimits("small_crew_annual").maxActiveSeats).toBe(5);
     expect(resolveTierSeatLimits("UNKNOWN_PLAN")).toEqual({ maxActiveSeats: 1, freeViewerSeats: 1 });
 
     expect(canClaimFoundingCrew(FOUNDING_CREW_CAP - 1)).toBe(true);

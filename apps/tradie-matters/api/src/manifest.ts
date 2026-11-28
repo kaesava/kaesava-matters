@@ -39,6 +39,8 @@ export function registerTradieMattersApp(): void {
     maxOwnedTenantsPerUser: 1,
     storageKeyPrefix: "tradie_matters",
     authStoragePrefix: "tradie-matters",
+    easProjectId: "6a112897-a327-4ed6-9b37-3cc4990a762b",
+    inngestAppId: "tradie-matters-api-service",
     roles: [
       { key: "OWNER", label: "Owner", baseRole: "OWNER" },
       { key: "ADMIN", label: "Admin", baseRole: "MEMBER" },
@@ -84,10 +86,18 @@ export function registerTradieMattersApp(): void {
         foundingAnnual: "$99/yr",
       },
       priceIds: {
-        small_crew_monthly: process.env.STRIPE_PRICE_TM_SMALL_CREW_MONTHLY ?? "price_tm_small_crew_monthly",
-        small_crew_annual: process.env.STRIPE_PRICE_TM_SMALL_CREW_ANNUAL ?? "price_tm_small_crew_annual",
-        founding_crew_monthly: process.env.STRIPE_PRICE_TM_FOUNDING_CREW_MONTHLY ?? "price_tm_founding_crew_monthly",
-        founding_crew_annual: process.env.STRIPE_PRICE_TM_FOUNDING_CREW_ANNUAL ?? "price_tm_founding_crew_annual",
+        solo_monthly: process.env.STRIPE_PRICE_TM_SOLO_MONTHLY || process.env.STRIPE_PRICE_MONTHLY,
+        solo_annual: process.env.STRIPE_PRICE_TM_SOLO_ANNUAL || process.env.STRIPE_PRICE_ANNUAL,
+        founding_crew_monthly:
+          process.env.STRIPE_PRICE_TM_FOUNDING_CREW_MONTHLY || process.env.STRIPE_PRICE_MONTHLY,
+        founding_crew_annual:
+          process.env.STRIPE_PRICE_TM_FOUNDING_CREW_ANNUAL || process.env.STRIPE_PRICE_FOUNDING_ANNUAL,
+        small_crew_monthly:
+          process.env.STRIPE_PRICE_TM_SMALL_CREW_MONTHLY || process.env.STRIPE_PRICE_MONTHLY,
+        small_crew_annual:
+          process.env.STRIPE_PRICE_TM_SMALL_CREW_ANNUAL || process.env.STRIPE_PRICE_ANNUAL,
+        sms_pack_100: process.env.STRIPE_PRICE_TM_SMS_PACK_100,
+        sms_pack_500: process.env.STRIPE_PRICE_TM_SMS_PACK_500,
       },
     },
     allowedRedirectHosts: ["kaesava.au", ".kaesava.au", "localhost", "127.0.0.1"],

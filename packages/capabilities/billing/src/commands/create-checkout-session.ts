@@ -27,7 +27,11 @@ function resolveTargetPriceId(input: CreateCheckoutSessionInput, appId?: string 
   const env = validateEnv();
   const app = resolveAppConfigOrDefault(appId);
   const appPriceIds = app.billing?.priceIds;
-  let targetPriceId = input.planType ? appPriceIds?.[input.planType] : undefined;
+  let targetPriceId = input.packKey
+    ? appPriceIds?.[input.packKey]
+    : input.planType
+      ? appPriceIds?.[input.planType]
+      : undefined;
 
   if (!targetPriceId && input.planType === "founding") {
     targetPriceId = appPriceIds?.foundingAnnual || env.STRIPE_PRICE_FOUNDING_ANNUAL || process.env.STRIPE_PRICE_FOUNDING_ANNUAL;
@@ -63,7 +67,8 @@ export async function createCheckoutSessionCommand(
   tenantId: string,
   userEmail: string,
   input: CreateCheckoutSessionInput,
-  appId?: string | null
+  appId?: string | null,
+  userId?: string | null
 ): Promise<{ url: string }> {
   if (!isWhitelistedUrl(input.successUrl, appId) || !isWhitelistedUrl(input.cancelUrl, appId)) {
     throw new Error("Invalid redirect URL: target domain is not authorized.");
@@ -93,6 +98,7 @@ export async function createCheckoutSessionCommand(
     tenantId,
     appId: tenant.appId,
     planType: input.planType || "annual",
+    ...(userId ? { userId } : {}),
     ...(input.packKey ? { packKey: input.packKey } : {}),
   };
 

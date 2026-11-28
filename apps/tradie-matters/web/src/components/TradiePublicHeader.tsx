@@ -42,16 +42,22 @@ export function TradiePublicHeader({ isLanding = false }: TradiePublicHeaderProp
               {t("tradieWeb.navFeatures")}
             </a>
             <a
+              href="#compare"
+              className="px-3 py-1.5 rounded-xl font-bold text-slate-600 hover:text-[#1B2B4B] hover:bg-slate-100/70 transition-all"
+            >
+              {t("tradieWeb.navCompare")}
+            </a>
+            <a
               href="#pricing"
               className="px-3 py-1.5 rounded-xl font-bold text-slate-600 hover:text-[#1B2B4B] hover:bg-slate-100/70 transition-all"
             >
               {t("tradieWeb.navPricing")}
             </a>
             <a
-              href="#security"
+              href="#faq"
               className="px-3 py-1.5 rounded-xl font-bold text-slate-600 hover:text-[#1B2B4B] hover:bg-slate-100/70 transition-all"
             >
-              {t("tradieWeb.navTrust")}
+              {t("tradieWeb.navFaq")}
             </a>
           </nav>
         ) : null}

@@ -19,6 +19,7 @@
     "NEXT_PUBLIC_NEON_AUTH_URL": "https://ep-spring-snow-a70f61xz.neonauth.ap-southeast-2.aws.neon.tech/neondb/auth",
     "NEXT_PUBLIC_API_URL": "https://api.tradiematters.kaesava.au",
     "NEXT_PUBLIC_ENABLE_AUTH": "true",
+    "NEXT_PUBLIC_ENABLE_FOUNDING_OFFER": "true",
     "NEXT_PUBLIC_POSTHOG_PROJECT_TOKEN": "phc_tUCUwzeZTkRaNB6RiqsaPf3rbTCAKY2Y9YMApkySf735",
     "NEXT_PUBLIC_SENTRY_DSN": "https://d2182b2c9a68ebfcd7cd92b7d8eb1546@o4511408239738880.ingest.us.sentry.io/4512479969869824",
     "NEXT_PUBLIC_GA_MEASUREMENT_ID": "G-7FRF4E8Z4M,GTM-K2TX2GCF"
