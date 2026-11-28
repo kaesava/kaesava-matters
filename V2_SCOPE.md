@@ -615,3 +615,17 @@ Create re-usable UI code to apply
 - **Website Booking Request Widget (`tm_booking_widget_configs`):** Public `/book/[slug]` embeddable enquiry form capturing address, scope, photos, and preferred windows directly into `tm_jobs` (`status = 'LEAD'`) in the `Unscheduled Leads` queue while office retains full dispatch control.
 - **Subcontractor Assignment Portal (`tm_subcontractor_assignments`):** Scoped `/subbie/[token]` portal (zero daily contractor fees) exposing only assigned visit site/scope/photos (redacting all customer pricing), supporting check-in, completion photos, and subbie bill PDF submission.
 - **Staged Projects & Margin Analytics (`tm_job_stages`):** Multi-phase job stages (e.g. `Rough-in` → `Fit-off` → `Commissioning`) tracking stage-level labour/material budgets vs. actuals, plus profitability reporting broken down by Job Type, Customer/Agency, and Team Member.
+
+
+---
+
+## 14. Tradie Matters Release 2 Deferred External Provisioning & Wiring
+
+Items explicitly deferred from initial Release 1 launch (both Android `.aab` builds are uploaded and prepared for Google Play Internal testing):
+
+- **iOS App Store & TestFlight (`au.kaesava.tradiematters`):** Enroll in Apple Developer Program ($149 AUD/yr), register Bundle ID `au.kaesava.tradiematters` with Push Notifications, create App Store Connect record, and run `pnpm tm:mobile:ios:build:submit` (scripts and `expo-image-picker` permissions already wired).
+- **Live Twilio AU Mobile Number (`+614...`):** Upgrade Twilio from Limited Trial ($20 min balance), submit Australia Mobile Business Regulatory Bundle (ABN `58 417 464 673`), purchase a `+614` Voice+SMS+MMS number, attach `/webhooks/twilio/sms` and `/webhooks/twilio/voice`, and add `tm_phone_numbers` provisioning UI.
+- **Accounting OAuth Live Callback & Remaining Providers:**
+  - Wire `/oauth/{xero,myob,qbo}/callback` routes in `apps/tradie-matters/api` replacing the `AccountingSyncSection` placeholder connect.
+  - **QuickBooks Online (Prod):** Complete Intuit App Assessment Questionnaire (using `https://tradiematters.kaesava.au/privacy` and `/terms`) to unlock Production keys + live webhook (`/webhooks/accounting/qbo`).
+  - **MYOB:** Register commercial MYOB Developer Program ($110/mo) and implement live `MyobAdapter` token exchange/REST calls.
