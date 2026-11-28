@@ -278,6 +278,10 @@
 
 ---
 
+### Tradie Matters Routes & Primitives
+- **Web Routes Added:** `/review/[token]` (public customer satisfaction & Google Review booster); `/dashboard/settings/notifications` consolidated into `PlatformSettingsShell` Settings tab.
+- **Mobile Routes Added:** `/(app)/schedule`, `/(app)/suppliers`, `/(app)/subscription`, plus `MoreMenuModal` role/flag-gated navigation hub.
+
 ## 7. `@kaesava/i18n` Dictionary Files & Namespace Inventory (`2,047` Leaf Keys)
 
 All user-facing copy lives in `packages/i18n/src/dictionaries/en/*.ts` (re-exported via `packages/i18n/src/dictionaries/en.ts`).

@@ -19,7 +19,7 @@ export function MobilePayIdShowCard({ profile, invoiceNumber, balanceDue }: Mobi
   const toast = useMobileToast();
   if (!profile) return null;
 
-  const payId = profile.abn || "";
+  const payId = (profile as { payIdValue?: string | null }).payIdValue || profile.abn || "";
   const bsb = profile.bankBsb || "";
   const acct = profile.bankAccountNumber || "";
   if (!payId && !bsb && !acct) return null;

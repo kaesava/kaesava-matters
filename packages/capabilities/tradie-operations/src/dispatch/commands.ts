@@ -1,4 +1,4 @@
-import { and, eq, isNull } from "drizzle-orm";
+import { and, eq, inArray, isNull } from "drizzle-orm";
 import { tmJobs, tmJobVisitAssignees, tmJobVisits, type DbOrTx } from "@kaesava/db/rings/tradie-matters";
 import type {
   AssignVisitCrewInputType,
@@ -79,6 +79,21 @@ export async function createVisitCommand(db: DbOrTx, actor: DispatchActor, input
       updatedBy: actor.userId,
     })
     .where(and(eq(tmJobs.id, input.jobId), eq(tmJobs.tenantId, actor.tenantId)));
+
+  await db
+    .update(tmJobs)
+    .set({
+      status: "SCHEDULED",
+      updatedAt: now,
+      updatedBy: actor.userId,
+    })
+    .where(
+      and(
+        eq(tmJobs.id, input.jobId),
+        eq(tmJobs.tenantId, actor.tenantId),
+        inArray(tmJobs.status, ["LEAD", "APPROVED"])
+      )
+    );
 
   const assignees = await assignVisitCrewCommand(db, actor, {
     visitId: visit.id,

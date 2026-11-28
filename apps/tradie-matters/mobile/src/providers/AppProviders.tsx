@@ -18,7 +18,6 @@ import { authClient } from "../lib/auth";
 import { setMobileLocaleConfig } from "../lib/format";
 import { logger } from "../lib/logger";
 import { buildTrpcClient, trpc } from "../lib/trpc";
-import { MobileFileNotesProvider } from "./FileNotesProvider";
 import { OutboxSyncWrapper } from "./OutboxSyncWrapper";
 
 const tradieTheme = createDesignTokens();
@@ -102,7 +101,7 @@ export function AppProviders({ children }: { children: React.ReactNode }) {
             <MobilePreferencesSync>
               <MobileToastProvider>
                 <OutboxSyncWrapper>
-                  <MobileFileNotesProvider>{children}</MobileFileNotesProvider>
+                  {children}
                 </OutboxSyncWrapper>
                 <MobileToastContainer />
                 <MobileConfirmContainer />

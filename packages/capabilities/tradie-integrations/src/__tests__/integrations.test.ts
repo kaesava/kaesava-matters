@@ -65,8 +65,10 @@ describe("Accounting adapters & payment auto-pause", () => {
   });
 
   it("maps MYOB and QBO adapter authorize URLs and entity IDs", async () => {
-    const myob = new MyobAdapter({ clientId: "myob-id-123", clientSecret: "sec" });
-    const qbo = new QboAdapter({ clientId: "qbo-id-123", clientSecret: "sec" });
+    const fetcher: typeof fetch = async () =>
+      new Response(JSON.stringify({ UID: "myob-inv-42", Invoice: { Id: "qbo-inv-42" } }), { status: 200 });
+    const myob = new MyobAdapter({ clientId: "myob-id-123", clientSecret: "sec", fetcher });
+    const qbo = new QboAdapter({ clientId: "qbo-id-123", clientSecret: "sec", fetcher });
 
     expect(myob.getAuthorizeUrl("s", "https://cb")).toContain("secure.myob.com");
     expect(qbo.getAuthorizeUrl("s", "https://cb")).toContain("appcenter.intuit.com");

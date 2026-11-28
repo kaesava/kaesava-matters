@@ -3,20 +3,20 @@
 import React from "react";
 import { Download } from "lucide-react";
 import { t } from "@kaesava/i18n";
-import { ActivityHistoryTable, Button, formatCurrency, useCurrencyLocale, type ActivityHistoryItem } from "@kaesava/ui/web";
+import { ActivityHistoryTable, Button, fmtDateIso, useDateLocale, type ActivityHistoryItem } from "@kaesava/ui/web";
 import { useLocale } from "../../../providers/LocaleProvider";
 import { trpc } from "../../../lib/trpc";
 
 export default function ActivityPage() {
-  const { currency, locale } = useCurrencyLocale();
-  const { fmtDateMedium } = useLocale();
+  const { timeZone } = useDateLocale();
+  const { fmt, fmtDateMedium } = useLocale();
   const activityQuery = trpc.activity.list.useQuery();
   const rows = activityQuery.data ?? [];
 
   const items: ActivityHistoryItem[] = rows.map((r) => ({
     id: r.id,
     actorName: r.kind,
-    action: formatCurrency(Number(r.amount), currency, locale),
+    action: fmt(Number(r.amount)),
     target: r.title,
     summary: r.subtitle ? `${r.title} — ${r.subtitle}` : r.title,
     timestamp: r.occurredAt,
@@ -32,7 +32,7 @@ export default function ActivityPage() {
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
-    a.download = `tradie-activity-${new Date().toISOString().slice(0, 10)}.csv`;
+    a.download = `tradie-activity-${fmtDateIso(new Date(), timeZone)}.csv`;
     a.click();
     URL.revokeObjectURL(url);
   };

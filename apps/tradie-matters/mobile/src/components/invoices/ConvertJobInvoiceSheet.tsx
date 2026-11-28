@@ -23,18 +23,20 @@ export function ConvertJobInvoiceSheet({ visible, initialJobId, onClose }: Conve
   const toast = useMobileToast();
   const utils = trpc.useUtils();
   const [jobId, setJobId] = useState(initialJobId ?? "");
+  const [invoiceType, setInvoiceType] = useState<"FINAL" | "DEPOSIT" | "PROGRESS">("FINAL");
   const [sendImmediately, setSendImmediately] = useState(false);
   const [allowCardPayment, setAllowCardPayment] = useState(true);
 
   const jobsQuery = trpc.jobs.list.useQuery({ limit: 30 }, { enabled: visible && !initialJobId });
   const convertMut = trpc.invoices.convertJob.useMutation({
-    onSuccess: (inv) => {
+    onSuccess: (res) => {
       void utils.invoices.invalidate();
       void utils.jobs.invalidate();
       toast.success(t("tradieMobile.invoiceCreatedToast"));
       onClose();
-      router.push(`/(app)/invoices/${inv.id}` as Href);
+      router.push(`/(app)/invoices/${res.invoice.id}` as Href);
     },
+    onError: (err) => toast.error(err.message),
   });
 
   const activeJobId = initialJobId || jobId;
@@ -52,6 +54,7 @@ export function ConvertJobInvoiceSheet({ visible, initialJobId, onClose }: Conve
           onPress={() =>
             convertMut.mutate({
               jobId: activeJobId,
+              invoiceType,
               sendImmediately,
               allowCardPayment,
             })
@@ -70,6 +73,16 @@ export function ConvertJobInvoiceSheet({ visible, initialJobId, onClose }: Conve
             />
           </>
         ) : null}
+        <MobileFormLabel label={t("tradieInvoices.invoiceTypeLabel")} />
+        <ChipSelect
+          value={invoiceType}
+          onChange={(v) => setInvoiceType(v as "FINAL" | "DEPOSIT" | "PROGRESS")}
+          options={[
+            { label: "Final", value: "FINAL" },
+            { label: "Deposit", value: "DEPOSIT" },
+            { label: "Progress", value: "PROGRESS" },
+          ]}
+        />
         <SwitchRow label={t("tradieMobile.sendImmediatelyLabel")} value={sendImmediately} onValueChange={setSendImmediately} />
         <SwitchRow label={t("tradieMobile.allowCardPaymentLabel")} value={allowCardPayment} onValueChange={setAllowCardPayment} />
       </View>

@@ -17,7 +17,7 @@ export const chatRouter = createChatRouter<AnyProcedure>({
             tenantId,
             title: "You were mentioned in chat",
             body: body.slice(0, 120),
-            data: { roomId },
+            data: { roomId, route: "/(app)/jobs/" + roomId },
           },
         })
         .catch(() => undefined);

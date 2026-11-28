@@ -1,4 +1,4 @@
-import { pgTable, uuid, varchar, text, integer, numeric, timestamp } from "drizzle-orm/pg-core";
+import { pgTable, uuid, varchar, text, integer, numeric, timestamp, boolean } from "drizzle-orm/pg-core";
 import { tenantAndTimestamps } from "./base.js";
 import { tmCustomers } from "./tm_customer.js";
 import { tmSites } from "./tm_site.js";
@@ -29,6 +29,9 @@ export const tmQuotes = pgTable("tm_quotes", {
   depositValue: numeric("deposit_value", { precision: 12, scale: 2 }).notNull().default("0.00"),
   depositAmountDue: numeric("deposit_amount_due", { precision: 12, scale: 2 }).notNull().default("0.00"),
   portalTokenHash: varchar("portal_token_hash", { length: 128 }),
+  portalTokenEnc: text("portal_token_enc"),
+  followUpEnabled: boolean("follow_up_enabled").notNull().default(true),
+  followUpStage: integer("follow_up_stage").notNull().default(0),
   sentAt: timestamp("sent_at", { withTimezone: true }),
   viewedAt: timestamp("viewed_at", { withTimezone: true }),
   acceptedAt: timestamp("accepted_at", { withTimezone: true }),

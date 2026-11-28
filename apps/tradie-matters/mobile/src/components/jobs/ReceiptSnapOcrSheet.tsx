@@ -1,7 +1,14 @@
 import React from "react";
 import { StyleSheet, Text, View } from "react-native";
 import { t } from "@kaesava/i18n";
-import { DESIGN_TOKENS, MobileButton, MobileInput, MobileModalDialog } from "@kaesava/ui/mobile";
+import {
+  DESIGN_TOKENS,
+  MobileAbnInput,
+  MobileAmountInput,
+  MobileButton,
+  MobileInput,
+  MobileModalDialog,
+} from "@kaesava/ui/mobile";
 import { useReceiptOcrCapture } from "./useReceiptOcrCapture";
 
 interface ReceiptSnapOcrSheetProps {
@@ -43,19 +50,19 @@ export function ReceiptSnapOcrSheet({ visible, jobId, onClose }: ReceiptSnapOcrS
         </View>
         {scanning ? <Text style={styles.status}>{t("tradieMobile.receiptScanningLabel")}</Text> : null}
         <MobileInput label={t("tradieMobile.supplierNameLabel")} value={form.supplierName} onChangeText={(v) => setField("supplierName", v)} />
-        <MobileInput label={t("tradieMobile.supplierAbnLabel")} value={form.supplierAbn} onChangeText={(v) => setField("supplierAbn", v)} />
+        <MobileAbnInput label={t("tradieMobile.supplierAbnLabel")} value={form.supplierAbn} onChangeText={(v) => setField("supplierAbn", v)} />
         <MobileInput label={t("tradieMobile.issueDateLabel")} value={form.issueDate} onChangeText={(v) => setField("issueDate", v)} />
         <View style={styles.row}>
           <View style={styles.half}>
-            <MobileInput label={t("tradieMobile.subtotalExTaxLabel")} keyboardType="decimal-pad" value={form.subtotalExTax} onChangeText={(v) => setField("subtotalExTax", v)} />
+            <MobileAmountInput label={t("tradieMobile.subtotalExTaxLabel")} value={form.subtotalExTax} onChangeText={(v) => setField("subtotalExTax", v)} />
           </View>
           <View style={styles.half}>
-            <MobileInput label={t("tradieMobile.taxAmountLabel")} keyboardType="decimal-pad" value={form.taxAmount} onChangeText={(v) => setField("taxAmount", v)} />
+            <MobileAmountInput label={t("tradieMobile.taxAmountLabel")} value={form.taxAmount} onChangeText={(v) => setField("taxAmount", v)} />
           </View>
         </View>
         <View style={styles.row}>
           <View style={styles.half}>
-            <MobileInput label={t("tradieMobile.totalIncTaxLabel")} keyboardType="decimal-pad" value={form.totalIncTax} onChangeText={(v) => setField("totalIncTax", v)} />
+            <MobileAmountInput label={t("tradieMobile.totalIncTaxLabel")} value={form.totalIncTax} onChangeText={(v) => setField("totalIncTax", v)} />
           </View>
           <View style={styles.half}>
             <MobileInput label={t("tradieMobile.markupPctLabel")} keyboardType="decimal-pad" value={form.markupPct} onChangeText={(v) => setField("markupPct", v)} />

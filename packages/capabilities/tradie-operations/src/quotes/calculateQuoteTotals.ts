@@ -91,9 +91,14 @@ export function calculateQuoteTotals(params: {
     groups.find((g) => g.isRecommended)?.key ??
     groups[0]?.key;
 
+  const baseLines = calcLines.filter((_, idx) => params.lines[idx]?.optionGroupKey == null);
+  const activeGroupLines = activeKey
+    ? calcLines.filter((_, idx) => params.lines[idx]?.optionGroupKey === activeKey)
+    : [];
+
   const activeSummary =
     optionGroups.length > 0
-      ? (optionGroups.find((g) => g.key === activeKey) ?? { subtotalExTax: 0, totalTax: 0, totalIncTax: 0 })
+      ? sumLines([...baseLines, ...activeGroupLines])
       : sumLines(calcLines);
 
   const depositAmountDue = calculateDepositAmount(

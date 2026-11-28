@@ -62,7 +62,7 @@ export default function AppLayout() {
           height: 56 + insets.bottom,
           paddingBottom: Math.max(insets.bottom, 8),
           paddingTop: 6,
-          backgroundColor: "#ffffff",
+          backgroundColor: DESIGN_TOKENS.colors.surface,
           borderTopColor: DESIGN_TOKENS.colors.slate[200],
         },
         tabBarLabelStyle: { fontSize: 12, fontWeight: "600" },
@@ -118,6 +118,9 @@ export default function AppLayout() {
       <Tabs.Screen name="invoices/[id]" options={{ href: null }} />
       <Tabs.Screen name="timesheets" options={{ href: null }} />
       <Tabs.Screen name="activity" options={{ href: null }} />
+      <Tabs.Screen name="schedule" options={{ href: null }} />
+      <Tabs.Screen name="suppliers" options={{ href: null }} />
+      <Tabs.Screen name="subscription" options={{ href: null }} />
       <Tabs.Screen name="settings/notifications" options={{ href: null }} />
       <Tabs.Screen name="settings/archived" options={{ href: null }} />
     </Tabs>

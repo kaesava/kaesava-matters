@@ -4,19 +4,21 @@ import React from "react";
 import { useParams } from "next/navigation";
 import { Copy, CreditCard, Landmark } from "lucide-react";
 import { t } from "@kaesava/i18n";
-import { Badge, Button, formatCurrency, Spinner, useCurrencyLocale, useToast } from "@kaesava/ui/web";
+import { Badge, Button, Spinner, useToast } from "@kaesava/ui/web";
+import { useLocale } from "../../../providers/LocaleProvider";
 import { trpc } from "../../../lib/trpc";
 import "../../../i18n";
 
 export default function InvoicePortalPage() {
   const { token } = useParams<{ token: string }>();
   const { success } = useToast();
-  const { currency, locale } = useCurrencyLocale();
+  const { fmt, fmtDateMedium } = useLocale();
   const viewQuery = trpc.portalInvoice.view.useQuery({ rawToken: token }, { enabled: Boolean(token), retry: false });
 
   const checkoutMut = trpc.portalInvoice.createCheckout.useMutation({
     onSuccess: (res) => {
-      if (res.url) window.location.href = res.url;
+      const targetUrl = (res as { checkoutUrl?: string; url?: string }).checkoutUrl ?? res.url;
+      if (targetUrl) window.location.href = targetUrl;
     },
   });
 
@@ -37,8 +39,8 @@ export default function InvoicePortalPage() {
         <div className="bg-white rounded-2xl border border-slate-200 p-6 flex flex-wrap justify-between gap-4">
           <div>
             <span className="font-mono text-xs font-bold text-[#2563eb]">{invoice.documentTitle} • {invoice.invoiceNumber}</span>
-            <p className="text-2xl font-extrabold text-[#1B2B4B] mt-1 font-mono">{formatCurrency(Number(invoice.balanceDue), currency, locale)}</p>
-            <p className="text-xs text-slate-500">{t("tradieInvoices.balanceDue")} • {t("tradieWeb.dueDateLabel")}: {invoice.dueDate}</p>
+            <p className="text-2xl font-extrabold text-slate-900 dark:text-slate-100 mt-1 font-mono tabular-nums">{fmt(Number(invoice.balanceDue))}</p>
+            <p className="text-xs text-slate-500">{t("tradieInvoices.balanceDue")} • {t("tradieWeb.dueDateLabel")}: {fmtDateMedium(invoice.dueDate)}</p>
           </div>
           <Badge variant={invoice.status === "PAID" ? "success" : "primary"}>{invoice.status}</Badge>
         </div>
@@ -71,7 +73,7 @@ export default function InvoicePortalPage() {
           {lines.map((l) => (
             <div key={l.id} className="flex justify-between text-sm border-b border-slate-100 pb-2">
               <span>{l.description} × {l.quantity}</span>
-              <span className="font-mono font-semibold">{formatCurrency(Number(l.lineTotalIncTax), currency, locale)}</span>
+              <span className="font-mono font-semibold tabular-nums">{fmt(Number(l.lineTotalIncTax))}</span>
             </div>
           ))}
           {!invoice.gstRegisteredSnapshot && (

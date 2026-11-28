@@ -65,6 +65,8 @@ export interface TenantStatusDto {
   hasTenant: boolean;
   tenantId: string | null;
   setupCompleted: boolean;
+  role?: string | null;
+  appRole?: string | null;
 }
 
 export interface UserTenantSummary {
@@ -133,6 +135,7 @@ export interface JobDto {
 export interface VisitDto {
   id: string;
   jobId: string;
+  title?: string | null;
   visitTitle: string | null;
   status: string;
   scheduledStart: string | Date;
@@ -145,10 +148,23 @@ export interface JobDetailDto {
   customer: CustomerDto | null;
   site: SiteDto | null;
   visits: VisitDto[];
-  timeEntries: Array<{ id: string; checkInAt: string | Date; checkOutAt: string | Date | null }>;
-  variations: Array<{ id: string; title: string; status: string }>;
-  materialUsages: Array<{ id: string; description: string; quantity: string }>;
-  attachments: Array<{ id: string; photoCategory: string; caption: string | null }>;
+  timeEntries: Array<{
+    id: string;
+    startedAt: string | Date;
+    endedAt: string | Date | null;
+    checkInAt?: string | Date;
+    checkOutAt?: string | Date | null;
+  }>;
+  variations: Array<{ id: string; title: string; status: string; totalIncTax: string | number | null }>;
+  materialUsages: Array<{ id: string; description: string; quantity: string; unitPriceExTax: string | number | null }>;
+  attachments: Array<{
+    id: string;
+    photoCategory: string;
+    caption: string | null;
+    visibility: string;
+    fileKey: string;
+    fileName: string;
+  }>;
 }
 
 export interface QuoteDto {
@@ -273,7 +289,18 @@ export interface TradieMobileRouter extends Omit<AppRouter, "_def"> {
       registerToken: AppRouter["registerToken"];
       removeToken: AppRouter["removeToken"];
       sendTestNotification: AppRouter["sendTestNotification"];
-      fileNotes: AppRouter["fileNotes"];
+      fileNotes: AppRouter["fileNotes"] & {
+        presignUpload: MutationProc<
+          {
+            entityType: string;
+            entityId: string;
+            fileName: string;
+            fileMimeType: string;
+            fileSize: number;
+          },
+          { uploadUrl: string; fileKey: string }
+        >;
+      };
       geo: {
         searchAddresses: QueryProc<{ query: string }, SearchAddressesResult>;
       };
@@ -306,11 +333,23 @@ export interface TradieMobileRouter extends Omit<AppRouter, "_def"> {
         getDetail: QueryProc<{ id: string }, JobDetailDto | null>;
         create: MutationProc<CreateJobInputType, JobDto>;
         update: MutationProc<UpdateJobInputType, JobDto>;
+        addNote: MutationProc<{ jobId: string; body: string; isInternalOnly?: boolean }, { id: string }>;
       };
       dispatch: {
         getBoard: QueryProc<
           { rangeStart: string; rangeEnd: string; assigneeUserId?: string },
           { visits: VisitDto[]; unscheduledJobs: JobDto[] }
+        >;
+        createVisit: MutationProc<
+          {
+            jobId: string;
+            visitTitle?: string | null;
+            scheduledStart: string;
+            scheduledEnd: string;
+            visitNotes?: string | null;
+            assigneeUserId?: string | null;
+          },
+          VisitDto
         >;
       };
       field: {
@@ -320,7 +359,10 @@ export interface TradieMobileRouter extends Omit<AppRouter, "_def"> {
         approveVariation: MutationProc<ApproveVariationInputType, { id: string }>;
         logMaterialUsage: MutationProc<LogMaterialUsageInputType, { id: string }>;
         attachJobPhoto: MutationProc<AttachJobPhotoInputType, { id: string }>;
-        syncMutations: MutationProc<SyncFieldMutationsInputType, { applied: number }>;
+        syncMutations: MutationProc<
+          SyncFieldMutationsInputType,
+          { applied: number; failedCount?: number; results?: Array<{ success: boolean; error?: string }> }
+        >;
       };
       quotes: {
         list: QueryProc<{ status?: string } | undefined, QuoteDto[]>;
@@ -343,8 +385,8 @@ export interface TradieMobileRouter extends Omit<AppRouter, "_def"> {
         update: MutationProc<UpdateInvoiceInputType, InvoiceDto>;
         send: MutationProc<{ id: string }, { invoice: InvoiceDto; rawToken: string }>;
         convertJob: MutationProc<
-          { jobId: string; sendImmediately?: boolean; allowCardPayment?: boolean; dueDate?: string },
-          InvoiceDto
+          { jobId: string; invoiceType?: string; sendImmediately?: boolean; allowCardPayment?: boolean; dueDate?: string },
+          { invoice: InvoiceDto; rawToken: string }
         >;
         recordPayment: MutationProc<
           {
@@ -389,6 +431,47 @@ export interface TradieMobileRouter extends Omit<AppRouter, "_def"> {
         getWeeklyPaydayCashPulse: QueryProc<undefined, WeeklyPaydayCashPulseDto>;
         exportAccountantPack: QueryProc<undefined, Record<string, string>>;
       };
+      suppliers: {
+        list: QueryProc<
+          undefined,
+          Array<{ id: string; name: string; email?: string | null; phone?: string | null }>
+        >;
+        listBills: QueryProc<
+          { status?: string } | undefined,
+          Array<{
+            id: string;
+            billNumber: string;
+            supplierName: string;
+            totalIncTax: string;
+            status: string;
+            dueDate?: string | Date | null;
+          }>
+        >;
+        listPurchaseOrders: QueryProc<
+          { status?: string } | undefined,
+          Array<{
+            id: string;
+            poNumber: string;
+            supplierName: string;
+            totalIncTax: string;
+            status: string;
+          }>
+        >;
+      };
+      business: {
+        getEffectiveFlags: QueryProc<undefined, Record<string, boolean>>;
+      };
+      getGovernanceInfo: QueryProc<
+        undefined,
+        {
+          userRole: string;
+          userAppRole: string | null;
+          isOwner: boolean;
+          isSoleOwner: boolean;
+          membersList: TenantMemberItem[];
+          effectiveFlags: Record<string, boolean>;
+        }
+      >;
       getTenantStatus: QueryProc<undefined, TenantStatusDto>;
       listUserTenants: QueryProc<undefined, UserTenantSummary[]>;
       createTenant: MutationProc<{ householdName: string }, { tenantId: string }>;

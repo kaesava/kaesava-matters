@@ -2,8 +2,10 @@
 
 import React, { useState } from "react";
 import { t } from "@kaesava/i18n";
-import { Spinner, useToast } from "@kaesava/ui/web";
+import { PlatformSettingsShell, Spinner, useToast } from "@kaesava/ui/web";
+import { NotificationPreferencesView } from "@kaesava/capability-notifications/web";
 import {
+  ArchivedItemsSection,
   TenantDetailsSection,
   TenantMembersSection,
   UserProfileSettingsSection,
@@ -35,6 +37,7 @@ export default function SettingsPage() {
   const updateProfile = trpc.updateUserProfile.useMutation({
     onSuccess: () => {
       void utils.getUserProfile.invalidate();
+      void utils.getUserPreferences.invalidate();
       showToast({ type: "success", message: t("tradieWeb.settingsSaved") });
     },
   });
@@ -51,38 +54,16 @@ export default function SettingsPage() {
     return <div className="flex justify-center py-16"><Spinner size="lg" /></div>;
   }
 
-  const tabs: { key: TabKey; label: string }[] = [
-    { key: "business", label: t("tradieWeb.settingsBusinessTab") },
-    { key: "profile", label: t("tradieWeb.settingsProfileTab") },
-    { key: "members", label: t("tradieWeb.settingsMembersTab") },
-    { key: "billing", label: t("tradieWeb.settingsBillingTab") },
-    { key: "privacy", label: t("tradieWeb.settingsPrivacyTab") },
-  ];
-
   const members = membersQuery.data ?? [];
   const ownerCount = members.filter((m) => m.role === "OWNER").length;
   const isOwner = tenantQuery.data?.currentUserRole === "OWNER";
 
-  return (
-    <div className="space-y-6">
-      <h1 className="text-2xl font-extrabold text-[#1B2B4B]">{t("tradieWeb.navSettings")}</h1>
-      <div className="flex flex-wrap gap-2 border-b border-slate-200 pb-3">
-        {tabs.map((item) => (
-          <button
-            key={item.key}
-            type="button"
-            onClick={() => setTab(item.key)}
-            className={`px-3.5 py-1.5 rounded-lg text-xs font-bold transition-colors ${
-              tab === item.key ? "bg-[#2563eb] text-white" : "bg-white text-slate-600 border border-slate-200"
-            }`}
-          >
-            {item.label}
-          </button>
-        ))}
-      </div>
-
-      {tab === "business" && <BusinessSettingsTab />}
-      {tab === "profile" && tenantQuery.data && (
+  const shellTabs = [
+    { id: "business", label: t("tradieWeb.settingsBusinessTab"), content: <BusinessSettingsTab /> },
+    {
+      id: "profile",
+      label: t("tradieWeb.settingsProfileTab"),
+      content: tenantQuery.data ? (
         <div className="space-y-6">
           <UserProfileSettingsSection
             displayName={profileQuery.data?.displayName ?? ""}
@@ -104,8 +85,12 @@ export default function SettingsPage() {
             onSave={async (d) => { await updateTenant.mutateAsync(d); }}
           />
         </div>
-      )}
-      {tab === "members" && (
+      ) : null,
+    },
+    {
+      id: "members",
+      label: t("tradieWeb.settingsMembersTab"),
+      content: (
         <TenantMembersSection
           members={members.map((m) => ({
             id: m.id,
@@ -123,11 +108,42 @@ export default function SettingsPage() {
           onInvite={async (d) => { await inviteMember.mutateAsync({ email: d.email, role: d.role ?? "MEMBER", appRole: d.appRole ?? undefined }); }}
           onRemoveMember={async (memberId) => { await removeMember.mutateAsync({ memberId }); }}
         />
-      )}
-      {tab === "billing" && <BillingSettingsTab />}
-      {tab === "privacy" && (
-        <PrivacySettingsTab tenantName={tenantQuery.data?.name ?? ""} isOwner={isOwner} isSoleOwner={isOwner && ownerCount <= 1} />
-      )}
-    </div>
+      ),
+    },
+    { id: "billing", label: t("tradieWeb.settingsBillingTab"), content: <BillingSettingsTab /> },
+    {
+      id: "notifications",
+      label: t("notifications.title"),
+      content: (
+        <NotificationPreferencesView
+          topics={[]}
+          onToggleTopic={async () => {}}
+        />
+      ),
+    },
+    {
+      id: "archived",
+      label: t("settings.archivedItems"),
+      content: (
+        <ArchivedItemsSection
+          items={[]}
+          onRestore={async () => {}}
+        />
+      ),
+    },
+    {
+      id: "privacy",
+      label: t("tradieWeb.settingsPrivacyTab"),
+      content: <PrivacySettingsTab tenantName={tenantQuery.data?.name ?? ""} isOwner={isOwner} isSoleOwner={isOwner && ownerCount <= 1} />,
+    },
+  ];
+
+  return (
+    <PlatformSettingsShell
+      title={t("tradieWeb.navSettings")}
+      tabs={shellTabs}
+      activeTab={tab}
+      onTabChange={(id) => setTab(id as TabKey)}
+    />
   );
 }

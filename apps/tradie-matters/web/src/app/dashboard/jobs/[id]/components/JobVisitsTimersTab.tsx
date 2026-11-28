@@ -68,7 +68,7 @@ export function JobVisitsTimersTab({ jobId, jobTitle, visits, timeEntries }: Job
             <div key={v.id} className="ui-card flex flex-wrap items-center justify-between gap-3">
               <div>
                 <div className="font-semibold text-sm text-[#1B2B4B]">{v.title}</div>
-                <div className="text-xs text-slate-500">{fmtDateMedium(v.scheduledStart, locale, timeZone)}</div>
+                <div className="text-xs text-slate-500">{fmtDateMedium(v.scheduledStart, timeZone, locale)}</div>
               </div>
               <div className="flex items-center gap-2">
                 <Badge variant={v.status === "CHECKED_IN" ? "success" : "primary"}>{v.status}</Badge>
@@ -96,7 +96,7 @@ export function JobVisitsTimersTab({ jobId, jobTitle, visits, timeEntries }: Job
           <div className="space-y-2">
             {timeEntries.map((te) => (
               <div key={te.id} className="rounded-lg border border-slate-200 bg-white px-4 py-3 flex items-center justify-between text-xs">
-                <span className="font-medium text-[#1B2B4B]">{fmtDateMedium(te.startedAt, locale, timeZone)}</span>
+                <span className="font-medium text-slate-900 dark:text-slate-100">{fmtDateMedium(te.startedAt, timeZone, locale)}</span>
                 <div className="flex items-center gap-2">
                   <Badge variant={te.isBillable ? "success" : "warning"}>{te.isBillable ? t("tradieWeb.billableBadge") : t("tradieWeb.nonBillableBadge")}</Badge>
                   <span className="font-mono font-bold text-[#1B2B4B]">{t("tradieWeb.durationMinutes", { minutes: String(te.durationMinutes ?? 0) })}</span>

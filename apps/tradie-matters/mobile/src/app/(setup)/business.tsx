@@ -82,7 +82,7 @@ export default function SetupBusinessScreen() {
 const styles = StyleSheet.create({
   flex: { flex: 1, backgroundColor: DESIGN_TOKENS.colors.background },
   container: { flexGrow: 1, paddingHorizontal: 16, gap: 12 },
-  card: { backgroundColor: "#ffffff", borderRadius: 16, borderWidth: 1, borderColor: "#e2e8f0", padding: 20, gap: 12 },
+  card: { backgroundColor: DESIGN_TOKENS.colors.surface, borderRadius: 16, borderWidth: 1, borderColor: DESIGN_TOKENS.colors.slate[200], padding: 20, gap: 12 },
   title: { fontSize: 20, fontWeight: "800", color: DESIGN_TOKENS.colors.textPrimary },
   subtitle: { fontSize: 13, color: DESIGN_TOKENS.colors.textMuted },
 });

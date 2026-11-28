@@ -3,12 +3,13 @@ import { StyleSheet, Text, View } from "react-native";
 import { useRouter, type Href } from "expo-router";
 import { t } from "@kaesava/i18n";
 import {
+  DESIGN_TOKENS,
   MobileDetailLinkRow,
   MobilePlatformSettingsShell,
-  MobileScreenWrapper,
   SettingsCard,
   showMobileConfirm,
 } from "@kaesava/ui/mobile";
+import { TradieWorkspaceShell } from "../../components/TradieWorkspaceShell";
 import {
   MobileTenantDetailsSection,
   MobileTenantMembersSection,
@@ -28,6 +29,7 @@ export default function SettingsScreen() {
   const [tab, setTab] = useState<SettingsTab>("business");
 
   const tenantQuery = trpc.getTenant.useQuery(undefined, { enabled: !!session?.user });
+  const governanceQuery = trpc.getGovernanceInfo.useQuery(undefined, { enabled: !!session?.user });
   const profileQuery = trpc.getUserProfile.useQuery(undefined, { enabled: !!session?.user });
   const prefQuery = trpc.getUserPreferences.useQuery(undefined, { enabled: !!session?.user });
   const businessQuery = trpc.getBusinessProfile.useQuery(undefined, { enabled: !!session?.user });
@@ -51,10 +53,10 @@ export default function SettingsScreen() {
     });
 
   const tenant = tenantQuery.data;
-  const isOwner = tenant?.currentUserRole === "OWNER";
+  const isOwner = governanceQuery.data?.userRole === "OWNER";
 
   return (
-    <MobileScreenWrapper title={t("nav.settings")} user={session?.user} onSignOut={handleSignOut}>
+    <TradieWorkspaceShell title={t("nav.settings")} user={session?.user} onSignOut={handleSignOut}>
       <MobilePlatformSettingsShell<SettingsTab>
         tabs={[
           { key: "business", label: t("tradieMobile.businessDetailsTab") },
@@ -95,12 +97,12 @@ export default function SettingsScreen() {
           />
         )}
       </MobilePlatformSettingsShell>
-    </MobileScreenWrapper>
+    </TradieWorkspaceShell>
   );
 }
 
 const styles = StyleSheet.create({
   stack: { gap: 16 },
-  meta: { fontSize: 13, color: "#64748b" },
-  version: { textAlign: "center", fontSize: 12, color: "#94a3b8", paddingBottom: 16 },
+  meta: { fontSize: 13, color: DESIGN_TOKENS.colors.textMuted },
+  version: { textAlign: "center", fontSize: 12, color: DESIGN_TOKENS.colors.slate[400], paddingBottom: 16 },
 });

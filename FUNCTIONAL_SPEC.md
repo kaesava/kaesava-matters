@@ -713,7 +713,9 @@ This specification governs the exhaustive end-to-end Playwright master suite (`a
 
 ---
 
-## 14. Tradie Matters Domain Math & Business Rules
+- **Stripe Australia PayTo Hierarchy:** Customer invoice portal (`/i/[token]`) leads with `$0`-fee PayID / Bank Transfer, followed by Stripe Australia PayTo (`1% + $0.30`, capped at `$3.50 AUD incl. GST`) when `payToPayments` is enabled, and optional Card with max-invoice threshold protection.
+- **GST-Inclusive Invoice Conversion & Paid-Only Deposits:** `convertJobToInvoiceCommand` normalizes `INCLUSIVE` quote lines to ex-GST before computing tax lines (preventing double-GST) and deducts only `SUM(amountPaid)` from prior `DEPOSIT`/`PROGRESS` invoices.
+- **Job Workflow & Weekly Payday Pulse:** `JOB_STATUS_WORKFLOW` includes `APPROVED` and `PAID`; `getPaydayCashPulseQuery` scopes accrued crew wages + 12% Super to the current pay week.
 
 ### 14.1 10% GST (`GST` / `GST_FREE`) & Good/Better/Best Quoting
 - **Tax Calculation (`calculateQuoteTotals` & `tmInvoices`):** Line items carry `taxCode` (`"GST"` or `"GST_FREE"`). When the business is GST-registered (`gstRegistered === true`) and `taxCode === "GST"`, tax is `round2(lineExTax * 0.10)`; when `gstRegistered === false` or `taxCode === "GST_FREE"`, tax is `0.00`.

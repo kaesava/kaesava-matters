@@ -1,6 +1,7 @@
 import React from "react";
 import { t } from "@kaesava/i18n";
 import { MobileButton, useMobileToast } from "@kaesava/ui/mobile";
+import { getCurrentCoordinates } from "../../lib/location";
 import { trpc } from "../../lib/trpc";
 
 interface OnMyWaySmsButtonProps {
@@ -21,13 +22,17 @@ export function OnMyWaySmsButton({ jobId, tradieName }: OnMyWaySmsButtonProps) {
       return;
     }
     try {
+      const coords = await getCurrentCoordinates();
+      const site = detailQuery.data?.site as { latitude?: number | null; longitude?: number | null } | null | undefined;
+      const destLat = site?.latitude ?? coords?.lat ?? -37.8136;
+      const destLng = site?.longitude ?? coords?.lng ?? 144.9631;
       const res = await sendMut.mutateAsync({
         jobId,
         recipientPhone: phone,
-        originLat: -37.8136,
-        originLng: 144.9631,
-        destLat: -37.8136,
-        destLng: 144.9631,
+        originLat: coords?.lat ?? destLat,
+        originLng: coords?.lng ?? destLng,
+        destLat,
+        destLng,
         tradieName: tradieName || t("tradieMobile.appName"),
       });
       void utils.sms.invalidate();

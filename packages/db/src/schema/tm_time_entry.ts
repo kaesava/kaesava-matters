@@ -19,7 +19,11 @@ export const tmTimeEntries = pgTable("tm_time_entries", {
   startedAt: timestamp("started_at", { withTimezone: true }).notNull(),
   endedAt: timestamp("ended_at", { withTimezone: true }),
   durationMinutes: integer("duration_minutes").notNull().default(0),
+  breakMinutes: integer("break_minutes").notNull().default(0),
   isBillable: boolean("is_billable").notNull().default(true),
+  approvalStatus: varchar("approval_status", { length: 24 }).notNull().default("SUBMITTED"),
+  approvedBy: uuid("approved_by").references(() => users.id),
+  approvedAt: timestamp("approved_at", { withTimezone: true }),
   hourlyCostSnapshot: numeric("hourly_cost_snapshot", { precision: 10, scale: 2 })
     .notNull()
     .default("0.00"),

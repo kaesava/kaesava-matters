@@ -1,6 +1,7 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { View } from "react-native";
 import { t } from "@kaesava/i18n";
+import { useOfflineDraftAutoSave } from "@kaesava/mobile-core";
 import {
   MobileAmountInput,
   MobileButton,
@@ -10,7 +11,7 @@ import {
   MobileSignaturePad,
   useMobileToast,
 } from "@kaesava/ui/mobile";
-import { trpc } from "../../lib/trpc";
+import { getActiveTenantId, trpc } from "../../lib/trpc";
 
 interface VariationCaptureSheetProps {
   visible: boolean;
@@ -28,12 +29,33 @@ export function VariationCaptureSheet({ visible, jobId, onClose }: VariationCapt
   const [approvedBy, setApprovedBy] = useState("");
   const [signaturePaths, setSignaturePaths] = useState<string[]>([]);
 
-  const approveMut = trpc.field.approveVariation.useMutation();
+  const { loadDraft, clearDraft } = useOfflineDraftAutoSave({
+    tenantId: getActiveTenantId() ?? "",
+    userId: "",
+    draftKey: `variation-draft:${jobId}`,
+    value: { title, lineDesc, qty, price },
+    enabled: visible,
+  });
+
+  useEffect(() => {
+    if (!visible) return;
+    void loadDraft().then((draft) => {
+      if (draft?.title) setTitle(draft.title);
+      if (draft?.lineDesc) setLineDesc(draft.lineDesc);
+      if (draft?.qty) setQty(draft.qty);
+      if (draft?.price) setPrice(draft.price);
+    });
+  }, [visible, loadDraft]);
+
+  const approveMut = trpc.field.approveVariation.useMutation({
+    onError: (err) => toast.error(err.message),
+  });
   const createMut = trpc.field.createVariation.useMutation({
     onSuccess: async (variation) => {
       if (approvedBy.trim() && signaturePaths.length > 0 && variation?.id) {
         await approveMut.mutateAsync({ variationId: variation.id, approvedByName: approvedBy.trim() });
       }
+      await clearDraft();
       void utils.jobs.invalidate();
       toast.success(t("tradieMobile.variationCreatedToast"));
       setTitle("");
@@ -42,6 +64,7 @@ export function VariationCaptureSheet({ visible, jobId, onClose }: VariationCapt
       setSignaturePaths([]);
       onClose();
     },
+    onError: (err) => toast.error(err.message),
   });
 
   const isPending = createMut.isPending || approveMut.isPending;

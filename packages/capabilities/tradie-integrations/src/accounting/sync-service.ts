@@ -6,7 +6,9 @@ import {
   tmInvoices,
   type DbOrTx,
 } from "@kaesava/db/rings/tradie-matters";
-import type { AccountingProvider } from "./port.js";
+import type { AccountingProvider, AccountingProviderPort } from "./port.js";
+import { XeroAdapter } from "./xero-adapter.js";
+import { MyobAdapter, QboAdapter } from "./myob-qbo-adapters.js";
 
 export const AccountingProviderSchema = z.enum(["XERO", "MYOB", "QBO"]);
 
@@ -166,4 +168,125 @@ export async function handleAccountingPaymentWebhookCommand(
     .set({ chasingEnabled: false, status: "PAID", updatedAt: new Date() })
     .where(eq(tmInvoices.id, link.localId));
   return { pausedChasing: true };
+}
+
+export interface AccountingOAuthEnv {
+  XERO_CLIENT_ID?: string;
+  XERO_CLIENT_SECRET?: string;
+  MYOB_CLIENT_ID?: string;
+  MYOB_CLIENT_SECRET?: string;
+  QBO_CLIENT_ID?: string;
+  QBO_CLIENT_SECRET?: string;
+  fetcher?: typeof fetch;
+}
+
+export function createAccountingAdapter(provider: AccountingProvider, env: AccountingOAuthEnv): AccountingProviderPort {
+  if (provider === "XERO") {
+    return new XeroAdapter({ clientId: env.XERO_CLIENT_ID ?? "", clientSecret: env.XERO_CLIENT_SECRET ?? "", fetcher: env.fetcher });
+  }
+  if (provider === "MYOB") {
+    return new MyobAdapter({ clientId: env.MYOB_CLIENT_ID ?? "", clientSecret: env.MYOB_CLIENT_SECRET ?? "", fetcher: env.fetcher });
+  }
+  return new QboAdapter({ clientId: env.QBO_CLIENT_ID ?? "", clientSecret: env.QBO_CLIENT_SECRET ?? "", fetcher: env.fetcher });
+}
+
+export const StartAccountingOAuthInput = z
+  .object({
+    provider: AccountingProviderSchema,
+    redirectUri: z.string().url(),
+  })
+  .strict();
+
+export function startAccountingOAuthCommand(
+  env: AccountingOAuthEnv,
+  input: z.infer<typeof StartAccountingOAuthInput>
+): { authorizeUrl: string; state: string; codeVerifier: string } {
+  const state = crypto.randomUUID();
+  const codeVerifier = `${crypto.randomUUID()}${crypto.randomUUID()}`.replace(/-/g, "");
+  const adapter = createAccountingAdapter(input.provider, env);
+  const authorizeUrl = adapter.getAuthorizeUrl(state, input.redirectUri);
+  return { authorizeUrl, state, codeVerifier };
+}
+
+export async function disconnectAccountingCommand(
+  db: DbOrTx,
+  ctx: IntegrationsContext,
+  provider: AccountingProvider
+): Promise<{ disconnected: boolean }> {
+  const now = new Date();
+  const updated = await db
+    .update(tmAccountingConnections)
+    .set({ archivedAt: now, updatedAt: now, updatedBy: ctx.userId })
+    .where(
+      and(
+        eq(tmAccountingConnections.tenantId, ctx.tenantId),
+        eq(tmAccountingConnections.appId, ctx.appId),
+        eq(tmAccountingConnections.provider, provider),
+        isNull(tmAccountingConnections.archivedAt)
+      )
+    )
+    .returning({ id: tmAccountingConnections.id });
+  return { disconnected: updated.length > 0 };
+}
+
+export async function syncAccountingNowCommand(
+  db: DbOrTx,
+  ctx: IntegrationsContext,
+  env: AccountingOAuthEnv,
+  provider: AccountingProvider
+): Promise<{ syncedPayments: number; pausedInvoices: number }> {
+  const [conn] = await db
+    .select()
+    .from(tmAccountingConnections)
+    .where(
+      and(
+        eq(tmAccountingConnections.tenantId, ctx.tenantId),
+        eq(tmAccountingConnections.appId, ctx.appId),
+        eq(tmAccountingConnections.provider, provider),
+        isNull(tmAccountingConnections.archivedAt)
+      )
+    )
+    .limit(1);
+
+  if (!conn) {
+    throw new Error(`No active ${provider} connection found.`);
+  }
+
+  const adapter = createAccountingAdapter(provider, env);
+  let accessToken = conn.accessTokenEnc;
+  if (conn.tokenExpiresAt && conn.tokenExpiresAt.getTime() <= Date.now() && conn.refreshTokenEnc) {
+    const refreshed = await adapter.refreshTokens(conn.refreshTokenEnc);
+    accessToken = refreshed.accessToken;
+    await db
+      .update(tmAccountingConnections)
+      .set({
+        accessTokenEnc: refreshed.accessToken,
+        refreshTokenEnc: refreshed.refreshToken ?? conn.refreshTokenEnc,
+        tokenExpiresAt: refreshed.expiresAt,
+        updatedAt: new Date(),
+        updatedBy: ctx.userId,
+      })
+      .where(eq(tmAccountingConnections.id, conn.id));
+  }
+
+  const { payments, nextCursor } = await adapter.fetchInboundPayments(accessToken, conn.externalTenantId, conn.syncCursor);
+  let pausedInvoices = 0;
+  for (const payment of payments) {
+    if (!payment.invoiceExternalId) continue;
+    const res = await handleAccountingPaymentWebhookCommand(db, provider, payment.invoiceExternalId);
+    if (res.pausedChasing) pausedInvoices += 1;
+  }
+
+  const now = new Date();
+  await db
+    .update(tmAccountingConnections)
+    .set({
+      lastSyncedAt: now,
+      syncCursor: nextCursor ?? conn.syncCursor,
+      updatedAt: now,
+      updatedBy: ctx.userId,
+    })
+    .where(eq(tmAccountingConnections.id, conn.id));
+
+  return { syncedPayments: payments.length, pausedInvoices };
 }

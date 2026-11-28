@@ -1,4 +1,6 @@
 import { and, eq, isNull } from "drizzle-orm";
+import { sendEmail } from "@kaesava/core";
+import { resolveAppConfigOrDefault } from "@kaesava/config";
 import { generatePortalToken } from "@kaesava/core";
 import {
   tmBusinessProfiles,
@@ -255,6 +257,7 @@ export async function sendQuoteCommand(
     .set({
       status: quote.status === "DRAFT" ? "SENT" : quote.status,
       portalTokenHash: tokenHash,
+      portalTokenEnc: rawToken,
       sentAt: quote.sentAt ?? now,
       updatedAt: now,
       updatedBy: ctx.userId,
@@ -262,17 +265,38 @@ export async function sendQuoteCommand(
     .where(eq(tmQuotes.id, quoteId))
     .returning();
 
+  const targetEmail = recipientEmail ?? customer?.email ?? null;
+  const appConfig = resolveAppConfigOrDefault(ctx.appId);
+  const portalUrl = `${appConfig.branding.appUrl}/q/${rawToken}`;
+  const subject = `Quote ${quote.quoteNumber}: ${quote.title}`;
+  let commStatus: "SENT" | "FAILED" | "QUEUED" = "QUEUED";
+
+  if (targetEmail) {
+    try {
+      const result = await sendEmail({
+        to: targetEmail,
+        subject,
+        html: `<p>Hi ${customer?.name ?? "there"},</p><p>Your quote <strong>${quote.quoteNumber}</strong> (${quote.title}) for <strong>$${quote.totalIncTax}</strong> is ready.</p><p><a href="${portalUrl}">View &amp; Accept Quote</a></p>`,
+        text: `Hi ${customer?.name ?? "there"},\n\nYour quote ${quote.quoteNumber} (${quote.title}) for $${quote.totalIncTax} is ready.\n\nView & accept here: ${portalUrl}`,
+        appId: ctx.appId,
+      });
+      commStatus = result.success ? "SENT" : "FAILED";
+    } catch {
+      commStatus = "FAILED";
+    }
+  }
+
   await db.insert(tmCommLogs).values({
     id: crypto.randomUUID(),
     entityType: "QUOTE",
     entityId: quoteId,
     channel: "EMAIL",
     direction: "OUTBOUND",
-    recipient: recipientEmail ?? customer?.email ?? null,
-    subject: `Quote ${quote.quoteNumber}: ${quote.title}`,
+    recipient: targetEmail,
+    subject,
     bodyPreview: `Quote sent (${quote.totalIncTax})`,
-    status: "SENT",
-    sentAt: now,
+    status: commStatus,
+    sentAt: commStatus === "SENT" ? now : undefined,
     tenantId: ctx.tenantId,
     appId: ctx.appId,
     createdAt: now,

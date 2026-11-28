@@ -28,7 +28,7 @@ export function ConvertJobInvoiceModal({ isOpen, onClose }: { isOpen: boolean; o
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!jobId) return;
-    await convertMut.mutateAsync({ jobId, sendImmediately, allowCardPayment: true });
+    await convertMut.mutateAsync({ jobId, invoiceType, sendImmediately, allowCardPayment: true } as Parameters<typeof convertMut.mutateAsync>[0]);
   };
 
   return (

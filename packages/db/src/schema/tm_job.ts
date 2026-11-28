@@ -24,6 +24,7 @@ export const tmJobs = pgTable("tm_jobs", {
   completedAt: timestamp("completed_at", { withTimezone: true }),
   estimatedHours: numeric("estimated_hours", { precision: 8, scale: 2 }),
   quotedAmountExTax: numeric("quoted_amount_ex_tax", { precision: 12, scale: 2 }),
+  targetMarginPct: numeric("target_margin_pct", { precision: 5, scale: 2 }),
   hasUnbilledExtras: boolean("has_unbilled_extras").notNull().default(false),
   purchaseOrderNumber: varchar("purchase_order_number", { length: 80 }),
   internalNotes: text("internal_notes"),

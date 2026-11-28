@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { View } from "react-native";
 import { t } from "@kaesava/i18n";
 import {
@@ -28,6 +28,10 @@ export function MobileRecordPaymentSheet({ visible, invoiceId, defaultAmount, on
   const [method, setMethod] = useState<PayMethod>("BANK_TRANSFER");
   const [reference, setReference] = useState("");
 
+  useEffect(() => {
+    if (visible) setAmount(defaultAmount);
+  }, [visible, defaultAmount]);
+
   const recordMut = trpc.invoices.recordPayment.useMutation({
     onSuccess: () => {
       void utils.invoices.invalidate();
@@ -36,6 +40,7 @@ export function MobileRecordPaymentSheet({ visible, invoiceId, defaultAmount, on
       setReference("");
       onClose();
     },
+    onError: (err) => toast.error(err.message),
   });
 
   const parsed = Number(amount);

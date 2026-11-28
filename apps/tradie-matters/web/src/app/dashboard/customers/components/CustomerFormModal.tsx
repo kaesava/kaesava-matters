@@ -41,17 +41,31 @@ function CustomerFormModalInner({ isOpen, onClose, initial }: CustomerFormModalP
   const [email, setEmail] = useState(initial?.email ?? "");
   const [phone, setPhone] = useState(initial?.phone ?? "");
   const [mobile, setMobile] = useState(initial?.mobile ?? "");
+  const [abn] = useState(initial?.abn ?? "");
+  const [paymentTermsDays] = useState(String(initial?.paymentTermsDays ?? 14));
+  const [notes] = useState(initial?.notes ?? "");
   const [billingAddress, setBillingAddress] = useState(initial?.billingAddress ?? "");
 
   const createMut = trpc.customers.create.useMutation({ onSuccess: () => utils.customers.list.invalidate() });
   const updateMut = trpc.customers.update.useMutation({ onSuccess: () => utils.customers.invalidate() });
   const archiveMut = trpc.customers.archive.useMutation({ onSuccess: () => utils.customers.list.invalidate() });
-  const isDirty = name !== (initial?.name ?? "") || email !== (initial?.email ?? "") || phone !== (initial?.phone ?? "") || mobile !== (initial?.mobile ?? "") || companyName !== (initial?.companyName ?? "") || billingAddress !== (initial?.billingAddress ?? "");
+  const isDirty = name !== (initial?.name ?? "") || email !== (initial?.email ?? "") || phone !== (initial?.phone ?? "") || mobile !== (initial?.mobile ?? "") || abn !== (initial?.abn ?? "") || paymentTermsDays !== String(initial?.paymentTermsDays ?? 14) || notes !== (initial?.notes ?? "") || companyName !== (initial?.companyName ?? "") || billingAddress !== (initial?.billingAddress ?? "");
   const isPending = createMut.isPending || updateMut.isPending || archiveMut.isPending;
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const payload = { name: name.trim(), companyName: companyName.trim() || null, customerType, email: email.trim() || null, phone: phone.trim() || null, mobile: mobile.trim() || null, billingAddress: billingAddress.trim() || null };
+    const payload = {
+      name: name.trim(),
+      companyName: companyName.trim() || null,
+      customerType,
+      email: email.trim() || null,
+      phone: phone.trim() || null,
+      mobile: mobile.trim() || null,
+      abn: abn.trim() || null,
+      paymentTermsDays: paymentTermsDays ? Number(paymentTermsDays) : 14,
+      notes: notes.trim() || null,
+      billingAddress: billingAddress.trim() || null,
+    };
     if (isEdit && initial) await updateMut.mutateAsync({ id: initial.id, ...payload });
     else await createMut.mutateAsync(payload);
     success(t("tradieWeb.customerSaved"));

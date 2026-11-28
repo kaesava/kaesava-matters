@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { t } from "@kaesava/i18n";
-import { Button, FormErrorBanner, Spinner, useToast } from "@kaesava/ui/web";
+import { Button, FormErrorBanner, SetupDiscardConfirm, Spinner, useToast } from "@kaesava/ui/web";
 import { authClient } from "../../lib/auth";
 import { trpc } from "../../lib/trpc";
 import { TradiePublicHeader } from "../../components/TradiePublicHeader";
@@ -22,6 +22,7 @@ export default function SetupPage() {
   const upsertMember = trpc.upsertTeamMemberProfile.useMutation();
 
   const [step, setStep] = useState(1);
+  const [discardOpen, setDiscardOpen] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [s1Draft, setS1] = useState<SetupStep1Data | null>(null);
   const p = profileQuery.data;
@@ -106,6 +107,15 @@ export default function SetupPage() {
           </div>
         </div>
       </main>
+      <SetupDiscardConfirm
+        isOpen={discardOpen}
+        title={t("common.discardChangesTitle")}
+        message={t("common.discardChangesMessage")}
+        confirmLabel={t("common.discard")}
+        cancelLabel={t("common.keepEditing")}
+        onConfirm={() => { setDiscardOpen(false); router.push("/dashboard"); }}
+        onCancel={() => setDiscardOpen(false)}
+      />
     </div>
   );
 }

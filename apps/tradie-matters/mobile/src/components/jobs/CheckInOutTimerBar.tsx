@@ -3,6 +3,7 @@ import { StyleSheet, Text, View } from "react-native";
 import { t } from "@kaesava/i18n";
 import { enqueueMutation, useOutboxSync } from "@kaesava/mobile-core";
 import { DESIGN_TOKENS, MobileButton, SettingsCard, useMobileToast } from "@kaesava/ui/mobile";
+import { getCurrentCoordinates } from "../../lib/location";
 import { trpc } from "../../lib/trpc";
 
 interface CheckInOutTimerBarProps {
@@ -54,10 +55,17 @@ export function CheckInOutTimerBar({ tenantId, userId, visitId, activeCheckInIso
   const handleToggle = async () => {
     if (!visitId) return;
     const timestamp = new Date().toISOString();
+    const coords = await getCurrentCoordinates();
     const isCheckedIn = Boolean(localCheckInIso);
     const procedure = isCheckedIn ? "field.checkOutVisit" : "field.checkInVisit";
+    const payload = {
+      visitId,
+      timestamp,
+      isBillable: true,
+      ...(coords ? { lat: coords.lat, lng: coords.lng } : {}),
+    };
     if (!isOnline) {
-      await enqueueMutation({ tenantId, userId, procedure, payload: { visitId, timestamp, isBillable: true } });
+      await enqueueMutation({ tenantId, userId, procedure, payload });
       setLocalCheckInIso(isCheckedIn ? null : timestamp);
       toast.info(t("tradieMobile.queuedOfflineToast"));
       void syncNow();

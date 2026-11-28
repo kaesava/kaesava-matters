@@ -1,4 +1,4 @@
-import { API_BASE_URL } from "../../lib/trpc";
+import { API_BASE_URL, getActiveTenantId, getStoredTokenAndCookie } from "../../lib/trpc";
 
 interface PresignResult {
   uploadUrl: string;
@@ -26,7 +26,16 @@ export async function uploadReceiptToR2(
   const presigned = await presign({ entityType: "ENVELOPE", entityId: jobId, fileName, fileMimeType: mimeType, fileSize: 1024 });
   const uploadUrl = presigned.uploadUrl.startsWith("/") ? `${API_BASE_URL}${presigned.uploadUrl}` : presigned.uploadUrl;
   const blob = await (await fetch(uri)).blob();
-  await fetch(uploadUrl, { method: "PUT", headers: { "Content-Type": mimeType }, body: blob });
+  const { token, cookie } = await getStoredTokenAndCookie();
+  const tenantId = getActiveTenantId();
+  const headers: Record<string, string> = { "Content-Type": mimeType };
+  if (token) headers["Authorization"] = `Bearer ${token}`;
+  if (cookie) headers["Cookie"] = cookie;
+  if (tenantId) headers["x-tenant-id"] = tenantId;
+  const res = await fetch(uploadUrl, { method: "PUT", headers, body: blob });
+  if (!res.ok) {
+    throw new Error(`Receipt upload failed (${res.status})`);
+  }
   const created = await createFileNote({
     entityType: "ENVELOPE",
     entityId: jobId,

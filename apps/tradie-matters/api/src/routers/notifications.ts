@@ -58,7 +58,7 @@ export const notificationsRouter = {
               tenantId: ctx.tenantId,
               title: "Test Notification",
               body: "Your notification pipeline is connected and working!",
-              data: { route: "/(app)/home" },
+              data: { route: "/(app)/today" },
             },
           })
           .catch(() => {});

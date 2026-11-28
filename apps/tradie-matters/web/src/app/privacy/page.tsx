@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import React from "react";
 import { t } from "@kaesava/i18n";
+import { LegalDocumentLayout } from "@kaesava/ui/web";
 import "../../i18n";
 import { TradiePublicHeader } from "../../components/TradiePublicHeader";
 import { TradiePublicFooter } from "../../components/TradiePublicFooter";
@@ -14,23 +15,16 @@ export const metadata: Metadata = {
 
 export default function TradiePrivacyPolicyPage() {
   return (
-    <div className="min-h-screen bg-[#F7F8FA] text-[#1B2B4B] font-sans selection:bg-[#2563eb] selection:text-white flex flex-col justify-between">
-      <TradiePublicHeader />
-
-      <main className="max-w-4xl mx-auto px-6 py-12 space-y-10 flex-1 w-full">
-        <div>
-          <div className="inline-block px-3 py-1 bg-blue-50 border border-blue-200 text-blue-700 text-xs font-bold rounded-full mb-3 uppercase tracking-wider">
-            {t("privacy.complianceBadge")}
-          </div>
-          <h1 className="text-3xl sm:text-4xl font-extrabold tracking-tight text-[#1B2B4B]">
-            {t("privacy.pageTitle")}
-          </h1>
-          <p className="text-xs sm:text-sm text-slate-500 mt-2 font-medium">
-            {t("privacy.effectiveDate")}
-          </p>
-        </div>
-
-        <div className="p-6 bg-white border border-slate-200 rounded-3xl shadow-xs space-y-3">
+    <LegalDocumentLayout
+      title={t("privacy.pageTitle")}
+      lastUpdated={t("privacy.effectiveDate")}
+      entityName="KSHETRAPALAPURAM, KALYANARAMAN KAESAVA (Individual/Sole Trader, VIC 3030, Australia)"
+      jurisdiction="Victoria, Australia"
+      headerSlot={<TradiePublicHeader />}
+      footerSlot={<TradiePublicFooter />}
+    >
+      <div className="space-y-8">
+        <div className="ui-card p-6 space-y-3">
           <h3 className="text-base font-bold text-[#1B2B4B]">🔒 {t("privacy.commitmentTitle")}</h3>
           <p className="text-sm text-slate-600 leading-relaxed">
             {t("tradieWeb.privacy.commitmentBody")}
@@ -162,9 +156,7 @@ export default function TradiePrivacyPolicyPage() {
             <p>{t("tradieWeb.privacy.section13Body")}</p>
           </div>
         </section>
-      </main>
-
-      <TradiePublicFooter />
-    </div>
+      </div>
+    </LegalDocumentLayout>
   );
 }

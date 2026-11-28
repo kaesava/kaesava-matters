@@ -608,6 +608,12 @@ tenants (id PK, appId FK→apps.id, name, subscriptionTier, stripeCustomerId, st
 
 ---
 
+### Tradie Matters Extensions (`apps/tradie-matters/api`)
+- **tRPC Procedures Added:** `getTenantStatus`, `listUserTenants`, `business.getEffectiveFlags`, `crm.importCustomersCsv`, `accounting.startOAuth`, `accounting.disconnect`, `accounting.syncNow`, `sms.getPhoneConfig`, `sms.savePhoneConfig`, `sms.listThreads`, `sms.listMessages`, `sms.sendReply`, `sms.getByToken`, `sms.submitSatisfaction`.
+- **HTTP / Webhook Endpoints:** `/api/oauth/accounting/[provider]/callback` (Xero/MYOB/QBO PKCE OAuth2), Stripe Connect PayTo + Card webhook (`payto_payments`, `STRIPE_PAYTO`), Twilio SMS/MMS-to-R2 + TwiML voice webhook, slug-based supplier email-in routing.
+- **Inngest Workflows (Hourly `0 * * * *` in business timezone):** `tm-quote-followup-cron`, `tm-invoice-chasing-cron` (pre-due + overdue), `tm-appointment-reminder-cron`, `accountingSyncCron`, `reviewBoosterCron`.
+- **Tradie `appFlags` (default `false` in `manifest.ts`, overridable via `apps.feature_flags`):** `accountingSync`, `receiptOcr`, `smsComms`, `reviewBooster`, `payToPayments`.
+
 ## 11. Security, Stealth Privacy & Australian Privacy Principles (APPs)
 
 ### 11.1 Cryptographic & In-Transit Protections

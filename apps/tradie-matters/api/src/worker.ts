@@ -25,6 +25,7 @@ import {
 } from "./webhooks.js";
 
 export interface TradieWorkerEnv extends PlatformWorkerEnvBase {
+  [key: string]: string | undefined;
   TRADIE_MATTERS_APP_ID?: string;
   INNGEST_SIGNING_KEY?: string;
   STRIPE_SECRET_KEY?: string;
@@ -32,6 +33,9 @@ export interface TradieWorkerEnv extends PlatformWorkerEnvBase {
   STRIPE_CONNECT_WEBHOOK_SECRET?: string;
   TWILIO_ACCOUNT_SID?: string;
   TWILIO_AUTH_TOKEN?: string;
+  XERO_CLIENT_ID?: string;
+  XERO_CLIENT_SECRET?: string;
+  XERO_WEBHOOK_KEY?: string;
   STORAGE_BUCKET_NAME?: string;
   STORAGE_ENDPOINT?: string;
   STORAGE_REGION?: string;
@@ -130,10 +134,10 @@ const platformWorker = createPlatformWorker<TradieWorkerEnv>({
       url.pathname === "/webhooks/twilio/voice" && request.method === "POST"
         ? handleTwilioVoiceWebhook(request, env, baseHeaders)
         : null,
-    async ({ request, url, baseHeaders }) => {
+    async ({ request, url, env, baseHeaders }) => {
       if (!url.pathname.startsWith("/webhooks/accounting/") || request.method !== "POST") return null;
       const provider = url.pathname.slice("/webhooks/accounting/".length);
-      return handleAccountingWebhook(request, provider, baseHeaders);
+      return handleAccountingWebhook(request, provider, baseHeaders, env);
     },
     async ({ request, url, env, baseHeaders }) => {
       if (url.pathname !== "/webhooks/stripe-connect" || request.method !== "POST") return null;

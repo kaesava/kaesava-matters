@@ -1,6 +1,7 @@
 import Stripe from "stripe";
 import { and, eq, isNull } from "drizzle-orm";
 import { hashPortalToken } from "@kaesava/core";
+import { tenantUsers as tenantMembers } from "@kaesava/db/rings/platform";
 import {
   processedWebhooks,
   tmBusinessProfiles,
@@ -32,6 +33,11 @@ export async function createStripeConnectAccountLinkCommand(
     const account = await stripe.accounts.create({
       type: "standard",
       country: "AU",
+      capabilities: {
+        payto_payments: { requested: true },
+        card_payments: { requested: true },
+        transfers: { requested: true },
+      } as unknown as Stripe.AccountCreateParams["capabilities"],
     });
     accountId = account.id;
     if (profile) {
@@ -57,8 +63,13 @@ export function resolveAllowedPaymentMethods(params: {
   balanceDue: number;
   maxCardAmountOverride: string | null;
   defaultMaxCardAmount: string | null;
-}): Array<"au_becs_debit" | "card"> {
-  const methods: Array<"au_becs_debit" | "card"> = ["au_becs_debit"];
+  payToPaymentsFlag?: boolean;
+  payToEnabled?: boolean;
+}): Array<"payto" | "au_becs_debit" | "card"> {
+  const usePayTo = Boolean(params.payToPaymentsFlag && params.payToEnabled);
+  const methods: Array<"payto" | "au_becs_debit" | "card"> = usePayTo
+    ? ["payto"]
+    : ["au_becs_debit"];
   if (!params.allowCardPayment) return methods;
   const cap = params.maxCardAmountOverride ?? params.defaultMaxCardAmount;
   if (cap !== null && params.balanceDue > Number(cap)) {
@@ -108,7 +119,7 @@ export async function createDirectChargeCheckoutCommand(
   const session = await stripe.checkout.sessions.create(
     {
       mode: "payment",
-      payment_method_types: paymentMethods,
+      payment_method_types: paymentMethods as unknown as Stripe.Checkout.SessionCreateParams.PaymentMethodType[],
       line_items: [
         {
           price_data: {
@@ -164,7 +175,11 @@ export async function handleStripeConnectWebhook(
     const account = event.data.object as Stripe.Account;
     await db
       .update(tmBusinessProfiles)
-      .set({ stripeChargesEnabled: Boolean(account.charges_enabled), updatedAt: new Date() })
+      .set({
+        stripeChargesEnabled: Boolean(account.charges_enabled),
+        payToEnabled: (account.capabilities as Record<string, unknown> | undefined)?.payto_payments === "active",
+        updatedAt: new Date(),
+      })
       .where(eq(tmBusinessProfiles.stripeAccountId, account.id));
   } else if (event.type === "checkout.session.completed") {
     const session = event.data.object as Stripe.Checkout.Session;
@@ -172,13 +187,22 @@ export async function handleStripeConnectWebhook(
     const tenantId = session.metadata?.tenantId;
     const appId = session.metadata?.appId;
     if (invoiceId && tenantId && appId && session.amount_total) {
-      const paymentMethod = session.payment_method_types?.includes("au_becs_debit") &&
+      const [ownerMember] = await db
+        .select({ userId: tenantMembers.userId })
+        .from(tenantMembers)
+        .where(and(eq(tenantMembers.tenantId, tenantId), eq(tenantMembers.role, "OWNER")))
+        .limit(1);
+      const actorUserId = ownerMember?.userId ?? tenantId;
+      const paymentMethod = session.payment_method_types?.includes("payto") &&
         !session.payment_method_types?.includes("card")
-        ? "STRIPE_BECS"
-        : "STRIPE_CARD";
+        ? "STRIPE_PAYTO"
+        : session.payment_method_types?.includes("au_becs_debit") &&
+          !session.payment_method_types?.includes("card")
+          ? "STRIPE_BECS"
+          : "STRIPE_CARD";
       await recordInvoicePaymentCommand(
         db,
-        { tenantId, appId, userId: tenantId },
+        { tenantId, appId, userId: actorUserId },
         {
           invoiceId,
           amount: session.amount_total / 100,

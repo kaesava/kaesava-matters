@@ -591,6 +591,18 @@ Drops unused columns: `envelopes.{emoji,colorKey}`, `user_preferences.theme`, `t
 | `stripeAccountId` | varchar | Yes | Connected Stripe Standard account ID |
 | `stripeChargesEnabled` | boolean | No | Whether Stripe Connect charges are enabled |
 | `defaultMaxCardAmount` | numeric | Yes | Optional default maximum card payment amount |
+| `defaultGstMode` | varchar | No | Default GST mode (`EXCLUSIVE`, `INCLUSIVE`, `GST_FREE`) |
+| `defaultCallOutFee` | numeric | Yes | Default call-out fee |
+| `defaultMarkupPct` | numeric | No | Default material markup percentage |
+| `defaultSuperRatePercent` | numeric | No | Default Superannuation Guarantee rate (%) |
+| `targetMarginPct` | numeric | No | Default target job profit margin (%) |
+| `payIdType` | varchar | Yes | PayID type (`ABN`, `EMAIL`, `PHONE`) |
+| `payIdValue` | varchar | Yes | PayID identifier value |
+| `logoFileNoteId` | uuid | Yes | Business logo file note FK (`file_notes.id`) |
+| `payToEnabled` | boolean | No | Whether Stripe Australia PayTo is active |
+| `quoteFollowUpDaysJson` | jsonb | No | Quote follow-up day offsets |
+| `googleReviewUrl` | text | Yes | Google Business Review URL |
+| `supplierInboxSlug` | varchar | Yes | Unique slug for supplier email-in PDFs |
 | `tenantId` | uuid | No | Tenant Foreign Key (RLS isolation) |
 | `appId` | uuid | No | Application ID |
 | `createdAt` | timestamp | No | Creation timestamp |
@@ -737,6 +749,7 @@ Drops unused columns: `envelopes.{emoji,colorKey}`, `user_preferences.theme`, `t
 | `completedAt` | timestamp | Yes | Completed timestamp |
 | `estimatedHours` | numeric | Yes | Estimated hours |
 | `quotedAmountExTax` | numeric | Yes | Quoted amount ex-tax |
+| `targetMarginPct` | numeric | Yes | Per-job target profit margin (%) |
 | `hasUnbilledExtras` | boolean | No | Unbilled extras flag |
 | `purchaseOrderNumber` | varchar | Yes | Purchase order number |
 | `internalNotes` | text | Yes | Internal notes |
@@ -804,7 +817,11 @@ Drops unused columns: `envelopes.{emoji,colorKey}`, `user_preferences.theme`, `t
 | `startedAt` | timestamp | No | Start timestamp |
 | `endedAt` | timestamp | Yes | End timestamp |
 | `durationMinutes` | integer | No | Duration in minutes |
+| `breakMinutes` | integer | No | Unpaid break duration in minutes |
 | `isBillable` | boolean | No | Billable flag |
+| `approvalStatus` | varchar | No | Timesheet approval status (`DRAFT`, `SUBMITTED`, `APPROVED`, `EXPORTED`) |
+| `approvedBy` | uuid | Yes | Approver User ID |
+| `approvedAt` | timestamp | Yes | Approval timestamp |
 | `hourlyCostSnapshot` | numeric | No | Cost rate snapshot |
 | `hourlyChargeSnapshot` | numeric | No | Charge rate snapshot |
 | `invoicedInInvoiceId` | uuid | Yes | Invoice FK once billed |
@@ -834,6 +851,9 @@ Drops unused columns: `envelopes.{emoji,colorKey}`, `user_preferences.theme`, `t
 | `totalIncTax` | numeric | No | Total inc-tax |
 | `approvedAt` | timestamp | Yes | Approval timestamp |
 | `approvedByName` | varchar | Yes | Approver name |
+| `signatureSvg` | text | Yes | Customer approval signature SVG path data |
+| `approvalMethod` | varchar | Yes | Approval method (`ON_SCREEN_SIGN`, `SMS`, `VERBAL`) |
+| `evidenceFileNoteId` | uuid | Yes | Supporting photo evidence file note FK (`file_notes.id`) |
 | `tenantId` | uuid | No | Tenant Foreign Key (RLS isolation) |
 | `appId` | uuid | No | Application ID |
 | `createdAt` | timestamp | No | Creation timestamp |
@@ -933,6 +953,9 @@ Drops unused columns: `envelopes.{emoji,colorKey}`, `user_preferences.theme`, `t
 | `depositValue` | numeric | No | Deposit percentage or fixed amount |
 | `depositAmountDue` | numeric | No | Calculated deposit amount due |
 | `portalTokenHash` | varchar | Yes | SHA-256 hash of customer portal token |
+| `portalTokenEnc` | text | Yes | Sealed portal token for copy-link persistence |
+| `followUpEnabled` | boolean | No | Whether automated quote follow-ups are enabled |
+| `followUpStage` | integer | No | Last automated quote follow-up stage sent |
 | `sentAt` | timestamp | Yes | Timestamp quote was sent |
 | `viewedAt` | timestamp | Yes | Timestamp customer viewed portal |
 | `acceptedAt` | timestamp | Yes | Timestamp customer accepted quote |
@@ -1052,6 +1075,7 @@ Drops unused columns: `envelopes.{emoji,colorKey}`, `user_preferences.theme`, `t
 | `allowCardPayment` | boolean | No | Whether card payment is enabled on portal |
 | `maxCardAmountOverride` | numeric | Yes | Optional per-invoice card payment cap |
 | `portalTokenHash` | varchar | Yes | SHA-256 hash of customer portal token |
+| `portalTokenEnc` | text | Yes | Sealed portal token for copy-link persistence |
 | `chasingEnabled` | boolean | No | Whether automated overdue reminders are enabled |
 | `chasingScheduleDaysJson` | jsonb | No | Reminder day offsets relative to due date |
 | `lastChasedStage` | integer | Yes | Last chasing stage offset sent |
@@ -1154,6 +1178,8 @@ Drops unused columns: `envelopes.{emoji,colorKey}`, `user_preferences.theme`, `t
 | `tokenExpiresAt` | timestamp | Yes | Access token expiry timestamp |
 | `lastSyncedAt` | timestamp | Yes | Last successful sync timestamp |
 | `syncCursor` | varchar | Yes | Provider delta sync cursor |
+| `oauthState` | varchar | Yes | OAuth2 CSRF state token |
+| `oauthVerifier` | text | Yes | OAuth2 PKCE code verifier |
 | `tenantId` | uuid | No | Tenant Foreign Key (RLS isolation) |
 | `appId` | uuid | No | Application ID |
 | `createdAt` | timestamp | No | Creation timestamp |
@@ -1349,6 +1375,7 @@ Drops unused columns: `envelopes.{emoji,colorKey}`, `user_preferences.theme`, `t
 | `invoiceId` | uuid | Yes | Optional Invoice Foreign Key (`tm_invoices.id`) |
 | `customerId` | uuid | No | Customer Foreign Key (`tm_customers.id`) |
 | `googleReviewUrl` | text | Yes | Google Business Profile review URL |
+| `publicTokenHash` | varchar | Yes | SHA-256 hash of public review token |
 | `ratingScore` | integer | Yes | Customer satisfaction rating (1–5) |
 | `redirectedToGoogleAt` | timestamp | Yes | Timestamp when >= 4 star rating redirected to Google |
 | `sentAt` | timestamp | No | Timestamp when review request was sent |

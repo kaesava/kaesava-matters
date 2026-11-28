@@ -21,6 +21,8 @@ export const ExtractReceiptInput = z
   .strict();
 
 export interface AiGatewayEnv {
+  CF_ACCOUNT_ID?: string;
+  CF_AI_GATEWAY_ID?: string;
   CLOUDFLARE_ACCOUNT_ID?: string;
   CLOUDFLARE_AI_GATEWAY_ID?: string;
   CLOUDFLARE_API_TOKEN?: string;
@@ -35,10 +37,13 @@ export async function extractReceiptViaAiVisionQuery(
   const prompt =
     "Extract supplier receipt fields as strict JSON with keys: supplierName, supplierAbn, issueDate (YYYY-MM-DD), subtotalExTax, taxAmount, totalIncTax.";
 
+  const accountId = env.CF_ACCOUNT_ID ?? env.CLOUDFLARE_ACCOUNT_ID;
+  const gatewayId = env.CF_AI_GATEWAY_ID ?? env.CLOUDFLARE_AI_GATEWAY_ID;
+
   let rawText = "";
-  if (env.CLOUDFLARE_ACCOUNT_ID && env.CLOUDFLARE_AI_GATEWAY_ID && env.CLOUDFLARE_API_TOKEN) {
+  if (accountId && gatewayId && env.CLOUDFLARE_API_TOKEN) {
     const fn = env.fetcher ?? fetch;
-    const url = `https://gateway.ai.cloudflare.com/v1/${env.CLOUDFLARE_ACCOUNT_ID}/${env.CLOUDFLARE_AI_GATEWAY_ID}/workers-ai/@cf/meta/llama-3.2-11b-vision-instruct`;
+    const url = `https://gateway.ai.cloudflare.com/v1/${accountId}/${gatewayId}/workers-ai/@cf/meta/llama-3.2-11b-vision-instruct`;
     const res = await fn(url, {
       method: "POST",
       headers: {
@@ -58,6 +63,9 @@ export async function extractReceiptViaAiVisionQuery(
         ],
       }),
     });
+    if (!res.ok) {
+      throw new Error(`AI Gateway request failed (${res.status})`);
+    }
     const json = (await res.json()) as { result?: { response?: string }; response?: string };
     rawText = json.result?.response ?? json.response ?? "";
   } else if (env.AI) {

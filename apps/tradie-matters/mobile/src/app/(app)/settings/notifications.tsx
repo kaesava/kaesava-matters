@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Linking, StyleSheet, Text, View } from "react-native";
 import { useRouter } from "expo-router";
 import { t } from "@kaesava/i18n";
-import { MobileButton, MobileScreenWrapper, SettingsCard, SwitchRow, showMobileConfirm, useMobileToast } from "@kaesava/ui/mobile";
+import { DESIGN_TOKENS, MobileButton, MobileScreenWrapper, SettingsCard, SwitchRow, showMobileConfirm, useMobileToast } from "@kaesava/ui/mobile";
 import { authClient } from "../../../lib/auth";
 import { getPushPlatform, registerPushNotificationsAsync, unregisterCachedPushToken } from "../../../lib/push";
 import { trpc } from "../../../lib/trpc";
@@ -94,5 +94,5 @@ export default function NotificationSettingsScreen() {
 
 const styles = StyleSheet.create({
   container: { padding: 16, gap: 12, paddingBottom: 32 },
-  desc: { fontSize: 13, color: "#64748b", marginBottom: 4 },
+  desc: { fontSize: 13, color: DESIGN_TOKENS.colors.textMuted, marginBottom: 4 },
 });

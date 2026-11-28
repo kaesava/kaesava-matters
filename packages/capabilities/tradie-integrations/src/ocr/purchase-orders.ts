@@ -118,7 +118,18 @@ export async function createPurchaseOrderCommand(
   return po;
 }
 
-export async function sendPurchaseOrderCommand(db: DbOrTx, ctx: IntegrationsContext, poId: string) {
+export interface PurchaseOrderEmailEnv {
+  RESEND_API_KEY?: string;
+  RESEND_FROM_EMAIL?: string;
+  fetcher?: typeof fetch;
+}
+
+export async function sendPurchaseOrderCommand(
+  db: DbOrTx,
+  ctx: IntegrationsContext,
+  poId: string,
+  env: PurchaseOrderEmailEnv = {}
+) {
   const now = new Date();
   const [po] = await db
     .update(tmPurchaseOrders)
@@ -126,7 +137,39 @@ export async function sendPurchaseOrderCommand(db: DbOrTx, ctx: IntegrationsCont
     .where(and(eq(tmPurchaseOrders.id, poId), eq(tmPurchaseOrders.tenantId, ctx.tenantId), eq(tmPurchaseOrders.appId, ctx.appId)))
     .returning();
   if (!po) throw new Error("Purchase order not found.");
-  return po;
+
+  const totalExTax = Number(
+    po.linesJson.reduce((acc, line) => acc + line.quantity * line.unitCostExTax, 0).toFixed(2)
+  );
+  const totalIncTax = Number((totalExTax * 1.1).toFixed(2));
+
+  if (po.supplierEmail && env.RESEND_API_KEY) {
+    const fn = env.fetcher ?? fetch;
+    const linesHtml = po.linesJson
+      .map(
+        (l) =>
+          `<tr><td>${l.description}</td><td>${l.quantity}</td><td>$${l.unitCostExTax.toFixed(2)}</td></tr>`
+      )
+      .join("");
+    const res = await fn("https://api.resend.com/emails", {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${env.RESEND_API_KEY}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        from: env.RESEND_FROM_EMAIL ?? "orders@tradiematters.kaesava.au",
+        to: [po.supplierEmail],
+        subject: `Purchase Order ${po.poNumber} from Tradie Matters`,
+        html: `<h2>Purchase Order ${po.poNumber}</h2><p>Supplier: ${po.supplierName}</p><table><thead><tr><th>Item</th><th>Qty</th><th>Unit Ex Tax</th></tr></thead><tbody>${linesHtml}</tbody></table><p><strong>Total Ex Tax:</strong> $${totalExTax.toFixed(2)}<br/><strong>Total Inc GST:</strong> $${totalIncTax.toFixed(2)}</p>${po.notes ? `<p>Notes: ${po.notes}</p>` : ""}`,
+      }),
+    });
+    if (!res.ok) {
+      throw new Error(`Resend PO email failed (${res.status})`);
+    }
+  }
+
+  return { ...po, totalExTax, totalIncTax };
 }
 
 export async function convertPurchaseOrderToBillCommand(db: DbOrTx, ctx: IntegrationsContext, poId: string) {

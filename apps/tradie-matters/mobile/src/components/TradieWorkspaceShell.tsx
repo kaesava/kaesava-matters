@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { t } from "@kaesava/i18n";
 import { useOutboxSync } from "@kaesava/mobile-core";
 import {
@@ -6,14 +6,19 @@ import {
   type MobileWorkspaceScreenShellProps,
   type OfflineSyncStatus,
 } from "@kaesava/ui/mobile";
+import { MoreMenuModal } from "./MoreMenuModal";
 
 type TradieWorkspaceShellProps = Omit<
   MobileWorkspaceScreenShellProps,
   "syncStatus" | "syncLabel" | "pendingSyncCount" | "onSyncPress"
 >;
 
-export function TradieWorkspaceShell({ children, ...props }: TradieWorkspaceShellProps) {
+export function TradieWorkspaceShell({
+  children,
+  ...props
+}: TradieWorkspaceShellProps) {
   const { isOnline, isSyncing, pendingCount, syncNow } = useOutboxSync();
+  const [moreOpen, setMoreOpen] = useState(false);
 
   const syncStatus: OfflineSyncStatus = isSyncing
     ? "syncing"
@@ -33,14 +38,17 @@ export function TradieWorkspaceShell({ children, ...props }: TradieWorkspaceShel
           : t("tradieMobile.syncOnlineLabel");
 
   return (
-    <MobileWorkspaceScreenShell
-      {...props}
-      syncStatus={syncStatus}
-      syncLabel={syncLabel}
-      pendingSyncCount={pendingCount}
-      onSyncPress={() => void syncNow()}
-    >
-      {children}
-    </MobileWorkspaceScreenShell>
+    <>
+      <MobileWorkspaceScreenShell
+        {...props}
+        syncStatus={syncStatus}
+        syncLabel={syncLabel}
+        pendingSyncCount={pendingCount}
+        onSyncPress={() => void syncNow()}
+      >
+        {children}
+      </MobileWorkspaceScreenShell>
+      <MoreMenuModal visible={moreOpen} onClose={() => setMoreOpen(false)} />
+    </>
   );
 }

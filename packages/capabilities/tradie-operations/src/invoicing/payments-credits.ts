@@ -7,6 +7,7 @@ import {
   tmInvoicePayments,
   tmInvoiceRefunds,
   tmInvoices,
+  tmJobs,
   type DbOrTx,
 } from "@kaesava/db/rings/tradie-matters";
 import type { InvoiceCommandContext } from "./commands.js";
@@ -27,7 +28,7 @@ export async function recordInvoicePaymentCommand(
   input: {
     invoiceId: string;
     amount: number;
-    paymentMethod: "STRIPE_CARD" | "STRIPE_BECS" | "BANK_TRANSFER" | "CASH" | "CUSTOMER_CREDIT";
+    paymentMethod: "STRIPE_CARD" | "STRIPE_BECS" | "STRIPE_PAYTO" | "BANK_TRANSFER" | "CASH" | "CUSTOMER_CREDIT";
     reference?: string | null;
     stripePaymentIntentId?: string | null;
     stripeChargeId?: string | null;
@@ -79,6 +80,17 @@ export async function recordInvoicePaymentCommand(
       updatedBy: ctx.userId,
     })
     .where(eq(tmInvoices.id, invoice.id));
+
+  if (newBalanceDue === 0 && invoice.invoiceType === "FINAL" && invoice.jobId) {
+    await db
+      .update(tmJobs)
+      .set({
+        status: "PAID",
+        updatedAt: now,
+        updatedBy: ctx.userId,
+      })
+      .where(and(eq(tmJobs.id, invoice.jobId), eq(tmJobs.tenantId, ctx.tenantId)));
+  }
 
   return payment;
 }

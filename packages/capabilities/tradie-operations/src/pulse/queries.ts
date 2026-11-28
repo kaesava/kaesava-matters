@@ -3,6 +3,7 @@ import {
   tmInvoices,
   tmJobs,
   tmMaterialUsages,
+  tmSupplierBills,
   tmTimeEntries,
   type DbOrTx,
 } from "@kaesava/db/rings/tradie-matters";
@@ -31,11 +32,12 @@ export async function getJobMarginQuery(
     return { redacted: true as const, revenueExTax: null, labourCost: null, materialCost: null, grossProfit: null, marginPct: null };
   }
 
-  const [job, invoices, timeEntries, materials] = await Promise.all([
+  const [job, invoices, timeEntries, materials, supplierBills] = await Promise.all([
     db.select().from(tmJobs).where(and(eq(tmJobs.id, params.jobId), eq(tmJobs.tenantId, params.tenantId))).limit(1),
     db.select().from(tmInvoices).where(and(eq(tmInvoices.jobId, params.jobId), ne(tmInvoices.status, "VOID"), isNull(tmInvoices.archivedAt))),
     db.select().from(tmTimeEntries).where(and(eq(tmTimeEntries.jobId, params.jobId), isNull(tmTimeEntries.archivedAt))),
     db.select().from(tmMaterialUsages).where(and(eq(tmMaterialUsages.jobId, params.jobId), isNull(tmMaterialUsages.archivedAt))),
+    db.select().from(tmSupplierBills).where(and(eq(tmSupplierBills.jobId, params.jobId), isNull(tmSupplierBills.archivedAt))),
   ]);
 
   const invoicedExTax = invoices.reduce((s, inv) => s + Number(inv.subtotalExTax), 0);
@@ -44,7 +46,8 @@ export async function getJobMarginQuery(
     timeEntries.reduce((s, t) => s + (t.durationMinutes / 60) * Number(t.hourlyCostSnapshot), 0)
   );
   const materialCost = round2(
-    materials.reduce((s, m) => s + Number(m.quantity) * Number(m.unitCostSnapshot), 0)
+    materials.reduce((s, m) => s + Number(m.quantity) * Number(m.unitCostSnapshot), 0) +
+      supplierBills.reduce((s, b) => s + Number(b.subtotalExTax), 0)
   );
   const grossProfit = round2(revenueExTax - labourCost - materialCost);
   const marginPct = revenueExTax > 0 ? round2((grossProfit / revenueExTax) * 100) : 0;

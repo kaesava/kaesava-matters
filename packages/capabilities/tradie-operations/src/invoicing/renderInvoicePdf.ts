@@ -12,6 +12,13 @@ export interface RenderInvoicePdfParams {
   documentTitle: string;
   customerName: string;
   abn: string | null;
+  businessName?: string | null;
+  buyerAbn?: string | null;
+  payIdType?: string | null;
+  payIdValue?: string | null;
+  bankAccountName?: string | null;
+  bankBsb?: string | null;
+  bankAccountNumber?: string | null;
   gstRegistered: boolean;
   issueDate: string;
   dueDate: string;
@@ -30,11 +37,15 @@ export interface RenderInvoicePdfParams {
 function buildInvoicePdfBytes(p: RenderInvoicePdfParams): Uint8Array {
   return buildStructuredPdfBytes({
     title: `${p.documentTitle} ${p.invoiceNumber}`,
-    headerRight: p.abn ? `ABN ${p.abn}` : undefined,
+    headerRight: [p.businessName, p.abn ? `ABN ${p.abn}` : null].filter(Boolean).join(" | ") || undefined,
     metaLines: [
-      `Customer: ${p.customerName}`,
+      `Customer: ${p.customerName}${p.buyerAbn ? ` (ABN ${p.buyerAbn})` : ""}`,
       `Issue Date: ${p.issueDate}   Due Date: ${p.dueDate}`,
       ...(p.gstRegistered ? [] : ["No GST has been charged"]),
+      ...(p.payIdValue ? [`PayID (${p.payIdType ?? "ID"}): ${p.payIdValue}`] : []),
+      ...(p.bankBsb && p.bankAccountNumber
+        ? [`Bank: ${p.bankAccountName ?? p.businessName ?? ""} BSB ${p.bankBsb} Acc ${p.bankAccountNumber} Ref ${p.invoiceNumber}`]
+        : []),
     ],
     columns: [
       { label: "Description", width: 270, align: "left" },

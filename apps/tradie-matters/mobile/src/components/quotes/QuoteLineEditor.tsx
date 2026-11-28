@@ -49,7 +49,11 @@ export function QuoteLineEditor({
                 label={t("tradieMobile.quantityLabel")}
                 value={String(line.quantity)}
                 keyboardType="decimal-pad"
-                onChangeText={(v) => onUpdateLine(idx, { quantity: Number(v) || 1 })}
+                onChangeText={(v) => {
+                  const cleaned = v.replace(/[^0-9.]/g, "");
+                  const parsed = parseFloat(cleaned);
+                  onUpdateLine(idx, { quantity: Number.isFinite(parsed) && parsed > 0 ? parsed : 1 });
+                }}
               />
             </View>
             <View style={styles.half}>

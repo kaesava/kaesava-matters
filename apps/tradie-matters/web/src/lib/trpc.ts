@@ -137,7 +137,7 @@ type NestedProcedures = {
     create: MI<CreatePricebookItemInputType, PricebookItemOut>;
     update: MI<UpdatePricebookItemInputType, PricebookItemOut>;
     archive: MI<{ id: string }, { success: boolean }>;
-    installStarterPack: MI<{ packKey: "ELECTRICAL" | "PLUMBING" | "HVAC" | "CARPENTRY" | "PAINTING" | "GENERAL" }, { insertedCount: number }>;
+    installStarterPack: MI<{ packKey: "ELECTRICAL" | "PLUMBING" | "HVAC" | "CARPENTRY" | "PAINTING" | "LANDSCAPING" | "GENERAL" }, { insertedCount: number }>;
     importCsv: MI<{ source: "XERO" | "TRADIFY" | "SERVICEM8" | "FERGUS"; csvText: string }, { importedCount: number }>;
   }>;
   jobs: R<{

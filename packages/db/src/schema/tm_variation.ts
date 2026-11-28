@@ -1,6 +1,7 @@
 import { pgTable, uuid, varchar, text, numeric, timestamp } from "drizzle-orm/pg-core";
 import { tenantAndTimestamps } from "./base.js";
 import { tmJobs } from "./tm_job.js";
+import { fileNotes } from "./file_note.js";
 
 /**
  * Job scope variation / change order requiring customer approval.
@@ -19,5 +20,8 @@ export const tmVariations = pgTable("tm_variations", {
   totalIncTax: numeric("total_inc_tax", { precision: 12, scale: 2 }).notNull().default("0.00"),
   approvedAt: timestamp("approved_at", { withTimezone: true }),
   approvedByName: varchar("approved_by_name", { length: 255 }),
+  signatureSvg: text("signature_svg"),
+  approvalMethod: varchar("approval_method", { length: 24 }),
+  evidenceFileNoteId: uuid("evidence_file_note_id").references(() => fileNotes.id),
   ...tenantAndTimestamps,
 });

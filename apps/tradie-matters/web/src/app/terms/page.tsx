@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import React from "react";
 import { t } from "@kaesava/i18n";
+import { LegalDocumentLayout } from "@kaesava/ui/web";
 import "../../i18n";
 import { TradiePublicHeader } from "../../components/TradiePublicHeader";
 import { TradiePublicFooter } from "../../components/TradiePublicFooter";
@@ -14,23 +15,16 @@ export const metadata: Metadata = {
 
 export default function TradieTermsOfServicePage() {
   return (
-    <div className="min-h-screen bg-[#F7F8FA] text-[#1B2B4B] font-sans selection:bg-[#2563eb] selection:text-white flex flex-col justify-between">
-      <TradiePublicHeader />
-
-      <main className="max-w-4xl mx-auto px-6 py-12 space-y-10 flex-1 w-full">
-        <div>
-          <div className="inline-block px-3 py-1 bg-blue-50 border border-blue-200 text-blue-700 text-xs font-bold rounded-full mb-3 uppercase tracking-wider">
-            {t("terms.complianceBadge")}
-          </div>
-          <h1 className="text-3xl sm:text-4xl font-extrabold tracking-tight text-[#1B2B4B]">
-            {t("terms.title")}
-          </h1>
-          <p className="text-xs sm:text-sm text-slate-500 mt-2 font-medium">
-            {t("terms.lastUpdated")}
-          </p>
-        </div>
-
-        <div className="p-6 bg-amber-50/80 border border-amber-200/90 rounded-3xl shadow-xs space-y-3">
+    <LegalDocumentLayout
+      title={t("terms.title")}
+      lastUpdated={t("terms.lastUpdated")}
+      entityName="KSHETRAPALAPURAM, KALYANARAMAN KAESAVA (Individual/Sole Trader, VIC 3030, Australia)"
+      jurisdiction="Victoria, Australia"
+      headerSlot={<TradiePublicHeader />}
+      footerSlot={<TradiePublicFooter />}
+    >
+      <div className="space-y-8">
+        <div className="p-6 bg-amber-50/80 border border-amber-200/90 rounded-2xl shadow-xs space-y-3">
           <h2 className="text-base font-bold text-amber-950 flex items-center gap-2">
             <span>⚖️</span> {t("tradieWeb.terms.disclaimerBoxTitle")}
           </h2>
@@ -136,9 +130,7 @@ export default function TradieTermsOfServicePage() {
             </div>
           </div>
         </section>
-      </main>
-
-      <TradiePublicFooter />
-    </div>
+      </div>
+    </LegalDocumentLayout>
   );
 }

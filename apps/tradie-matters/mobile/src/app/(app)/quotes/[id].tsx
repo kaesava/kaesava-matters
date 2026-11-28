@@ -33,7 +33,7 @@ export default function QuoteDetailScreen() {
     void utils.quotes.invalidate();
     toast.success(t("tradieMobile.quoteSentToast"));
     await Share.share({
-      message: `${data.quote.quoteNumber} · ${data.quote.title}: https://tradie.kaesava.au/portal/quote/${sent.rawToken}`,
+      message: `${data.quote.quoteNumber} · ${data.quote.title}: https://tradiematters.kaesava.au/q/${sent.rawToken}`,
     });
   };
 

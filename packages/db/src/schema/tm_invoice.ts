@@ -35,6 +35,7 @@ export const tmInvoices = pgTable("tm_invoices", {
   allowCardPayment: boolean("allow_card_payment").notNull().default(true),
   maxCardAmountOverride: numeric("max_card_amount_override", { precision: 12, scale: 2 }),
   portalTokenHash: varchar("portal_token_hash", { length: 128 }),
+  portalTokenEnc: text("portal_token_enc"),
   chasingEnabled: boolean("chasing_enabled").notNull().default(true),
   chasingScheduleDaysJson: jsonb("chasing_schedule_days_json").$type<number[]>().notNull().default([-3, 3, 14]),
   lastChasedStage: integer("last_chased_stage"),

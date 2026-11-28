@@ -14,5 +14,7 @@ export const tmAccountingConnections = pgTable("tm_accounting_connections", {
   tokenExpiresAt: timestamp("token_expires_at", { withTimezone: true }),
   lastSyncedAt: timestamp("last_synced_at", { withTimezone: true }),
   syncCursor: varchar("sync_cursor", { length: 255 }),
+  oauthState: varchar("oauth_state", { length: 128 }),
+  oauthVerifier: text("oauth_verifier"),
   ...tenantAndTimestamps,
 });

@@ -6,6 +6,7 @@ export type TradePackKey =
   | "HVAC"
   | "CARPENTRY"
   | "PAINTING"
+  | "LANDSCAPING"
   | "GENERAL";
 
 export interface TradeStarterPack {
@@ -223,6 +224,16 @@ export const TRADE_STARTER_PACKS: Record<TradePackKey, TradeStarterPack> = {
         isFavourite: true,
         supplierName: "Dulux Trade",
       },
+    ],
+  },
+  LANDSCAPING: {
+    key: "LANDSCAPING",
+    title: "Landscaping",
+    items: [
+      { sku: "LAND-CALLOUT", name: "Site Consultation & Measure", itemType: "LABOUR", category: "Callout", unitOfMeasure: "each", unitCostExTax: "0.00", markupPct: "0.00", sellPriceExTax: "95.00", taxCode: "GST", isFavourite: true },
+      { sku: "LAND-LABOUR", name: "Landscaper Labour (Per Hour)", itemType: "LABOUR", category: "Labour", unitOfMeasure: "hour", unitCostExTax: "52.00", markupPct: "0.00", sellPriceExTax: "115.00", taxCode: "GST", isFavourite: true },
+      { sku: "LAND-TURF", name: "Sir Walter Buffalo Turf (m2)", itemType: "MATERIAL", category: "Turf", unitOfMeasure: "m2", unitCostExTax: "12.00", markupPct: "0.00", sellPriceExTax: "22.00", taxCode: "GST", isFavourite: false },
+      { sku: "LAND-SOIL", name: "Organic Garden Soil (m3)", itemType: "MATERIAL", category: "Soil & Mulch", unitOfMeasure: "m3", unitCostExTax: "65.00", markupPct: "0.00", sellPriceExTax: "110.00", taxCode: "GST", isFavourite: false },
     ],
   },
   GENERAL: {

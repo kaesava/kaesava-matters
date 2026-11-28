@@ -1,10 +1,14 @@
 import type { Metadata, Viewport } from "next";
+import { Inter, JetBrains_Mono } from "next/font/google";
 import React from "react";
 import { DESIGN_TOKENS } from "@kaesava/ui/tokens";
 import { AppProviders } from "../providers/AppProviders";
 import { GoogleAnalytics } from "../components/GoogleAnalytics";
 import "../i18n";
 import "./globals.css";
+
+const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
+const jetbrainsMono = JetBrains_Mono({ subsets: ["latin"], variable: "--font-jetbrains-mono" });
 
 const baseUrl = "https://tradiematters.kaesava.au";
 
@@ -90,8 +94,8 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en">
-      <body className="bg-[#F7F8FA] text-[#1B2B4B] antialiased font-sans">
+    <html lang="en" className={`${inter.variable} ${jetbrainsMono.variable} scroll-smooth`} suppressHydrationWarning>
+      <body className="bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 antialiased font-sans">
         <GoogleAnalytics />
         <AppProviders>{children}</AppProviders>
       </body>

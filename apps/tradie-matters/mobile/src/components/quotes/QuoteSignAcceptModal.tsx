@@ -3,6 +3,7 @@ import { View } from "react-native";
 import { t } from "@kaesava/i18n";
 import {
   ChipSelect,
+  DESIGN_TOKENS,
   MobileButton,
   MobileFormLabel,
   MobileInput,
@@ -40,7 +41,7 @@ export function QuoteSignAcceptModal({ visible, quoteId, optionGroups, onClose }
 
   const handleAccept = async () => {
     const sent = await sendMut.mutateAsync({ id: quoteId });
-    const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 140">${paths.map((d) => `<path d="${d}" stroke="#1B2B4B" fill="none"/>`).join("")}</svg>`;
+    const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 140">${paths.map((d) => `<path d="${d}" stroke="${DESIGN_TOKENS.colors.primary}" fill="none"/>`).join("")}</svg>`;
     await acceptMut.mutateAsync({
       rawToken: sent.rawToken,
       signerName: signerName.trim(),

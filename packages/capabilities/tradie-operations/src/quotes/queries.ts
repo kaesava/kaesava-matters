@@ -1,4 +1,4 @@
-import { and, desc, eq, inArray, isNull, lt } from "drizzle-orm";
+import { and, desc, eq, inArray, isNull } from "drizzle-orm";
 import {
   tmCommLogs,
   tmQuoteLines,
@@ -76,16 +76,15 @@ export async function getQuoteByIdQuery(
 
 export async function findQuotesDueForFollowUpQuery(
   db: DbOrTx,
-  cutoffDate: Date
+  _cutoffDate?: Date
 ) {
   return db
     .select()
     .from(tmQuotes)
     .where(
       and(
+        eq(tmQuotes.followUpEnabled, true),
         inArray(tmQuotes.status, ["SENT", "VIEWED"]),
-        lt(tmQuotes.sentAt, cutoffDate),
-        isNull(tmQuotes.followUpSentAt),
         isNull(tmQuotes.archivedAt)
       )
     );

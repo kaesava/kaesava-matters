@@ -1,4 +1,15 @@
+import { z } from "zod";
 import { registerAppManifest } from "@kaesava/config";
+
+export const TradieFeatureFlagsSchema = z.object({
+  accountingSync: z.boolean().default(false),
+  receiptOcr: z.boolean().default(false),
+  smsComms: z.boolean().default(false),
+  reviewBooster: z.boolean().default(false),
+  payToPayments: z.boolean().default(false),
+});
+
+export type TradieFeatureFlags = z.infer<typeof TradieFeatureFlagsSchema>;
 
 export const TRADIE_MATTERS_APP_ID = "5cb11fa2-7faf-49d3-9e3a-01f14d2a7b99";
 
@@ -104,11 +115,18 @@ export function registerTradieMattersApp(): void {
     features: {
       premiumEnabled: false,
       memberInvite: true,
-      offlineSync: false,
+      offlineSync: true,
       foundingMemberPromo: true,
       aiAssistant: false,
       privateMode: false,
       fileNotes: true,
+      appFlags: {
+        accountingSync: false,
+        receiptOcr: false,
+        smsComms: false,
+        reviewBooster: false,
+        payToPayments: false,
+      },
     },
   });
 }

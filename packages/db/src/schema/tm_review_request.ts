@@ -1,4 +1,4 @@
-import { pgTable, uuid, text, integer, timestamp } from "drizzle-orm/pg-core";
+import { pgTable, uuid, text, integer, timestamp, varchar } from "drizzle-orm/pg-core";
 import { tenantAndTimestamps } from "./base.js";
 import { tmJobs } from "./tm_job.js";
 import { tmInvoices } from "./tm_invoice.js";
@@ -15,6 +15,7 @@ export const tmReviewRequests = pgTable("tm_review_requests", {
     .notNull()
     .references(() => tmCustomers.id),
   googleReviewUrl: text("google_review_url"),
+  publicTokenHash: varchar("public_token_hash", { length: 128 }),
   ratingScore: integer("rating_score"),
   redirectedToGoogleAt: timestamp("redirected_to_google_at", { withTimezone: true }),
   sentAt: timestamp("sent_at", { withTimezone: true }).notNull().defaultNow(),

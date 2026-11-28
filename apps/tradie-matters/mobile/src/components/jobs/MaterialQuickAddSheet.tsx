@@ -1,7 +1,7 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { View } from "react-native";
 import { t } from "@kaesava/i18n";
-import { enqueueMutation, useOutboxSync } from "@kaesava/mobile-core";
+import { enqueueMutation, useOfflineDraftAutoSave, useOutboxSync } from "@kaesava/mobile-core";
 import {
   ChipSelect,
   MobileAmountInput,
@@ -40,6 +40,24 @@ export function MaterialQuickAddSheet({
   const [qty, setQty] = useState("1.00");
   const [price, setPrice] = useState("0.00");
   const [isBillable, setIsBillable] = useState(true);
+
+  const { loadDraft } = useOfflineDraftAutoSave({
+    tenantId,
+    userId: "",
+    draftKey: `material-draft:${jobId}`,
+    value: { description, qty, price, isBillable },
+    enabled: visible,
+  });
+
+  useEffect(() => {
+    if (!visible) return;
+    void loadDraft().then((draft) => {
+      if (draft?.description) setDescription(draft.description);
+      if (draft?.qty) setQty(draft.qty);
+      if (draft?.price) setPrice(draft.price);
+      if (typeof draft?.isBillable === "boolean") setIsBillable(draft.isBillable);
+    });
+  }, [visible, loadDraft]);
 
   const pbQuery = trpc.pricebook.fuzzySearch.useQuery({ query: search.trim(), limit: 10 }, { enabled: visible });
   const logMut = trpc.field.logMaterialUsage.useMutation({

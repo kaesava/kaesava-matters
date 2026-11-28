@@ -299,7 +299,8 @@ describe("Pulse: Live Job Margin redaction & 12% Payday Super Cash Pulse", () =>
         .mockReturnValueOnce(mockSelectRows([{ id: "j1", quotedAmountExTax: "2000.00" }]))
         .mockReturnValueOnce(mockSelectRows([{ subtotalExTax: "2500.00" }]))
         .mockReturnValueOnce(mockSelectRows([{ durationMinutes: 150, hourlyCostSnapshot: "60.00" }]))
-        .mockReturnValueOnce(mockSelectRows([{ quantity: "4.00", unitCostSnapshot: "50.00" }])),
+        .mockReturnValueOnce(mockSelectRows([{ quantity: "4.00", unitCostSnapshot: "50.00" }]))
+        .mockReturnValueOnce(mockSelectRows([])),
     } as unknown as DbOrTx;
 
     const ownerMargin = await getJobMarginQuery(ownerDb, {

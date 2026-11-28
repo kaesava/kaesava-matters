@@ -1,16 +1,20 @@
 "use client";
 
-import React from "react";
+import React, { useMemo, useState } from "react";
 import { Check } from "lucide-react";
 import { t } from "@kaesava/i18n";
-import { Badge, Button, Spinner, useToast } from "@kaesava/ui/web";
+import { Badge, Button, GenericListView, PaginationBar, SkeletonTable, type GenericListColumn, useToast } from "@kaesava/ui/web";
 import { useLocale } from "../../../providers/LocaleProvider";
 import { trpc } from "../../../lib/trpc";
+
+const PAGE_SIZE = 20;
 
 export default function TimesheetsPage() {
   const { success } = useToast();
   const { fmtDateMedium } = useLocale();
   const utils = trpc.useUtils();
+  const [page, setPage] = useState(1);
+  const [search, setSearch] = useState("");
   const listQuery = trpc.timesheets.list.useQuery();
   const approveMut = trpc.timesheets.approve.useMutation({
     onSuccess: async () => {
@@ -19,60 +23,84 @@ export default function TimesheetsPage() {
     },
   });
 
-  if (listQuery.isLoading) return <div className="py-12 flex justify-center"><Spinner size="lg" /></div>;
-  const rows = listQuery.data ?? [];
+  const rows = useMemo(() => {
+    const q = search.trim().toLowerCase();
+    return (listQuery.data ?? [])
+      .filter((r) =>
+        !q ||
+        (r.workerName ?? "").toLowerCase().includes(q) ||
+        (r.jobNumber ?? "").toLowerCase().includes(q) ||
+        (r.jobTitle ?? "").toLowerCase().includes(q),
+      )
+      .map((r) => ({ ...r, id: r.entry.id }));
+  }, [listQuery.data, search]);
+
+  const pagedRows = useMemo(() => rows.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE), [rows, page]);
+  type Row = (typeof rows)[number];
+
+  const columns: GenericListColumn<Row>[] = [
+    { key: "worker", header: t("tradieWeb.crewMemberLabel"), render: (r) => <span className="font-medium text-slate-900 dark:text-slate-100">{r.workerName || r.workerEmail || "-"}</span> },
+    { key: "job", header: t("tradieWeb.selectJobLabel"), render: (r) => <span className="text-slate-600 dark:text-slate-300">{r.jobNumber ? `${r.jobNumber} — ${r.jobTitle ?? ""}` : "-"}</span> },
+    { key: "date", header: t("tradieWeb.visitDateLabel"), align: "center", render: (r) => <span className="text-xs text-slate-500">{fmtDateMedium(r.entry.startedAt)}</span> },
+    { key: "duration", header: t("tradieWeb.durationHeader"), align: "right", render: (r) => <span className="font-mono tabular-nums">{t("tradieWeb.durationMinutes", { minutes: String(r.entry.durationMinutes ?? 0) })}</span> },
+    {
+      key: "status",
+      header: t("tradieJobs.statusLabel"),
+      align: "center",
+      render: (r) => (
+        <Badge variant={r.entry.isBillable ? "success" : "warning"}>
+          {r.entry.isBillable ? t("tradieWeb.billableBadge") : t("tradieWeb.nonBillableBadge")}
+        </Badge>
+      ),
+    },
+    {
+      key: "actions",
+      header: t("common.actions"),
+      align: "center",
+      render: (r) => (
+        <Button
+          type="button"
+          size="sm"
+          variant="secondary"
+          disabled={approveMut.isPending}
+          onClick={() => approveMut.mutate({ entryId: r.entry.id, isBillable: !r.entry.isBillable })}
+        >
+          <Check className="w-3.5 h-3.5" />
+          <span>{r.entry.isBillable ? t("tradieWeb.markNonBillableAction") : t("tradieWeb.approveBillableAction")}</span>
+        </Button>
+      ),
+    },
+  ];
 
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-extrabold text-[#1B2B4B]">{t("tradiePulse.timesheets")}</h1>
+        <h1 className="text-2xl font-extrabold text-slate-900 dark:text-slate-100">{t("tradiePulse.timesheets")}</h1>
         <p className="text-sm text-slate-500 mt-1">{t("tradieWeb.timesheetsSubtitle")}</p>
       </div>
-
-      {rows.length === 0 ? (
-        <div className="ui-card text-center py-10 text-sm text-slate-500">{t("tradieWeb.noTimeEntriesEmpty")}</div>
+      {listQuery.isLoading ? (
+        <SkeletonTable rows={6} />
       ) : (
-        <div className="overflow-x-auto rounded-xl border border-slate-200 bg-white">
-          <table className="w-full text-sm">
-            <thead className="bg-slate-50 border-b border-slate-200 text-xs uppercase text-slate-500">
-              <tr>
-                <th className="px-4 py-3 text-left font-bold">{t("tradieWeb.crewMemberLabel")}</th>
-                <th className="px-4 py-3 text-left font-bold">{t("tradieWeb.selectJobLabel")}</th>
-                <th className="px-4 py-3 text-center font-bold">{t("tradieWeb.visitDateLabel")}</th>
-                <th className="px-4 py-3 text-right font-bold">{t("tradieWeb.durationHeader")}</th>
-                <th className="px-4 py-3 text-center font-bold">{t("tradieJobs.statusLabel")}</th>
-                <th className="px-4 py-3 text-center font-bold">{t("common.actions")}</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-slate-100">
-              {rows.map((r) => (
-                <tr key={r.entry.id}>
-                  <td className="px-4 py-3 text-left font-medium text-[#1B2B4B]">{r.workerName || r.workerEmail || "-"}</td>
-                  <td className="px-4 py-3 text-left text-slate-600">{r.jobNumber ? `${r.jobNumber} — ${r.jobTitle ?? ""}` : "-"}</td>
-                  <td className="px-4 py-3 text-center text-xs text-slate-500">{fmtDateMedium(r.entry.startedAt)}</td>
-                  <td className="px-4 py-3 text-right font-mono">{t("tradieWeb.durationMinutes", { minutes: String(r.entry.durationMinutes ?? 0) })}</td>
-                  <td className="px-4 py-3 text-center">
-                    <Badge variant={r.entry.isBillable ? "success" : "warning"}>
-                      {r.entry.isBillable ? t("tradieWeb.billableBadge") : t("tradieWeb.nonBillableBadge")}
-                    </Badge>
-                  </td>
-                  <td className="px-4 py-3 text-center">
-                    <Button
-                      type="button"
-                      size="sm"
-                      variant="secondary"
-                      disabled={approveMut.isPending}
-                      onClick={() => approveMut.mutate({ entryId: r.entry.id, isBillable: !r.entry.isBillable })}
-                    >
-                      <Check className="w-3.5 h-3.5" />
-                      <span>{r.entry.isBillable ? t("tradieWeb.markNonBillable") : t("tradiePulse.approveTimesheet")}</span>
-                    </Button>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+        <>
+          <GenericListView
+            items={pagedRows}
+            columns={columns}
+            searchValue={search}
+            onSearchChange={(v) => { setSearch(v); setPage(1); }}
+            searchPlaceholder={t("common.searchPlaceholder")}
+            emptyMessage={t("tradieWeb.noTimeEntriesEmpty")}
+          />
+          {rows.length >= 5 && (
+            <PaginationBar
+              page={page}
+              totalPages={Math.max(1, Math.ceil(rows.length / PAGE_SIZE))}
+              totalItems={rows.length}
+              pageSize={PAGE_SIZE}
+              onPageChange={setPage}
+              onPageSizeChange={() => {}}
+            />
+          )}
+        </>
       )}
     </div>
   );

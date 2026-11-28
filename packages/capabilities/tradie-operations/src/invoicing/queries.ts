@@ -1,6 +1,7 @@
-import { and, desc, eq, inArray, isNull, lte } from "drizzle-orm";
+import { and, desc, eq, inArray, isNull } from "drizzle-orm";
 import { hashPortalToken } from "@kaesava/core";
 import {
+  tenants,
   tmBusinessProfiles,
   tmCreditNotes,
   tmInvoiceLines,
@@ -70,30 +71,54 @@ export async function getInvoiceByPortalTokenQuery(db: DbOrTx, rawToken: string)
     .limit(1);
   if (!invoice) throw new Error("Invoice portal link is invalid or expired.");
 
-  const [lines, profile] = await Promise.all([
+  if (invoice.status === "SENT") {
+    await db
+      .update(tmInvoices)
+      .set({ status: "VIEWED", updatedAt: new Date() })
+      .where(eq(tmInvoices.id, invoice.id));
+  }
+
+  const [lines, profileRows, tenantRows] = await Promise.all([
     db.select().from(tmInvoiceLines).where(and(eq(tmInvoiceLines.invoiceId, invoice.id), isNull(tmInvoiceLines.archivedAt))).orderBy(tmInvoiceLines.sortOrder),
     db.select().from(tmBusinessProfiles).where(and(eq(tmBusinessProfiles.tenantId, invoice.tenantId), eq(tmBusinessProfiles.appId, invoice.appId))).limit(1),
+    db.select({ name: tenants.name }).from(tenants).where(eq(tenants.id, invoice.tenantId)).limit(1),
   ]);
+  const profile = profileRows[0];
 
   const paymentMethods = resolveAllowedPaymentMethods({
     allowCardPayment: invoice.allowCardPayment,
     balanceDue: Number(invoice.balanceDue),
     maxCardAmountOverride: invoice.maxCardAmountOverride,
-    defaultMaxCardAmount: profile[0]?.defaultMaxCardAmount ?? null,
+    defaultMaxCardAmount: profile?.defaultMaxCardAmount ?? null,
+    payToEnabled: profile?.payToEnabled ?? false,
   });
 
-  return { invoice, lines, paymentMethods, stripeChargesEnabled: profile[0]?.stripeChargesEnabled ?? false };
+  return {
+    invoice: invoice.status === "SENT" ? { ...invoice, status: "VIEWED" as const } : invoice,
+    lines,
+    paymentMethods,
+    stripeChargesEnabled: profile?.stripeChargesEnabled ?? false,
+    payToEnabled: profile?.payToEnabled ?? false,
+    allowCardPayment: invoice.allowCardPayment,
+    maxCardAmount: invoice.maxCardAmountOverride ?? profile?.defaultMaxCardAmount ?? null,
+    businessName: tenantRows[0]?.name ?? "Tradie Matters",
+    abn: profile?.abn ?? null,
+    payIdType: profile?.payIdType ?? null,
+    payIdValue: profile?.payIdValue ?? null,
+    bankAccountName: profile?.bankAccountName ?? null,
+    bankBsb: profile?.bankBsb ?? null,
+    bankAccountNumber: profile?.bankAccountNumber ?? null,
+  };
 }
 
-export async function findInvoicesDueForChasingQuery(db: DbOrTx, asOfDate: string) {
+export async function findInvoicesDueForChasingQuery(db: DbOrTx, _asOfDate?: string) {
   return db
     .select()
     .from(tmInvoices)
     .where(
       and(
         eq(tmInvoices.chasingEnabled, true),
-        inArray(tmInvoices.status, ["SENT", "PARTIALLY_PAID", "OVERDUE"]),
-        lte(tmInvoices.dueDate, asOfDate),
+        inArray(tmInvoices.status, ["SENT", "VIEWED", "PARTIALLY_PAID", "OVERDUE"]),
         isNull(tmInvoices.archivedAt)
       )
     );

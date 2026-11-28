@@ -1,5 +1,5 @@
 import React, { useMemo, useState } from "react";
-import { StyleSheet, Text, View } from "react-native";
+import { Linking, StyleSheet, Text, View } from "react-native";
 import { useRouter, type Href } from "expo-router";
 import { t } from "@kaesava/i18n";
 import {
@@ -12,11 +12,12 @@ import {
   MobileVisitAgendaCard,
   MobileWeekStrip,
 } from "@kaesava/capability-calendar/mobile";
-import { DESIGN_TOKENS, MobileButton } from "@kaesava/ui/mobile";
+import { DESIGN_TOKENS, MobileButton, MobileDetailLinkRow } from "@kaesava/ui/mobile";
 import { TradieWorkspaceShell } from "../../components/TradieWorkspaceShell";
 import { OnMyWaySmsButton } from "../../components/jobs/OnMyWaySmsButton";
 import { MobilePaydayCashPulseCard } from "../../components/pulse/MobilePaydayCashPulseCard";
 import { authClient } from "../../lib/auth";
+import { formatIsoDate } from "../../lib/format";
 import { trpc } from "../../lib/trpc";
 
 export default function TodayScreen() {
@@ -26,7 +27,7 @@ export default function TodayScreen() {
   const [selectedDateIso, setSelectedDateIso] = useState(todayIso);
 
   const weekRange = useMemo(() => getWeekRange(selectedDateIso, 1), [selectedDateIso]);
-  const tenantQuery = trpc.getTenant.useQuery(undefined, { enabled: !!session?.user });
+  const governanceQuery = trpc.getGovernanceInfo.useQuery(undefined, { enabled: !!session?.user });
   const profileQuery = trpc.getBusinessProfile.useQuery(undefined, { enabled: !!session?.user });
   const boardQuery = trpc.dispatch.getBoard.useQuery(
     {
@@ -36,19 +37,31 @@ export default function TodayScreen() {
     { enabled: !!session?.user }
   );
 
-  const { dayEvents, countsByDate, visitJobMap, nextVisitEvent } = useMemo(() => {
+  const { dayEvents, countsByDate, visitJobMap, visitAddressMap, nextVisitEvent } = useMemo(() => {
     const visits = boardQuery.data?.visits ?? [];
+    const currentUserId = session?.user?.id;
+    const isOwnerOrAdmin =
+      governanceQuery.data?.userRole === "OWNER" ||
+      governanceQuery.data?.userRole === "ADMIN";
+    const filteredVisits = visits.filter((v) => {
+      if (isOwnerOrAdmin) return true;
+      const assigned = (v as { assignedToUserId?: string | null }).assignedToUserId;
+      return !assigned || assigned === currentUserId;
+    });
     const counts: Record<string, number> = {};
     const jobMap = new Map<string, string>();
-    const allEvents: CalendarEventItem[] = visits.map((v) => {
+    const addrMap = new Map<string, string>();
+    const allEvents: CalendarEventItem[] = filteredVisits.map((v) => {
       const startIso = new Date(v.scheduledStart).toISOString();
       const endIso = new Date(v.scheduledEnd).toISOString();
-      const dayKey = startIso.slice(0, 10);
+      const dayKey = formatIsoDate(v.scheduledStart);
       counts[dayKey] = (counts[dayKey] ?? 0) + 1;
       jobMap.set(v.id, v.jobId);
+      const siteAddr = (v as { siteAddress?: string | null }).siteAddress;
+      if (siteAddr) addrMap.set(v.id, siteAddr);
       return {
         id: v.id,
-        title: v.visitTitle || t("tradieJobs.scheduleVisitAction"),
+        title: (v as { title?: string | null }).title || t("tradieJobs.scheduleVisitAction"),
         subtitle: v.visitNotes ?? undefined,
         startIso,
         endIso,
@@ -56,19 +69,26 @@ export default function TodayScreen() {
         badge: v.status,
       };
     });
-    const forDay = allEvents.filter((e) => e.startIso.slice(0, 10) === selectedDateIso);
-    return { dayEvents: forDay, countsByDate: counts, visitJobMap: jobMap, nextVisitEvent: forDay[0] };
-  }, [boardQuery.data?.visits, selectedDateIso]);
+    const forDay = allEvents.filter((e) => formatIsoDate(e.startIso) === selectedDateIso);
+    return {
+      dayEvents: forDay,
+      countsByDate: counts,
+      visitJobMap: jobMap,
+      visitAddressMap: addrMap,
+      nextVisitEvent: forDay[0],
+    };
+  }, [boardQuery.data?.visits, selectedDateIso, session?.user?.id, governanceQuery.data?.userRole]);
 
   const unscheduledCount = boardQuery.data?.unscheduledJobs.length ?? 0;
   const nextVisitJobId = nextVisitEvent ? visitJobMap.get(nextVisitEvent.id) : undefined;
+  const nextVisitAddress = nextVisitEvent ? visitAddressMap.get(nextVisitEvent.id) : undefined;
   const tradieName = session?.user?.name || profileQuery.data?.businessName || t("tradieMobile.appName");
 
   return (
     <TradieWorkspaceShell
       title={t("tradieMobile.todayTitle")}
       user={session?.user}
-      scrollable={false}
+      scrollable={true}
       onNavigateSettings={() => router.push("/(app)/settings" as Href)}
       topBannerSlot={
         unscheduledCount > 0 ? (
@@ -90,7 +110,7 @@ export default function TodayScreen() {
           onSelectDate={setSelectedDateIso}
           eventCountsByDate={countsByDate}
         />
-        <MobilePaydayCashPulseCard isOwner={tenantQuery.data?.currentUserRole === "OWNER"} />
+        <MobilePaydayCashPulseCard isOwner={governanceQuery.data?.userRole === "OWNER"} />
         {nextVisitEvent ? (
           <>
             <MobileVisitAgendaCard
@@ -100,6 +120,17 @@ export default function TodayScreen() {
                 if (jobId) router.push(`/(app)/jobs/${jobId}` as Href);
               }}
             />
+            {nextVisitAddress ? (
+              <MobileDetailLinkRow
+                label={t("tradieMobile.openInMapsAction")}
+                value={nextVisitAddress}
+                onPress={() =>
+                  void Linking.openURL(
+                    `https://maps.google.com/?q=${encodeURIComponent(nextVisitAddress)}`
+                  )
+                }
+              />
+            ) : null}
             {nextVisitJobId ? <OnMyWaySmsButton jobId={nextVisitJobId} tradieName={tradieName} /> : null}
           </>
         ) : null}

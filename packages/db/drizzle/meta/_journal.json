@@ -526,6 +526,13 @@
       "when": 1784964000000,
       "tag": "0075_tm_chat_sms_credits_and_reviews",
       "breakpoints": true
+    },
+    {
+      "idx": 75,
+      "version": "7",
+      "when": 1785050400000,
+      "tag": "0076_tm_v1_v2_launch_completeness",
+      "breakpoints": true
     }
   ]
 }

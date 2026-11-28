@@ -1,7 +1,8 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { View } from "react-native";
 import { t } from "@kaesava/i18n";
 import type { QuoteLineInputType } from "@tradie-matters/capability-operations";
+import { useOfflineDraftAutoSave } from "@kaesava/mobile-core";
 import {
   ChipSelect,
   MobileButton,
@@ -10,7 +11,7 @@ import {
   MobileModalDialog,
   useMobileToast,
 } from "@kaesava/ui/mobile";
-import { trpc } from "../../lib/trpc";
+import { getActiveTenantId, trpc } from "../../lib/trpc";
 import { PricebookPickerModal } from "./PricebookPickerModal";
 import { QuoteLineEditor } from "./QuoteLineEditor";
 
@@ -30,15 +31,34 @@ export function QuoteBuilderModal({ visible, initialJobId, initialCustomerId, on
   const [lines, setLines] = useState<QuoteLineInputType[]>([]);
   const [pickerOpen, setPickerOpen] = useState(false);
 
+  const { loadDraft, clearDraft } = useOfflineDraftAutoSave({
+    tenantId: getActiveTenantId() ?? "",
+    userId: "",
+    draftKey: `quote-draft:${initialJobId ?? "standalone"}`,
+    value: { title, customerId, lines },
+    enabled: visible,
+  });
+
+  useEffect(() => {
+    if (!visible) return;
+    void loadDraft().then((draft) => {
+      if (draft?.title) setTitle(draft.title);
+      if (draft?.customerId && !initialCustomerId) setCustomerId(draft.customerId);
+      if (draft?.lines?.length) setLines(draft.lines);
+    });
+  }, [visible, loadDraft, initialCustomerId]);
+
   const customersQuery = trpc.customers.list.useQuery({ limit: 30 }, { enabled: visible });
   const createMut = trpc.quotes.create.useMutation({
-    onSuccess: () => {
+    onSuccess: async () => {
+      await clearDraft();
       void utils.quotes.invalidate();
       toast.success(t("tradieMobile.quoteCreatedToast"));
       setTitle("");
       setLines([]);
       onClose();
     },
+    onError: (err) => toast.error(err.message),
   });
 
   const usedKeys = new Set(lines.map((l) => l.optionGroupKey));

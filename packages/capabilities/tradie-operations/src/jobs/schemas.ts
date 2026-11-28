@@ -3,11 +3,13 @@ import { z } from "zod";
 export const JobStatusEnum = z.enum([
   "LEAD",
   "QUOTED",
+  "APPROVED",
   "SCHEDULED",
   "IN_PROGRESS",
   "ON_HOLD",
   "COMPLETED",
   "INVOICED",
+  "PAID",
   "CANCELLED",
 ]);
 

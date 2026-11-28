@@ -12,6 +12,7 @@ export interface EdgeContextEnv {
   NEON_AUTH_BASE_URL?: string;
   NEON_AUTH_JWKS_URL?: string;
   DEFAULT_APP_ID?: string;
+  [key: string]: string | undefined;
 }
 
 export interface ResolvedClaims {
@@ -47,6 +48,7 @@ export interface EdgeContext {
   email: string | null;
   appId: string | null;
   correlationId: string;
+  env?: EdgeContextEnv;
 }
 
 export interface AppEdgeContextFactory {
@@ -358,6 +360,7 @@ export function createAppEdgeContextFactory(options: CreateAppEdgeContextOptions
         email: null,
         appId: null,
         correlationId,
+        env,
       };
     }
 
@@ -380,7 +383,7 @@ export function createAppEdgeContextFactory(options: CreateAppEdgeContextOptions
       appRole,
     };
 
-    return { req, resHeaders, db: requestDb, session, userId: claims.userId, tenantId, email: claims.email, appId, correlationId };
+    return { req, resHeaders, db: requestDb, session, userId: claims.userId, tenantId, email: claims.email, appId, correlationId, env };
   }
 
   return {

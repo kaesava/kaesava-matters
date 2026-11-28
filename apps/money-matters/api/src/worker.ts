@@ -31,6 +31,7 @@ const handleFileNotesRequest = createFileNotesRouteHandler<WorkerEnv>({
 export { isValidRedirectUrl };
 
 export interface WorkerEnv extends PlatformWorkerEnvBase {
+  [key: string]: string | undefined;
   MONEY_MATTERS_APP_ID: string;
   STORAGE_BUCKET_NAME: string;
   STORAGE_ENDPOINT: string;

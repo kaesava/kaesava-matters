@@ -26,6 +26,7 @@ describe("TRADE_STARTER_PACKS & mapPricebookCsv", () => {
       "HVAC",
       "CARPENTRY",
       "PAINTING",
+      "LANDSCAPING",
       "GENERAL",
     ]);
   });

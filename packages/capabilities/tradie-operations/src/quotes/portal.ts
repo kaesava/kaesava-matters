@@ -1,6 +1,8 @@
 import { and, eq, isNull } from "drizzle-orm";
 import { generatePortalToken, hashPortalToken } from "@kaesava/core";
+import { calculateDepositAmount } from "./calculateQuoteTotals.js";
 import {
+  tenants,
   tmBusinessProfiles,
   tmCommLogs,
   tmInvoiceLines,
@@ -36,7 +38,7 @@ export async function viewQuoteViaPortalCommand(db: DbOrTx, rawToken: string) {
       })
       .where(eq(tmQuotes.id, quote.id));
   }
-  const [optionGroups, lines] = await Promise.all([
+  const [optionGroups, lines, profiles, tenantRows] = await Promise.all([
     db
       .select()
       .from(tmQuoteOptionGroups)
@@ -47,8 +49,28 @@ export async function viewQuoteViaPortalCommand(db: DbOrTx, rawToken: string) {
       .from(tmQuoteLines)
       .where(and(eq(tmQuoteLines.quoteId, quote.id), isNull(tmQuoteLines.archivedAt)))
       .orderBy(tmQuoteLines.sortOrder),
+    db
+      .select()
+      .from(tmBusinessProfiles)
+      .where(and(eq(tmBusinessProfiles.tenantId, quote.tenantId), eq(tmBusinessProfiles.appId, quote.appId)))
+      .limit(1),
+    db
+      .select({ name: tenants.name })
+      .from(tenants)
+      .where(eq(tenants.id, quote.tenantId))
+      .limit(1),
   ]);
-  return { quote, optionGroups, lines };
+  const profile = profiles[0];
+  return {
+    quote,
+    optionGroups,
+    lines,
+    business: {
+      name: tenantRows[0]?.name ?? "Tradie Matters",
+      logoUrl: (profile as { logoUrl?: string | null } | undefined)?.logoUrl ?? null,
+      abn: profile?.abn ?? null,
+    },
+  };
 }
 
 async function createDepositInvoiceForAcceptedQuote(
@@ -151,6 +173,9 @@ export async function acceptQuoteViaPortalCommand(
   if (quote.status === "DECLINED") throw new Error("Declined quotes cannot be accepted.");
 
   const now = new Date();
+  if (quote.validUntil && new Date(quote.validUntil) < new Date(now.toISOString().slice(0, 10))) {
+    throw new Error("Quote has expired.");
+  }
   let selectedGroupId = input.selectedOptionGroupId ?? quote.selectedOptionGroupId;
   let subtotalExTax = quote.subtotalExTax;
   let totalTax = quote.totalTax;
@@ -177,6 +202,15 @@ export async function acceptQuoteViaPortalCommand(
     }
   }
 
+  const depositAmt =
+    Number(quote.depositValue ?? 0) > 0
+      ? calculateDepositAmount(
+          Number(totalIncTax),
+          quote.depositType as "NONE" | "PERCENT" | "FIXED",
+          Number(quote.depositValue)
+        )
+      : Number(quote.depositAmountDue ?? 0);
+
   const [updatedQuote] = await db
     .update(tmQuotes)
     .set({
@@ -188,6 +222,7 @@ export async function acceptQuoteViaPortalCommand(
       subtotalExTax,
       totalTax,
       totalIncTax,
+      depositAmountDue: depositAmt.toFixed(2),
       updatedAt: now,
     })
     .where(eq(tmQuotes.id, quote.id))
@@ -223,7 +258,6 @@ export async function acceptQuoteViaPortalCommand(
     updatedBy: quote.createdBy,
   });
 
-  const depositAmt = Number(quote.depositAmountDue ?? 0);
   if (quote.depositType !== "NONE" && depositAmt > 0) {
     const dep = await createDepositInvoiceForAcceptedQuote(db, updatedQuote, depositAmt);
     return { quote: updatedQuote, ...dep };

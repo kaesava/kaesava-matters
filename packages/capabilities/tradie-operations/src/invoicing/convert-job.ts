@@ -28,17 +28,23 @@ async function collectAcceptedQuoteLines(db: DbOrTx, jobId: string): Promise<Inv
   const filtered = acceptedQuote.selectedOptionGroupId
     ? qLines.filter((l) => !l.optionGroupId || l.optionGroupId === acceptedQuote.selectedOptionGroupId)
     : qLines;
-  return filtered.map((l, idx) => ({
-    sourceType: "QUOTE" as const,
-    sourceId: l.id,
-    pricebookItemId: l.pricebookItemId,
-    description: l.description,
-    quantity: Number(l.quantity),
-    unitCostExTax: Number(l.unitCostExTax),
-    unitSellPrice: Number(l.unitSellPrice),
-    taxCode: l.taxCode === "GST_FREE" ? "GST_FREE" : "GST",
-    sortOrder: idx,
-  }));
+  const isInclusive = acceptedQuote.gstMode === "INCLUSIVE";
+  return filtered.map((l, idx) => {
+    const rawSell = Number(l.unitSellPrice);
+    const unitSellPrice =
+      isInclusive && l.taxCode !== "GST_FREE" ? Number((rawSell / 1.1).toFixed(2)) : rawSell;
+    return {
+      sourceType: "QUOTE" as const,
+      sourceId: l.id,
+      pricebookItemId: l.pricebookItemId,
+      description: l.description,
+      quantity: Number(l.quantity),
+      unitCostExTax: Number(l.unitCostExTax),
+      unitSellPrice,
+      taxCode: l.taxCode === "GST_FREE" ? "GST_FREE" : "GST",
+      sortOrder: idx,
+    };
+  });
 }
 
 async function collectApprovedVariationLines(db: DbOrTx, jobId: string): Promise<InvoiceLineInputType[]> {
@@ -69,6 +75,7 @@ export async function convertJobToInvoiceCommand(
   ctx: InvoiceCommandContext,
   input: {
     jobId: string;
+    invoiceType?: "DEPOSIT" | "PROGRESS" | "FINAL";
     sendImmediately?: boolean;
     allowCardPayment?: boolean;
     dueDate?: string;
@@ -118,7 +125,7 @@ export async function convertJobToInvoiceCommand(
       .where(
         and(
           eq(tmInvoices.jobId, job.id),
-          eq(tmInvoices.invoiceType, "DEPOSIT"),
+          inArray(tmInvoices.invoiceType, ["DEPOSIT", "PROGRESS"]),
           isNull(tmInvoices.archivedAt)
         )
       ),
@@ -148,17 +155,21 @@ export async function convertJobToInvoiceCommand(
   }));
 
   const depositDeductions: InvoiceLineInputType[] = priorDeposits
-    .filter((d) => d.status !== "VOID")
-    .map((d, idx) => ({
-      sourceType: "DEPOSIT_DEDUCTION",
-      sourceId: d.id,
-      description: `Less prior deposit (${d.invoiceNumber})`,
-      quantity: 1,
-      unitCostExTax: 0,
-      unitSellPrice: -Number(d.subtotalExTax),
-      taxCode: d.gstRegisteredSnapshot ? "GST" : "GST_FREE",
-      sortOrder: 400 + idx,
-    }));
+    .filter((d) => d.status !== "VOID" && Number(d.amountPaid) > 0)
+    .map((d, idx) => {
+      const paidAmt = Number(d.amountPaid);
+      const exTaxPaid = d.gstRegisteredSnapshot ? Number((paidAmt / 1.1).toFixed(2)) : paidAmt;
+      return {
+        sourceType: "DEPOSIT_DEDUCTION",
+        sourceId: d.id,
+        description: `Less prior payment (${d.invoiceNumber})`,
+        quantity: 1,
+        unitCostExTax: 0,
+        unitSellPrice: -exTaxPaid,
+        taxCode: d.gstRegisteredSnapshot ? "GST" : "GST_FREE",
+        sortOrder: 400 + idx,
+      };
+    });
 
   const allLines = [...quoteLines, ...varLines, ...timeLines, ...matLines, ...depositDeductions];
   if (allLines.length === 0) {
@@ -174,7 +185,7 @@ export async function convertJobToInvoiceCommand(
       .slice(0, 10);
 
   const invoice = await createInvoiceCommand(db, ctx, {
-    invoiceType: "FINAL",
+    invoiceType: input.invoiceType ?? "FINAL",
     customerId: job.customerId,
     siteId: job.siteId,
     jobId: job.id,

@@ -1,4 +1,6 @@
 import { and, eq, isNull } from "drizzle-orm";
+import { sendEmail } from "@kaesava/core";
+import { resolveAppConfigOrDefault } from "@kaesava/config";
 import { generatePortalToken } from "@kaesava/core";
 import {
   tmBusinessProfiles,
@@ -291,17 +293,38 @@ export async function sendInvoiceCommand(
     .where(eq(tmInvoices.id, invoiceId))
     .returning();
 
+  const targetEmail = customer?.email ?? null;
+  const appConfig = resolveAppConfigOrDefault(ctx.appId);
+  const portalUrl = `${appConfig.branding.appUrl}/i/${rawToken}`;
+  const subject = `${invoice.documentTitle} ${invoice.invoiceNumber}`;
+  let commStatus: "SENT" | "FAILED" | "QUEUED" = "QUEUED";
+
+  if (targetEmail) {
+    try {
+      const result = await sendEmail({
+        to: targetEmail,
+        subject,
+        html: `<p>Hi ${customer?.name ?? "there"},</p><p>Your ${invoice.documentTitle.toLowerCase()} <strong>${invoice.invoiceNumber}</strong> with balance due <strong>$${invoice.balanceDue}</strong> is ready.</p><p><a href="${portalUrl}">View &amp; Pay Invoice</a></p>`,
+        text: `Hi ${customer?.name ?? "there"},\n\nYour ${invoice.documentTitle.toLowerCase()} ${invoice.invoiceNumber} with balance due $${invoice.balanceDue} is ready.\n\nView & pay here: ${portalUrl}`,
+        appId: ctx.appId,
+      });
+      commStatus = result.success ? "SENT" : "FAILED";
+    } catch {
+      commStatus = "FAILED";
+    }
+  }
+
   await db.insert(tmCommLogs).values({
     id: crypto.randomUUID(),
     entityType: "INVOICE",
     entityId: invoiceId,
     channel: "EMAIL",
     direction: "OUTBOUND",
-    recipient: customer?.email ?? null,
-    subject: `${invoice.documentTitle} ${invoice.invoiceNumber}`,
+    recipient: targetEmail,
+    subject,
     bodyPreview: `Balance due: ${invoice.balanceDue}`,
-    status: "SENT",
-    sentAt: now,
+    status: commStatus,
+    sentAt: commStatus === "SENT" ? now : undefined,
     tenantId: ctx.tenantId,
     appId: ctx.appId,
     createdAt: now,

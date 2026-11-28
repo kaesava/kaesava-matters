@@ -3,7 +3,8 @@
 import React, { useState } from "react";
 import { PackagePlus, Plus, Star, Upload } from "lucide-react";
 import { t } from "@kaesava/i18n";
-import { Badge, Button, formatCurrency, GenericListView, GenericSelectField, useCurrencyLocale, type GenericListColumn } from "@kaesava/ui/web";
+import { Badge, Button, GenericListView, GenericSelectField, type GenericListColumn } from "@kaesava/ui/web";
+import { useLocale } from "../../../providers/LocaleProvider";
 import { CsvImportWizardModal } from "../../../components/CsvImportWizardModal";
 import { trpc } from "../../../lib/trpc";
 import { PricebookItemModal, type PricebookItemRecord } from "./components/PricebookItemModal";
@@ -12,7 +13,7 @@ import { StarterPackPickerModal } from "./components/StarterPackPickerModal";
 type ItemTypeFilter = "ALL" | "MATERIAL" | "LABOUR" | "EQUIPMENT" | "SUBCONTRACT";
 
 export default function PricebookPage() {
-  const { currency, locale } = useCurrencyLocale();
+  const { fmt } = useLocale();
   const [query, setQuery] = useState("");
   const [itemType, setItemType] = useState<ItemTypeFilter>("ALL");
   const [favouritesOnly, setFavouritesOnly] = useState(false);
@@ -30,9 +31,9 @@ export default function PricebookPage() {
   const columns: GenericListColumn<PricebookItemRecord>[] = [
     { key: "name", header: t("common.name"), render: (i) => <span className="flex items-center gap-1.5 font-semibold text-[#1B2B4B]">{i.isFavourite && <Star className="w-3.5 h-3.5 text-amber-500 fill-amber-500" />}{i.name}</span> },
     { key: "sku", header: t("tradieCrm.skuLabel"), render: (i) => <span className="font-mono text-xs text-slate-500">{i.sku ?? "-"}</span> },
-    { key: "type", header: t("tradieWeb.itemTypeLabel"), render: (i) => <Badge variant="primary">{i.itemType}</Badge> },
-    { key: "cost", header: t("tradieCrm.unitCostLabel"), align: "right", render: (i) => <span className="font-mono tabular-nums">{formatCurrency(Number(i.unitCostExTax), currency, locale)}</span> },
-    { key: "sell", header: t("tradieCrm.sellPriceLabel"), align: "right", render: (i) => <span className="font-mono tabular-nums font-bold text-[#1B2B4B]">{formatCurrency(Number(i.sellPriceExTax), currency, locale)}</span> },
+    { key: "type", header: t("tradieWeb.itemTypeLabel"), align: "center", render: (i) => <Badge variant="primary">{i.itemType}</Badge> },
+    { key: "cost", header: t("tradieCrm.unitCostLabel"), align: "right", render: (i) => <span className="font-mono tabular-nums">{fmt(Number(i.unitCostExTax))}</span> },
+    { key: "sell", header: t("tradieCrm.sellPriceLabel"), align: "right", render: (i) => <span className="font-mono tabular-nums font-bold text-slate-900 dark:text-slate-100">{fmt(Number(i.sellPriceExTax))}</span> },
   ];
 
   const toolbarActions = (

@@ -47,13 +47,29 @@ export class XeroAdapter implements AccountingProviderPort {
         client_secret: this.cfg.clientSecret,
       }),
     });
+    if (!res.ok) {
+      throw new Error(`Xero token exchange failed (${res.status}): ${await res.text()}`);
+    }
     const data = (await res.json()) as { access_token?: string; refresh_token?: string; expires_in?: number };
+    const accessToken = data.access_token ?? "";
+    const connRes = await fn("https://api.xero.com/connections", {
+      headers: { Authorization: `Bearer ${accessToken}` },
+    });
+    let externalTenantId = "xero-org";
+    let externalTenantName: string | null = "Xero Organisation";
+    if (connRes.ok) {
+      const conns = (await connRes.json()) as Array<{ tenantId?: string; tenantName?: string }>;
+      if (conns[0]?.tenantId) {
+        externalTenantId = conns[0].tenantId;
+        externalTenantName = conns[0].tenantName ?? externalTenantName;
+      }
+    }
     return {
-      accessToken: data.access_token ?? "",
+      accessToken,
       refreshToken: data.refresh_token ?? null,
       expiresAt: data.expires_in ? new Date(Date.now() + data.expires_in * 1000) : null,
-      externalTenantId: "xero-org",
-      externalTenantName: "Xero Organisation",
+      externalTenantId,
+      externalTenantName,
     };
   }
 
@@ -69,6 +85,9 @@ export class XeroAdapter implements AccountingProviderPort {
         client_secret: this.cfg.clientSecret,
       }),
     });
+    if (!res.ok) {
+      throw new Error(`Xero token refresh failed (${res.status}): ${await res.text()}`);
+    }
     const data = (await res.json()) as { access_token?: string; refresh_token?: string; expires_in?: number };
     return {
       accessToken: data.access_token ?? "",
@@ -86,6 +105,9 @@ export class XeroAdapter implements AccountingProviderPort {
       headers: { Authorization: `Bearer ${accessToken}`, "xero-tenant-id": extTenantId, "Content-Type": "application/json" },
       body: JSON.stringify({ Contacts: [{ Name: payload.name, EmailAddress: payload.email, TaxNumber: payload.abn }] }),
     });
+    if (!res.ok) {
+      throw new Error(`Xero pushCustomer failed (${res.status})`);
+    }
     const json = (await res.json()) as { Contacts?: Array<{ ContactID?: string }> };
     return json.Contacts?.[0]?.ContactID ?? `xero-contact-${payload.localId}`;
   }
@@ -96,9 +118,29 @@ export class XeroAdapter implements AccountingProviderPort {
       method: "POST",
       headers: { Authorization: `Bearer ${accessToken}`, "xero-tenant-id": extTenantId, "Content-Type": "application/json" },
       body: JSON.stringify({
-        Invoices: [{ Type: "ACCREC", InvoiceNumber: payload.invoiceNumber, Contact: { ContactID: payload.customerExternalId }, Date: payload.issueDate, DueDate: payload.dueDate, Total: payload.totalIncTax }],
+        Invoices: [
+          {
+            Type: "ACCREC",
+            InvoiceNumber: payload.invoiceNumber,
+            Contact: { ContactID: payload.customerExternalId },
+            Date: payload.issueDate,
+            DueDate: payload.dueDate,
+            LineItems: [
+              {
+                Description: `Invoice ${payload.invoiceNumber}`,
+                Quantity: 1,
+                UnitAmount: payload.subtotalExTax,
+                TaxType: "OUTPUT",
+              },
+            ],
+            Total: payload.totalIncTax,
+          },
+        ],
       }),
     });
+    if (!res.ok) {
+      throw new Error(`Xero pushInvoice failed (${res.status})`);
+    }
     const json = (await res.json()) as { Invoices?: Array<{ InvoiceID?: string }> };
     return json.Invoices?.[0]?.InvoiceID ?? `xero-inv-${payload.localId}`;
   }
@@ -112,6 +154,9 @@ export class XeroAdapter implements AccountingProviderPort {
         CreditNotes: [{ Type: "ACCRECCREDIT", CreditNoteNumber: payload.creditNoteNumber, Contact: { ContactID: payload.customerExternalId }, Total: payload.totalIncTax, Reference: payload.reason }],
       }),
     });
+    if (!res.ok) {
+      throw new Error(`Xero pushCreditNote failed (${res.status})`);
+    }
     const json = (await res.json()) as { CreditNotes?: Array<{ CreditNoteID?: string }> };
     return json.CreditNotes?.[0]?.CreditNoteID ?? `xero-cn-${payload.localId}`;
   }
@@ -122,25 +167,53 @@ export class XeroAdapter implements AccountingProviderPort {
       method: "POST",
       headers: { Authorization: `Bearer ${accessToken}`, "xero-tenant-id": extTenantId, "Content-Type": "application/json" },
       body: JSON.stringify({
-        Invoices: [{ Type: "ACCPAY", InvoiceNumber: payload.billNumber, Contact: { Name: payload.supplierName }, Date: payload.issueDate, DueDate: payload.dueDate, Total: payload.totalIncTax }],
+        Invoices: [
+          {
+            Type: "ACCPAY",
+            InvoiceNumber: payload.billNumber,
+            Contact: { Name: payload.supplierName },
+            Date: payload.issueDate,
+            DueDate: payload.dueDate,
+            LineItems: [
+              {
+                Description: `Supplier Bill ${payload.billNumber ?? payload.localId}`,
+                Quantity: 1,
+                UnitAmount: payload.subtotalExTax,
+                TaxType: "INPUT",
+              },
+            ],
+            Total: payload.totalIncTax,
+          },
+        ],
       }),
     });
+    if (!res.ok) {
+      throw new Error(`Xero pushSupplierBill failed (${res.status})`);
+    }
     const json = (await res.json()) as { Invoices?: Array<{ InvoiceID?: string }> };
     return json.Invoices?.[0]?.InvoiceID ?? `xero-bill-${payload.localId}`;
   }
 
   async pushWeeklyTimesheet(accessToken: string, extTenantId: string, payload: AccountingTimesheetPayload): Promise<string> {
     const fn = this.cfg.fetcher ?? fetch;
+    const start = new Date(payload.weekStartDate);
+    const end = new Date(start.getTime() + 6 * 86_400_000).toISOString().slice(0, 10);
     const res = await fn("https://api.xero.com/payroll.xro/1.0/Timesheets", {
       method: "POST",
       headers: { Authorization: `Bearer ${accessToken}`, "xero-tenant-id": extTenantId, "Content-Type": "application/json" },
-      body: JSON.stringify({
-        EmployeeID: payload.employeeUserId,
-        StartDate: payload.weekStartDate,
-        Hours: payload.hoursWorked,
-        PaydaySuperRatePct: payload.paydaySuperRatePct,
-      }),
+      body: JSON.stringify([
+        {
+          EmployeeID: payload.employeeUserId,
+          StartDate: payload.weekStartDate,
+          EndDate: end,
+          Status: "DRAFT",
+          TimesheetLines: [{ NumberOfUnits: [payload.hoursWorked] }],
+        },
+      ]),
     });
+    if (!res.ok) {
+      throw new Error(`Xero pushWeeklyTimesheet failed (${res.status})`);
+    }
     const json = (await res.json()) as { Timesheets?: Array<{ TimesheetID?: string }> };
     return json.Timesheets?.[0]?.TimesheetID ?? `xero-ts-${payload.localId}`;
   }
@@ -150,6 +223,9 @@ export class XeroAdapter implements AccountingProviderPort {
     const headers: Record<string, string> = { Authorization: `Bearer ${accessToken}`, "xero-tenant-id": extTenantId };
     if (sinceCursor) headers["If-Modified-Since"] = sinceCursor;
     const res = await fn("https://api.xero.com/api.xro/2.0/Payments", { headers });
+    if (!res.ok) {
+      throw new Error(`Xero fetchInboundPayments failed (${res.status})`);
+    }
     const json = (await res.json()) as { Payments?: Array<{ PaymentID?: string; Invoice?: { InvoiceID?: string }; Amount?: number; Date?: string }> };
     const payments: InboundPaymentRecord[] = (json.Payments ?? [])
       .filter((p) => p.PaymentID && p.Invoice?.InvoiceID)

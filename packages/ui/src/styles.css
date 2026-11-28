@@ -1,4 +1,26 @@
 /* Serene Finance Design System Tokens & Base Utilities (@kaesava/ui/styles.css) */
+@theme {
+  --color-navy: #1B2B4B;
+  --color-brand: #2563eb;
+  --color-canvas: #F7F8FA;
+  --color-surface: #ffffff;
+  --color-success: #22c55e;
+  --color-danger: #ba1a1a;
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.animate-spin {
+  animation: spin 1s linear infinite !important;
+}
+
 :root {
   /* Legacy @kaesava/ui token aliases */
   --color-brand-primary: #2563eb;
@@ -289,4 +311,29 @@ textarea.ui-input {
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.05em;
+}
+
+body {
+  background-color: var(--color-background);
+  color: var(--color-text-main);
+  font-family: var(--font-body);
+  line-height: 1.6;
+  margin: 0;
+  -webkit-font-smoothing: antialiased;
+}
+
+.dark body {
+  background-color: #020617;
+  color: #f8fafc;
+}
+
+a, button, [role="button"], [tabindex="0"] {
+  cursor: pointer;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-heading);
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  margin-top: 0;
 }

@@ -1,7 +1,6 @@
 import { createTRPCReact } from "@trpc/react-query";
 import { httpBatchLink } from "@trpc/client";
 import * as SecureStore from "expo-secure-store";
-import { Platform } from "react-native";
 import { createScopedSqliteCache } from "@kaesava/ui/mobile";
 import type { TradieMobileRouter } from "./trpc-types";
 import { authClient } from "./auth";
@@ -17,17 +16,12 @@ const SESSION_DATA_KEY = "tradie-matters_session_data";
 const DEV_API_URL = "http://localhost:3011";
 const PROD_API_URL = "https://api.tradiematters.kaesava.au";
 
-const sqliteCache = createScopedSqliteCache({ dbName: "tradie_matters_cache.db" });
+export const sqliteCache = createScopedSqliteCache({ dbName: "tradie_matters_cache.db" });
 let activeSessionToken: string | null = null;
 let activeTenantId: string | null = null;
 
 function resolveApiBaseUrl(): string {
   const envUrl = process.env["EXPO_PUBLIC_API_URL"];
-  if (Platform.OS !== "web") {
-    if (!envUrl || envUrl.includes("localhost") || envUrl.includes("127.0.0.1")) {
-      return PROD_API_URL;
-    }
-  }
   const isDev = typeof __DEV__ !== "undefined" ? __DEV__ : process.env["NODE_ENV"] !== "production";
   return envUrl || (isDev ? DEV_API_URL : PROD_API_URL);
 }
