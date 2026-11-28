@@ -31,3 +31,6 @@ vitest.workspace.js
 vitest.workspace.d.ts
 .wrangler/
 sentry-wizard-installation-error-*.log
+
+# Firebase Android client config (kept locally for EAS builds)
+google-services.json
