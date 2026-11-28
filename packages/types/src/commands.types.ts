@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { BillingCycleSchema, SubscriptionTierSchema } from "./subscription.types.js";
+import { BillingCycleSchema, PlanKeySchema, SubscriptionTierSchema } from "./subscription.types.js";
 
 export const CURRENT_TERMS_VERSION = "2026-11";
 export const CURRENT_PRIVACY_VERSION = "2026-11";
@@ -226,9 +226,11 @@ export const ConfirmPaydayCommand = z.object({
 
 export const CreateCheckoutSessionCommand = z.object({
   priceId: z.string().min(1).optional(),
-  planType: BillingCycleSchema.optional(),
+  planType: PlanKeySchema.optional(),
   billingCycle: BillingCycleSchema.optional(),
   tier: SubscriptionTierSchema.optional(),
+  purchaseMode: z.enum(["subscription", "payment"]).optional(),
+  packKey: z.string().max(50).optional(),
   successUrl: z.string().url(),
   cancelUrl: z.string().url(),
 }).strict();

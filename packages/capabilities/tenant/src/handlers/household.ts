@@ -6,6 +6,7 @@ interface DbMember {
   id: string;
   userId: string | null;
   role: string | null;
+  appRole: string | null;
   inviteEmail: string | null;
   inviteStatus: string | null;
   displayName: string | null;
@@ -38,6 +39,7 @@ export async function getHouseholdGovernanceInfoHandler(tenantId: string, userId
       id: tenantUsers.id,
       userId: tenantUsers.userId,
       role: tenantUsers.role,
+      appRole: tenantUsers.appRole,
       inviteEmail: tenantUsers.inviteEmail,
       inviteStatus: tenantUsers.inviteStatus,
       displayName: users.displayName,
@@ -58,6 +60,7 @@ export async function getHouseholdGovernanceInfoHandler(tenantId: string, userId
     currentUserId: userId,
     householdName: tenant?.name ?? "Household",
     userRole: myMember?.role ?? "MEMBER",
+    userAppRole: myMember?.appRole ?? null,
     isOwner: myMember?.role === "OWNER",
     isSoleOwner: myMember?.role === "OWNER" && acceptedOwners.length <= 1,
     ownerCount: acceptedOwners.length,
@@ -75,6 +78,7 @@ export async function getHouseholdGovernanceInfoHandler(tenantId: string, userId
       email: m.email || m.inviteEmail || "",
       avatarUrl: m.avatarUrl || null,
       role: m.role || "MEMBER",
+      appRole: m.appRole ?? null,
       isOwner: m.role === "OWNER",
       inviteStatus: m.inviteStatus || "ACCEPTED",
       isPending: m.inviteStatus === "PENDING",

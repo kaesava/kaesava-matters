@@ -11,6 +11,10 @@ vi.mock('expo-sqlite', () => ({
   openDatabaseAsync: vi.fn(async () => mockDb),
 }));
 
+vi.mock('./logger', () => ({
+  logger: { info: vi.fn(), warn: vi.fn(), error: vi.fn(), debug: vi.fn() },
+}));
+
 import { setCachedQueryData, getCachedQueryData, clearQueryCache } from './sqlite-cache';
 
 describe('sqlite-cache', () => {

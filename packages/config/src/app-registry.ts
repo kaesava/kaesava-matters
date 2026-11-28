@@ -42,6 +42,8 @@ export interface AppRoleOption {
 }
 
 export interface AppBillingConfig {
+  foundingCapLimit?: number;
+  tiers?: Record<string, { maxActiveSeats: number; freeViewerSeats: number }>;
   displayPrices?: {
     monthly?: string;
     annual?: string;

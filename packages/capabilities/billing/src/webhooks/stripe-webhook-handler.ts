@@ -16,12 +16,18 @@ export class StripeSignatureError extends Error {
   }
 }
 
+export interface StripeWebhookOptions {
+  expectedAppId?: string;
+  onOneTimeCheckoutCompleted?: (session: Stripe.Checkout.Session, db: DbOrTx) => Promise<void>;
+}
+
 export async function handleStripeWebhook(
   rawBody: string,
   signature: string,
   webhookSecret: string,
   db: DbOrTx,
-  stripeSecretKeyOverride?: string
+  stripeSecretKeyOverride?: string,
+  options?: StripeWebhookOptions
 ): Promise<{ processed: boolean; eventType: string }> {
   let stripeSecretKey = stripeSecretKeyOverride || process.env.STRIPE_SECRET_KEY;
   if (!stripeSecretKey) {
@@ -51,6 +57,11 @@ export async function handleStripeWebhook(
     throw new Error("DATABASE_URL is not configured.");
   }
 
+  const metadataAppId = (event.data.object as { metadata?: Record<string, string> })?.metadata?.appId;
+  if (options?.expectedAppId && metadataAppId && metadataAppId !== options.expectedAppId) {
+    return { processed: false, eventType: "ignored_other_app" };
+  }
+
   // Claim-First Idempotency: Atomic claim
   const claimResult = await db
     .insert(processedWebhooks)
@@ -66,9 +77,15 @@ export async function handleStripeWebhook(
   }
 
   switch (event.type) {
-    case "checkout.session.completed":
-      await handleCheckoutSessionCompleted(event.data.object as Stripe.Checkout.Session, stripe, db);
+    case "checkout.session.completed": {
+      const session = event.data.object as Stripe.Checkout.Session;
+      if (session.mode === "payment") {
+        await options?.onOneTimeCheckoutCompleted?.(session, db);
+      } else {
+        await handleCheckoutSessionCompleted(session, stripe, db);
+      }
       break;
+    }
 
     case "customer.subscription.updated":
       await handleSubscriptionUpdated(event.data.object as Stripe.Subscription, db);

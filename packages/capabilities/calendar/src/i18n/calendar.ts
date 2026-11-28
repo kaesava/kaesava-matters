@@ -1,0 +1,26 @@
+export const calendar = {
+  calendar: {
+    unscheduledTitle: "Unscheduled",
+    unscheduledEmpty: "No unscheduled items",
+    dayTimelineTitle: "Day Schedule",
+    weekGridTitle: "Week Schedule",
+    unassignedResource: "Unassigned",
+    noResources: "No resources available",
+    noEventsForDay: "No scheduled visits for this day",
+    dragHint: "Drag to reschedule",
+    todayLabel: "Today",
+    prevWeek: "Previous week",
+    nextWeek: "Next week",
+    resourceColumn: "Resource",
+    eventsCount: "{count} scheduled",
+    weekdays: {
+      mon: "Mon",
+      tue: "Tue",
+      wed: "Wed",
+      thu: "Thu",
+      fri: "Fri",
+      sat: "Sat",
+      sun: "Sun",
+    },
+  },
+} as const;

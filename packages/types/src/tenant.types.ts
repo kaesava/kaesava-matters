@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { SubscriptionStatusSchema } from "./subscription.types.js";
+import { PlanKeySchema, SubscriptionStatusSchema } from "./subscription.types.js";
 
 /**
  * Base audit schema inherited by all tenant-scoped database models.
@@ -32,7 +32,7 @@ export const SubscriptionStatusDto = z.object({
   isDeactivated: z.boolean(),
   daysRemainingInTrial: z.number().nullable(),
   cancelAtPeriodEnd: z.boolean().default(false),
-  planType: z.enum(["monthly", "annual", "founding"]).nullable().optional(),
+  planType: PlanKeySchema.nullable().optional(),
   nextBillingAt: z.date().nullable().optional(),
 }).strict();
 export type SubscriptionStatusDto = z.infer<typeof SubscriptionStatusDto>;
@@ -40,7 +40,8 @@ export type SubscriptionStatusDto = z.infer<typeof SubscriptionStatusDto>;
 export const UpdateHouseholdMemberRoleCommand = z.object({
   memberId: z.string().uuid().optional(),
   targetUserId: z.string().uuid().optional(),
-  newRole: z.enum(["OWNER", "MEMBER"]),
+  newRole: z.enum(["OWNER", "MEMBER", "VIEWER"]),
+  newAppRole: z.string().max(50).nullable().optional(),
 }).strict();
 export type UpdateHouseholdMemberRoleCommandType = z.infer<typeof UpdateHouseholdMemberRoleCommand>;
 

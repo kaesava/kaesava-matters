@@ -30,11 +30,19 @@
   "dependencies": {
     "@kaesava/config": "workspace:*",
     "@kaesava/core": "workspace:*",
+    "@kaesava/i18n": "workspace:*",
     "@kaesava/types": "workspace:*",
+    "@kaesava/ui": "workspace:*",
     "zod": "^3.23.8"
+  },
+  "peerDependencies": {
+    "react": "^19.0.0 || ^18.0.0",
+    "react-native": "*"
   },
   "devDependencies": {
     "@types/node": "^20.14.9",
+    "@types/react": "^19.1.0",
+    "react-native": "0.81.5",
     "typescript": "^6.0.3",
     "vitest": "^4.1.10"
   },

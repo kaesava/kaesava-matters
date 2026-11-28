@@ -1,7 +1,15 @@
 import { NextRequest, NextResponse } from "next/server";
 import { evaluateAuthEdgeProxy } from "@kaesava/core/next";
 
-const PUBLIC_PREFIXES = ["/sign-in", "/sign-up", "/forgot-password", "/auth-callback", "/api/"];
+const PUBLIC_PREFIXES = [
+  "/sign-in",
+  "/sign-up",
+  "/forgot-password",
+  "/reset-password",
+  "/auth-callback",
+  "/invite",
+  "/api/",
+];
 
 export function proxy(request: NextRequest) {
   const decision = evaluateAuthEdgeProxy(
@@ -21,5 +29,5 @@ export function proxy(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/dashboard/:path*"],
+  matcher: ["/dashboard/:path*", "/setup/:path*"],
 };

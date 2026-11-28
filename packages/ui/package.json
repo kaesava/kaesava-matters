@@ -33,11 +33,9 @@
     "./styles.css": "./src/styles.css"
   },
   "dependencies": {
-    "@hookform/resolvers": "^3.3.4",
     "@kaesava/i18n": "workspace:*",
     "@kaesava/types": "workspace:*",
     "lucide-react": "^0.470.0",
-    "react-hook-form": "^7.51.0",
     "react-native": "0.81.5",
     "zod": "^3.22.4"
   },

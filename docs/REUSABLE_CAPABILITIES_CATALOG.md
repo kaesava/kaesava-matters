@@ -19,27 +19,31 @@ Never copy-paste source files verbatim. Audit and fix these known defects in the
 
 ---
 
-## 2. Deferred Ring 1 Primitives (Adopt Only When Trigger Met)
+## 2. Deferred & Ported Ring 1 Primitives
 
-| Primitive | Target Package | Source Reference | Trigger Criteria (When to Port) | Compliance Notes |
+| Primitive | Target Package | Source Reference | Status / Trigger | Compliance Notes |
 | :--- | :--- | :--- | :--- | :--- |
-| **`zonedTimeToUtc()` & `utcToZonedTime()`** | `@kaesava/core` (`intl-calendar.ts`) | `template/packages/core/src/timezone.ts` | An app stores wall-clock appointment/job timestamps (`09:30 AM Sydney → UTC`), not just `YYYY-MM-DD` dates. | Pure native `Intl.DateTimeFormat`, 0 deps, DST-safe iterative convergence. |
-| **`StatusWorkflowConfig` + `canTransition()` / `getNextStatuses()`** | `@kaesava/types/platform` | `template/packages/capabilities/status/src/{types,utils}.ts` | An app introduces 5+ stage pipelines (Quotes → Jobs → Invoices → Bookings) needing shared server guards + UI next-action menus. | Replace hardcoded Tailwind/hex colors with semantic tone tokens and `labelKey` i18n keys; zero `any`. |
-| **`DetailDrawer` / `MobileDetailSheet`** | `@kaesava/ui/{web,mobile}` | `template/packages/ui/src/web/GenericDetailDrawer.tsx` | Multiple entity detail views share the same `fields + children + footer actions` pattern. | Wrap existing `SlideOverDrawer` (Web) and `MobileModalDialog` (Mobile) + `Button`/`MobileButton`. |
-| **`ContactLinks` (`EmailLink`, `PhoneLink`, `AddressLink`) + `useFieldActions`** | `@kaesava/ui/{web,mobile}` | `template/packages/ui/src/web/ContactLinks.tsx` | An app displays customer/supplier phone numbers, emails, or street addresses. | Mobile must use `MobileLinkButton` / `MobileDetailLinkRow` (≥ 44dp, no underlined links). |
-| **ATO 11-digit Mod-89 ABN Validator + Formatter** | `@kaesava/types/platform` & `@kaesava/ui` | `template/packages/ui/src/mobile/fields/SmartAbnInput.tsx` | An app collects Australian Business Numbers (e.g., Tradie Matters business/customer profiles). | Pure Mod-89 validator in `@kaesava/types/platform`; thin Web/Mobile masked inputs. |
-| **`GenericListView`** | `@kaesava/ui/web` | `template/packages/ui/src/web/GenericListView.tsx` | 3+ CRUD list screens need identical table/card toggle + search + sort + pagination shells. | Compose existing `SearchInput`, `PaginationBar`, `SkeletonTable`, `SortHeader`; zero `localStorage` SSR mismatch. |
+| **`zonedTimeToUtc()` & `utcToZonedTime()`** | `@kaesava/core` (`intl-calendar.ts`) | `template/packages/core/src/timezone.ts` | **Implemented / Ported** | Pure native `Intl.DateTimeFormat`, 0 deps, DST-safe iterative convergence. |
+| **`edge-context-factory` & `trpc-factory`** | `@kaesava/core` (`trpc/`, `worker-factory.ts`) | Platform refactor | **Implemented / Ported** | Shared Cloudflare Worker & tRPC edge context factories consumed by both Money Matters & Tradie Matters APIs. |
+| **`pdf` & `portal-tokens`** | `@kaesava/core` (`pdf/`, `portal-tokens.ts`) | Tradie Matters V1 | **Implemented / Ported** | Stateless PDF generator & SHA-256 portal token hashing/verification. |
+| **`offline` outbox & draft store** | `@kaesava/mobile-core` (`offline/`) | Tradie Matters V1 | **Implemented / Ported** | SQLite-backed offline mutation outbox & draft persistence (`OutboxSyncWrapper`, `OfflineSyncBadge`). |
+| **`StatusWorkflowConfig` + `canTransition()` / `getNextStatuses()`** | `@kaesava/types/platform` | `template/packages/capabilities/status/src/{types,utils}.ts` | Deferred (Trigger: 5+ shared stage pipelines) | Replace hardcoded Tailwind/hex colors with semantic tone tokens and `labelKey` i18n keys; zero `any`. |
+| **`DetailDrawer` / `MobileDetailSheet`** | `@kaesava/ui/{web,mobile}` | `template/packages/ui/src/web/GenericDetailDrawer.tsx` | **Implemented / Ported** | Wraps `SlideOverDrawer` (Web) and `MobileModalDialog` (Mobile) + `Button`/`MobileButton`. |
+| **`ContactLinks` (`EmailLink`, `PhoneLink`, `AddressLink`)** | `@kaesava/ui/{web,mobile}` | `template/packages/ui/src/web/ContactLinks.tsx` | **Implemented / Ported** | Mobile uses `MobileLinkButton` / `MobileDetailLinkRow` (≥ 44dp, no underlined links). |
+| **ATO 11-digit Mod-89 ABN Validator + `AbnInput` / `MobileAbnInput`** | `@kaesava/types/platform` & `@kaesava/ui` | `template/packages/ui/src/mobile/fields/SmartAbnInput.tsx` | **Implemented / Ported** | Pure Mod-89 validator in `@kaesava/types`; thin Web/Mobile masked inputs. |
+| **`GenericListView`** | `@kaesava/ui/web` | `template/packages/ui/src/web/GenericListView.tsx` | **Implemented / Ported** | Composes `SearchInput`, `PaginationBar`, `SkeletonTable`, `SortHeader`; zero `localStorage` SSR mismatch. |
 
 ---
 
-## 3. Deferred Ring 2 Capabilities (4-Subpath Standard: `.`, `./router`, `./web`, `./mobile`)
+## 3. Ported & Deferred Ring 2 Capabilities (4-Subpath Standard: `.`, `./router`, `./web`, `./mobile`)
 
-| Capability | DB Tables | Source Reference | Key Reusable Patterns | Porting & Compliance Checklist |
+| Capability | DB Tables | Source Reference | Status / Key Reusable Patterns | Porting & Compliance Notes |
 | :--- | :---: | :--- | :--- | :--- |
-| **`@kaesava/capability-calendar`** | 0 (pure view/layout engine) | `tradie/apps/web/src/app/components/calendar/*` + `template` `CalendarTimeline` & `AgendaListView` | O(n log n) greedy interval-coloring `layoutDay()` overlap solver; Day/Week/Month/Agenda views; multi-resource staff timeline. | Headless layout engine in `.`; thin `./web` + `./mobile` (cards/agenda default on Mobile); inject events via generic adapter; update `globals.css` `@source`, `next.config.ts` `transpilePackages`, `check:boundaries`, `check:mobile-interaction`. |
-| **`@kaesava/capability-chat`** | 3–4 (`chat_rooms`, `chat_members`, `chat_messages`, `chat_reads`) | `template/packages/capabilities/chat/*` | Direct/Team/Board rooms, quote-replies, pinned rooms, unread counts. | Rebuild Drizzle schema from scratch in `@kaesava/db/rings/capabilities` with `tenantId`, `appId`, RLS, audit columns, soft deletes; polling or WebSocket transport; 100% i18n. |
-| **`@kaesava/capability-geo`** | 0 | `template/packages/capabilities/geo/*` + `SmartAddressInput` | Free OSM Photon autocomplete proxy, 2.5s manual-entry fallback, structured street/suburb/state/postcode output. | Drop `PLACE_CACHE` in-memory `Map`; stateless Worker-safe proxy with rate limiting; Web + Mobile parity. |
-| **`@kaesava/capability-file-notes` (`isAutoGenerated` flag)** | Existing table | `template` auto-generated PDF attachment pattern | Distinguish system-generated PDFs (quotes/invoices) from user-uploaded notes. | Add boolean column + migration + `SCHEMA_DATA_DICTIONARY.md` sync only when PDF generation ships. |
+| **`@kaesava/capability-calendar`** | 0 (pure view/layout engine) | `tradie/apps/web/src/app/components/calendar/*` + `template` `CalendarTimeline` & `AgendaListView` | **Implemented / Ported** | O(n log n) `layoutDay()` overlap solver; Day/Week/Agenda views; `ResourceDayTimeline`, `ResourceWeekGrid`, `MobileDailyAgendaList`, `MobileWeekStrip`. |
+| **`@kaesava/capability-chat`** | 4 (`chat_rooms`, `chat_members`, `chat_messages`, `chat_reads`) | `template/packages/capabilities/chat/*` | **Implemented / Ported** | Fresh Drizzle tables with `tenantId`, `appId`, RLS, audit columns, soft deletes; `@mention` push hook; `ChatThreadPanel` & `MobileChatThreadSheet`. |
+| **`@kaesava/capability-geo`** | 0 | `template/packages/capabilities/geo/*` + `SmartAddressInput` | **Implemented / Ported** | Stateless OSM Photon proxy (`searchAddresses`), 2.5s manual-entry fallback, `SmartAddressField` & `MobileSmartAddressField`. |
+| **`@kaesava/capability-file-notes` (`isAutoGenerated` flag)** | Existing table | `template` auto-generated PDF attachment pattern | **Implemented / Ported** | `isAutoGenerated` boolean column distinguishing system-generated PDFs/MMS attachments from user uploads. |
+| **`@kaesava/capability-tenant` (UI/router) & `@kaesava/capability-billing` (UI)** | Existing tables | Platform refactor | **Implemented / Ported** | Reusable `./router`, `./web`, and `./mobile` subpaths wired into both Money Matters and Tradie Matters. |
 
 ---
 

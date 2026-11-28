@@ -27,6 +27,9 @@ const PROTECTED_PACKAGES = [
   "packages/capabilities/schedules/src",
   "packages/capabilities/assistant/src",
   "packages/capabilities/auth/src",
+  "packages/capabilities/geo/src",
+  "packages/capabilities/calendar/src",
+  "packages/capabilities/chat/src",
 ];
 
 const FORBIDDEN_PATTERNS = [
@@ -35,7 +38,7 @@ const FORBIDDEN_PATTERNS = [
   { label: "@kaesava/db/rings/<app> Ring 3 schema", regex: /@(kaesava|money-matters|tradie-matters)\/db\/rings\/(money-matters|tradie-matters)/ },
   {
     label: "cross-Ring-2 capability import",
-    regex: /from\s+["']@(kaesava|money-matters)\/capability-(tenant|bank-accounts|billing|bug-reports|file-notes|notifications|schedules|assistant|auth)(\/[^"']*)?["']/,
+    regex: /from\s+["']@(kaesava|money-matters)\/capability-(tenant|bank-accounts|billing|bug-reports|file-notes|notifications|schedules|assistant|auth|geo|calendar|chat)(\/[^"']*)?["']/,
   },
   {
     label: "@trpc/server inside Ring 1/Ring 2 domain logic",
@@ -142,6 +145,9 @@ const RING2_CAPS = [
   "notifications",
   "schedules",
   "tenant",
+  "geo",
+  "calendar",
+  "chat",
 ];
 for (const cap of RING2_CAPS) {
   const pkgPath = path.join(ROOT, "packages/capabilities", cap, "package.json");

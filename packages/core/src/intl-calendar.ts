@@ -50,3 +50,75 @@ export function formatInstantInZone(
 ): string {
   return getCachedDateFormat(locale, { timeZone, ...options }).format(instant);
 }
+
+interface ZonedParts {
+  year: number;
+  month: number;
+  day: number;
+  hour: number;
+  minute: number;
+  second: number;
+}
+
+function getZonedParts(instant: Date, timeZone: string): ZonedParts {
+  const parts = getCachedDateFormat("en-CA", {
+    timeZone,
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+    hour: "2-digit",
+    minute: "2-digit",
+    second: "2-digit",
+    hourCycle: "h23",
+  }).formatToParts(instant);
+  const pick = (type: Intl.DateTimeFormatPartTypes) =>
+    Number(parts.find((p) => p.type === type)?.value ?? 0);
+  return {
+    year: pick("year"),
+    month: pick("month"),
+    day: pick("day"),
+    hour: pick("hour") % 24,
+    minute: pick("minute"),
+    second: pick("second"),
+  };
+}
+
+function getTimeZoneOffsetMs(instant: Date, timeZone: string): number {
+  const p = getZonedParts(instant, timeZone);
+  const zonedUtcMs = Date.UTC(p.year, p.month - 1, p.day, p.hour, p.minute, p.second);
+  const instantSecMs = Math.floor(instant.getTime() / 1000) * 1000;
+  return zonedUtcMs - instantSecMs;
+}
+
+function parseLocalIsoParts(localIsoWithoutZone: string): ZonedParts & { ms: number } {
+  const [datePart, timePart = "00:00:00"] = localIsoWithoutZone.trim().split(/[T ]/);
+  const [year, month, day] = datePart.split("-").map(Number);
+  const [hms, msPart = "0"] = timePart.split(".");
+  const [hour = 0, minute = 0, second = 0] = hms.split(":").map(Number);
+  const ms = Number(msPart.slice(0, 3).padEnd(3, "0"));
+  return { year, month, day, hour, minute, second, ms };
+}
+
+/**
+ * Converts a wall-clock ISO string without timezone offset in `timeZone` to a UTC `Date`
+ * using two-pass Intl offset resolution for DST safety.
+ */
+export function zonedTimeToUtc(localIsoWithoutZone: string, timeZone: string = "UTC"): Date {
+  const p = parseLocalIsoParts(localIsoWithoutZone);
+  const guessMs = Date.UTC(p.year, p.month - 1, p.day, p.hour, p.minute, p.second, p.ms);
+  const offset1 = getTimeZoneOffsetMs(new Date(guessMs), timeZone);
+  const candidateMs = guessMs - offset1;
+  const offset2 = getTimeZoneOffsetMs(new Date(candidateMs), timeZone);
+  return new Date(offset2 !== offset1 ? guessMs - offset2 : candidateMs);
+}
+
+/**
+ * Projects a UTC `Date` instant into wall-clock calendar fields in `timeZone`
+ * represented as a UTC-aligned `Date`.
+ */
+export function utcToZonedTime(utcDate: Date, timeZone: string = "UTC"): Date {
+  const p = getZonedParts(utcDate, timeZone);
+  return new Date(
+    Date.UTC(p.year, p.month - 1, p.day, p.hour, p.minute, p.second, utcDate.getUTCMilliseconds())
+  );
+}

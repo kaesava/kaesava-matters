@@ -1,5 +1,5 @@
 import { createDbClient } from "@kaesava/core";
-import { handleStripeWebhook } from "../index.js";
+import { handleStripeWebhook, type StripeWebhookOptions } from "../index.js";
 
 export interface StripeWebhookEnv {
   DATABASE_URL?: string;
@@ -10,7 +10,8 @@ export interface StripeWebhookEnv {
 export async function handleStripeWebhookRequest(
   request: Request,
   env: StripeWebhookEnv,
-  baseHeaders: Record<string, string>
+  baseHeaders: Record<string, string>,
+  options?: StripeWebhookOptions
 ): Promise<Response> {
   const signature = request.headers.get("stripe-signature");
   if (!signature || !env.STRIPE_WEBHOOK_SECRET) {
@@ -31,7 +32,8 @@ export async function handleStripeWebhookRequest(
       signature,
       env.STRIPE_WEBHOOK_SECRET,
       dbClient as unknown as Parameters<typeof handleStripeWebhook>[3],
-      env.STRIPE_SECRET_KEY
+      env.STRIPE_SECRET_KEY,
+      options
     );
 
     return new Response(JSON.stringify({ received: true, ...result }), {

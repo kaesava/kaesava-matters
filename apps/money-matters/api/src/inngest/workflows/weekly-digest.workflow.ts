@@ -4,6 +4,7 @@ import { eq, and, sql, inArray } from "drizzle-orm";
 import { sendNotificationEmail, formatCurrency, logger } from "@kaesava/core";
 import { t } from "@kaesava/i18n";
 import { isChannelEnabled, isLocalScheduleMatch, readNotificationPrefs, resolveNotificationRecipient } from "@kaesava/capability-notifications";
+import { MONEY_MATTERS_APP_ID } from "../../trpc/edge-context.js";
 
 export function createWeeklyDigestWorkflow(inngest: Inngest) {
   return inngest.createFunction(
@@ -38,6 +39,7 @@ export function createWeeklyDigestWorkflow(inngest: Inngest) {
           )
           .where(
             and(
+              eq(tenants.appId, MONEY_MATTERS_APP_ID),
               sql`"tenants"."archived_at" IS NULL`,
               inArray(tenants.subscriptionStatus, ["TRIAL_ACTIVE", "SUBSCRIBED"])
             )

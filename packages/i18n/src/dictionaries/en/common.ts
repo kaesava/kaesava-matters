@@ -148,7 +148,9 @@ export const common = {
     "eventDate": "Event Date",
     "endDate": "End Date",
     "endDateOptional": "End Date",
-    "oneOffNotice": "One-off items do not create a ongoing schedule and will appear directly in your Upcoming Timeline."
+    "oneOffNotice": "One-off items do not create a ongoing schedule and will appear directly in your Upcoming Timeline.",
+    "abnPlaceholder": "12 345 678 901",
+    "abnInvalid": "ABN must be a valid 11-digit Australian Business Number"
   },
   "toasts": {
     "setupSaved": "Setup completed successfully! Welcome to your dashboard.",
@@ -227,5 +229,11 @@ export const common = {
   "app": {
     "title": "Money Matters",
     "tagline": "Real progress on long-term goals. Guilt-free spending. Zero bill shock. No daily tracking."
+  },
+  "contactLinks": {
+    "call": "Call",
+    "email": "Email",
+    "openMap": "Open map",
+    "copied": "Copied"
   }
 } as const;

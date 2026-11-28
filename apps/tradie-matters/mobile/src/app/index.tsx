@@ -1,37 +1,42 @@
 import React from "react";
-import { View, Text, StyleSheet } from "react-native";
-import { t } from "@kaesava/i18n";
-import { MobileLogo } from "@kaesava/ui/mobile";
+import { ActivityIndicator, StyleSheet, View } from "react-native";
+import { Redirect } from "expo-router";
+import { DESIGN_TOKENS, MobileLogo } from "@kaesava/ui/mobile";
+import { authClient } from "../lib/auth";
+import { trpc } from "../lib/trpc";
 
-export default function HomeScreen() {
-  return (
-    <View style={styles.container}>
-      <MobileLogo size={64} source={require("../../assets/icon.png")} />
-      <Text style={styles.brand}>Tradie Matters</Text>
-      <Text style={styles.title}>{t("nav.home")}</Text>
-    </View>
-  );
+export default function IndexRoute() {
+  const { data: session, isPending: sessionPending } = authClient.useSession();
+  const {
+    data: status,
+    isPending: statusPending,
+    error,
+  } = trpc.getTenantStatus.useQuery(undefined, {
+    enabled: !!session,
+    retry: false,
+  });
+
+  if (sessionPending || (session && statusPending)) {
+    return (
+      <View style={styles.container}>
+        <MobileLogo size={64} source={require("../../assets/icon.png")} />
+        <ActivityIndicator size="large" color={DESIGN_TOKENS.colors.accent} />
+      </View>
+    );
+  }
+
+  if (!session) return <Redirect href="/(auth)/sign-in" />;
+  if (error || !status?.hasTenant) return <Redirect href="/(auth)/complete-profile" />;
+  if (!status?.setupCompleted) return <Redirect href="/(setup)/business" />;
+  return <Redirect href="/(app)/today" />;
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#F7F8FA",
-    alignItems: "center",
     justifyContent: "center",
-    padding: 24,
-  },
-  brand: {
-    fontSize: 12,
-    fontWeight: "800",
-    color: "#2563eb",
-    letterSpacing: 1,
-    textTransform: "uppercase",
-    marginBottom: 8,
-  },
-  title: {
-    fontSize: 24,
-    fontWeight: "800",
-    color: "#1B2B4B",
+    alignItems: "center",
+    gap: 16,
+    backgroundColor: DESIGN_TOKENS.colors.background,
   },
 });

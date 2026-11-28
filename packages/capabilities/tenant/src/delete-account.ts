@@ -14,6 +14,7 @@ import {
 import type { TenantLifecycleHooks } from "@kaesava/types";
 import { eq, and, sql, inArray, ne } from "drizzle-orm";
 import { sendNotificationEmail, logger } from "@kaesava/core";
+import { resolveAppConfigOrDefault } from "@kaesava/config";
 import Stripe from "stripe";
 
 async function cancelStripeResources(
@@ -150,7 +151,10 @@ export function deleteMyAccountHandler(
         .limit(1);
 
       if (membership && membership.role !== "OWNER") {
-        throw new Error("Only the Household Owner can delete the household tenant. Partners can leave the household.");
+        const { tenantSingular, memberSingular } = resolveAppConfigOrDefault(appId).terminology;
+        throw new Error(
+          `Only the ${tenantSingular} Owner can delete the ${tenantSingular.toLowerCase()} tenant. ${memberSingular}s can leave the ${tenantSingular.toLowerCase()}.`
+        );
       }
 
       return await purgePlatformTenantRecords(tx, tenantId, userId, email, appId, allUserIdsToPurgeTokens, hooks);
@@ -184,6 +188,9 @@ export function deleteMyAccountHandler(
 
 export function leaveTenantHandler(db: DbOrTx, hooks?: TenantLifecycleHooks<DbOrTx>) {
   return async (tenantId: string, userId: string, email: string, appId: string) => {
+    const { tenantSingular } = resolveAppConfigOrDefault(appId).terminology;
+    const tenantLabel = tenantSingular.toLowerCase();
+
     return await db.transaction(async (tx) => {
       const [membership] = await tx
         .select()
@@ -191,7 +198,7 @@ export function leaveTenantHandler(db: DbOrTx, hooks?: TenantLifecycleHooks<DbOr
         .where(and(eq(tenantUsers.tenantId, tenantId), eq(tenantUsers.userId, userId)))
         .limit(1);
 
-      if (!membership) throw new Error("You are not a member of this household.");
+      if (!membership) throw new Error(`You are not a member of this ${tenantLabel}.`);
 
       const remainingMembers = await tx
         .select()
@@ -200,7 +207,7 @@ export function leaveTenantHandler(db: DbOrTx, hooks?: TenantLifecycleHooks<DbOr
 
       if (membership.role === "OWNER") {
         if (remainingMembers.length === 0) {
-          throw new Error("You are the sole owner of this household. Please delete the household instead of leaving.");
+          throw new Error(`You are the sole owner of this ${tenantLabel}. Please delete the ${tenantLabel} instead of leaving.`);
         }
         const nextOwner = remainingMembers[0];
         await tx
@@ -211,8 +218,8 @@ export function leaveTenantHandler(db: DbOrTx, hooks?: TenantLifecycleHooks<DbOr
         if (nextOwner.inviteEmail) {
           await sendNotificationEmail(
             nextOwner.inviteEmail,
-            "Household Ownership Transferred to You",
-            `The former owner (${email}) has left the household. You are now the Household Owner.`,
+            `${tenantSingular} Ownership Transferred to You`,
+            `The former owner (${email}) has left the ${tenantLabel}. You are now the ${tenantSingular} Owner.`,
             appId
           );
         }
@@ -221,8 +228,8 @@ export function leaveTenantHandler(db: DbOrTx, hooks?: TenantLifecycleHooks<DbOr
         if (ownerMember?.inviteEmail) {
           await sendNotificationEmail(
             ownerMember.inviteEmail,
-            "Household Member Left",
-            `${email} has left your household budget.`,
+            `${tenantSingular} Member Left`,
+            `${email} has left your ${tenantLabel}.`,
             appId
           );
         }

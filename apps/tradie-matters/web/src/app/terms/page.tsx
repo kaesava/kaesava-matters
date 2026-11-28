@@ -8,7 +8,7 @@ import { TradiePublicFooter } from "../../components/TradiePublicFooter";
 export const metadata: Metadata = {
   title: "Terms of Service",
   description:
-    "Tradie Matters Terms of Service, 30-day free trial terms, Australian Consumer Law guarantees, and Victorian governing law.",
+    "Tradie Matters Terms of Service, 14-day free trial terms, Australian Consumer Law guarantees, and Victorian governing law.",
   alternates: { canonical: "https://tradiematters.kaesava.au/terms" },
 };
 

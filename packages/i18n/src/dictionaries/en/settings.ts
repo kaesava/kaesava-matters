@@ -268,6 +268,16 @@ export const settings = {
     "notifications": {
       "title": "Notification Preferences",
       "subtitle": "Manage weekly digest emails, payday alerts, and balance match nudges."
+    },
+    "workspace": {
+      "dataExport": {
+        "activityTitle": "Recent Activity",
+        "activityEmpty": "No recent activity recorded.",
+        "activityActor": "Actor",
+        "activityAction": "Action",
+        "activityTarget": "Target",
+        "activityTimestamp": "Timestamp"
+      }
     }
   }
 } as const;

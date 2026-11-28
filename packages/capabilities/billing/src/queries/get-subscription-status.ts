@@ -4,7 +4,7 @@
  */
 import { eq } from "drizzle-orm";
 import { tenants, type DbOrTx } from "@kaesava/db/rings/capabilities";
-import { SubscriptionStatusDto } from "@kaesava/types";
+import { PlanKeySchema, SubscriptionStatusDto } from "@kaesava/types";
 import type { SubscriptionStatusDto as TSubscriptionStatusDto } from "@kaesava/types";
 
 export async function getSubscriptionStatus(
@@ -97,6 +97,8 @@ export async function getSubscriptionStatus(
     !isGracePeriod &&
     (status === "TRIAL_EXPIRED" || Boolean(tenant.trialEndsAt && now > new Date(tenant.trialEndsAt)));
 
+  const parsedPlan = PlanKeySchema.safeParse(tenant.planType);
+
   return SubscriptionStatusDto.parse({
     status,
     trialEndsAt: tenant.trialEndsAt ? new Date(tenant.trialEndsAt) : null,
@@ -110,7 +112,7 @@ export async function getSubscriptionStatus(
     isDeactivated: status === "DEACTIVATED",
     daysRemainingInTrial,
     cancelAtPeriodEnd: tenant.cancelAtPeriodEnd ?? false,
-    planType: (tenant.planType as "monthly" | "annual" | "founding" | null) ?? null,
+    planType: parsedPlan.success ? parsedPlan.data : null,
     nextBillingAt: tenant.nextBillingAt ? new Date(tenant.nextBillingAt) : null,
   });
 }

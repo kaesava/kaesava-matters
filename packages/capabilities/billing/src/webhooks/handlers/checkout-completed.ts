@@ -1,6 +1,6 @@
 import Stripe from "stripe";
-import { z } from "zod";
 import { type DbOrTx } from "@kaesava/db/rings/capabilities";
+import { PlanKeySchema, type PlanKey } from "@kaesava/types";
 import { activateSubscriptionCommand } from "../../commands/activate-subscription.js";
 import { resolveTenantId } from "./resolve-tenant.js";
 
@@ -10,8 +10,8 @@ export async function handleCheckoutSessionCompleted(
   db: DbOrTx
 ): Promise<void> {
   const rawTenantId = session.client_reference_id || (session.metadata && session.metadata.tenantId);
-  const planTypeResult = z.enum(["monthly", "annual", "founding"]).safeParse(session.metadata?.planType);
-  const planType: "monthly" | "annual" | "founding" = planTypeResult.success ? planTypeResult.data : "annual";
+  const planTypeResult = PlanKeySchema.safeParse(session.metadata?.planType);
+  const planType: PlanKey = planTypeResult.success ? planTypeResult.data : "annual";
 
   if (session.subscription && session.customer) {
     const subscriptionId = typeof session.subscription === "string" ? session.subscription : session.subscription.id;

@@ -1,3 +1,4 @@
 @import "tailwindcss";
+@import "@kaesava/ui/styles.css";
 @source "../../../../../packages/ui";
 @source "../../../../../packages/capabilities";

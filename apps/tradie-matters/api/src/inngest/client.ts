@@ -1,4 +1,9 @@
 import { Inngest } from "inngest";
+import {
+  createNotificationFunctions,
+  createRetentionWorkflows,
+} from "@kaesava/capability-notifications";
+import { createTradieCronFunctions } from "./tradie-crons.js";
 
 export const inngest = new Inngest({ id: "tradie-matters-api-service" });
 
@@ -16,4 +21,13 @@ export const tradieHealthPing = inngest.createFunction(
   async () => ({ ok: true, app: "tradie-matters" })
 );
 
-export const functions = [tradieHealthPing];
+export const notificationFunctions = createNotificationFunctions(inngest);
+export const retentionWorkflows = createRetentionWorkflows(inngest);
+export const tradieCronFunctions = createTradieCronFunctions(inngest);
+
+export const functions = [
+  tradieHealthPing,
+  ...notificationFunctions,
+  ...retentionWorkflows,
+  ...tradieCronFunctions,
+];

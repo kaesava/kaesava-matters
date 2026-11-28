@@ -4,3 +4,7 @@ export * from "../schema/processed_webhooks.js";
 export * from "../schema/file_note.js";
 export * from "../schema/ai_usage.js";
 export * from "../schema/bank_account.js";
+export * from "../schema/chat_room.js";
+export * from "../schema/chat_member.js";
+export * from "../schema/chat_message.js";
+export * from "../schema/chat_read.js";

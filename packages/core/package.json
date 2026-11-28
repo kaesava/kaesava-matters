@@ -20,6 +20,16 @@
       "types": "./src/next/index.ts",
       "import": "./src/next/index.ts",
       "require": "./src/next/index.ts"
+    },
+    "./trpc": {
+      "types": "./src/trpc/index.ts",
+      "import": "./src/trpc/index.ts",
+      "require": "./src/trpc/index.ts"
+    },
+    "./pdf": {
+      "types": "./src/pdf/index.ts",
+      "import": "./src/pdf/index.ts",
+      "require": "./src/pdf/index.ts"
     }
   },
   "dependencies": {

@@ -477,6 +477,55 @@
       "when": 1784445500000,
       "tag": "0068_seed_tradie_matters_app",
       "breakpoints": true
+    },
+    {
+      "idx": 68,
+      "version": "7",
+      "when": 1784531900000,
+      "tag": "0069_tm_business_and_team_profiles",
+      "breakpoints": true
+    },
+    {
+      "idx": 69,
+      "version": "7",
+      "when": 1784618300000,
+      "tag": "0070_tm_customers_sites_pricebook",
+      "breakpoints": true
+    },
+    {
+      "idx": 70,
+      "version": "7",
+      "when": 1784618400000,
+      "tag": "0071_tm_jobs_visits_timers_variations_photos",
+      "breakpoints": true
+    },
+    {
+      "idx": 71,
+      "version": "7",
+      "when": 1784704800000,
+      "tag": "0072_tm_quotes_options_and_comm_logs",
+      "breakpoints": true
+    },
+    {
+      "idx": 72,
+      "version": "7",
+      "when": 1784791200000,
+      "tag": "0073_tm_invoices_payments_credits_refunds",
+      "breakpoints": true
+    },
+    {
+      "idx": 73,
+      "version": "7",
+      "when": 1784877600000,
+      "tag": "0074_tm_accounting_sync_bills_and_pos",
+      "breakpoints": true
+    },
+    {
+      "idx": 74,
+      "version": "7",
+      "when": 1784964000000,
+      "tag": "0075_tm_chat_sms_credits_and_reviews",
+      "breakpoints": true
     }
   ]
 }

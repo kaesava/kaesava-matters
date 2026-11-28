@@ -1,0 +1,21 @@
+export const geo = {
+  geo: {
+    addressLabel: "Address",
+    searchPlaceholder: "Start typing an address...",
+    searching: "Searching addresses...",
+    noResults: "No matching addresses found",
+    manualEntryAction: "Enter address manually",
+    searchModeAction: "Search address instead",
+    fallbackNotice: "Address lookup timed out or is unavailable. Enter details manually.",
+    streetLabel: "Street Address",
+    streetPlaceholder: "123 Example St",
+    suburbLabel: "Suburb / City",
+    suburbPlaceholder: "Melbourne",
+    stateLabel: "State",
+    statePlaceholder: "VIC",
+    postcodeLabel: "Postcode",
+    postcodePlaceholder: "3000",
+    countryLabel: "Country",
+    countryPlaceholder: "Australia",
+  },
+} as const;

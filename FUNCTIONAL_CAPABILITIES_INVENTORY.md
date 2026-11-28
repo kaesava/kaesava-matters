@@ -62,6 +62,31 @@
 | `/api/file-notes/[...path]` | `apps/web/src/app/api/file-notes/[...path]/route.ts` | 91 | Authenticated / Cookie | Same-origin file notes upload (`PUT`) & download (`GET`) proxy to Cloudflare Worker API |
 | `/robots.txt` & `/sitemap.xml` | `apps/web/src/app/robots.ts` (21L), `sitemap.ts` (74L) | 95 | Public | Search engine metadata routes |
 
+### 2.2 Tradie Matters Web Routes (`apps/tradie-matters/web/src/app` — 35 Route Files)
+
+| Web Route | File Path | Auth / Guard | Primary Components / Features Rendered |
+| :--- | :--- | :--- | :--- |
+| `/` | `apps/tradie-matters/web/src/app/page.tsx` | Public (SSR) | `TradiePublicHeader`, `TradiePublicFooter`, marketing hero & feature overview |
+| `/sign-in`, `/sign-up`, `/forgot-password`, `/reset-password`, `/auth-callback`, `/complete-profile`, `/invite/[token]` | `apps/tradie-matters/web/src/app/{sign-in,sign-up,forgot-password,reset-password,auth-callback,complete-profile,invite/[token]}/page.tsx` | Public / Auth | Neon Auth flows, Google OAuth callback, business profile setup, team member invite acceptance |
+| `/privacy`, `/terms` | `apps/tradie-matters/web/src/app/{privacy,terms}/page.tsx` | Public (SSR) | Australian legal pages (`LegalDocumentLayout`) |
+| `/setup` | `apps/tradie-matters/web/src/app/setup/page.tsx` | Authenticated | 3-step business onboarding (Business & ABN/GST, Rates & Crew, Payments/Stripe Connect) |
+| `/q/[token]` | `apps/tradie-matters/web/src/app/q/[token]/page.tsx` | Public (Token) | Customer Quote Portal (`portalQuote.view`, Good/Better/Best option selection, `SignaturePad` accept/decline) |
+| `/i/[token]` | `apps/tradie-matters/web/src/app/i/[token]/page.tsx` | Public (Token) | Customer Tax Invoice Portal (`portalInvoice.view`, ATO GSTR 2013/1 display, Stripe Connect BECS/Card checkout) |
+| `/subscription/{upgrade,success,expired}` | `apps/tradie-matters/web/src/app/subscription/{upgrade,success,expired}/page.tsx` | Authenticated | Plan picker (`Solo`, `Founding Crew`, `Small Crew`), Stripe checkout verification, expired gate |
+| `/dashboard` | `apps/tradie-matters/web/src/app/dashboard/page.tsx` | Authenticated + Tenant | Weekly Payday Cash Readiness Pulse, Today's Jobs, Open Quotes/Invoices KPIs |
+| `/dashboard/inbox` | `apps/tradie-matters/web/src/app/dashboard/inbox/page.tsx` | Authenticated + Tenant | Lead & SMS/MMS Inbox (`sms`, `jobs` `LEAD` pipeline) |
+| `/dashboard/schedule` | `apps/tradie-matters/web/src/app/dashboard/schedule/page.tsx` | Authenticated + Tenant | Drag-and-drop Dispatch Board (`ResourceDayTimeline`, `ResourceWeekGrid`, `UnscheduledBacklogColumn`) |
+| `/dashboard/jobs`, `/dashboard/jobs/[id]` | `apps/tradie-matters/web/src/app/dashboard/jobs/{page,[id]/page}.tsx` | Authenticated + Tenant | Jobs list & detail (visits, time entries, variations, materials, `FileNotesDrawer`, `ChatThreadPanel`, Live Job Margin) |
+| `/dashboard/quotes`, `/dashboard/quotes/[id]` | `apps/tradie-matters/web/src/app/dashboard/quotes/{page,[id]/page}.tsx` | Authenticated + Tenant | Quotes list & Good/Better/Best quote builder/detail |
+| `/dashboard/invoices`, `/dashboard/invoices/[id]` | `apps/tradie-matters/web/src/app/dashboard/invoices/{page,[id]/page}.tsx` | Authenticated + Tenant | Invoices list & ATO GSTR 2013/1 Tax Invoice detail, payments, credit notes, refunds, Stripe Connect |
+| `/dashboard/customers` | `apps/tradie-matters/web/src/app/dashboard/customers/page.tsx` | Authenticated + Tenant | Customers & Service Sites CRM (`SmartAddressField`, `ContactLinks`, `DetailDrawer`) |
+| `/dashboard/pricebook` | `apps/tradie-matters/web/src/app/dashboard/pricebook/page.tsx` | Authenticated + Tenant | Pricebook items, starter pack installer, `CsvImportWizardModal` |
+| `/dashboard/timesheets` | `apps/tradie-matters/web/src/app/dashboard/timesheets/page.tsx` | Authenticated + Tenant | Crew time entries & approval (`timesheets.list`, `timesheets.approve`) |
+| `/dashboard/suppliers` | `apps/tradie-matters/web/src/app/dashboard/suppliers/page.tsx` | Authenticated + Tenant | Supplier Bills, Purchase Orders, Receipt OCR extraction |
+| `/dashboard/activity` | `apps/tradie-matters/web/src/app/dashboard/activity/page.tsx` | Authenticated + Tenant | Activity & Comms log (`ActivityHistoryTable`) |
+| `/dashboard/settings`, `/dashboard/settings/notifications` | `apps/tradie-matters/web/src/app/dashboard/settings/{page,notifications/page}.tsx` | Authenticated + Tenant | `PlatformSettingsShell` (Business/ABN/GST, Crew & Rates, Accounting Sync Xero/MYOB/QBO, SMS Credits, Billing, Notifications) |
+| `/api/{auth/[...auth],trpc/[trpc],file-notes/[...path]}` | `apps/tradie-matters/web/src/app/api/*` | Proxy | Same-origin Next.js edge proxies to Neon Auth and Tradie Matters Worker API |
+
 ---
 
 ## 3. Mobile Routes & Screens Inventory (`apps/mobile/src/app` — 37 Files)
@@ -102,6 +127,23 @@
 | `/(app)/settings/allocation-rules` | `apps/mobile/src/app/(app)/settings/allocation-rules.tsx` | 389 | Authenticated + Tenant + `customAllocationRules` flag | Custom payday waterfall strategy step builder with Preset Switcher |
 | `/(app)/settings/archived` | `apps/mobile/src/app/(app)/settings/archived.tsx` | 36 | Authenticated + Tenant | Standalone wrapper around `MobileArchivedSection` |
 | `/(app)/settings/notifications` | `apps/mobile/src/app/(app)/settings/notifications.tsx` | 109 | Authenticated + Tenant | Notification preferences screen (`SwitchRow`) |
+
+### 3.2 Tradie Matters Mobile Routes (`apps/tradie-matters/mobile/src/app` — 32 Files)
+
+| Mobile Route | File Path | Auth / Guard | Primary Components / Sheets Rendered |
+| :--- | :--- | :--- | :--- |
+| Root & Entry | `_layout.tsx`, `index.tsx` | Public / Root | `AppProviders` (`OutboxSyncWrapper`, `FileNotesProvider`), `tradiematters://` routing |
+| `(auth)/*` | `(auth)/{_layout,sign-in,sign-up,forgot-password,reset-password,invite/[token],auth-callback,complete-profile}.tsx` | Public / Auth | Neon Auth, OAuth deep-link callback, team invite acceptance, profile completion |
+| `(setup)/*` | `(setup)/{_layout,business,rates,payments}.tsx` | Authenticated | 3-step mobile business setup (Business/ABN/GST, Crew Rates, Stripe Connect / PayID) |
+| `/(app)/today` | `apps/tradie-matters/mobile/src/app/(app)/today.tsx` | Authenticated + Tenant | `MobilePaydayCashPulseCard`, `MobileWeekStrip`, `MobileDailyAgendaList`, `MobileVisitAgendaCard` |
+| `/(app)/inbox` | `apps/tradie-matters/mobile/src/app/(app)/inbox.tsx` | Authenticated + Tenant | `InboxLeadCard`, `SmsThreadModal` |
+| `/(app)/jobs`, `/(app)/jobs/[id]` | `apps/tradie-matters/mobile/src/app/(app)/jobs/{index,[id]}.tsx` | Authenticated + Tenant | `CreateJobModal`, `CheckInOutTimerBar`, `OnMyWaySmsButton`, `VariationCaptureSheet`, `MaterialQuickAddSheet`, `ReceiptSnapOcrSheet`, `JobPhotoCaptureSheet`, `JobCrewChatSheet`, `MobileJobProfitBar`, `JobNotesCard` |
+| `/(app)/quotes`, `/(app)/quotes/[id]` | `apps/tradie-matters/mobile/src/app/(app)/quotes/{index,[id]}.tsx` | Authenticated + Tenant | `QuoteBuilderModal`, `QuoteLineEditor`, `PricebookPickerModal`, `QuoteSignAcceptModal` (`MobileSignaturePad`) |
+| `/(app)/invoices`, `/(app)/invoices/[id]` | `apps/tradie-matters/mobile/src/app/(app)/invoices/{index,[id]}.tsx` | Authenticated + Tenant | `ConvertJobInvoiceSheet`, `MobileRecordPaymentSheet`, `MobileCreditNoteSheet`, `MobilePayIdShowCard` |
+| `/(app)/customers`, `/(app)/customers/[id]` | `apps/tradie-matters/mobile/src/app/(app)/customers/{index,[id]}.tsx` | Authenticated + Tenant | `CustomerFormModal`, `SiteFormModal`, `MobileSmartAddressField` |
+| `/(app)/pricebook` | `apps/tradie-matters/mobile/src/app/(app)/pricebook.tsx` | Authenticated + Tenant | `PricebookItemModal`, starter pack & search |
+| `/(app)/timesheets`, `/(app)/activity` | `apps/tradie-matters/mobile/src/app/(app)/{timesheets,activity}.tsx` | Authenticated + Tenant | Crew timesheet approval; `MobileActivityHistoryList`, `MobileActivityDetailSheet` |
+| `/(app)/settings`, `/(app)/settings/{archived,notifications}` | `apps/tradie-matters/mobile/src/app/(app)/settings*.tsx` | Authenticated + Tenant | `MobilePlatformSettingsShell`, `SettingsAccountTab`, archived items, notification preferences |
 
 ---
 
@@ -176,6 +218,19 @@
 | `EnvelopeRowActionsSheet` | `apps/mobile/src/components/envelopes/EnvelopeRowActionsSheet.tsx` | 88 | `MobileModalDialog` | Per-envelope row action sheet (`Draw down`, `Mark as Target Envelope for Shortfall/Surplus`, `Edit`) |
 | `MobileUnsavedPaydayPlanExitDialog` | `apps/mobile/src/components/plan/MobileUnsavedPaydayPlanExitDialog.tsx` | 39 | `MobileConfirmDialog` | Unsaved payday split exit dialog |
 
+### 4.3 Tradie Matters & Ring 2 Web/Mobile Modals, Drawers & Bottom Sheets
+
+| Component / Sheet | Platform & File Path | Primitive Used | Purpose |
+| :--- | :--- | :--- | :--- |
+| `CsvImportWizardModal` | Web (`apps/tradie-matters/web/src/components/CsvImportWizardModal.tsx`) | `ModalDialog` | Pricebook CSV upload, column mapping & import |
+| `ChatThreadPanel` / `MobileChatThreadSheet` | Web & Mobile (`packages/capabilities/chat/src/{web,mobile}/`) | `SlideOverDrawer` / `MobileModalDialog` | Ring 2 crew chat thread with `@mention` push notifications |
+| `CustomerFormModal`, `SiteFormModal` | Mobile (`apps/tradie-matters/mobile/src/components/customers/`) | `MobileModalDialog` | Create/Edit customer & service site with `MobileSmartAddressField` |
+| `SmsThreadModal` | Mobile (`apps/tradie-matters/mobile/src/components/inbox/SmsThreadModal.tsx`) | `MobileModalDialog` | Two-way SMS/MMS thread drawer |
+| `CreateJobModal`, `VariationCaptureSheet`, `MaterialQuickAddSheet`, `ReceiptSnapOcrSheet`, `JobPhotoCaptureSheet`, `JobCrewChatSheet` | Mobile (`apps/tradie-matters/mobile/src/components/jobs/`) | `MobileModalDialog` | Field job creation, variations, materials, receipt OCR snap, R2 photo capture, crew chat |
+| `QuoteBuilderModal`, `PricebookPickerModal`, `QuoteSignAcceptModal` | Mobile (`apps/tradie-matters/mobile/src/components/quotes/`) | `MobileModalDialog` | Quote builder, pricebook picker, on-site customer `MobileSignaturePad` acceptance |
+| `ConvertJobInvoiceSheet`, `MobileRecordPaymentSheet`, `MobileCreditNoteSheet`, `MobilePayIdShowCard` | Mobile (`apps/tradie-matters/mobile/src/components/invoices/`) | `MobileModalDialog` | Job-to-invoice conversion, payment recording, credit notes, PayID QR/details card |
+| `PricebookItemModal` | Mobile (`apps/tradie-matters/mobile/src/components/pricebook/PricebookItemModal.tsx`) | `MobileModalDialog` | Create/Edit pricebook service or material item |
+
 ---
 
 ## 5. Screen-by-Screen Web vs. Mobile Parity Matrix
@@ -195,14 +250,29 @@
 | **Visual Analytics / Reports** | `/dashboard/reports` (`apps/web/src/app/dashboard/reports/page.tsx`) | `/(app)/reports` (`apps/mobile/src/app/(app)/reports.tsx`) | `getSpendingAnalytics`, `getPaydayPlanAnalytics`, `listEnvelopes`, `getBankAccountsWithMappings` | N/A | Guarded by `apps.featureFlags.reports` on both platforms, with SearchInputs on both Spending and Payday Plans tabs. |
 | **Settings (Profile, Household, Archived, Account & Data)** | `/dashboard/settings` + `/allocation-rules`, `/notifications` | `/(app)/settings` + `/allocation-rules`, `/archived`, `/notifications` | `getUserPreferences`, `updateUserPreferences`, `getHouseholdGovernanceInfo`, `updateHousehold`, `getActiveAllocationStrategy`, `applyAllocationPreset`, `updateAllocationStrategySteps`, `getSubscriptionStatus`, `createCheckoutSession`, `verifyCheckoutSession`, `listArchivedItems`, `restoreItem`, `submitFeedback` | Settings Product Tour button & Version Footer on both | Exact 4 tabs on both platforms (`profile`, `household` incl. Recalibrate Plan, `archived`, `account-data`). Intentional mobile-native UX: inline `MobileSubscriptionModal` (with `session_id` -> `verifyCheckoutSession`), Sign-Out confirmation dialog, and Biometrics/Haptics toggles. |
 
+### 5.2 Tradie Matters Screen-by-Screen Web vs. Mobile Parity Matrix
+
+| Screen / Capability | Web Route | Mobile Route | Primary tRPC Routers | Platform Notes |
+| :--- | :--- | :--- | :--- | :--- |
+| **Today / Cash Pulse Dashboard** | `/dashboard` | `/(app)/today` | `pulse`, `jobs`, `dispatch` | Weekly Payday Cash Readiness Pulse + Today's agenda (`MobileDailyAgendaList` on Mobile). |
+| **Dispatch & Schedule** | `/dashboard/schedule` | `/(app)/today` (Agenda) | `dispatch`, `jobs` | Web renders `ResourceDayTimeline` / `ResourceWeekGrid` drag-and-drop; Mobile renders `MobileWeekStrip` + `MobileDailyAgendaList`. |
+| **Inbox & Missed-Call Leads** | `/dashboard/inbox` | `/(app)/inbox` | `sms`, `jobs` | Inbound SMS/MMS, missed-call auto-text leads, credit balance. |
+| **Jobs & Field Operations** | `/dashboard/jobs`, `/dashboard/jobs/[id]` | `/(app)/jobs`, `/(app)/jobs/[id]` | `jobs`, `field`, `chat`, `fileNotes`, `pulse` | Mobile includes offline outbox sync (`OfflineSyncBadge`), GPS check-in/out timer, receipt OCR snap, and On-My-Way SMS. |
+| **Quotes & Public Portal** | `/dashboard/quotes`, `/dashboard/quotes/[id]`, `/q/[token]` | `/(app)/quotes`, `/(app)/quotes/[id]` | `quotes`, `portalQuote` | Good/Better/Best option groups, on-site signature capture (`MobileSignaturePad`), public portal `/q/[token]` (`SignaturePad`). |
+| **Tax Invoices & Stripe Connect** | `/dashboard/invoices`, `/dashboard/invoices/[id]`, `/i/[token]` | `/(app)/invoices`, `/(app)/invoices/[id]` | `invoices`, `portalInvoice` | ATO GSTR 2013/1 compliance, credit notes, PayID show card, public portal `/i/[token]` with AU BECS / conditional card checkout. |
+| **Customers & Sites CRM** | `/dashboard/customers` | `/(app)/customers`, `/(app)/customers/[id]` | `customers`, `sites`, `geo` | `SmartAddressField` / `MobileSmartAddressField` via `@kaesava/capability-geo`. |
+| **Pricebook** | `/dashboard/pricebook` | `/(app)/pricebook` | `pricebook` | Starter packs + fuzzy search on both; CSV import wizard on Web. |
+| **Timesheets & Activity** | `/dashboard/timesheets`, `/dashboard/activity` | `/(app)/timesheets`, `/(app)/activity` | `timesheets`, `activity` | Shared `ActivityHistoryTable` (Web) and `MobileActivityHistoryList` + `MobileActivityDetailSheet` (Mobile). |
+| **Suppliers & Accounting** | `/dashboard/suppliers`, `/dashboard/settings` | `/(app)/settings` | `suppliers`, `accounting`, `business`, `tenant`, `billing`, `notifications` | Supplier bills/POs & Xero/MYOB/QBO connection settings. |
+
 ---
 
 ## 6. `@kaesava/ui` Shared Primitives & Entrypoints Inventory
 
 ### 6.1 Package Entrypoints (`packages/ui/package.json`)
 - `@kaesava/ui` (`.`) → `packages/ui/src/index.ts` (re-exports `DESIGN_TOKENS`, shared hooks/formatters/dates, and `./web/index`).
-- `@kaesava/ui/web` (`./web`) → `packages/ui/src/web/index.ts` (exported symbols across modals, drawers, form inputs, tables, `PlatformSettingsShell`, `AppThemeProvider`, charts, `HouseholdContributionSection`, and providers).
-- `@kaesava/ui/mobile` (`./mobile`) → `packages/ui/src/mobile/index.ts` (exported symbols across native bottom-sheet modals (Android-tuned via `PLATFORM_STYLE`), `MobileLinkButton`, `MobileDetailLinkRow`, `AppThemeProvider`, `useKeyboardInset`, native `DatePickerField`, bottom-sheet `InfoTooltip`, inputs, pickers, charts, `MobileHouseholdContributionSection`, and providers).
+- `@kaesava/ui/web` (`./web`) → `packages/ui/src/web/index.ts` (exported symbols across modals, drawers, form inputs, tables, `PlatformSettingsShell`, `AppThemeProvider`, charts, `AbnInput`, `WorkspaceDesktopSidebar`, `WorkspaceMobileHeader`, `WorkspaceMobileDrawer`, `ActivityHistoryTable`, `DetailDrawer`, `ContactLinks`, `GenericListView`, `SignaturePad`, and providers).
+- `@kaesava/ui/mobile` (`./mobile`) → `packages/ui/src/mobile/index.ts` (exported symbols across native bottom-sheet modals (Android-tuned via `PLATFORM_STYLE`), `MobileLinkButton`, `MobileDetailLinkRow`, `AppThemeProvider`, `useKeyboardInset`, native `DatePickerField`, bottom-sheet `InfoTooltip`, inputs, pickers, charts, `MobileAbnInput`, `OfflineSyncBadge`, `MobileWorkspaceScreenShell`, `MobileActivityHistoryList`, `MobileActivityDetailSheet`, `exportCsvFile`, `MobileDetailSheet`, `ContactLinks`, `MobileSignaturePad`, and providers).
 - `@kaesava/ui/tokens` (`./tokens`) → `packages/ui/src/tokens.ts` (`DESIGN_TOKENS`).
 - `@kaesava/ui/styles.css` (`./styles.css`) → `packages/ui/src/styles.css` (Serene Finance CSS tokens & base utilities).
 
@@ -231,3 +301,9 @@ All user-facing copy lives in `packages/i18n/src/dictionaries/en/*.ts` (re-expor
 | `tour.ts` | `tour` | 38 | 7 (33) | 7 (33) | 0 (0) | 12 (5) |
 | `history.ts` | `transactions`, `canIAfford` | 177 | 133 (101) | 101 (84) | 0 (0) | 78 (43) |
 | **Total** | **47 Top-Level Namespaces across 16 Files** | **2,247** | **2,036 (1,554)** | **1,642 (1,165)** | **4 (17)** | **441 (245)** |
+
+### 7.2 Ring 2 & Ring 3 Capability i18n Namespaces (`packages/capabilities/*/src/i18n/*.ts` & `apps/tradie-matters/mobile/src/i18n/`)
+
+- **Ring 2 Capabilities:** `geo` (`packages/capabilities/geo/src/i18n/geo.ts`), `calendar` (`packages/capabilities/calendar/src/i18n/calendar.ts`), `chat` (`packages/capabilities/chat/src/i18n/chat.ts`).
+- **Ring 3 Money Matters (`@money-matters/capability-budgeting`):** `dashboard`, `envelopes`, `history`, `landing`, `payday`, `plan`, `reports`, `setup` (`packages/capabilities/budgeting/src/i18n/`).
+- **Ring 3 Tradie Matters (`@tradie-matters/capability-operations`, `@tradie-matters/capability-integrations`, Mobile):** `tradieCrm`, `tradieInvoices`, `tradieJobs`, `tradiePulse`, `tradieQuotes`, `tradieSetup` (`packages/capabilities/tradie-operations/src/i18n/`), `tradieSms`, `tradieSync` (`packages/capabilities/tradie-integrations/src/i18n/`), `tradieMobile` (`apps/tradie-matters/mobile/src/i18n/tradieMobile.ts`).

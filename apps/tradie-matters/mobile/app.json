@@ -17,7 +17,11 @@
     ],
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "au.kaesava.tradiematters"
+      "bundleIdentifier": "au.kaesava.tradiematters",
+      "buildNumber": "1",
+      "infoPlist": {
+        "NSFaceIDUsageDescription": "Use Face ID to unlock Tradie Matters."
+      }
     },
     "android": {
       "package": "au.kaesava.tradiematters",

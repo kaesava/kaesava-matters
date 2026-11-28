@@ -1,71 +1,82 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
+import React, { useState } from "react";
+import Link from "next/link";
+import { AlertTriangle, Download } from "lucide-react";
 import { t } from "@kaesava/i18n";
-import { Button, Spinner } from "@kaesava/ui/web";
-
-interface SessionUser {
-  name?: string | null;
-  email?: string | null;
-}
+import { Badge, Button, Spinner } from "@kaesava/ui/web";
+import { trpc } from "../../lib/trpc";
+import { BookkeeperExportModal } from "./components/BookkeeperExportModal";
+import { PaydayPulseCards } from "./components/PaydayPulseCards";
+import "../../i18n";
 
 export default function DashboardPage() {
-  const router = useRouter();
-  const [user, setUser] = useState<SessionUser | null>(null);
-  const [apiStatus, setApiStatus] = useState<string>("...");
-  const [loading, setLoading] = useState(true);
+  const [exportOpen, setExportOpen] = useState(false);
+  const todayStart = new Date();
+  todayStart.setHours(0, 0, 0, 0);
+  const todayEnd = new Date();
+  todayEnd.setHours(23, 59, 59, 999);
 
-  useEffect(() => {
-    async function load() {
-      try {
-        const [sessionRes, healthRes] = await Promise.all([
-          fetch("/api/auth/get-session", { credentials: "include" }),
-          fetch(`${process.env.NEXT_PUBLIC_API_URL || "http://localhost:3011"}/health`),
-        ]);
-        const sessionData = (await sessionRes.json().catch(() => null)) as { user?: SessionUser } | null;
-        setUser(sessionData?.user ?? null);
-        setApiStatus(healthRes.ok ? "OK" : String(healthRes.status));
-      } catch {
-        setApiStatus("ERR");
-      } finally {
-        setLoading(false);
-      }
-    }
-    void load();
-  }, []);
+  const profileQuery = trpc.getBusinessProfile.useQuery();
+  const pulseQuery = trpc.pulse.getWeeklyPaydayCashPulse.useQuery(undefined, { retry: false });
+  const jobsQuery = trpc.jobs.list.useQuery({ limit: 50 });
+  const boardQuery = trpc.dispatch.getBoard.useQuery({ rangeStart: todayStart.toISOString(), rangeEnd: todayEnd.toISOString() });
 
-  async function handleSignOut() {
-    await fetch("/api/auth/sign-out", { method: "POST", credentials: "include" });
-    router.push("/sign-in");
-  }
+  if (profileQuery.isLoading) return <div className="flex justify-center py-16"><Spinner size="lg" /></div>;
 
-  if (loading) {
-    return (
-      <main className="min-h-screen flex items-center justify-center">
-        <Spinner size="lg" />
-      </main>
-    );
-  }
+  const profile = profileQuery.data;
+  const unbilledJobs = (jobsQuery.data ?? []).filter((j) => j.hasUnbilledExtras);
+  const todayVisits = boardQuery.data?.visits ?? [];
 
   return (
-    <main className="min-h-screen p-8 max-w-3xl mx-auto flex flex-col gap-6">
-      <header className="flex items-center justify-between border-b border-slate-200 pb-4">
-        <div>
-          <span className="text-xs font-extrabold uppercase tracking-wider text-[#2563eb]">
-            Tradie Matters
-          </span>
-          <h1 className="text-2xl font-extrabold text-[#1B2B4B]">{t("nav.home")}</h1>
-        </div>
-        <Button type="button" variant="secondary" onClick={handleSignOut}>
-          {t("settings.signOut")}
+    <div className="space-y-6">
+      <div className="flex flex-wrap items-center justify-between gap-4">
+        <h1 className="text-2xl font-extrabold text-[#1B2B4B]">{t("tradieWeb.navOverview")}</h1>
+        <Button type="button" variant="secondary" size="sm" onClick={() => setExportOpen(true)}>
+          <Download className="w-4 h-4" /><span>{t("tradiePulse.accountantExport")}</span>
         </Button>
-      </header>
-      <section className="bg-white rounded-2xl border border-slate-200 p-6 flex flex-col gap-2">
-        <p className="text-sm font-semibold text-[#1B2B4B]">{user?.name || user?.email || "-"}</p>
-        <p className="text-xs text-slate-500">{user?.email || "-"}</p>
-        <p className="text-xs font-mono text-emerald-700">{`API: ${apiStatus}`}</p>
-      </section>
-    </main>
+      </div>
+
+      {pulseQuery.data && <PaydayPulseCards pulse={pulseQuery.data} />}
+
+      {unbilledJobs.length > 0 && (
+        <div className="rounded-2xl bg-amber-50 border border-amber-200 p-4 flex flex-wrap items-center justify-between gap-3">
+          <div className="flex items-center gap-2 text-amber-800 text-sm font-bold">
+            <AlertTriangle className="w-4 h-4 shrink-0" />
+            <span>{t("tradieWeb.unbilledExtrasAlert", { count: String(unbilledJobs.length) })}</span>
+          </div>
+          <Link href="/dashboard/jobs" className="text-xs font-bold text-[#2563eb] underline">{t("tradieWeb.reviewJobsAction")}</Link>
+        </div>
+      )}
+
+      <div className="grid md:grid-cols-2 gap-6">
+        <section className="bg-white rounded-2xl border border-slate-200 p-6 space-y-3">
+          <h2 className="text-base font-bold text-[#1B2B4B]">{t("tradieWeb.todaysCrewTitle")}</h2>
+          {todayVisits.length === 0 ? (
+            <p className="text-xs text-slate-500">{t("tradieWeb.noVisitsTodayEmpty")}</p>
+          ) : (
+            <div className="space-y-2">
+              {todayVisits.slice(0, 5).map((v) => (
+                <div key={v.id} className="flex items-center justify-between text-xs border-b border-slate-100 pb-2">
+                  <span className="font-semibold text-[#1B2B4B]">{v.title}</span>
+                  <Badge variant="primary">{v.status}</Badge>
+                </div>
+              ))}
+            </div>
+          )}
+        </section>
+
+        <section className="bg-white rounded-2xl border border-slate-200 p-6 space-y-3">
+          <h2 className="text-base font-bold text-[#1B2B4B]">{t("tradieWeb.dashboardOverviewTitle")}</h2>
+          <p className="text-lg font-extrabold text-[#1B2B4B]">{profile?.businessName || t("tradieWeb.appName")}</p>
+          <p className="text-xs text-slate-500">{t("tradieWeb.dashboardAbnLabel")}: <span className="font-mono font-semibold text-slate-700">{profile?.abn || "-"}</span></p>
+          <Badge variant={profile?.gstRegistered ? "success" : "warning"}>
+            {profile?.gstRegistered ? t("tradieWeb.dashboardGstStatus") : t("tradieWeb.dashboardNotRegistered")}
+          </Badge>
+        </section>
+      </div>
+
+      <BookkeeperExportModal isOpen={exportOpen} onClose={() => setExportOpen(false)} />
+    </div>
   );
 }

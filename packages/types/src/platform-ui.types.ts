@@ -107,3 +107,19 @@ export const ScheduleOverrideInputSchema = z
   })
   .strict();
 export type ScheduleOverrideInput = z.infer<typeof ScheduleOverrideInputSchema>;
+
+/**
+ * Generic Ring 1 Activity History DTOs (zero app-specific domain nouns).
+ */
+export type ActivityFlowFilterOption = "ALL" | "CREDIT" | "DEBIT";
+
+export interface ActivityHistoryRow {
+  id: string;
+  date: Date | string;
+  typeLabel: string;
+  description: string;
+  entityLabel: string;
+  entityHref?: string;
+  flowType: "CREDIT" | "DEBIT";
+  amount: number | string;
+}

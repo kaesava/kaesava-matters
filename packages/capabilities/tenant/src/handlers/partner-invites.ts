@@ -76,13 +76,33 @@ export function getInviteDetailsHandler(db: DbOrTx) {
 /**
  * Invites a partner to join the household tenant.
  */
-export function invitePartnerHandler(db: DbOrTx) {
+export function invitePartnerHandler(db: DbOrTx, hooks?: TenantLifecycleHooks<DbOrTx>) {
   return async (
-    input: { email: string },
+    input: { email: string; role?: "MEMBER" | "VIEWER"; appRole?: string | null },
     tenantId: string,
     userId: string
   ) => {
     await ensurePremiumAccess(db, tenantId, "Household partner invitations");
+
+    const role = input.role ?? ("MEMBER" as const);
+    const appRole = input.appRole ?? null;
+
+    if (hooks?.onBeforeMemberInvite) {
+      const [tenant] = await db
+        .select({ appId: tenants.appId })
+        .from(tenants)
+        .where(eq(tenants.id, tenantId))
+        .limit(1);
+      await hooks.onBeforeMemberInvite({
+        db,
+        tenantId,
+        appId: tenant?.appId ?? "",
+        userId,
+        inviteeEmail: input.email,
+        role,
+        appRole,
+      });
+    }
 
     const inviteToken = crypto.randomUUID();
     const now = new Date();
@@ -95,7 +115,8 @@ export function invitePartnerHandler(db: DbOrTx) {
         inviteEmail: input.email,
         inviteToken,
         inviteStatus: "PENDING" as const,
-        role: "MEMBER" as const,
+        role,
+        appRole,
         expiresAt,
         createdBy: userId,
         updatedBy: userId,
@@ -106,6 +127,8 @@ export function invitePartnerHandler(db: DbOrTx) {
       success: true,
       inviteToken: created.inviteToken,
       inviteEmail: created.inviteEmail,
+      role: created.role,
+      appRole: created.appRole,
       expiresAt: created.expiresAt,
     };
   };

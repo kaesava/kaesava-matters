@@ -33,6 +33,7 @@
     "@kaesava/types": "workspace:*",
     "@kaesava/core": "workspace:*",
     "@kaesava/i18n": "workspace:*",
+    "@kaesava/ui": "workspace:*",
     "drizzle-orm": "^0.39.0",
     "zod": "^3.22.4",
     "inngest": "^3.12.0"

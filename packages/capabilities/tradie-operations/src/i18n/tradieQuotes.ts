@@ -1,0 +1,21 @@
+export const tradieQuotes = {
+  tradieQuotes: {
+    title: "Quotes",
+    newQuote: "New Quote",
+    sendQuote: "Send Quote",
+    acceptQuote: "Accept Quote",
+    declineQuote: "Decline Quote",
+    goodBetterBest: "Quote Options",
+    recommendedOption: "Recommended",
+    depositRequired: "Deposit Required",
+    validUntil: "Valid Until",
+    signToAccept: "Sign to Accept",
+    signerName: "Full Name",
+    statusDraft: "Draft",
+    statusSent: "Sent",
+    statusViewed: "Viewed",
+    statusAccepted: "Accepted",
+    statusDeclined: "Declined",
+    statusExpired: "Expired",
+  },
+} as const;

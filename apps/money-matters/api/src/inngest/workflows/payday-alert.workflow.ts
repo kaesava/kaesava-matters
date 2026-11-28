@@ -4,6 +4,7 @@ import { eq, and, sql, inArray } from "drizzle-orm";
 import { sendNotificationEmail, todayInZone, getLocalHourInZone, formatCurrency } from "@kaesava/core";
 import { t } from "@kaesava/i18n";
 import { isChannelEnabled, readNotificationPrefs, resolveNotificationRecipient } from "@kaesava/capability-notifications";
+import { MONEY_MATTERS_APP_ID } from "../../trpc/edge-context.js";
 
 export function createPaydayAlertWorkflow(inngest: Inngest) {
   return inngest.createFunction(
@@ -46,6 +47,7 @@ export function createPaydayAlertWorkflow(inngest: Inngest) {
           )
           .where(
             and(
+              eq(tenants.appId, MONEY_MATTERS_APP_ID),
               sql`"income_events"."archived_at" IS NULL`,
               sql`"tenants"."archived_at" IS NULL`,
               inArray(tenants.subscriptionStatus, ["TRIAL_ACTIVE", "SUBSCRIBED"]),

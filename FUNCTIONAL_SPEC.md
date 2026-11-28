@@ -710,3 +710,35 @@ This specification governs the exhaustive end-to-end Playwright master suite (`a
       - Google Sign-Up → Email/Password Sign-Up: blocked with `USER_ALREADY_EXISTS` and redirected to Sign-In (`?email=...&reason=existing`).
       - Google Sign-Up → Email/Password Sign-In: `checkEmailAuthProvider` detects Google-only accounts and displays `auth.googleOnlyAccountError` guiding the user to Google Sign-In or Forgot Password.
       - Email/Password Sign-Up → Google Sign-In/Sign-Up: existing `hasTenant === true` preserves original `country`, `currency`, and `timezone`; unverified or tenantless users route to `/complete-profile` unless accepting an invite.
+
+---
+
+## 14. Tradie Matters Domain Math & Business Rules
+
+### 14.1 10% GST (`GST` / `GST_FREE`) & Good/Better/Best Quoting
+- **Tax Calculation (`calculateQuoteTotals` & `tmInvoices`):** Line items carry `taxCode` (`"GST"` or `"GST_FREE"`). When the business is GST-registered (`gstRegistered === true`) and `taxCode === "GST"`, tax is `round2(lineExTax * 0.10)`; when `gstRegistered === false` or `taxCode === "GST_FREE"`, tax is `0.00`.
+- **Good / Better / Best Option Groups (`tmQuoteOptionGroups`):** Quotes support multiple tiered option groups (`isRecommended`, `isSelected`, `sortOrder`) with independent `subtotalExTax`, `totalTax`, and `totalIncTax` rollups. Sequential quote numbers are allocated atomically from `tmBusinessProfiles.quotePrefix` + `nextQuoteNumber` (4-digit zero-padded).
+
+### 14.2 ATO GSTR 2013/1 Tax Invoice & `>= $1,000` Rules
+- **Compliance Evaluator (`evaluateTaxInvoiceCompliance`):**
+  - If `gstRegistered === false`: document title is `"Invoice"` with mandatory compliance note `"No GST has been charged"`.
+  - If `gstRegistered === true`: document title is `"Tax Invoice"`, requiring a valid 11-digit supplier ABN (`supplierAbn.trim().length >= 11`).
+  - For any Tax Invoice with `totalIncTax >= 1000`, ATO GSTR 2013/1 requires buyer identity (`buyerName`) or buyer ABN (`buyerAbn`).
+
+### 14.3 Quote-to-Invoice & Job-to-Invoice Conversion
+- **Job Conversion (`convertJob`):** Converts an active job's accepted quote lines, approved variations, logged time entries (`durationMinutes / 60 * hourlyRate`), and logged material usages (`quantity * unitSellPrice`) into sequential `tmInvoices` + `tmInvoiceLines`, snapshotting `gstRegisteredSnapshot` from `tmBusinessProfiles` at creation time.
+
+### 14.4 Stripe Connect Direct Charges (0% Platform Fee, AU BECS, Conditional Card Threshold, Zero Surcharge)
+- **Standard Connect Onboarding (`createStripeConnectAccountLinkCommand`):** Creates a Stripe Standard connected account (`country: "AU"`) linked to `tmBusinessProfiles.stripeAccountId`.
+- **Direct Charges & Payment Methods (`createDirectChargeCheckoutCommand`, `resolveAllowedPaymentMethods`):**
+  - Checkout sessions are created directly on the tradie's connected account (`{ stripeAccount: profile.stripeAccountId }`) with **0% platform fee** (no `application_fee_amount`) and **zero customer surcharge**.
+  - `au_becs_debit` is always enabled.
+  - `card` is enabled **only** when `invoice.allowCardPayment === true` **and** `balanceDue <= (invoice.maxCardAmountOverride ?? profile.defaultMaxCardAmount)` (if a cap is configured).
+
+### 14.5 Live Job Margin RBAC Redaction & Weekly Payday Cash Readiness Pulse (12% Super)
+- **Live Job Margin (`getJobMarginQuery`):** Evaluates `canReadInternalCostRates(callerBaseRole, callerAppRole)` and (`callerAppRole !== "ADMIN" || canViewMargins !== false`). Unauthorized callers receive `{ redacted: true, revenueExTax: null, labourCost: null, materialCost: null, grossProfit: null, marginPct: null }`. Authorized callers receive `revenueExTax` (invoiced ex-tax, falling back to `quotedAmountExTax`), `labourCost` (`sum(durationMinutes / 60 * hourlyCostSnapshot)`), `materialCost` (`sum(quantity * unitCostSnapshot)`), `grossProfit = revenueExTax - labourCost - materialCost`, and `marginPct`.
+- **Weekly Payday Cash Readiness Pulse (`getWeeklyPaydayCashPulseQuery`):** Aggregates open invoices (`SENT`, `PARTIALLY_PAID`, `OVERDUE`) into `dueReceivables` (`dueDate >= today`) and `overdueReceivables` (`dueDate < today`), computes `accruedWages` from active `tmTimeEntries`, adds **12% Superannuation** (`superContribution12Pct = round2(accruedWages * 0.12)`), and returns `totalCrewObligation = accruedWages + superContribution12Pct` and `netCashPulse = totalReceivables - totalCrewObligation`.
+
+### 14.6 SMS Credit Atomic Deduction & Missed-Call Lead Rules
+- **Credit Packs & Ledger (`SMS_CREDIT_PACKS`, `deductSmsCreditsCommand`, `grantSmsCreditPackCommand`):** `PACK_100` (100 credits / `$10.00 AUD`) and `PACK_500` (500 credits / `$45.00 AUD`) are granted idempotently by `stripeCheckoutSessionId`. Outbound SMS (`OUTBOUND_SMS`, `MISSED_CALL_AUTO`) checks `balance >= cost` before inserting a negative `creditsDelta` entry.
+- **Inbound SMS/MMS & Missed-Call Leads (`handleInboundTwilioSms`, `handleTwilioMissedCallWebhook`):** Inbound SMS from an unknown number creates a `LEAD` job (`tmJobs`) and `tmCommLogs` record (archiving MMS media to R2 `fileNotes` with `isAutoGenerated: true`). Missed calls to a number with `missedCallAutoTextEnabled === true` atomically deduct 1 credit (`MISSED_CALL_AUTO`) and dispatch the configured auto-SMS reply.

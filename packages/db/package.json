@@ -26,6 +26,11 @@
       "import": "./src/rings/money-matters.ts",
       "require": "./src/rings/money-matters.ts"
     },
+    "./rings/tradie-matters": {
+      "types": "./src/rings/tradie-matters.ts",
+      "import": "./src/rings/tradie-matters.ts",
+      "require": "./src/rings/tradie-matters.ts"
+    },
     "./testing": {
       "types": "./src/testing/mock-db.ts",
       "import": "./src/testing/mock-db.ts",

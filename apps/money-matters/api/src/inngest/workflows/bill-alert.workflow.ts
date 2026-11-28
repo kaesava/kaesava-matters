@@ -15,6 +15,7 @@ import { eq, and, sql, inArray } from "drizzle-orm";
 import { sendNotificationEmail, todayInZone, getLocalHourInZone, formatCurrency } from "@kaesava/core";
 import { t } from "@kaesava/i18n";
 import { isChannelEnabled, readNotificationPrefs, resolveNotificationRecipient } from "@kaesava/capability-notifications";
+import { MONEY_MATTERS_APP_ID } from "../../trpc/edge-context.js";
 
 function addDaysToIsoDate(isoDate: string, days: number): string {
   const dt = new Date(`${isoDate}T12:00:00Z`);
@@ -68,6 +69,7 @@ export function createBillAlertWorkflow(inngest: Inngest) {
           )
           .where(
             and(
+              eq(tenants.appId, MONEY_MATTERS_APP_ID),
               sql`"expense_events"."archived_at" IS NULL`,
               sql`"envelopes"."archived_at" IS NULL`,
               sql`"tenants"."archived_at" IS NULL`,

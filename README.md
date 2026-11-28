@@ -7,30 +7,36 @@ Money Matters is an active, forward-looking household money management platform 
 ## 🏗️ Monorepo Topology
 
 ```
-money-matters/
+kaesava-matters/
 ├── apps/
-│   ├── api/           # Fastify API on Cloudflare Workers (`api.moneymatters.kaesava.au`)
-│   ├── mobile/        # Expo React Native app (Android target)
-│   └── web/           # Next.js App Router on Cloudflare Workers (`moneymatters.kaesava.au`)
+│   ├── money-matters/{api,mobile,web}   # Money Matters product apps (`moneymatters.kaesava.au`)
+│   └── tradie-matters/{api,mobile,web}  # Tradie Matters product apps (`tradiematters.kaesava.au`)
 ├── packages/
-│   ├── capabilities/  # Decoupled vertical slice business logic (9 Ring 2 reusable + 2 Ring 3 app-specific)
-│   │   ├── assistant/       # Ring 2: AI Assistant engine (Cloudflare Workers AI Gateway, deterministic matcher, usage quota)
-│   │   ├── bank-accounts/   # Ring 2: Bank account CRUD, expected balance & balance sync via BankAccountLifecycleHooks
-│   │   ├── billing/         # Ring 2: Subscription state machine, Stripe checkout & portal, multi-app webhook processor
-│   │   ├── budgeting/       # Ring 3: 5-step waterfall allocation engine, Money Matters envelope ledger, transfer events & analytics
-│   │   ├── bug-reports/     # Ring 2: In-app Beta bug report persistence & diagnostic metadata capture
-│   │   ├── file-notes/      # Ring 2: Notes & attachments metadata & privacy resolvers (S3/R2 transport in `@kaesava/core`)
-│   │   ├── notifications/   # Ring 2: Expo push, timezone-aware Inngest cron factory & retention jobs
-│   │   ├── schedules/       # Ring 2: Generic RRULE recurrence burst & Outlook-style series edit planner (`ScheduleStoreAdapter`)
-│   │   ├── simulation/      # Ring 3: Stateless "Can I Afford It?" simulation query engine & goal delay impact calculator
-│   │   ├── tenant/          # Ring 2: Tenant creation, partner invite, member removal, composable `DataExportContributor[]` CSV backup
-│   │   └── transactions/    # Ring 2: Generic domain-agnostic immutable ledger (`GenericLedgerStoreAdapter`)
+│   ├── capabilities/  # Decoupled vertical slice business logic (12 Ring 2 reusable + 4 Ring 3 app-specific)
+│   │   ├── assistant/           # Ring 2: AI Assistant engine (Cloudflare Workers AI Gateway, deterministic matcher, usage quota)
+│   │   ├── auth/                # Ring 2: Neon Auth, OTP, password & OAuth session helpers
+│   │   ├── bank-accounts/       # Ring 2: Bank account CRUD, expected balance & balance sync via BankAccountLifecycleHooks
+│   │   ├── billing/             # Ring 2: Subscription state machine, Stripe checkout & portal, multi-app webhook processor
+│   │   ├── budgeting/           # Ring 3 (Money Matters): 5-step waterfall allocation engine, envelope ledger, transfer events & analytics
+│   │   ├── bug-reports/         # Ring 2: In-app Beta bug report persistence & diagnostic metadata capture
+│   │   ├── calendar/            # Ring 2: Headless O(n log n) layoutDay() interval solver & Resource Day/Week/Agenda views
+│   │   ├── chat/                # Ring 2: Multi-tenant crew/team chat rooms, messages, read receipts & @mention push hooks
+│   │   ├── file-notes/          # Ring 2: Notes & attachments metadata & privacy resolvers (S3/R2 transport in `@kaesava/core`)
+│   │   ├── geo/                 # Ring 2: Stateless OSM Photon address autocomplete proxy & SmartAddressField
+│   │   ├── notifications/       # Ring 2: Expo push, timezone-aware Inngest cron factory & retention jobs
+│   │   ├── schedules/           # Ring 2: Generic RRULE recurrence burst & Outlook-style series edit planner (`ScheduleStoreAdapter`)
+│   │   ├── simulation/          # Ring 3 (Money Matters): Stateless "Can I Afford It?" simulation query engine & goal delay impact
+│   │   ├── tenant/              # Ring 2: Tenant creation, partner/member invite, role management, `DataExportContributor[]` CSV backup
+│   │   ├── tradie-integrations/ # Ring 3 (Tradie Matters): Xero/MYOB/QBO sync, supplier bills/POs, Twilio SMS/MMS/missed-call leads
+│   │   ├── tradie-operations/   # Ring 3 (Tradie Matters): CRM, pricebook, dispatch, field ops, Good/Better/Best quotes, ATO Tax Invoices & Pulse
+│   │   └── transactions/        # Ring 2: Generic domain-agnostic immutable ledger (`GenericLedgerStoreAdapter`)
 │   ├── config/        # Validated Zod environment configurations, fail-closed `AppManifest` registry & feature flags
-│   ├── core/          # Server infra (universal logger, rate limiter, auth context, S3/R2 storage transport, Next.js edge proxy helpers)
-│   ├── db/            # Drizzle PostgreSQL schemas (22 audited tables, ring-scoped subpaths `./rings/platform`, `./rings/capabilities`, `./rings/money-matters`), migrations, seeds, RLS
+│   ├── core/          # Server infra (logger, rate limiter, auth context, S3/R2 storage, PDF, portal tokens, Next.js & Worker factories)
+│   ├── db/            # Drizzle PostgreSQL schemas (ring-scoped subpaths `./rings/platform`, `./rings/capabilities`, `./rings/money-matters`, `./rings/tradie-matters`), migrations, seeds, RLS
 │   ├── i18n/          # Centralized localization dictionary & t() / createAppI18n() helpers
+│   ├── mobile-core/   # Shared Expo SQLite offline outbox, draft store & session persistence
 │   ├── types/         # Pure domain contracts & Zod DTOs (plus `./platform` ring-pure subpath)
-│   └── ui/            # Serene Finance UI primitives, `PlatformSettingsShell`, `AppThemeProvider`, Ask Penny palette & sheets, CountrySelect & design tokens
+│   └── ui/            # Serene Finance UI primitives, `PlatformSettingsShell`, `AppThemeProvider`, Ask Penny, `SignaturePad`, `AbnInput` & design tokens
 ```
 
 ---
@@ -78,14 +84,18 @@ pnpm db:migrate:prod
 
 ### Running Local Development Servers
 ```bash
-# Start Web App (Next.js)
+# Money Matters (Web, API, Mobile)
 pnpm --filter @money-matters/web dev
-
-# Start API Server (Fastify)
 pnpm --filter @money-matters/api dev
-
-# Start Mobile App (Expo Metro bundler)
 pnpm --filter @money-matters/mobile dev
+
+# Tradie Matters (Web, API, Mobile)
+pnpm --filter @tradie-matters/web dev
+pnpm --filter @tradie-matters/api dev
+pnpm --filter @tradie-matters/mobile dev
+
+# Schema & Monorepo Boundary Audits
+pnpm audit:schema && pnpm check:boundaries
 ```
 
 ---

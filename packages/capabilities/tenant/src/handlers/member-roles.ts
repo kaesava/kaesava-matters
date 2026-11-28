@@ -47,12 +47,13 @@ export function updateHouseholdMemberRoleHandler(db: DbOrTx) {
       throw new Error("Household member not found.");
     }
 
-    if (targetMember.role === input.newRole) {
-      return { success: true, memberId: targetMember.id, newRole: input.newRole };
+    const nextAppRole = input.newAppRole !== undefined ? input.newAppRole : targetMember.appRole;
+    if (targetMember.role === input.newRole && targetMember.appRole === nextAppRole) {
+      return { success: true, memberId: targetMember.id, newRole: input.newRole, newAppRole: nextAppRole };
     }
 
-    // 3. If demoting an OWNER to MEMBER, enforce that there is at least one other active owner
-    if (input.newRole === "MEMBER" && targetMember.role === "OWNER") {
+    // 3. If demoting an OWNER to MEMBER or VIEWER, enforce that there is at least one other active owner
+    if (input.newRole !== "OWNER" && targetMember.role === "OWNER") {
       const activeOwners = await db
         .select({ count: sql<number>`count(*)` })
         .from(tenantUsers)
@@ -71,11 +72,12 @@ export function updateHouseholdMemberRoleHandler(db: DbOrTx) {
       }
     }
 
-    // 4. Update role
+    // 4. Update role and optional appRole
     const [updated] = await db
       .update(tenantUsers)
       .set({
         role: input.newRole,
+        ...(input.newAppRole !== undefined ? { appRole: input.newAppRole } : {}),
         updatedAt: new Date(),
         updatedBy: callerUserId,
       })
@@ -87,6 +89,7 @@ export function updateHouseholdMemberRoleHandler(db: DbOrTx) {
       memberId: updated.id,
       userId: updated.userId,
       newRole: updated.role,
+      newAppRole: updated.appRole,
     };
   };
 }

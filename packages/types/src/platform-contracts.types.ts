@@ -26,6 +26,14 @@ export interface DataExportContributor<TDb = unknown> {
   }) => Promise<Record<string, string>>;
 }
 
+export interface ArchivedRecordItem {
+  id: string;
+  name: string;
+  itemType: string;
+  subtitle?: string | null;
+  archivedAt: Date | string | null;
+}
+
 export interface TenantLifecycleHooks<TDb = unknown> {
   onTenantCreated?: (ctx: TenantLifecycleContext<TDb>) => Promise<void>;
   onSetupCancelled?: (ctx: TenantLifecycleContext<TDb>) => Promise<void>;
@@ -34,6 +42,13 @@ export interface TenantLifecycleHooks<TDb = unknown> {
     tenantId: string;
     appId: string;
   }) => Promise<Record<string, unknown>>;
+  onBeforeMemberInvite?: (
+    ctx: TenantLifecycleContext<TDb> & {
+      inviteeEmail?: string;
+      role?: "OWNER" | "MEMBER" | "VIEWER" | string;
+      appRole?: string | null;
+    }
+  ) => Promise<void>;
   onMemberJoined?: (ctx: TenantLifecycleContext<TDb>) => Promise<void>;
   onMemberRemoved?: (
     ctx: TenantLifecycleContext<TDb> & { removedUserId: string }
@@ -45,6 +60,12 @@ export interface TenantLifecycleHooks<TDb = unknown> {
   onExportTenantData?: (
     ctx: TenantLifecycleContext<TDb>
   ) => Promise<Record<string, string>>;
+  onListArchivedItems?: (
+    ctx: TenantLifecycleContext<TDb>
+  ) => Promise<ArchivedRecordItem[]>;
+  onRestoreArchivedItem?: (
+    ctx: TenantLifecycleContext<TDb> & { itemId: string; itemType?: string }
+  ) => Promise<unknown>;
 }
 
 export interface BankAccountExpectedBalanceSummary {

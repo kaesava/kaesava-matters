@@ -4,6 +4,7 @@
  */
 import { eq } from "drizzle-orm";
 import { tenants, type DbOrTx } from "@kaesava/db/rings/capabilities";
+import type { PlanKey } from "@kaesava/types";
 
 export async function activateSubscriptionCommand(
   db: DbOrTx,
@@ -13,7 +14,7 @@ export async function activateSubscriptionCommand(
     stripeSubscriptionId: string;
     stripePriceId: string;
     subscriptionEndsAt: Date;
-    planType?: "monthly" | "annual" | "founding" | null;
+    planType?: PlanKey | null;
   }
 ): Promise<void> {
   const now = new Date();

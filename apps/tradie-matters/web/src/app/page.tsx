@@ -109,57 +109,86 @@ function FeaturesGridSection() {
 }
 
 function PricingAndTrustSection() {
+  const tiers = [
+    {
+      badge: t("tradieWeb.pricingSoloBadge"),
+      title: t("tradieWeb.pricingSoloTitle"),
+      price: t("tradieWeb.pricingSoloPrice"),
+      annual: t("tradieWeb.pricingSoloAnnual"),
+      seat: t("tradieWeb.pricingSoloSeat"),
+      featured: false,
+    },
+    {
+      badge: t("tradieWeb.pricingFoundingBadge"),
+      title: t("tradieWeb.pricingFoundingTitle"),
+      price: t("tradieWeb.pricingFoundingPrice"),
+      annual: t("tradieWeb.pricingFoundingAnnual"),
+      seat: t("tradieWeb.pricingFoundingSeat"),
+      featured: true,
+    },
+    {
+      badge: t("tradieWeb.pricingSmallCrewBadge"),
+      title: t("tradieWeb.pricingSmallCrewTitle"),
+      price: t("tradieWeb.pricingSmallCrewPrice"),
+      annual: t("tradieWeb.pricingSmallCrewAnnual"),
+      seat: t("tradieWeb.pricingSmallCrewSeat"),
+      featured: false,
+    },
+  ];
+
   return (
     <>
       <section id="pricing" className="bg-slate-100/70 border-t border-slate-200/80 py-20 scroll-mt-14">
-        <div className="max-w-5xl mx-auto px-6 flex flex-col items-center gap-10">
+        <div className="max-w-6xl mx-auto px-6 flex flex-col items-center gap-10">
           <div className="text-center max-w-xl space-y-2">
+            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-blue-50 border border-blue-200 text-xs font-bold text-[#2563eb]">
+              {t("tradieWeb.pricingTrialPill")}
+            </div>
             <h2 className="text-3xl font-extrabold tracking-tight text-[#1B2B4B]">
               {t("tradieWeb.pricingTitle")}
             </h2>
             <p className="text-slate-600 text-sm leading-relaxed">{t("tradieWeb.pricingSubtitle")}</p>
           </div>
 
-          <div className="w-full max-w-xl bg-white rounded-3xl p-8 md:p-10 border-2 border-[#2563eb] shadow-xl flex flex-col gap-5 relative overflow-hidden">
-            <div className="absolute top-0 right-0 bg-[#2563eb] text-white text-[10px] font-black px-4 py-1.5 rounded-bl-xl uppercase tracking-widest">
-              {t("tradieWeb.pricingCardBadge")}
-            </div>
-            <div className="flex flex-col gap-1">
-              <span className="text-xs font-black uppercase tracking-wider text-[#2563eb]">
-                {t("tradieWeb.pricingPlanTitle")}
-              </span>
-              <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-blue-50 border border-blue-200 text-xs font-bold text-[#2563eb] w-fit mt-1">
-                {t("tradieWeb.pricingTrialPill")}
+          <div className="grid md:grid-cols-3 gap-6 w-full">
+            {tiers.map((tier) => (
+              <div
+                key={tier.title}
+                className={`bg-white rounded-3xl p-7 flex flex-col justify-between gap-5 relative overflow-hidden ${
+                  tier.featured ? "border-2 border-[#2563eb] shadow-xl" : "border border-slate-200 shadow-sm"
+                }`}
+              >
+                <div className="space-y-3">
+                  <span className="inline-block text-[10px] font-black uppercase tracking-widest text-[#2563eb] bg-blue-50 px-2.5 py-1 rounded-md border border-blue-200">
+                    {tier.badge}
+                  </span>
+                  <h3 className="text-xl font-black text-[#1B2B4B]">{tier.title}</h3>
+                  <div className="flex items-baseline gap-2 font-mono">
+                    <span className="text-3xl font-black text-[#1B2B4B]">{tier.price}</span>
+                    <span className="text-xs font-sans text-slate-500 font-semibold">{tier.annual}</span>
+                  </div>
+                  <p className="text-xs font-bold text-slate-700 bg-slate-50 border border-slate-200 rounded-xl px-3 py-2">
+                    {tier.seat}
+                  </p>
+                  <ul className="flex flex-col gap-2 text-xs text-slate-700 font-semibold pt-1">
+                    <li>✓ {t("tradieWeb.pricingFeature1")}</li>
+                    <li>✓ {t("tradieWeb.pricingFeature2")}</li>
+                    <li>✓ {t("tradieWeb.pricingFeature3")}</li>
+                    <li>✓ {t("tradieWeb.pricingFeature4")}</li>
+                    <li>✓ {t("tradieWeb.pricingFeature5")}</li>
+                  </ul>
+                </div>
+                <Link
+                  href="/sign-up"
+                  className="w-full bg-[#2563eb] hover:bg-blue-700 text-white font-black py-3.5 rounded-2xl shadow-sm text-sm transition-all text-center block"
+                >
+                  {t("tradieWeb.heroCtaPrimary")}
+                </Link>
               </div>
-            </div>
-            <div className="flex items-baseline gap-2 font-mono">
-              <span className="text-4xl sm:text-5xl font-black text-[#1B2B4B]">
-                {t("tradieWeb.pricingPrice")}
-              </span>
-              <span className="text-xs font-sans text-slate-500 font-semibold">
-                {t("tradieWeb.pricingPeriod")}
-              </span>
-            </div>
-            <div className="bg-blue-50/80 border border-blue-200 rounded-2xl p-3.5 text-xs text-blue-950 font-bold">
-              {t("tradieWeb.pricingFoundingNote")}
-            </div>
-            <ul className="flex flex-col gap-2.5 text-xs sm:text-sm text-slate-700 font-semibold">
-              <li>✓ {t("tradieWeb.pricingFeature1")}</li>
-              <li>✓ {t("tradieWeb.pricingFeature2")}</li>
-              <li>✓ {t("tradieWeb.pricingFeature3")}</li>
-              <li>✓ {t("tradieWeb.pricingFeature4")}</li>
-              <li>✓ {t("tradieWeb.pricingFeature5")}</li>
-            </ul>
-            <Link
-              href="/sign-up"
-              className="w-full mt-2 bg-[#2563eb] hover:bg-blue-700 text-white font-black py-4 rounded-2xl shadow-md hover:shadow-lg text-sm transition-all text-center block"
-            >
-              {t("tradieWeb.heroCtaPrimary")}
-            </Link>
-            <p className="text-[11px] text-slate-500 font-medium text-center">
-              {t("tradieWeb.pricingCancelNote")}
-            </p>
+            ))}
           </div>
+
+          <p className="text-xs text-slate-500 font-medium text-center">{t("tradieWeb.pricingCancelNote")}</p>
         </div>
       </section>
 
